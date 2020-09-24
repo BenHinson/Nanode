@@ -1,0 +1,267 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+  font-family: 'Segoe UI';
+}
+
+.placeholder::placeholder {
+  color: rgb(85, 85, 85);
+  font-size: 14px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(130, 130, 130, 0.5);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(130, 130, 130, 0.6);
+}
+
+html {
+  height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  height: 100%;
+  background: #212121;
+}
+
+//////////////////////////// DEV PORTAL ////////////////////////////
+//////////////////////////// DEV PORTAL ////////////////////////////
+//////////////////////////// DEV PORTAL ////////////////////////////
+
+.NanodeLogo {
+  position: absolute;
+  width: 150px;
+  top: 40px;
+  left: 35px;
+  text-decoration: none;
+  color: #a266ee;
+  font-weight: 600;
+  font-size: 14px;
+}
+.DevSelector {
+  position: fixed;
+  min-height: 100%;
+  width: 300px;
+  overflow: hidden;
+  background: #242528;
+}
+.DevList {
+  position: absolute;
+  top: 100px;
+  height: 100%;
+  width: 97%;
+  padding: 0 30px;
+  list-style: none;
+  font-size: 16px;
+
+  & .divide {
+    border-bottom: 1px solid #888;
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  & p {
+    font-weight: 600;
+    color: whitesmoke;
+    margin: 20px 0 4px 10px;
+    font-size: 11px;
+    user-select: none;
+  }
+
+  & li {
+    & a {
+      display: flex;
+      width: 100%;
+      margin-bottom: 2px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      line-height: 20px;
+      text-decoration: none;
+      color: white;
+      opacity: 0.6;
+      cursor: pointer;
+      user-select: none;
+
+      transition: color .125s,background .125s;
+
+      &:hover {
+        opacity: 1;
+        // background: rgba(0, 0, 0, 0.2);
+        background: #a166ee80;
+      }
+    }
+  }
+}
+.DLSelected {
+  opacity: 1 !important;
+  background: #a166ee80;
+}
+
+
+.DevContent {
+  position: absolute;
+  min-height: 100%;
+  width: calc(100vw - 300px);
+  top: 0;
+  right: 0;
+  background: #2d3035;
+}
+.ContentWrapper {
+  width: 100%;
+  padding: 60px;
+  box-sizing: border-box;
+  color: rgb(211, 209, 218);
+  font-family: 'Helvetica';
+
+  & h1 {
+    color: white;
+    font-size: 34px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  & h2 {
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 30px;
+    margin: 35px 0 20px 0;
+  }
+  & h3 {
+    color: #eee;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 24px;
+    margin: 15px 0 10px 0;
+    color: #d4e917;
+  }
+  & h4 {
+    color: rgb(204, 204, 221);
+    font-size: 15px;
+    margin-top: 12px;
+  }
+  & h5 {
+    color: #2ccc74;
+    font-size: 15px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  & h6 {
+    color: #feea00;
+    font-size: 14px;
+    font-weight: 400;
+    display: contents;
+    word-break: break-all;
+  }
+  & pre {
+    padding: 20px;
+    & h6 {
+      font-size: 13px;
+      color: #34a56c;
+    }
+    &.smallPre {
+      padding: 5px;
+    }
+  }
+  & a {
+    color: rgb(10, 200, 250);
+    opacity: 0.8;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    &:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
+  }
+  & code {
+    background: #1a1b1d;
+    color: rgb(120, 126, 136);
+    display: inline-block;
+    padding: 3px 5px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 13px;
+    &.fullWidth {
+      display: block;
+    }
+  }
+  & span {
+    color: rgb(200, 200, 220);
+    font-size: 15px;
+    font-weight: 400;
+    display: block;
+    margin: 12px 0 ;
+    & h3 {
+      font-size: 15px;
+      font-weight: 400;
+      font-style: italic;
+      text-decoration: underline;
+      display: inline-block;
+      color: #fe9900;
+      margin: 0;
+    }
+  }
+  & div {
+    border: 2px solid rgb(40, 110, 150);
+    background: rgba(56, 106, 121, 0.2);
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 20px;
+  }
+  & ul {
+    margin-top: 15px;
+    list-style: inside;
+    & li {
+      margin: 4px 0 0 20px;
+      color: #c7cdd3;
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+@keyframes arrowBounce {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+///////////////////////////////////////////////
+
+@media only screen and (max-width: 1200px) {
+}
+@media only screen and (max-width: 900px) {
+}
+@media only screen and (max-width: 800px) {
+}
+@media only screen and (max-width: 600px) {
+}
+@media only screen and (max-width: 420px) {
+}

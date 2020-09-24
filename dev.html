@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Secure File Storage">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Portal</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/logo/N_Colour.svg"/>
+    <link rel="stylesheet" type="text/css" href="/css/dev.css">
+  </head>
+  <body class="dark-theme" style="background: #121214;">
+
+    <div class="DevSelector">
+      <a href="//nanode.one" class="NanodeLogo"><img src="//nanode.one/assets/nanode/nanode.svg">
+      <p>Development Portal</p></a>
+      <div class="DevList">
+
+        <div class="divide"></div>
+        <p>GENERAL</p>
+        <li><a class="DLSelected" id='Intro'>Intro</a></li>
+        <li><a id='ChangeLog'>Change Log</a></li>
+        <li><a id='Incoming'>Incoming</a></li>
+        <li><a id="WhatWeUse">What We Use</a></li>
+
+        <p>CALLS</p>
+        <li><a id='Accounts'>Accounts</a></li>
+        <li><a id='Read'>Read</a></li>
+        <li><a id='Write'>Write</a></li>
+
+        <p>OPTIONS</p>
+        <li><a id='Settings'>Settings</a></li>
+
+      </div>
+    </div>
+
+    <div class="DevContent"></div>
+    
+  </body>
+</html>
+
+<script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+  $(".DevContent").load('/assets/development/intro.html');
+  $(".DevList > li").on("click", function(e) {
+    $(".DevContent").load(`/assets/development/${e.target.id}.html`);
+    $(".DLSelected")[0].classList.remove('DLSelected')
+    e.target.classList.add('DLSelected');
+  })
+</script>

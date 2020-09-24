@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Secure File Storage">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+    <link rel="html" href="https://drive.Nanode.one/Nanode.html">
+
+    <title>Nano Drive</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/logo/N_Colour.svg"/>
+    <link rel="stylesheet" href="./CSS/drive.css">
+    <link rel="stylesheet" href="./CSS/pages.css">
+  </head>
+  <body class="dark-theme">
+    <div id="Frame"></div>
+
+    <div class="PagePanel">
+      <div class="PageControls">
+        <span id="PageUser" class="PageButton leftBar SelectedPage" drvPage="User" title="User"><i class="fas fa-user"></i></span>
+        <span id="PageContacts" class="PageButton leftBar" drvPage="Contacts" title="Contacts"><i class="fas fa-users"></i></span>
+        <span id="PagePanels" class="PageButton leftBar" drvPage="Panels" title="Panels"><i class="fas fa-th"></i></span>
+        <span id="PageCodex" class="PageButton leftBar" drvPage="Codex" title="Codex"><i class="fas fa-stream"></i></span>
+      </div>
+      <div class="PagesBottom">
+        <span id="PageDeleted" class="PageButton leftBar" drvPage="Bin" title="Bin"><i class="fas fa-trash-alt"></i></span>
+        <span id="PageSettings" class="PageButton leftBar" drvPage="Settings" title="Settings"><i class="fas fa-cog"></i></span>
+      </div>
+    </div>
+    
+    <div class="directoryLocationControls DLCLeft">
+      <span id="returnToHomepage" class="directoryControlButton" directory="Homepage" title="Home"><i class="fas fa-home"></i></span>
+      <span id="directoryControlBack" class="directoryControlButton" title="Back"><i class="fas fa-chevron-left"></i></span>
+      <span id="directoryControlForward" class="directoryControlButton" title="Forward"><i class="fas fa-chevron-right"></i></span>
+    </div>
+
+    <div class="directoryLocationControls DLCRight">
+      <span id="directoryControlNewFolder" class="directoryControlButton" title="New Folder"><i class="fas fa-folder-plus"></i></span>
+      <span id="directoryControlNewFile" class="directoryControlButton" title="New File"><i class="fas fa-file-alt"></i></span>
+      <span id="directoryControlRefresh" class="directoryControlButton" title="Refresh"><i class="fas fa-sync-alt"></i></span>
+    </div>
+
+
+    <div id="databaseBackgroundMain">
+
+      <div id="directoryLocation" type="text" placeholder="Current Directory"></div>
+
+      <!-- <div class="fileContainerScrollLeft"><div class="FCSLOverflow"></div></div> -->
+      <div id="fileContainer" rc="File_Container"></div>
+
+      <div class="fileInformationSlideBar" id="fileInformationSlideBar" title="Hide Details and Upload Bar"></div>
+      <div class="fileInformation" id="fileInformation">
+        <h2 class="fileInformationTitle">Details</h2>
+        <div class="toggleDetailsBtn" id="toggleDetailsBtn" title="Toggle Details"><i class="fas fa-info-circle"></i></div>
+        <div class="fileInformationContent" id="fileInformationContent"></div>
+
+        <div class="fileUploadControls">
+          <div id="uploadDirectory">Uploads</div>
+          <h5 id="uploadItemCount" class="uploadNumber">Item Count</h5>
+          <h5 id="uploadSizeCount" class="uploadNumber">Upload Max - 100 MB</h5>
+          <div id="uploadClearItems">Clear Items</div>
+          <h5 id="fileBeingUploaded"></h5>
+          <div id="uploadStartStopButton" title="Drag and Drop or Select Items to Upload" upload="true">Upload</div>
+          <progress id="uploadPercentage" max=100 value=0></progress>
+        </div>
+
+      </div>
+      
+
+    </div>
+
+
+    <div><input id="fileUploadBtn" style="display: none;" type="file" multiple></input><input id="folderUploadBtn" style="display: none;" type="file" multiple webkitdirectory mozdirectory></input><input id="codexUploadBtn" style="display: none;" type="file" accept="text/*" multiple></div>
+    <table id='rightClickContainer' class='rightClickContainer'></table>
+
+    <div class='CodexContentContainer'>
+      <div class='codexVideoContainer'> <video noRC controls=true></video></div>
+      <div class='codexTextContainer'> <pre noRC contenteditable="true"></pre> </div>
+    </div>
+
+    <div class="panels">
+
+      <div class="ContactsContainer panelContainer">
+      </div>
+
+      <div class="PanelsContainer panelContainer">
+      </div>
+
+      <div class="CodexContainer panelContainer">
+        <div class='CodexSwitchContainer'>
+          <div id='CodexText'>Text</div>
+          <div id='CodexVideo'>Video</div>
+          <div id='CodexAudio'>Audio</div>
+        </div>
+
+        <div class="codexWrapper"></div>
+
+        <div class="codexAudioPlayer">
+          <i title="Randomize" id="playRandomize" class="CAP_Small fas fa-random"></i>
+          <i title="Previous" id="playPrevious" class="CAP_Medium fas fa-chevron-circle-left"></i>
+          <i title="Play" id="playPause" class="CAP_Large fas fa-play-circle"></i>
+          <i title="Next" id="playNext" class="CAP_Medium fas fa-chevron-circle-right"></i>
+          <i title="Repeat" id="playRepeat" class="CAP_Small fas fa-retweet"></i>
+          <h3 id="CAP_Text"></h3>
+          <div class="CAP_Slider">
+            <input id="playerSlider" type="range" min="0" max="100" value="0"></input>
+          </div>
+          <h4 class="CAP_Cur_Time"></h4> <h4 class="CAP_Dur_Time"></h4>
+        </div>
+
+        <div class="codexUploader">
+          <div title="New" id='NewCodexItem' class='CodexItemButton'><i class="fas fa-plus"></i></div> 
+          <div title="Upload" id='UploadCodexItem' class='CodexItemButton'><i class="fas fa-upload"></i></div>
+          <div id='CUCount'>Items ⌥</div> <div id='CUSize'>⌥ Size</div>
+          <progress id='codexUploadProgress' max='100' value='0'></progress>
+        </div>
+
+      </div>
+
+      <div class="BinContainer panelContainer">
+        <h2>Bin</h2>
+        <h5 class="BinInfo">Click to Retrieve Files</h5>
+        <h5 class="BinDetails"></h5>
+        <div class="binWrapper"></div>
+      </div>
+
+      <div class="SettingsContainer panelContainer">
+        <h2>Settings</h2>
+        <div class="settingsWrapper">
+          <h4>Account</h4>
+            <span><a href="//account.nanode.one">View Account Settings</a></span>
+            <span><h5>Lock all Links</h5><input class="SWBtnOne" id="SW_LockLinks" type="button" value="Lock"></input></span>
+            <span><h5>Last Accessed</h5><input id="SW_LastAc" type="text" placeholder="No Logged Time"></input></span>
+          <h4>Directory</h4>
+            <span><h5>Starting Directory</h5><input id="SW_Dir" type="text"></span>
+            <span><h5>Bin Size</h5><input id="SW_Bin" type="number"></span>
+            <span><h5>Locked Folders</h5><input class="SWBtnThree" id="SW_LockF_Pad" type="button" value="Padlock"><input class="SWBtnThree" id="SW_LockF_Bor" type="button" value="Border"><input class="SWBtnThree" id="SW_LockF_Non" type="button" value="None"></span>
+          <h4>Style</h4>
+            <span><h5>Date Format</h5><input class="SWBtnTwo" id="SW_Date_ddmmyy" type="button" value="dd/mm/yy"><input class="SWBtnTwo" id="SW_Date_mmddyy" type="button" value="mm/dd/yy"></span>
+            <span><h5>Time Zone ± GMT</h5><input id="SW_TimeZ" type="number"></span>
+            <span><h5>Theme</h5><input class="SWBtnTwo" id="SW_Theme_Dark" type="button" value="Dark"><input class="SWBtnTwo" id="SW_Theme_Light" type="button" value="Light"></span>
+            <span><h5>View Type</h5><input class="SWBtnTwo" id="SW_ViewT_Block" type="button" value="Block"><input class="SWBtnTwo" id="SW_ViewT_List" type="button" value="List"></span>
+            <span><h5>Highlight Colour</h5><input id="SW_HighL" type="color"></span>
+            <span><h5>Background Image</h5><input id="SW_BGImg" type="url" placeholder="URL or Item ID"></span>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+</html>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
+<script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+  $(function() {
+    $("#Frame").load("Frame/Frame.html");
+  });
+</script>
+
+<script text="text/javascript" src="JS/client.js"></script>
+<script text="text/javascript" src="JS/settings.js"></script>
+<script text="text/javascript" src="JS/listeners.js"></script>
+<script text="text/javascript" src="JS/viewer.js"></script>
+<script text="text/javascript" src="JS/pages.js"></script>
+<script text="text/javascript" src="JS/rightClick.js"></script>

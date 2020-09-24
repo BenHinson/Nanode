@@ -1,0 +1,99 @@
+@media (max-width: 680px) {
+  .panelTabOpen {
+    min-width: 30px;
+  }
+}
+
+#Frame {
+  background-color: #f1f1f1;
+}
+
+.dark-theme #Frame {
+  background-color: #26262b;
+}
+
+.title-bar {
+  -webkit-app-region: drag;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  z-index: 5;
+}
+
+.controlsFade:hover {
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.window-controls-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: absolute;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  right: 10px;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+.navIcon {
+  -webkit-app-region: no-drag;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  font-size: 17px;
+  position: flex;
+  vertical-align: middle;
+  right: 0;
+  padding: 3px 8px 2px 4px;
+  cursor: pointer;
+  color: #5b616d;
+}
+
+.dark-theme .navIcon {
+  color: gainsboro;
+}
+
+.navIcon:hover {
+  color: #292b2f;
+}
+
+.dark-theme .navIcon:hover {
+  color: #fafafa;
+}
+
+.clientStatus {
+  position: absolute;
+  height: 20px;
+  width: 150px;
+  top: 4px;
+  right: 90px;
+  padding: 0 8px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  z-index: 1001;
+}
+
+.dark-theme .clientStatus {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.CSLight {
+  display: inline-block;
+  height: 4px;
+  width: 4px;
+  border-radius: 2px;
+  margin: 0px 0 5px 5px;
+  -webkit-box-shadow: 0px 0px 6px 1px;
+          box-shadow: 0px 0px 6px 1px;
+}
+/*# sourceMappingURL=frame.css.map */

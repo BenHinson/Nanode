@@ -1,0 +1,30 @@
+<div class="ContentWrapper">
+  <h1>Accounts</h1>
+
+  <h2>MongoDB</h2>
+  <span>Critical and Sensitive account data is handled by <a href="//mongodb.com">MongoDB</a>. This ensures fast, organizable and secure storage of the information. Each users data is stored in a seperate Object.</span>
+
+  <h4>Creating An Account</h4>
+  <span>Account creation is, like every action on Nanode, carried out over SSL.<br>Currently only 2 inputs are required, a username: <code>STRING upto 64 Characters</code>, and a password <code>STRING upto 64 Characters</code>, requiring: Minimum 8 Characters, 1 Number, 1 Uppercase and Lowercase Letter and 1 Special Character. Without reaching the specified minimum, the password will not be send and processed.</span>
+  <span>A successfull creation returns socket <code>UserRegistered</code> or an already existing account returns socket <code>AccountAlreadyExists</code>.</span>
+  <span>A generated MongoDB account looks like so:</span>
+  <code>_id: <h6>ObjectID(" xxxxxxxxxxxxxxxxxxxxxxxx ")</h6><br>username: <h6>Username</h6><br>password: <h6>Hashed and Salted Password</h6><br>userID: <h6>Generated UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)</h6></code>
+
+  <h2>Logging In</h2>
+  <span>Once login credentials have been sent, the following  processes are carried out if the previous process is not denied:</span>
+  <ul>
+    <li>SocketID is read and checked against recent calls to prevent mass trying.</li>
+    <li>The Account is checked to exist via <code>username</code>.</li>
+    <li>The password is hashed and salted and checked against the saved password.</li>
+    <li>A unique encrypted UserID cookie is send to the user as they are redirected.</li>
+    <li>The Users JSON Drive is created.</li>
+  </ul>
+  <span>The base JSON Drive is created like so: The Object <code>{"Homepage": {"Spans": {}}, "Files": {}}</code> is written to a JSON File named that of the users UUID.</span>
+
+  <span>Once navigated to their drive for the first time, Span: <code>"Master Folders"</code> is generated and its contents: <code>"Documents", "Games", "Media", "Music", "Notes"</code> are too.<br>To view how these are created please refer to : <h5>Development Portal > Calls > Write</h5></span>
+
+  <h2>Account Check</h2>
+  <span>When accessing an Authenticated page, the <code>UserID</code> cookie is decrypted before checking the Mongo database for the accounts existence.</span>
+  <span>On <h5>any</h5> read or write to the database, User cookies are checked, meaning any limits or logouts can instantly block an unwanted action.</span>
+
+</div>
