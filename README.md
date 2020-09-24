@@ -1,2 +1,2 @@
-# Nanode-Client
+# Nanode
  Secure File Storage
