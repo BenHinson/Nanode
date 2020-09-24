@@ -208,7 +208,6 @@ function setupFileMove(Caller) {
       forcePlaceholderSize: true,
       helper: "clone",
 
-
       start: function() {
         $('.codexItemFolder').each(function() {
             $(this).data('pos', $(this).index());

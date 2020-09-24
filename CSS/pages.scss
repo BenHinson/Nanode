@@ -61,7 +61,7 @@
 
 .CodexContainer {
 
-  padding: 10px 16px 20px 20px;
+  padding: 10px 16px 20px 15px;
 
   & .CodexSwitchContainer {
     display: flex;
@@ -70,7 +70,7 @@
     width: 100%;
     font-weight: 400;
     border-bottom: 1px solid #505050;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     color: #505058;
     user-select: none;
     .dark-theme & {
@@ -161,7 +161,7 @@
 
   & .codexWrapper {
     // height: calc(100% - 120px);
-    height: calc(100% - 220px);
+    height: calc(100% - 241px);
     padding: 0 10px 0 0;
     overflow-y: scroll;
     overscroll-behavior: contain;
@@ -327,6 +327,45 @@
         justify-content: space-around;
       }
     }
+  }
+
+  & .codexControls {
+    display: flex;
+    justify-content: space-evenly;
+    height: 26px;
+    width: 100%;
+    margin: 4px 0;
+    color: #626269;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    .dark-theme & {
+      color: #f1f1f1;
+    }
+    & i {
+      height: 100%;
+      width: 30px;
+      padding-top: 4px;
+      opacity: 0.6;
+      transition: opacity 300ms;
+      &:hover { opacity: 1; } }
+
+    & .CC_Directory { 
+      width: 160px;
+      line-height: 16px; 
+      padding-top: 4px;
+      border-radius: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &:hover {
+        border-bottom: 1px solid var(--highlight-color);
+      }
+    }
+
+
+    // <i title="Return" class="CC_Return fas fa-chevron-left"></i>
+    // <div class="CC_Directory"></div>
+    // <i title="List Folder Content" class="CC_Expand fas fa-angle-double-down"></i>
   }
 
 

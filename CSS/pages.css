@@ -62,7 +62,7 @@
 }
 
 .CodexContainer {
-  padding: 10px 16px 20px 20px;
+  padding: 10px 16px 20px 15px;
 }
 
 .CodexContainer .CodexSwitchContainer {
@@ -76,7 +76,7 @@
   width: 100%;
   font-weight: 400;
   border-bottom: 1px solid #505050;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
   color: #505058;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -168,7 +168,7 @@
 }
 
 .CodexContainer .codexWrapper {
-  height: calc(100% - 220px);
+  height: calc(100% - 241px);
   padding: 0 10px 0 0;
   overflow-y: scroll;
   overscroll-behavior: contain;
@@ -368,6 +368,55 @@
   top: 22px;
   -ms-flex-pack: distribute;
       justify-content: space-around;
+}
+
+.CodexContainer .codexControls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  height: 26px;
+  width: 100%;
+  margin: 4px 0;
+  color: #626269;
+  text-align: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+
+.dark-theme .CodexContainer .codexControls {
+  color: #f1f1f1;
+}
+
+.CodexContainer .codexControls i {
+  height: 100%;
+  width: 30px;
+  padding-top: 4px;
+  opacity: 0.6;
+  -webkit-transition: opacity 300ms;
+  transition: opacity 300ms;
+}
+
+.CodexContainer .codexControls i:hover {
+  opacity: 1;
+}
+
+.CodexContainer .codexControls .CC_Directory {
+  width: 160px;
+  line-height: 16px;
+  padding-top: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CodexContainer .codexControls .CC_Directory:hover {
+  border-bottom: 1px solid var(--highlight-color);
 }
 
 .CodexContainer .codexAudioPlayer {

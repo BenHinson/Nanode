@@ -1,6 +1,8 @@
 Current = "User";
 
 CodexPath = "Home";
+CodexDirPath_Text = ["Home"];
+CodexDirPath_Nano = ["Home"];
 AudioListeners = false;
 audioOrder = [];
 audioNumber = 0;
@@ -55,7 +57,8 @@ CodexList = function() { if (!localStorage.getItem(`CodexList`)) { localStorage.
 
 function loadCodexPage() {
   var CodexWanted = CodexList();
-
+  CodexDirPath_Text = ["Home"]; CodexDirPath_Nano = ["Home"];
+  $(".CC_Directory")[0].innerText = CodexDirPath_Text[0];
   let emitAction = "Call";
   socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
 
@@ -127,10 +130,10 @@ function readCodex(codexContents) {
 
 
   CodexWanted = CodexList();
-  $(".codexAudioPlayer")[0].style.display = "none";  $(".codexWrapper")[0].style.height = "calc(100% - 100px)";
+  $(".codexAudioPlayer")[0].style.display = "none";  $(".codexWrapper")[0].style.height = "calc(100% - 121px)";
   if (CodexWanted == "Audio") {
     if (!AudioListeners) { AudioListeners = true; CodexAudioListeners(); }
-    $(".codexAudioPlayer")[0].style.display = ""; $(".codexWrapper")[0].style.height = "calc(100% - 220px)";
+    $(".codexAudioPlayer")[0].style.display = ""; $(".codexWrapper")[0].style.height = "calc(100% - 241px)";
   }
 
   for (item in content) {
@@ -164,7 +167,9 @@ function readCodex(codexContents) {
 
     if ($(this).hasClass("codexItemFolder")) {
       CodexPath = e.currentTarget.getAttribute('nano-path');
-      
+      let selectedDirectory = this.children[1].getAttribute('title')
+      $(".CC_Directory")[0].innerText = selectedDirectory;
+      CodexDirPath_Text.push(selectedDirectory); CodexDirPath_Nano.push(CodexPath);
       let emitAction = "Call";
       socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
       return;
@@ -206,13 +211,16 @@ function codexUploadProgress(itemNumber) {
   }
 }
 function UploadDetailsAndEmitter(CodexWanted, file, itemNumber) {
+  let emitAction = "Upload";
+
   if (CodexWanted == "Text") {
     var reader = new FileReader();
     let blob = file.slice(0, 100 + 1);
     reader.readAsBinaryString(blob);
     reader.onloadend = function(e) {
       if (e.target.readyState == FileReader.DONE) {        
-        let Data = {"Name":file.name, "Size":file.size, "Type":file.type, "F100C": e.target.result, "Data":file}
+        var Data = {"Name":file.name, "Size":file.size, "Type":file.type, "F100C": e.target.result, "Data":file}
+        socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data, itemNumber})
       }
     }
   } else if (CodexWanted == "Audio") {
@@ -220,12 +228,14 @@ function UploadDetailsAndEmitter(CodexWanted, file, itemNumber) {
     let audioURL = URL.createObjectURL(file)
     audioUpload.src = audioURL;
     audioUpload.addEventListener('loadedmetadata', function() {
-      let Data = {"Name":file.name, "Size":file.size, "Type":file.type, "Duration": audioUpload.duration, "Data":file};
+      var Data = {"Name":file.name, "Size":file.size, "Type":file.type, "Duration": audioUpload.duration, "Data":file};
+      console.log(emitAction)
+      socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data, itemNumber})
     })
   } else {
-    let Data = {"Name":file.name, "Size":file.size, "Type":file.type, "Data":file}
+    var Data = {"Name":file.name, "Size":file.size, "Type":file.type, "Data":file}
+    socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data, itemNumber})
   }
-  let emitAction = "Upload"; socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data, itemNumber});
 }
 
 // =============================================================================================
@@ -291,7 +301,16 @@ function CodexAudioListeners() {
     if (audio.loop) {audio.loop = false; playRepeat.style.opacity = 0.4}
     else {audio.loop = true; playRepeat.style.opacity = 1; if (audio.paused) {audio.play();}}
    })
-  document.getElementById("playerSlider").oninput = function() { audio.currentTime = this.value / 100 * audioDuration; }
+  $("#playRandomize").on("click", function() {
+    for (let i = audioOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * i)
+      const temp = audioOrder[i];
+      audioOrder[i] = audioOrder[j];
+      audioOrder[j] = temp;
+      $("div[nano-path="+audioOrder[j]+"]").insertBefore($(".codexWrapper")[0].children[0])
+    }
+  })
+   document.getElementById("playerSlider").oninput = function() { audio.currentTime = this.value / 100 * audioDuration; }
 
 
   audio.addEventListener('play', function() { $("#playPause")[0].setAttribute("class", "CAP_Large fas fa-pause-circle") })
@@ -312,4 +331,16 @@ function CodexAudioListeners() {
   //   audio.volume = JSON.parse(localStorage.getItem('volume'));
   //   volumeSlider.value = audio.volume * 150;
   // }
+
+  $(".CC_Return").on("click", function() {
+    if (CodexDirPath_Nano.length > 1) {
+      CodexDirPath_Nano.pop(); CodexDirPath_Text.pop();
+      CodexPath = CodexDirPath_Nano[CodexDirPath_Nano.length - 1];
+      let emitAction = "Call"; socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
+      $(".CC_Directory")[0].innerText = CodexDirPath_Text[CodexDirPath_Text.length - 1];
+    }
+  })
+
+
+
 }
