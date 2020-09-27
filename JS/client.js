@@ -200,7 +200,7 @@ function setupFileMove(Caller) {
       items : ".codexItem",
       cancel : ".codexItemFolder",
       fixed: ".codexItemFolder",
-      containment: ".codexWrapper",
+      containment: ".CodexContainer",
       delay: 150,
       cursor: "move",
       tolerance: 'pointer',
@@ -236,6 +236,19 @@ function setupFileMove(Caller) {
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
       },
+    })
+
+    $(".CC_Directory").droppable({
+      accept: ".codexItem",
+      hoverClass: "CC_Dir-Hover",
+      drop: function(e, droppedItem) {
+        if (CodexPath != "Home") {
+          let dropItem = droppedItem.draggable[0];
+          dropItem.remove();
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
+          socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
+        }
+      }
     })
   }
 

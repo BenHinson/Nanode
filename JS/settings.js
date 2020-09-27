@@ -120,9 +120,8 @@ function handleSettings() {
         $("#databaseBackgroundMain")[0].style.backgroundImage = BG_url;
       }
     }
-    
   }
-  displayDetails() == true ? $('#toggleDetailsBtn')[0].style.color = UserSettings["HighL"] : $('#toggleDetailsBtn')[0].style.color = "#5b5b5f";
+  displayDetails() == true ? $('.toggleDetailsBtn')[0].style.color = UserSettings["HighL"] : $('.toggleDetailsBtn')[0].style.color = "#5b5b5f";
 }
 
 

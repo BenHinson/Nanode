@@ -11,6 +11,7 @@ $("#directoryControlNewFolder").on("click", function() { displayCentralActionMai
 $("#returnToHomepage").on("click", function() { directoryPath = 'Homepage'; socket.emit('directoryLocation', {directoryPath}) })
 $("#directoryControlRefresh").mousedown( function() { directoryRefresh(); } )
 $("#fileInformationSlideBar").on("click", function() { displayFileInformation(); })
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -22,13 +23,13 @@ function directoryRefresh() {
 function displayFileInformation(state) {
   if (!fileInformationOpen || state == false) {
     $(".DLCRight")[0].style.right = "";
-    $("#fileInformation")[0].style.right = "";
+    $(".fileInformation")[0].style.right = "";
     $("#fileInformationSlideBar").css({ "transform": "rotate(90deg)", "right": "245px"})
     $("#fileInformationSlideBar")[0].title = "Hide Details and Upload Bar";
     $("#fileContainer")[0].style.width = "calc(100% - 270px)";
   } else {
     $(".DLCRight")[0].style.right = "50px";
-    $("#fileInformation")[0].style.right = "-220px";
+    $(".fileInformation")[0].style.right = "-220px";
     $("#fileInformationSlideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
     $("#fileInformationSlideBar")[0].title = "Display Details and Upload Bar";
     $("#fileContainer")[0].style.width = "calc(100% - 25px)";
@@ -41,7 +42,7 @@ $(".toggleDetailsBtn").on("click", function() {
   let currDetails = displayDetails();
   currDetails = !currDetails;
   localStorage.setItem('displayDetails', currDetails);
-  currDetails == true ? document.getElementById('toggleDetailsBtn').style.color = userSettings.SW_HighL[0] : document.getElementById('toggleDetailsBtn').style.color = "#5b5b5f";
+  currDetails == true ? $('.toggleDetailsBtn')[0].style.color = UserSettings["HighL"] : $('.toggleDetailsBtn')[0].style.color = "#5b5b5f";
 })
 
 
@@ -263,7 +264,7 @@ function unhighlight(e) {dropArea.classList.remove('highlight')}
 
 
 dropArea.addEventListener("drop", function(e) {
-  if (!fileInformationOpen || $("#fileInformation")[0].style.width < 1) {
+  if (!fileInformationOpen || $(".fileInformation")[0].style.width < 1) {
     displayFileInformation(false);
   }
   displayUploadDownloadOverlay("Upload");

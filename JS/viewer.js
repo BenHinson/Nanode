@@ -2,16 +2,6 @@ pageContent = '';
 DownloadItems = [];
 dirPathPass = false;
 
-
-// contentViewType = function() {  return (JSON.parse(localStorage.getItem('list-view-enabled'))) ? "List" : "Block"; }
-// currentViewType = contentViewType();
-// if (currentViewType == 'Block') {
-//   $("#fileContainer")[0].style.display = 'flex';
-// } else {
-//   setTimeout(function() { clientStatus("CS6", "True") }, 800)
-//   $("#fileContainer")[0].style.display = 'block';
-// }
-
 var ItemChecker = function(checkObj) {
   if (!checkObj.isFi) { return "folder" }
   if (checkObj.isImg) { return "image" }
@@ -598,36 +588,36 @@ function callFolderInformation(selected) {
     clientStatus("CS2", "True", 500); clientStatus("CS5", "Wait", 300); clientStatus("CS4", "Wait", 400);
     socket.emit('ItemInformation', {"Path":ItemNanoPath});
 
-    $('#fileInformationContent').empty();
+    $('.fileInformationContent').empty();
     clientStatus("CS7", "Wait", 300);
 
     let folderName = document.createElement('h3');
     folderName.setAttribute('class', "itemInformation itemInformationName");
     folderName.setAttribute("contenteditable", "true");
     folderName.innerText = currentViewType[0] == 0 ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
-    document.getElementById('fileInformationContent').appendChild(folderName);
+    $('.fileInformationContent')[0].appendChild(folderName);
 
     let folderUUID = document.createElement('p');
     folderUUID.setAttribute('class', "itemInformationUUID");
     folderUUID.innerText = selected.getAttribute('Nano-path');
-    document.getElementById('fileInformationContent').appendChild(folderUUID);
+    $('.fileInformationContent')[0].appendChild(folderUUID);
 
     let folderDirectory = document.createElement('p');
     folderDirectory.setAttribute('class', "itemInformation itemInformationBlock")
     folderDirectory.innerHTML = "Path<br><input class='itemInformationDirectory' value='"+ItemsTextPath+"' title="+ItemsTextPath+" readonly><br>";
-    document.getElementById('fileInformationContent').appendChild(folderDirectory);
+    $('.fileInformationContent')[0].appendChild(folderDirectory);
 
     if (selected.getAttribute("type") != "folder") {
       let shareLinkIcon = document.createElement('i');
       shareLinkIcon.setAttribute('class', "shareLinkIcon fas fa-link")
       shareLinkIcon.title = "Get a Shareable Link for this item"
-      document.getElementById('fileInformationContent').appendChild(shareLinkIcon);
+      $('.fileInformationContent')[0].appendChild(shareLinkIcon);
   
       let shareableLinkInput = document.createElement('input');
       shareableLinkInput.setAttribute('class', "shareableLinkInput")
       shareableLinkInput.setAttribute('placeholder', "Generate Shareable Link");
       shareableLinkInput.setAttribute('readonly', true);
-      document.getElementById('fileInformationContent').appendChild(shareableLinkInput);
+      $('.fileInformationContent')[0].appendChild(shareableLinkInput);
   
       $(".shareLinkIcon").on("click", function() {
         if (!shareableLinkInput.value) {
@@ -660,7 +650,7 @@ function displayFolderInformation(ReturnedInformation) {
 
   for (var key in ReturnedInformation[3]) if (ReturnedInformation[3][key] != "") {itemInfo.innerHTML += "<tr><td>"+TimeKey[key]+"</td><td>"+dateFormater(ReturnedInformation[3][key])+"</td></tr>" }
 
-  document.getElementById('fileInformationContent').appendChild(itemInfo);
+  $('.fileInformationContent')[0].appendChild(itemInfo);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -672,7 +662,7 @@ function displaySecurityEntry(itemSecurity) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS6", "False");
 
   if (!fileInformationOpen) {displayFileInformation(); }
-  $("#fileInformationContent").empty();
+  $(".fileInformationContent").empty();
 
   for (i=0; i<itemSecurity.length; i++) {
     securityContainer = document.createElement('div');

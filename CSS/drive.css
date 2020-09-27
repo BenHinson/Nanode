@@ -187,17 +187,17 @@ body {
   border-bottom: 4px solid var(--highlight-color);
 }
 
-.DLCLeft {
+.directoryLocationControls.DLCLeft {
   left: 70px;
 }
 
-.DLCRight {
+.directoryLocationControls.DLCRight {
   right: 285px;
   -webkit-transition: right 600ms;
   transition: right 600ms;
 }
 
-.directoryControlButton {
+.directoryLocationControls .directoryControlButton {
   height: 40px;
   padding: 4px 8px;
   font-size: 22px;
@@ -207,11 +207,11 @@ body {
   cursor: pointer;
 }
 
-.dark-theme .directoryControlButton {
+.dark-theme .directoryLocationControls .directoryControlButton {
   color: #ccc;
 }
 
-.directoryControlButton:after {
+.directoryLocationControls .directoryControlButton:after {
   display: block;
   content: '';
   -webkit-transform: scaleX(0);
@@ -222,48 +222,19 @@ body {
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
 }
 
-.directoryControlButton:hover {
+.directoryLocationControls .directoryControlButton:hover {
   opacity: 0.7;
 }
 
-.directoryControlButton:hover:after {
+.directoryLocationControls .directoryControlButton:hover:after {
   -webkit-transform: scaleX(1);
           transform: scaleX(1);
 }
 
-.directoryControlButton.SelectedPage {
+.directoryLocationControls .directoryControlButton.SelectedPage {
   -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
           box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
   opacity: 0.7;
-}
-
-.directoryControlNewSpan {
-  width: 100%;
-  height: 40px;
-  margin: 24px 0 60px 0;
-  padding: 8px;
-  border: 1px dashed #646464;
-  border-radius: 5px;
-  text-align: center;
-  color: #646464;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  background: rgba(0, 0, 0, 0.06);
-  -webkit-transition: background-color, border-color .2s ease-in-out;
-  transition: background-color, border-color .2s ease-in-out;
-  cursor: pointer;
-}
-
-.dark-theme .directoryControlNewSpan {
-  color: #666;
-}
-
-.directoryControlNewSpan:hover {
-  color: #aaa;
-  border-color: #aaa;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
 #fileContainer {
@@ -300,6 +271,35 @@ body {
 
 #fileContainer::-webkit-scrollbar {
   display: none;
+}
+
+#fileContainer .directoryControlNewSpan {
+  width: 100%;
+  height: 40px;
+  margin: 24px 0 60px 0;
+  padding: 8px;
+  border: 1px dashed #646464;
+  border-radius: 5px;
+  text-align: center;
+  color: #646464;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background: rgba(0, 0, 0, 0.06);
+  -webkit-transition: background-color, border-color .2s ease-in-out;
+  transition: background-color, border-color .2s ease-in-out;
+  cursor: pointer;
+}
+
+.dark-theme #fileContainer .directoryControlNewSpan {
+  color: #666;
+}
+
+#fileContainer .directoryControlNewSpan:hover {
+  color: #aaa;
+  border-color: #aaa;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .FolderImage {
@@ -550,9 +550,12 @@ body {
   opacity: 0.7;
   -webkit-transform: translateX(5px);
           transform: translateX(5px);
-  -webkit-box-shadow: 0px 2px 0px var(--highlight-color);
-          box-shadow: 0px 2px 0px var(--highlight-color);
+  background: #f1f1f1;
   border-radius: 6px;
+}
+
+.dark-theme .ListContentContainer table tr:hover:not(.noHover) {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .ListContentContainer table tr th {
@@ -587,7 +590,7 @@ body {
 }
 
 .ListContentContainer table th:nth-child(3) {
-  width: 120px;
+  width: 80px;
   min-width: 60px;
 }
 
@@ -655,7 +658,38 @@ body {
           box-shadow: -9px 12px 13px 4px #000;
 }
 
-.PagePanel > div > .leftBar:after {
+.PagePanel div {
+  width: 100%;
+  display: -ms-inline-grid;
+  display: inline-grid;
+  grid-auto-rows: -webkit-max-content;
+  grid-auto-rows: max-content;
+  grid-gap: 18px;
+}
+
+.PagePanel div span {
+  height: 40px;
+  padding: 4px 8px;
+  font-size: 22px;
+  z-index: 1;
+  text-align: center;
+  color: #4b505a;
+  cursor: pointer;
+}
+
+.dark-theme .PagePanel div span {
+  color: #ccc;
+}
+
+.PagePanel div span.SelectedPage {
+  -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
+          box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
+  opacity: 0.7;
+}
+
+.PagePanel div span:after {
+  display: block;
+  content: '';
   margin: -30px 0 0 -8px;
   height: 110%;
   -webkit-transform: scaleY(0);
@@ -667,72 +701,24 @@ body {
   border-left: 5px solid var(--highlight-color);
 }
 
-.PagePanel > div > .leftBar:hover:after {
+.PagePanel div span:hover {
+  opacity: 0.7;
+}
+
+.PagePanel div span:hover:after {
   -webkit-transform: scaleY(1);
           transform: scaleY(1);
 }
 
-.PageControls {
-  width: 100%;
+.PagePanel .PageControls {
   margin-top: 12px;
-  display: -ms-inline-grid;
-  display: inline-grid;
-  grid-auto-rows: -webkit-max-content;
-  grid-auto-rows: max-content;
-  grid-gap: 12px;
 }
 
-.PagesBottom {
+.PagePanel .PagesBottom {
   position: absolute;
-  display: -ms-inline-grid;
-  display: inline-grid;
-  grid-auto-rows: -webkit-max-content;
-  grid-auto-rows: max-content;
-  grid-gap: 18px;
-  width: 100%;
-  height: 110px;
+  margin-bottom: 12px;
   bottom: 0px;
   left: 0;
-}
-
-.PageButton {
-  height: 40px;
-  padding: 4px 8px;
-  font-size: 22px;
-  z-index: 1;
-  text-align: center;
-  color: #4b505a;
-  cursor: pointer;
-}
-
-.dark-theme .PageButton {
-  color: #ccc;
-}
-
-.PageButton:after {
-  display: block;
-  content: '';
-  -webkit-transform: scaleX(0);
-          transform: scaleX(0);
-  -webkit-transition: -webkit-transform 0.2s ease-in-out;
-  transition: -webkit-transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
-}
-
-.PageButton:hover {
-  opacity: 0.7;
-}
-
-.PageButton:hover:after {
-  -webkit-transform: scaleX(1);
-          transform: scaleX(1);
-}
-
-.PageButton.SelectedPage {
-  -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
-          box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
-  opacity: 0.7;
 }
 
 .fileInformation {
@@ -755,16 +741,36 @@ body {
 
 .fileInformation:after {
   position: absolute;
+  height: 40px;
+  width: 1px;
   top: calc(50vh - 102px);
   left: -1px;
   content: '';
   background: #f1f1f1;
-  height: 40px;
-  width: 1px;
 }
 
 .dark-theme .fileInformation:after {
   background: #26262b;
+}
+
+.fileInformation h2 {
+  position: relative;
+  width: 70px;
+  left: calc(50% - 70px);
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 4px solid var(--highlight-color);
+}
+
+.fileInformation .toggleDetailsBtn {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  top: 6px;
+  right: 20px;
+  padding: 5px;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .fileInformationSlideBar {
@@ -790,26 +796,6 @@ body {
   background-image: url(https://drive.nanode.one/assets/svg/slideBarWhite.svg);
 }
 
-.fileInformationTitle {
-  position: relative;
-  width: 70px;
-  left: calc(50% - 70px);
-  font-size: 22px;
-  font-weight: 600;
-  border-bottom: 4px solid var(--highlight-color);
-}
-
-.toggleDetailsBtn {
-  position: absolute;
-  font-size: 20px;
-  width: 30px;
-  height: 30px;
-  right: 20px;
-  text-align: center;
-  top: 6px;
-  cursor: pointer;
-}
-
 .fileInformationContent {
   position: relative;
   height: calc(100% - 225px);
@@ -825,57 +811,34 @@ body {
   background: rgba(0, 0, 0, 0.08);
 }
 
-.itemInformation {
+.fileInformationContent .itemInformation {
+  width: 100%;
   font-weight: 400;
   padding: 10px 0 0 8px;
-  width: 100%;
-  text-align: left;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  overflow: visible;
-  overflow-wrap: break-word;
   white-space: normal;
-  color: #4b505ad9;
 }
 
-.dark-theme .itemInformation {
+.dark-theme .fileInformationContent .itemInformation {
   font-weight: 100;
   color: #ccc;
 }
 
-.itemInformationName {
+.fileInformationContent .itemInformation.itemInformationName {
   padding: 5px 0 5px 8px;
   color: #292b2f;
 }
 
-.dark-theme .itemInformationName {
+.dark-theme .fileInformationContent .itemInformation.itemInformationName {
   color: #27ce8e;
 }
 
-.itemInformationText {
-  color: #292b2f;
-  font-family: monospace;
-  font-weight: 100;
-  font-size: 14px;
+.fileInformationContent .itemInformation.itemInformationBlock {
+  font-size: 13px;
+  line-height: 20px;
+  margin-bottom: 16px;
 }
 
-.dark-theme .itemInformationText {
-  color: #f0f0f0;
-}
-
-.itemInformationUUID {
-  padding: 4px 0 5px 8px;
-  font-size: 10px;
-  color: #5b616d;
-  border-bottom: 1px solid #4b505a;
-}
-
-.dark-theme .itemInformationUUID {
-  color: #bebebe;
-  border-color: #b4b4b4;
-}
-
-.itemInformationDirectory {
+.fileInformationContent .itemInformation.itemInformationBlock .itemInformationDirectory {
   width: 96%;
   font-size: 14px;
   padding: 4px;
@@ -885,31 +848,12 @@ body {
   border-bottom: 1px solid #4b505a;
 }
 
-.dark-theme .itemInformationDirectory {
+.dark-theme .fileInformationContent .itemInformation.itemInformationBlock .itemInformationDirectory {
   color: #93c0af;
   border-color: #b4b4b4;
 }
 
-.itemInformationTags {
-  font-size: 14px;
-  padding: 2px 0 5px 5px;
-  margin: 10px 5%;
-  width: 90%;
-  border-radius: 5px;
-  border: 1px solid #4b505a;
-}
-
-.dark-theme .itemInformationTags {
-  border-color: #b4b4b4;
-}
-
-.itemInformationBlock {
-  font-size: 13px;
-  line-height: 20px;
-  margin-bottom: 16px;
-}
-
-.itemInformationTable {
+.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable {
   width: 100%;
   margin-top: 20px;
   font-size: 14px;
@@ -917,34 +861,49 @@ body {
   table-layout: fixed;
 }
 
-.itemInformationTable td {
+.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 50%;
-  height: 30px;
+  height: 28px;
 }
 
-.itemInformationTable td:nth-child(1) {
-  padding-left: 20px;
+.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable td:nth-child(1) {
+  padding: 0 0 2px 20px;
+  font-variant: all-petite-caps;
+  opacity: 0.8;
 }
 
-.itemInformationTable td:nth-child(2) {
+.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable td:nth-child(2) {
   text-align: right;
   padding-right: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
 }
 
-.shareLinkIcon {
+.fileInformationContent .itemInformationUUID {
+  padding: 4px 0 5px 8px;
+  font-size: 10px;
+  color: #5b616d;
+  border-bottom: 1px solid #4b505a;
+}
+
+.dark-theme .fileInformationContent .itemInformationUUID {
+  color: #bebebe;
+  border-color: #b4b4b4;
+}
+
+.fileInformationContent .shareLinkIcon {
   padding: 5px 10px;
   cursor: pointer;
   color: #36393f;
 }
 
-.dark-theme .shareLinkIcon {
+.dark-theme .fileInformationContent .shareLinkIcon {
   color: #e6e6e6;
 }
 
-.shareableLinkInput {
+.fileInformationContent .shareableLinkInput {
   width: 78%;
   padding: 4px;
   border: none;
@@ -955,40 +914,40 @@ body {
   border-bottom: 1px solid #4b505a;
 }
 
-.dark-theme .shareableLinkInput {
+.dark-theme .fileInformationContent .shareableLinkInput {
   color: #e6e6e6;
   border-color: #b4b4b4;
 }
 
-.shareableLinkInput ::-webkit-input-placeholder {
+.fileInformationContent .shareableLinkInput ::-webkit-input-placeholder {
   color: #3c3f46;
 }
 
-.shareableLinkInput :-ms-input-placeholder {
+.fileInformationContent .shareableLinkInput :-ms-input-placeholder {
   color: #3c3f46;
 }
 
-.shareableLinkInput ::-ms-input-placeholder {
+.fileInformationContent .shareableLinkInput ::-ms-input-placeholder {
   color: #3c3f46;
 }
 
-.shareableLinkInput ::placeholder {
+.fileInformationContent .shareableLinkInput ::placeholder {
   color: #3c3f46;
 }
 
-.dark-theme .shareableLinkInput ::-webkit-input-placeholder {
+.dark-theme .fileInformationContent .shareableLinkInput ::-webkit-input-placeholder {
   color: #bebebe;
 }
 
-.dark-theme .shareableLinkInput :-ms-input-placeholder {
+.dark-theme .fileInformationContent .shareableLinkInput :-ms-input-placeholder {
   color: #bebebe;
 }
 
-.dark-theme .shareableLinkInput ::-ms-input-placeholder {
+.dark-theme .fileInformationContent .shareableLinkInput ::-ms-input-placeholder {
   color: #bebebe;
 }
 
-.dark-theme .shareableLinkInput ::placeholder {
+.dark-theme .fileInformationContent .shareableLinkInput ::placeholder {
   color: #bebebe;
 }
 
@@ -1861,15 +1820,9 @@ progress::-webkit-progress-value {
   }
 }
 
-@media only screen and (max-width: 700px) {
-  .DLCRight {
-    left: 242px;
-  }
-}
-
 @media only screen and (max-width: 600px) {
   #directoryLocation {
-    width: calc(100% - 180px);
+    width: calc(100% - 100px);
     left: 22px;
     top: 30px;
   }
@@ -1913,11 +1866,11 @@ progress::-webkit-progress-value {
   .dark-theme .directoryLocationControls {
     background-color: #202028;
   }
-  .DLCLeft {
+  .directoryLocationControls.DLCLeft {
     z-index: 4;
     left: 0;
   }
-  .DLCRight {
+  .directoryLocationControls.DLCRight {
     left: 50%;
   }
   .homepageSpanContainer {

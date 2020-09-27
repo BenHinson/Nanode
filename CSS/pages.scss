@@ -160,7 +160,6 @@
   }
 
   & .codexWrapper {
-    // height: calc(100% - 120px);
     height: calc(100% - 241px);
     padding: 0 10px 0 0;
     overflow-y: scroll;
@@ -312,7 +311,7 @@
         display: flex;
         height: 26px;
         width: 100%;
-        top: 22px;
+        top: 25px;
         justify-content: space-around;
       }
     } 
@@ -323,7 +322,7 @@
         display: flex;
         height: 26px;
         width: 100%;
-        top: 22px;
+        top: 25px;
         justify-content: space-around;
       }
     }
@@ -361,11 +360,12 @@
         border-bottom: 1px solid var(--highlight-color);
       }
     }
-
-
-    // <i title="Return" class="CC_Return fas fa-chevron-left"></i>
-    // <div class="CC_Directory"></div>
-    // <i title="List Folder Content" class="CC_Expand fas fa-angle-double-down"></i>
+    & .CC_Dir-Hover {
+      background: rgba(0, 0, 0, 0.2);
+      .dark-theme & {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
   }
 
 

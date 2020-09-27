@@ -16,16 +16,17 @@
   <body class="dark-theme">
     <div id="Frame"></div>
 
+
     <div class="PagePanel">
       <div class="PageControls">
-        <span id="PageUser" class="PageButton leftBar SelectedPage" drvPage="User" title="User"><i class="fas fa-user"></i></span>
-        <span id="PageContacts" class="PageButton leftBar" drvPage="Contacts" title="Contacts"><i class="fas fa-users"></i></span>
-        <span id="PagePanels" class="PageButton leftBar" drvPage="Panels" title="Panels"><i class="fas fa-th"></i></span>
-        <span id="PageCodex" class="PageButton leftBar" drvPage="Codex" title="Codex"><i class="fas fa-stream"></i></span>
+        <span drvPage="User" title="User" class="SelectedPage"><i class="fas fa-user"></i></span>
+        <span drvPage="Contacts" title="Contacts"><i class="fas fa-users"></i></span>
+        <span drvPage="Blocks" title="Blocks"><i class="fas fa-th"></i></span>
+        <span drvPage="Codex" title="Codex"><i class="fas fa-stream"></i></span>
       </div>
       <div class="PagesBottom">
-        <span id="PageDeleted" class="PageButton leftBar" drvPage="Bin" title="Bin"><i class="fas fa-trash-alt"></i></span>
-        <span id="PageSettings" class="PageButton leftBar" drvPage="Settings" title="Settings"><i class="fas fa-cog"></i></span>
+        <span drvPage="Bin" title="Bin"><i class="fas fa-trash-alt"></i></span>
+        <span drvPage="Settings" title="Settings"><i class="fas fa-cog"></i></span>
       </div>
     </div>
     
@@ -46,14 +47,14 @@
 
       <div id="directoryLocation" type="text" placeholder="Current Directory"></div>
 
-      <!-- <div class="fileContainerScrollLeft"><div class="FCSLOverflow"></div></div> -->
       <div id="fileContainer" rc="File_Container"></div>
 
       <div class="fileInformationSlideBar" id="fileInformationSlideBar" title="Hide Details and Upload Bar"></div>
-      <div class="fileInformation" id="fileInformation">
-        <h2 class="fileInformationTitle">Details</h2>
-        <div class="toggleDetailsBtn" id="toggleDetailsBtn" title="Toggle Details"><i class="fas fa-info-circle"></i></div>
-        <div class="fileInformationContent" id="fileInformationContent"></div>
+
+      <div class="fileInformation">
+        <h2>Details</h2>
+        <i class="toggleDetailsBtn fas fa-info-circle" title="Toggle Details"></i>
+        <div class="fileInformationContent"></div>
 
         <div class="fileUploadControls">
           <div id="uploadDirectory">Uploads</div>
@@ -84,7 +85,7 @@
       <div class="ContactsContainer panelContainer">
       </div>
 
-      <div class="PanelsContainer panelContainer">
+      <div class="BlocksContainer panelContainer">
       </div>
 
       <div class="CodexContainer panelContainer">
@@ -121,7 +122,6 @@
           <div id='CUCount'>Items ⌥</div> <div id='CUSize'>⌥ Size</div>
           <progress id='codexUploadProgress' max='100' value='0'></progress>
         </div>
-
       </div>
 
       <div class="BinContainer panelContainer">
@@ -153,21 +153,16 @@
       </div>
     </div>
 
-
   </body>
 </html>
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap">
 <script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
 <script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<script>
-  $(function() {
-    $("#Frame").load("Frame/Frame.html");
-  });
-</script>
+<script>  $(function() { $("#Frame").load("Frame/Frame.html"); }); </script>
 
 <script text="text/javascript" src="JS/client.js"></script>
 <script text="text/javascript" src="JS/settings.js"></script>

@@ -7,6 +7,7 @@ AudioListeners = false;
 audioOrder = [];
 audioNumber = 0;
 
+
 $(".PagePanel > div > span").on("click", function(e) {
   let P2O = e.target.getAttribute("drvPage");
 
@@ -25,7 +26,7 @@ $(".PagePanel > div > span").on("click", function(e) {
     $("."+Current+"Container")[0].style.left = "-300px";
     Current = "User";
     $(".SelectedPage")[0].classList.remove('SelectedPage');
-    $("#PageUser")[0].classList.add('SelectedPage');
+    $("[drvPage=User]")[0].classList.add('SelectedPage');
   }
 })
 
@@ -47,7 +48,7 @@ function loadContactsPage() {
 // =============================================================================================
 // =============================================================================================
 
-function loadPanelsPage() {
+function loadBlocksPage() {
   console.log(Current)
 }
 // =============================================================================================
@@ -127,7 +128,6 @@ function readCodex(codexContents) {
   let content = codexContents;
   audioOrder = [];
   audioNumber = 0;
-
 
   CodexWanted = CodexList();
   $(".codexAudioPlayer")[0].style.display = "none";  $(".codexWrapper")[0].style.height = "calc(100% - 121px)";
@@ -303,15 +303,16 @@ function CodexAudioListeners() {
    })
   $("#playRandomize").on("click", function() {
     for (let i = audioOrder.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * i)
-      const temp = audioOrder[i];
+      let j = Math.floor(Math.random() * i)
+      let temp = audioOrder[i];
       audioOrder[i] = audioOrder[j];
       audioOrder[j] = temp;
       $("div[nano-path="+audioOrder[j]+"]").insertBefore($(".codexWrapper")[0].children[0])
     }
   })
-   document.getElementById("playerSlider").oninput = function() { audio.currentTime = this.value / 100 * audioDuration; }
-
+  document.getElementById("playerSlider").oninput = function() {
+    audio.currentTime = ($(this)[0].value / 100) * audioDuration
+  }
 
   audio.addEventListener('play', function() { $("#playPause")[0].setAttribute("class", "CAP_Large fas fa-pause-circle") })
   audio.addEventListener('pause', function() { $("#playPause")[0].setAttribute("class", "CAP_Large fas fa-play-circle") })
@@ -341,6 +342,12 @@ function CodexAudioListeners() {
     }
   })
 
+  $(".CC_Expand").on("click", function() {
+    let emitAction = "Call_Children"; socket.emit('Codex', {emitAction, CodexWanted, CodexPath})
+  })
 
+  $("CC_Directory").on("click", function() {
+    let emitAction = "Call"; socket.emit('Codex', {emitAction, CodexWanted, CodexPath})
+  })
 
 }
