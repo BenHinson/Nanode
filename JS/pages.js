@@ -9,14 +9,14 @@ audioNumber = 0;
 
 
 $(".PagePanel > div > span").on("click", function(e) {
-  let P2O = e.target.getAttribute("drvPage");
+  let P2O = e.currentTarget.getAttribute("drvpage");
 
   if (P2O != Current) {
     if (Current != "User") { // Runs When Going from "User" to Panel  OR  between Panels
       $("."+Current+"Container")[0].style.left = "-300px";
     }
     $(".SelectedPage")[0].classList.remove('SelectedPage');
-    e.target.classList.add('SelectedPage');
+    e.currentTarget.classList.add('SelectedPage');
     Current = P2O;
     window["load"+Current+"Page"](); // Calls the Function to Handle the Data of each page
     if (Current != "User") {

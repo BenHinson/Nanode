@@ -57,9 +57,17 @@ body {
   background: rgba(130, 130, 130, 0.6);
 }
 
+#NanodeRtn {
+  height: 36px;
+  width: 36px;
+  margin: 7px;
+  background: url("/assets/Logo/NWafer.png");
+  background-size: contain;
+}
+
 #databaseBackgroundMain {
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: #e9e9e9;
   width: calc(100vw - 50px);
   height: 100vh;
   right: 0;
@@ -237,7 +245,7 @@ body {
   opacity: 0.7;
 }
 
-#fileContainer {
+.fileContainer {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -246,7 +254,7 @@ body {
       -ms-flex-direction: column;
           flex-direction: column;
   position: absolute;
-  width: calc(100% - 270px);
+  width: calc(100% - 250px);
   top: 80px;
   padding: 0 24px 80px 40px;
   -webkit-transition: -webkit-box-shadow 0.3s;
@@ -259,21 +267,21 @@ body {
   transition: width 600ms;
 }
 
-#fileContainer.highlight {
+.fileContainer.highlight {
   -webkit-box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
           box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
 }
 
-.dark-theme #fileContainer.highlight {
+.dark-theme .fileContainer.highlight {
   -webkit-box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
           box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
 }
 
-#fileContainer::-webkit-scrollbar {
+.fileContainer::-webkit-scrollbar {
   display: none;
 }
 
-#fileContainer .directoryControlNewSpan {
+.fileContainer .directoryControlNewSpan {
   width: 100%;
   height: 40px;
   margin: 24px 0 60px 0;
@@ -292,24 +300,17 @@ body {
   cursor: pointer;
 }
 
-.dark-theme #fileContainer .directoryControlNewSpan {
+.dark-theme .fileContainer .directoryControlNewSpan {
   color: #666;
 }
 
-#fileContainer .directoryControlNewSpan:hover {
+.fileContainer .directoryControlNewSpan:hover {
   color: #aaa;
   border-color: #aaa;
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.FolderImage {
-  width: 100%;
-  max-height: 120px;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
-
-.FileImage {
+.File_Image {
   position: absolute;
   height: calc(100% - 30px);
   width: 100%;
@@ -318,7 +319,7 @@ body {
      object-fit: contain;
 }
 
-.ItemImage {
+.Item_Image {
   position: absolute;
   padding-top: 8px;
 }
@@ -346,15 +347,6 @@ body {
   background: rgba(0, 0, 0, 0.06);
 }
 
-.ContentContainer .NewContentButton {
-  padding-top: 37px;
-  color: #767676;
-  font-size: 30px;
-  text-align: center;
-  -webkit-animation: fadeinNewSpanOption 1s;
-          animation: fadeinNewSpanOption 1s;
-}
-
 .ContentContainer a {
   grid-column: 1/-1;
   width: 50%;
@@ -372,25 +364,7 @@ body {
   color: #ecececd9;
 }
 
-@-webkit-keyframes fadeinNewSpanOption {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeinNewSpanOption {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.Folder {
+.ContentContainer div {
   position: relative;
   -webkit-box-flex: 1;
       -ms-flex: 1;
@@ -405,27 +379,35 @@ body {
   transition: background-color .2s ease-in-out;
 }
 
-.Folder:hover {
+.ContentContainer div:hover {
   background-color: rgba(146, 146, 146, 0.2);
 }
 
-.FolderName {
+.ContentContainer div h4 {
   position: absolute;
   height: 30px;
-  bottom: 0px;
   width: 100%;
-  font-size: 14px;
+  bottom: 0px;
   padding: 6px 2px;
+  font-size: 14px;
+  font-weight: 400;
   text-align: center;
-  overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
+  overflow: hidden;
   -webkit-transition: width .3s;
   transition: width .3s;
 }
 
-.dark-theme .FolderName {
+.dark-theme .ContentContainer div h4 {
   color: #f2f2f2;
+}
+
+.ContentContainer div img {
+  width: 100%;
+  max-height: 120px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .FolderNameEdit {
@@ -440,57 +422,6 @@ body {
 
 .dark-theme .FolderNameEdit {
   background: #121212;
-}
-
-.NewItemOption {
-  position: absolute;
-  height: 100px;
-  width: 100px;
-  top: 25px;
-  padding: 15px;
-  border: 1px solid #6e6e6e;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 34px;
-  color: #595959;
-  cursor: pointer;
-}
-
-.dark-theme .NewItemOption {
-  color: #969696;
-}
-
-.NewItemOption:hover {
-  top: 24px;
-  -webkit-box-shadow: 0px 2px 2px 0px #555;
-          box-shadow: 0px 2px 2px 0px #555;
-}
-
-.NewItemOption.NewSpanNewFolder {
-  left: 35px;
-}
-
-.NewItemOption.NewSpanNewFile {
-  right: 35px;
-}
-
-.NewItemTitle {
-  position: absolute;
-  height: 22px;
-  width: 102%;
-  left: -1px;
-  bottom: -1px;
-  text-align: center;
-  font-size: 15px;
-  background: var(--highlight-color);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  color: white;
-}
-
-.NewItemCancel {
-  left: calc(50% - 40px);
-  top: calc(50% - 15px);
 }
 
 .ListContentContainer {
@@ -641,15 +572,14 @@ body {
 }
 
 .PagePanel {
-  margin-bottom: 0px;
+  position: fixed;
   height: 100%;
   width: 50px;
-  overflow: hidden;
-  position: fixed;
   -webkit-box-shadow: -9px 12px 3px 10px #888;
           box-shadow: -9px 12px 3px 10px #888;
   z-index: 20;
-  background-color: gainsboro;
+  background-color: #f1f1f1;
+  overflow: hidden;
 }
 
 .dark-theme .PagePanel {
@@ -668,13 +598,18 @@ body {
 }
 
 .PagePanel div span {
-  height: 40px;
-  padding: 4px 8px;
-  font-size: 22px;
-  z-index: 1;
+  height: 36px;
+  width: 36px;
+  padding: 4px;
+  margin-left: 7px;
+  border-radius: 20px;
+  font-size: 20px;
   text-align: center;
-  color: #4b505a;
+  opacity: 0.6;
+  color: black;
   cursor: pointer;
+  -webkit-transition: all 200ms;
+  transition: all 200ms;
 }
 
 .dark-theme .PagePanel div span {
@@ -682,32 +617,20 @@ body {
 }
 
 .PagePanel div span.SelectedPage {
-  -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
-          box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
-  opacity: 0.7;
+  background: var(--highlight-color);
+  -webkit-box-shadow: 0px 0px 8px 0px var(--highlight-color);
+          box-shadow: 0px 0px 8px 0px var(--highlight-color);
+  opacity: 1;
+  color: #f1f1f1;
 }
 
-.PagePanel div span:after {
-  display: block;
-  content: '';
-  margin: -30px 0 0 -8px;
-  height: 110%;
-  -webkit-transform: scaleY(0);
-          transform: scaleY(0);
-  -webkit-transition: -webkit-transform 0.2s ease-in-out;
-  transition: -webkit-transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
-  border-left: 5px solid var(--highlight-color);
+.dark-theme .PagePanel div span.SelectedPage {
+  color: #1a1a1d;
 }
 
 .PagePanel div span:hover {
-  opacity: 0.7;
-}
-
-.PagePanel div span:hover:after {
-  -webkit-transform: scaleY(1);
-          transform: scaleY(1);
+  opacity: 1;
+  color: var(--highlight-color);
 }
 
 .PagePanel .PageControls {
@@ -723,60 +646,47 @@ body {
 
 .fileInformation {
   position: absolute;
-  right: 30px;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
-  top: 60px;
-  height: 88%;
+  height: 100%;
   min-height: 500px;
   width: 240px;
-  margin-bottom: 40px;
+  right: 0px;
+  padding-top: 40px;
   -webkit-transition: right 600ms;
   transition: right 600ms;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .dark-theme .fileInformation {
-  border-color: #fafafa40;
-  color: #ccc;
-}
-
-.fileInformation:after {
-  position: absolute;
-  height: 40px;
-  width: 1px;
-  top: calc(50vh - 102px);
-  left: -1px;
-  content: '';
-  background: #f1f1f1;
-}
-
-.dark-theme .fileInformation:after {
-  background: #26262b;
+  background: rgba(0, 0, 0, 0.2);
+  color: #ddd;
 }
 
 .fileInformation h2 {
-  position: relative;
+  position: absolute;
   width: 70px;
-  left: calc(50% - 70px);
+  left: 35px;
   font-size: 22px;
   font-weight: 600;
-  border-bottom: 4px solid var(--highlight-color);
 }
 
 .fileInformation .toggleDetailsBtn {
   position: absolute;
-  height: 30px;
-  width: 30px;
-  top: 6px;
+  height: 29px;
+  width: 60px;
   right: 20px;
-  padding: 5px;
+  padding: 4px;
+  border-radius: 20px;
   font-size: 20px;
+  border: 1px solid var(--highlight-color);
   cursor: pointer;
+  -webkit-transition: text-align 300ms;
+  transition: text-align 300ms;
 }
 
 .fileInformationSlideBar {
   position: absolute;
-  top: calc(50% - 42px);
-  right: 246px;
+  top: 36px;
+  right: 218px;
   height: 40px;
   width: 40px;
   opacity: 0.5;
@@ -798,17 +708,12 @@ body {
 
 .fileInformationContent {
   position: relative;
-  height: calc(100% - 225px);
-  width: 92%;
-  left: 24px;
-  top: 20px;
+  height: calc(100% - 210px);
+  width: 100%;
+  top: 50px;
+  padding: 10px;
   border-radius: 5px;
   overflow-y: auto;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.dark-theme .fileInformationContent {
-  background: rgba(0, 0, 0, 0.08);
 }
 
 .fileInformationContent .itemInformation {
@@ -844,7 +749,7 @@ body {
   padding: 4px;
   border-radius: 3px;
   border: none;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid #4b505a;
 }
 
@@ -909,7 +814,7 @@ body {
   border: none;
   border-radius: 3px;
   font-size: 13px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   color: #36393f;
   border-bottom: 1px solid #4b505a;
 }
@@ -953,29 +858,18 @@ body {
 
 .fileUploadControls {
   position: absolute;
-  height: 170px;
-  width: 92%;
-  bottom: -15px;
-  left: 10%;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.dark-theme .fileUploadControls {
-  background: rgba(0, 0, 0, 0.08);
-}
-
-.fileUploadControls > #uploadItemCount {
-  top: 48px;
-}
-
-.fileUploadControls > #uploadSizeCount {
-  top: 78px;
+  height: 150px;
+  width: 100%;
+  bottom: 0px;
 }
 
 .fileUploadControls > .uploadNumber {
   position: absolute;
-  width: 100%;
+  height: 24px;
+  width: 115px;
+  right: 10px;
+  bottom: 34px;
+  padding: 1px;
   text-align: center;
   font-weight: 100;
   font-size: 14px;
@@ -985,12 +879,31 @@ body {
           user-select: none;
 }
 
-#uploadDirectory {
+.fileUploadControls > #uploadClearItems {
+  position: absolute;
+  height: 24px;
+  width: 100px;
+  left: 10px;
+  bottom: 34px;
+  border-radius: 5px;
+  text-align: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: not-allowed;
+}
+
+.fileUploadControls > #uploadClearItems:hover {
+  background: rgba(140, 140, 140, 0.2);
+}
+
+.fileUploadControls > #uploadDirectory {
   position: absolute;
   height: 28px;
   width: 90%;
   font-size: 15px;
-  margin: 8px 5%;
+  margin: 8px 10px;
   padding: 1px;
   border-radius: 5px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -1001,16 +914,14 @@ body {
           user-select: none;
 }
 
-.dark-theme #uploadDirectory {
+.dark-theme .fileUploadControls > #uploadDirectory {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-#fileBeingUploaded {
+.fileUploadControls > #fileBeingUploaded {
   position: absolute;
-  bottom: 36px;
-  height: 24px;
-  width: 100%;
-  font-size: 16px;
+  bottom: 2px;
+  font-size: 15px;
   font-weight: 100;
   padding: 0 8px;
   opacity: 0.8;
@@ -1018,37 +929,44 @@ body {
   display: none;
 }
 
-#uploadClearItems {
+.fileUploadControls > #uploadPercentage {
   position: absolute;
-  height: 24px;
-  width: 80%;
-  left: 10%;
-  bottom: 36px;
-  border-radius: 5px;
-  text-align: center;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  cursor: not-allowed;
+  display: block;
+  width: 100%;
+  height: 22px;
+  bottom: 0;
+  border-top: 1px solid;
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
 }
 
-#uploadClearItems:hover {
-  background: rgba(140, 140, 140, 0.2);
+.fileUploadControls progress::-webkit-progress-bar {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-theme .fileUploadControls progress::-webkit-progress-bar {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.fileUploadControls progress::-webkit-progress-value {
+  background-color: #2bd36b;
 }
 
 #uploadStartStopButton {
   position: absolute;
-  height: 30px;
-  width: 100%;
-  bottom: 0;
-  padding: 2px;
-  font-size: 16px;
-  font-weight: 100;
+  height: 32px;
+  width: 180px;
+  bottom: 70px;
+  left: 30px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 400;
   text-align: center;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top: 2px solid var(--highlight-color);
+  font-variant: all-small-caps;
+  border: 2px solid var(--highlight-color);
+  background: var(--highlight-color);
+  color: white;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -1069,8 +987,6 @@ body {
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
   border-top: 1px solid #bbb;
-  color: #484848;
-  background: rgba(0, 0, 0, 0.04);
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -1081,60 +997,25 @@ body {
 
 .dark-theme .uploadSpanContainer {
   color: #f2f2f2;
-  background: rgba(0, 0, 0, 0.08);
   border-top: 1px solid #4e4e52;
 }
 
 .uploadSpanContainer > div {
   height: 26px;
   padding: 2px 0px;
+  border-radius: 6px;
 }
 
 .uploadSpanContainer > div:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-#uploadPercentage {
-  position: absolute;
-  display: block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-       appearance: none;
-  width: 100%;
-  height: 30px;
-  bottom: 0;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-progress::-webkit-progress-bar {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-.dark-theme progress::-webkit-progress-bar {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-progress::-webkit-progress-value {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: #2bd36b;
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--highlight-color);
 }
 
 .UpDownOverlayContainer {
   position: absolute;
   height: 170px;
-  width: 92%;
-  left: 10%;
-  bottom: 170px;
-  border-radius: 5px;
-  background: #e8e8e8;
-}
-
-.dark-theme .UpDownOverlayContainer {
-  background: #232328;
+  width: 100%;
+  bottom: 150px;
 }
 
 .UpDownOverlayContainer > .uploadOverlayBtn {
@@ -1161,15 +1042,15 @@ progress::-webkit-progress-value {
 }
 
 .UpDownOverlayContainer > .UOFolder {
-  left: 10px;
+  left: 20px;
 }
 
 .UpDownOverlayContainer > .UOFile {
-  right: 80px;
+  right: 90px;
 }
 
 .UpDownOverlayContainer > .UOCancel {
-  right: 10px;
+  right: 20px;
   background: transparent;
   color: #1c1c1c;
 }
@@ -1281,7 +1162,7 @@ progress::-webkit-progress-value {
           box-shadow: 0 4px 8px rgba(48, 48, 48, 0.32), 0 8px 40px rgba(48, 48, 48, 0.4);
 }
 
-.ActionMainEntry {
+.centralActionMain > input {
   position: absolute;
   top: calc(50% - 15px);
   left: 5%;
@@ -1293,6 +1174,46 @@ progress::-webkit-progress-value {
   border-radius: 5px;
 }
 
+.centralActionMain > div {
+  position: absolute;
+  height: 30px;
+  width: 80px;
+  bottom: 12px;
+  padding: 3px;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+}
+
+.centralActionMain .AMAccept {
+  right: 20px;
+  background: #4285f4;
+  border-radius: 2px;
+}
+
+.centralActionMain .AMAccept:hover {
+  bottom: 13px;
+}
+
+.centralActionMain .AMCancel {
+  right: 120px;
+  color: black;
+}
+
+.dark-theme .centralActionMain .AMCancel {
+  color: white;
+}
+
+.centralActionMain .AMCancel:hover {
+  background: gainsboro;
+}
+
+.dark-theme .centralActionMain .AMCancel:hover {
+  background: #4b505a;
+}
+
 .centralDirectoryInfoText {
   font-size: 15px;
   line-height: 22px;
@@ -1301,53 +1222,6 @@ progress::-webkit-progress-value {
   white-space: break-spaces;
   width: 100%;
   border-top: 1px solid #555;
-}
-
-.ActionMainAccept {
-  position: absolute;
-  bottom: 12px;
-  right: 20px;
-  width: 80px;
-  height: 30px;
-  background: #4285f4;
-  border-radius: 2px;
-  color: white;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: center;
-  padding: 3px;
-  cursor: pointer;
-}
-
-.ActionMainAccept:hover {
-  bottom: 13px;
-}
-
-.ActionMainCancel {
-  position: absolute;
-  bottom: 12px;
-  right: 120px;
-  width: 80px;
-  height: 30px;
-  color: white;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: center;
-  padding: 3px;
-  cursor: pointer;
-  color: black;
-}
-
-.dark-theme .ActionMainCancel {
-  color: white;
-}
-
-.ActionMainCancel:hover {
-  background: gainsboro;
-}
-
-.dark-theme .ActionMainCancel:hover {
-  background: #4b505a;
 }
 
 .customTagsContainer {
@@ -1750,7 +1624,7 @@ progress::-webkit-progress-value {
 }
 
 @media only screen and (max-width: 1000px) {
-  #fileContainer {
+  .fileContainer {
     top: 82px;
   }
   .directoryLocationControls {
@@ -1774,49 +1648,18 @@ progress::-webkit-progress-value {
   .DLCLeft {
     left: 55px;
   }
-  #fileContainer {
+  .fileContainer {
     width: 100% !important;
     padding: 0 15px;
     height: calc(100% - 60px);
   }
   .fileInformation {
-    position: fixed;
-    background: #e3e3e3;
-    height: calc(100% - 28px);
-    top: 36px;
+    background: #f1f1f1;
     right: 0px;
-    border-width: 1px;
     z-index: 1;
   }
   .dark-theme .fileInformation {
-    background-color: #24242a;
-  }
-  .fileInformation .fileInformationTitle {
-    left: calc(50% - 90px);
-    top: 10px;
-  }
-  .fileInformation .toggleDetailsBtn {
-    right: 60px;
-    top: 16px;
-  }
-  .fileInformation .fileInformationContent {
-    height: calc(100% - 280px);
-    left: 10px;
-  }
-  .fileInformation .fileUploadControls {
-    left: 10px;
-  }
-  .fileInformation:after {
-    content: none;
-  }
-  .fileInformationSlideBar {
-    -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
-    right: 20px !important;
-    top: 47px;
-  }
-  .fileUploadControls {
-    bottom: 15px;
+    background-color: #1a1a1d;
   }
 }
 
@@ -1826,7 +1669,7 @@ progress::-webkit-progress-value {
     left: 22px;
     top: 30px;
   }
-  #fileContainer {
+  .fileContainer {
     top: 65px;
   }
   .ListContentTable th:nth-child(4) {
@@ -1877,7 +1720,7 @@ progress::-webkit-progress-value {
     margin: 20px 0 0 0;
   }
   .fileInformation {
-    height: calc(100% - 76px);
+    height: calc(100% - 40px);
   }
   .displayTextContainer {
     width: 90%;
@@ -1895,7 +1738,7 @@ progress::-webkit-progress-value {
   .ListContentTable td:nth-child(3) {
     display: none !important;
   }
-  .FolderImage {
+  .Item > img {
     -o-object-fit: contain;
        object-fit: contain;
   }

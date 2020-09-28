@@ -19,6 +19,7 @@
 
     <div class="PagePanel">
       <div class="PageControls">
+        <a title="Nanode" id="NanodeRtn" class='navIcon' href="//nanode.one" width="30" height="30"></a>
         <span drvPage="User" title="User" class="SelectedPage"><i class="fas fa-user"></i></span>
         <span drvPage="Contacts" title="Contacts"><i class="fas fa-users"></i></span>
         <span drvPage="Blocks" title="Blocks"><i class="fas fa-th"></i></span>
@@ -47,9 +48,9 @@
 
       <div id="directoryLocation" type="text" placeholder="Current Directory"></div>
 
-      <div id="fileContainer" rc="File_Container"></div>
+      <div id="fileContainer" class='fileContainer' rc="File_Container"></div>
 
-      <div class="fileInformationSlideBar" id="fileInformationSlideBar" title="Hide Details and Upload Bar"></div>
+      <div class="fileInformationSlideBar" title="Hide Details and Upload Bar"></div>
 
       <div class="fileInformation">
         <h2>Details</h2>
@@ -58,8 +59,7 @@
 
         <div class="fileUploadControls">
           <div id="uploadDirectory">Uploads</div>
-          <h5 id="uploadItemCount" class="uploadNumber">Item Count</h5>
-          <h5 id="uploadSizeCount" class="uploadNumber">Upload Max - 100 MB</h5>
+          <h5 class="uploadNumber">Max - 100 MB</h5>
           <div id="uploadClearItems">Clear Items</div>
           <h5 id="fileBeingUploaded"></h5>
           <div id="uploadStartStopButton" title="Drag and Drop or Select Items to Upload" upload="true">Upload</div>

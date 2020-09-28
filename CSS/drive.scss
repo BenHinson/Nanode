@@ -40,13 +40,10 @@ $colorTheme: (
   outline: none;
   font-family: 'Segoe UI';
 }
-
-
 html {
   overflow: hidden;
   white-space: nowrap;
 }
-
 body {
   height: 100vh;
 }
@@ -55,7 +52,6 @@ body {
 
 .placeholder::placeholder {
   color: rgb(85, 85, 85);
-  // color: map-get($lightTheme, light5);
   font-size: 14px;
 }
 
@@ -73,6 +69,13 @@ body {
   background: rgba(130, 130, 130, 0.6);
 }
 
+#NanodeRtn {
+  height: 36px;
+  width: 36px;
+  margin: 7px;
+  background: url("/assets/Logo/NWafer.png");
+  background-size: contain;
+}
 
 ///////////////////////////////////////////////////////////////// MAIN
 ///////////////////////////////////////////////////////////////// MAIN
@@ -80,18 +83,15 @@ body {
 
 #databaseBackgroundMain {
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: #e9e9e9;
   width: calc(100vw - 50px);
   height: 100vh;
   right: 0;
-
   background-size: cover;
-
   transition: box-shadow 0.3s;
   .dark-theme & {
     background-color: #26262b;
   }
-
   &.highlight {
     box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
     .dark-theme & {
@@ -225,11 +225,11 @@ body {
   }
 }
 
-#fileContainer {
+.fileContainer {
   display: flex;
   flex-direction: column;
   position: absolute;
-  width: calc(100% - 270px);
+  width: calc(100% - 250px);
   top: 80px;
   padding: 0 24px 80px 40px;
   transition: box-shadow 0.3s;
@@ -272,21 +272,15 @@ body {
 }
 
 ///////////////////////////////////////////////////////////////// FOLDER FILE
-///////////////////////////////////////////////////////////////// FOLDER FILE
-///////////////////////////////////////////////////////////////// FOLDER FILE
-.FolderImage {
-  width: 100%;
-  max-height: 120px;
-  object-fit: cover;
-}
-.FileImage {
+
+.File_Image {
   position: absolute;
   height: calc(100% - 30px);
   width: 100%;
   border-radius: 3px;
   object-fit: contain;
 }
-.ItemImage {
+.Item_Image {
   position: absolute;
   padding-top: 8px;
 }
@@ -308,14 +302,6 @@ body {
   grid-gap: 10px 6px;
   box-sizing: border-box;
 
-  & .NewContentButton {
-    padding-top: 37px;
-    color: #767676;
-    font-size: 30px;
-    text-align: center;
-    animation: fadeinNewSpanOption 1s;
-  }
-
   & a {
     grid-column: 1/-1;
     width: 50%;
@@ -328,41 +314,46 @@ body {
       color: #ecececd9;
     }
   }
-}
-@keyframes fadeinNewSpanOption {
-  from { opacity: 0; }
-  to { opacity: 1; }
+
+  & div {
+    position: relative;
+    flex: 1;
+    min-height: 120px;
+    border-radius: 5px;
+    transition: background-color .2s ease-in-out;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color .2s ease-in-out;
+    &:hover {
+      background-color: rgba(146,146,146,0.2);
+    }
+
+    & h4 {
+      position: absolute;
+      height: 30px;
+      width: 100%;
+      bottom: 0px;
+      padding: 6px 2px;
+      font-size: 14px;
+      font-weight: 400;
+      text-align: center;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      overflow: hidden;
+      transition: width .3s;
+      .dark-theme & {
+        color: #f2f2f2;
+      }
+    }
+
+    & img {
+      width: 100%;
+      max-height: 120px;
+      object-fit: cover;
+    }
+  }
 }
 
-.Folder {
-  position: relative;
-  flex: 1;
-  min-height: 120px;
-  border-radius: 5px;
-  transition: background-color .2s ease-in-out;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: background-color .2s ease-in-out;
-  &:hover {
-    background-color: rgba(146,146,146,0.2);
-  }
-}
-.FolderName {
-  position: absolute;
-  height: 30px;
-  bottom: 0px;
-  width: 100%;
-  font-size: 14px;
-  padding: 6px 2px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  transition: width .3s;
-  .dark-theme & {
-    color: #f2f2f2;
-  }
-}
 .FolderNameEdit {
   height: fit-content;
   word-break: break-all;
@@ -372,51 +363,6 @@ body {
   .dark-theme & {
     background: rgb(18, 18, 18);
   }
-}
-
-
-.NewItemOption {
-  position: absolute;
-  height: 100px;
-  width: 100px;
-  top: 25px;
-  padding: 15px;
-  border: 1px solid #6e6e6e;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 34px;
-  color: #595959;
-  cursor: pointer;
-  .dark-theme & {
-    color: #969696;
-  }
-  &:hover {
-    top: 24px;
-    box-shadow: 0px 2px 2px 0px #555;
-  }
-  &.NewSpanNewFolder {
-    left: 35px;
-  }
-  &.NewSpanNewFile {
-    right: 35px;
-  }
-}
-.NewItemTitle {
-  position: absolute;
-  height: 22px;
-  width: 102%;
-  left: -1px;
-  bottom: -1px;
-  text-align: center;
-  font-size: 15px;
-  background: var(--highlight-color);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  color: white;
-}
-.NewItemCancel {
-  left: calc(50% - 40px);
-  top: calc(50% - 15px);
 }
 
 ///////////////////////////////////////////////////////////////// LISTCONTENT
@@ -505,14 +451,13 @@ body {
 
 ///////////////////////////////////////////////////////////////// LEFTBAR
 .PagePanel {
-  margin-bottom: 0px;
+  position: fixed;
   height: 100%;
   width: 50px;
-  overflow: hidden;
-  position: fixed;
   box-shadow: -9px 12px 3px 10px #888;
   z-index: 20;
-  background-color: map-get($lightTheme, light4);
+  background-color: #f1f1f1;
+  overflow: hidden;
   .dark-theme & {
     background-color: #1a1a1d;
     box-shadow: -9px 12px 13px 4px #000;
@@ -525,36 +470,47 @@ body {
     grid-gap: 18px;
 
     & span {
-      height: 40px;
-      padding: 4px 8px;
-      font-size: 22px;
-      z-index: 1;
+      height: 36px;
+      width: 36px;
+      padding: 4px;
+      margin-left: 7px;
+      border-radius: 20px;
+      font-size: 20px;
       text-align: center;
-      color: map-get($colorTheme, colorSlightFadedText);
+      opacity: 0.6;
+      color: black;
       cursor: pointer;
+      transition: all 200ms;
       .dark-theme & {
         color: #ccc;
       }
       &.SelectedPage {
-        box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
-        opacity: 0.7;
-      }
-      
-      &:after {
-        display:block;
-        content: '';
-        margin: -30px 0 0 -8px;
-        height: 110%;
-        transform: scaleY(0);
-        transition: transform 0.2s ease-in-out;
-        border-left: 5px solid var(--highlight-color);
+        background: var(--highlight-color);
+        box-shadow: 0px 0px 8px 0px var(--highlight-color);
+        opacity: 1;
+        color: #f1f1f1;
+        .dark-theme & {
+          color: #1a1a1d;
+        }
       }
       &:hover {
-        opacity: 0.7;
+        opacity: 1;
+        color: var(--highlight-color);
       }
-      &:hover:after {
-        transform: scaleY(1);
-      }
+      
+      // &:after {
+      //   display:block;
+      //   content: '';
+      //   margin: -30px 0 0 -8px;
+      //   height: 110%;
+      //   transform: scaleY(0);
+      //   transition: transform 0.2s ease-in-out;
+      //   border-left: 5px solid var(--highlight-color);
+      // }
+
+      // &:hover:after {
+      //   transform: scaleY(1);
+      // }
     }
   }
   .PageControls {
@@ -572,57 +528,44 @@ body {
 ///////////////////////////////////////////////////////////////// FILE INFORMATION
 .fileInformation {
   position: absolute;
-  right: 30px;
-  border-left: 1px solid rgba(0,0,0,0.1);
-  top: 60px;
-  height: 88%;
+  height: 100%;
   min-height: 500px;
   width: 240px;
-  margin-bottom: 40px;
+  right: 0px;
+  padding-top: 40px;
   transition: right 600ms;
+  background:rgba(255,255,255,0.4);
   .dark-theme & {
-    border-color: #fafafa40;
-    color: #ccc;
-  }
-
-  &:after {
-    position: absolute;
-    height: 40px;
-    width: 1px;
-    top: calc(50vh - 102px);
-    left: -1px;
-    content: '';
-    background: #f1f1f1;
-    .dark-theme & {
-      background: #26262b;
-    }
+    background: rgba(0,0,0,0.2);
+    color: #ddd;
   }
 
   h2 {
-    position: relative;
+    position: absolute;
     width: 70px;
-    left: calc(50% - 70px);
+    left: 35px;
     font-size: 22px;
     font-weight: 600;
-    border-bottom: 4px solid var(--highlight-color);
   }
 
   .toggleDetailsBtn {
     position: absolute;
-    height: 30px;
-    width: 30px;
-    top: 6px;
+    height: 29px;
+    width: 60px;
     right: 20px;
-    padding: 5px;
+    padding: 4px;
+    border-radius: 20px;
     font-size: 20px;
+    border: 1px solid var(--highlight-color);
     cursor: pointer;
+    transition: text-align 300ms;
   }
 }
 
 .fileInformationSlideBar {
   position: absolute;
-  top: calc(50% - 42px);
-  right: 246px;
+  top: 36px;
+  right: 218px;
   height: 40px;
   width: 40px;
   opacity: 0.5;
@@ -641,16 +584,12 @@ body {
 
 .fileInformationContent {
   position: relative;
-  height: calc(100% - 225px);
-  width: 92%;
-  left: 24px;
-  top: 20px;
+  height: calc(100% - 210px);
+  width: 100%;
+  top: 50px;
+  padding: 10px;
   border-radius: 5px;
   overflow-y: auto;
-  background: rgba(0, 0, 0, 0.04);
-  .dark-theme & {
-    background: rgba(0, 0, 0, 0.08);
-  }
 
   .itemInformation {
     width: 100%;
@@ -680,7 +619,7 @@ body {
         padding: 4px;
         border-radius: 3px;
         border: none;
-        background: rgba(0,0,0,0.1);
+        background: rgba(0,0,0,0.05);
         border-bottom: 1px solid map-get($darkTheme, dark6);
         .dark-theme & {
           color: #93c0af;
@@ -730,7 +669,7 @@ body {
     border: none;
     border-radius: 3px;
     font-size: 13px;
-    background: rgba(0,0,0,0.1);
+    background: rgba(0,0,0,0.05);
     color: map-get($darkTheme, dark3);
     border-bottom: 1px solid map-get($darkTheme, dark6);
     .dark-theme & {
@@ -747,96 +686,108 @@ body {
 }
 
 ///////////////////////////////////////////////////////////////// UPLOAD
-///////////////////////////////////////////////////////////////// UPLOAD
-///////////////////////////////////////////////////////////////// UPLOAD
 
 .fileUploadControls {
   position: absolute;
-  height: 170px;
-  width: 92%;
-  bottom: -15px;
-  left: 10%;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 0.04);
-  .dark-theme & {
-    background: rgba(0, 0, 0, 0.08);
-  }
-  > #uploadItemCount {
-    top: 48px;
-  }
-  > #uploadSizeCount {
-    top: 78px;
-  }
+  height: 150px;
+  width: 100%;
+  bottom: 0px;
+
   > .uploadNumber {
     position: absolute;
-    width: 100%;
+    height: 24px;
+    width: 115px;
+    right: 10px;
+    bottom: 34px;
+    padding: 1px;
     text-align: center;
     font-weight: 100;
     font-size: 14px;
     user-select: none;
   }
-}
-#uploadDirectory {
-  position: absolute;
-  height: 28px;
-  width: 90%;
-  font-size: 15px;
-  margin: 8px 5%;
-  padding: 1px;
-  border-radius: 5px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  text-align: center;
-  user-select: none;
-  .dark-theme & {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  > #uploadClearItems {
+    position: absolute;
+    height: 24px;
+    width: 100px;
+    left: 10px;
+    bottom: 34px;
+    border-radius: 5px;
+    text-align: center;
+    user-select: none;
+    cursor: not-allowed;
+    &:hover {
+      background: rgba(140, 140, 140, 0.2);
+    }
+  }
+  > #uploadDirectory {
+    position: absolute;
+    height: 28px;
+    width: 90%;
+    font-size: 15px;
+    margin: 8px 10px;
+    padding: 1px;
+    border-radius: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    text-align: center;
+    user-select: none;
+    .dark-theme & {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+  > #fileBeingUploaded {
+    position: absolute;
+    bottom: 2px;
+    font-size: 15px;
+    font-weight: 100;
+    padding: 0 8px;
+    opacity: 0.8;
+    overflow: hidden;
+    display: none;
+  }
+
+  > #uploadPercentage {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 22px;
+    bottom: 0;
+    border-top: 1px solid;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  progress::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.05);
+    .dark-theme & {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+  progress::-webkit-progress-value {
+    background-color: rgb(43, 211, 107);
   }
 }
-#fileBeingUploaded {
-  position: absolute;
-  bottom: 36px;
-  height: 24px;
-  width: 100%;
-  font-size: 16px;
-  font-weight: 100;
-  padding: 0 8px;
-  opacity: 0.8;
-  overflow: hidden;
-  display: none;
-}
-#uploadClearItems {
-  position: absolute;
-  height: 24px;
-  width: 80%;
-  left: 10%;
-  bottom: 36px;
-  border-radius: 5px;
-  text-align: center;
-  user-select: none;
-  cursor: not-allowed;
-  &:hover {
-    background: rgba(140, 140, 140, 0.2);
-  }
-}
+
 #uploadStartStopButton {
-  position: absolute;
-  height: 30px;
-  width: 100%;
-  bottom: 0;
-  padding: 2px;
-  font-size: 16px;
-  font-weight: 100;
+	position: absolute;
+  height: 32px;
+  width: 180px;
+  bottom: 70px;
+  left: 30px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 400;
   text-align: center;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top: 2px solid var(--highlight-color);
+  font-variant: all-small-caps;
+  border: 2px solid var(--highlight-color);
+  background: var(--highlight-color);
+  color: white;
   user-select: none;
   cursor: pointer;
   z-index: 5;
+
   &:hover {
     background: rgba(0,0,0,.1);
   }
 }
-
 .uploadSpanContainer {
   position: absolute;
   width: 220px;
@@ -845,69 +796,32 @@ body {
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
   border-top: 1px solid #bbb;
-  color: #484848;
-  // background: #e8e8e8;
-  background: rgba(0, 0, 0, 0.04);
   user-select: none;
   cursor: pointer;
   z-index: 5;
   .dark-theme & {
     color: #f2f2f2;
-    background: rgba(0, 0, 0, 0.08);
     border-top: 1px solid #4e4e52;
   }
   & > div {
     height: 26px;
     padding: 2px 0px;
+    border-radius: 6px;
     &:hover {
-      background: rgba(0, 0, 0, 0.2);
-      // background: whitesmoke;
-      // .dark-theme & {
-      //   background: #28282d;
-      // }
+      background: rgba(0, 0, 0, 0.1);
+      color: var(--highlight-color);
      }
   }
 }
 
 
-#uploadPercentage {
-  position: absolute;
-  display: block;
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 30px;
-  bottom: 0;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-progress::-webkit-progress-bar {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  .dark-theme & {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-}
-progress::-webkit-progress-value {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: rgb(43, 211, 107);
-}
-
-
+// Upload and Download Container
 
 .UpDownOverlayContainer {
   position: absolute;
   height: 170px;
-  width: 92%;
-  left: 10%;
-  bottom: 170px;
-  border-radius: 5px;
-  background: rgb(232, 232, 232);
-  .dark-theme & {
-    background: rgb(35, 35, 40);
-  }
+  width: 100%;
+  bottom: 150px;
 
   > .uploadOverlayBtn  {
     position: absolute;
@@ -928,13 +842,13 @@ progress::-webkit-progress-value {
     }
   }
   > .UOFolder {
-    left: 10px;
+    left: 20px;
   }
   > .UOFile {
-    right: 80px;
+    right: 90px;
   }
   > .UOCancel {
-    right: 10px;
+    right: 20px;
     background: transparent;
     color: #1c1c1c;
     .dark-theme & {
@@ -1037,18 +951,51 @@ progress::-webkit-progress-value {
     box-shadow: 0 4px 8px rgba(48, 48, 48, 0.32), 0 8px 40px rgba(48, 48, 48, 0.4);
   }
   user-select: none;
-}
 
-.ActionMainEntry {
-  position: absolute;
-  top: calc(50% - 15px);
-  left: 5%;
-  width: 90%;
-  height: 30px;
-  font-size: 16px;
-  padding-left: 10px;
-  border: 1px solid darkgrey;
-  border-radius: 5px;
+  > input {
+    position: absolute;
+    top: calc(50% - 15px);
+    left: 5%;
+    width: 90%;
+    height: 30px;
+    font-size: 16px;
+    padding-left: 10px;
+    border: 1px solid darkgrey;
+    border-radius: 5px;
+  }
+  > div {
+    position: absolute;
+    height: 30px;
+    width: 80px;
+    bottom: 12px;
+    padding: 3px;
+    color: white;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    cursor: pointer;
+  }
+  .AMAccept {
+    right: 20px;
+    background: #4285f4;
+    border-radius: 2px;
+    &:hover {
+      bottom: 13px;
+    }
+  }
+  .AMCancel {
+    right: 120px;
+    color: black;
+    .dark-theme & {
+      color: white;
+    }
+    &:hover {
+      background: map-get($lightTheme, light4);
+      .dark-theme & {
+        background: map-get($darkTheme, dark6);
+      }
+    }
+  }
 }
 
 .centralDirectoryInfoText {
@@ -1061,47 +1008,7 @@ progress::-webkit-progress-value {
   border-top: 1px solid #555;
 }
 
-.ActionMainAccept {
-  position: absolute;
-  bottom: 12px;
-  right: 20px;
-  width: 80px;
-  height: 30px;
-  background: #4285f4;
-  border-radius: 2px;
-  color: white;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: center;
-  padding: 3px;
-  cursor: pointer;
-  &:hover {
-    bottom: 13px;
-  }
-}
-.ActionMainCancel {
-  position: absolute;
-  bottom: 12px;
-  right: 120px;
-  width: 80px;
-  height: 30px;
-  color: white;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: center;
-  padding: 3px;
-  cursor: pointer;
-  color: black;
-  .dark-theme & {
-    color: white;
-  }
-  &:hover {
-    background: map-get($lightTheme, light4);
-    .dark-theme & {
-      background: map-get($darkTheme, dark6);
-    }
-  }
-}
+
 
 .customTagsContainer {
   height: fit-content;
@@ -1453,7 +1360,7 @@ progress::-webkit-progress-value {
 ///////////////////////////////////////////////
 
 @media only screen and (max-width: 1000px) {
-  #fileContainer {
+  .fileContainer {
     top: 82px;
   }
   .directoryLocationControls {
@@ -1479,40 +1386,21 @@ progress::-webkit-progress-value {
     left: 55px;
   }
 
-  #fileContainer {
+  .fileContainer {
     width: 100% !important;
     padding: 0 15px;
     height: calc(100% - 60px);
   }
 
   .fileInformation {
-    position: fixed;
-    background: #e3e3e3;
-    height: calc(100% - 28px);
-    top: 36px;
+    background: #f1f1f1;
     right: 0px;
-    border-width: 1px;
     z-index: 1;
     .dark-theme & {
-      background-color: #24242a;
+      background-color: #1a1a1d;
     }
-    & .fileInformationTitle { left: calc(50% - 90px); top: 10px; }
-    & .toggleDetailsBtn { right: 60px; top: 16px; }
-    & .fileInformationContent { height: calc(100% - 280px); left: 10px; }
-    & .fileUploadControls { left: 10px; }
+  }
 
-    &:after {
-      content: none;
-    }
-  }
-  .fileInformationSlideBar {
-    transform: rotate(-90deg);
-    right: 20px !important;
-    top: 47px;
-  }
-  .fileUploadControls {
-    bottom: 15px;
-  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -1523,7 +1411,7 @@ progress::-webkit-progress-value {
     top: 30px;
   }
 
-  #fileContainer {
+  .fileContainer {
     top: 65px;
   }
 
@@ -1573,7 +1461,7 @@ progress::-webkit-progress-value {
     margin: 20px 0 0 0;
   }
   .fileInformation {
-    height: calc(100% - 76px);
+    height: calc(100% - 40px);
   }
   .displayTextContainer {
     width: 90%;
@@ -1591,7 +1479,8 @@ progress::-webkit-progress-value {
     & th:nth-child(3) { display: none !important;}
     & td:nth-child(3) { display: none !important;}
   }
-  .FolderImage {
+  
+  .Item > img {
     object-fit: contain;
   }
 }

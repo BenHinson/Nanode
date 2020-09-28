@@ -17,7 +17,7 @@ var ItemChecker = function(checkObj) {
 
 
 function homepageNewSpan() {
-  document.getElementById('fileContainer').innerHTML += " <div class='directoryControlNewSpan' id='directoryControlNewSpan'>New Span</div>";
+  $(".fileContainer")[0].innerHTML += " <div class='directoryControlNewSpan' id='directoryControlNewSpan'>New Span</div>";
   $("#directoryControlNewSpan").on("click", function() { displayCentralActionMain("New Span", "Create") });
 }
 
@@ -97,7 +97,7 @@ function uploadDirectoryLocation(Page, location) {
       })
       if (!spans.includes("Uploads")) { uploadSpanContainer.innerHTML += "<div span='Uploads' class='UploadSpanOption'>Uploads</div>"; }
       
-      $(uploadSpanContainer).css({"left": dropdownPos.left - 11, "top": dropdownPos.top - $(uploadSpanContainer).height() - 9});
+      $(uploadSpanContainer).css({"left": dropdownPos.left, "top": dropdownPos.top - $(uploadSpanContainer).height() - 9});
       
       $(".fileInformationContent")[0].style.height = "calc(100% - "+ ($(uploadSpanContainer).height() + 225) +"px)";
 
@@ -145,21 +145,13 @@ function displayDirectory(dirContents) {
 ////////////////////////////////////////////////////////////////////////
 
 function viewHomepageContentAsBlock() {
-  $("#fileContainer").empty();
+  $(".fileContainer").empty();
   for (i=0; i<pageContent.length; i++) {
     
-    let ContentContainer = document.createElement('div');
-    ContentContainer.setAttribute("class", "ContentContainer");
-    ContentContainer.setAttribute('rc', "ContentContainer")
-    document.getElementById('fileContainer').appendChild(ContentContainer);
-
-    let ContentContainerTitle = document.createElement('a');
-    ContentContainerTitle.setAttribute('contenteditable', true);
-    ContentContainerTitle.innerText = pageContent[i][0];
-    ContentContainer.appendChild(ContentContainerTitle);
+    $(".fileContainer")[0].innerHTML += "<div class='ContentContainer' rc='ContentContainer'><a contenteditable='true'>"+pageContent[i][0]+"</a></div>"
 
     pageContent[i][1].forEach(function(spanItem, index) {
-      generateBlockFolder(true, spanItem, index, ContentContainer);
+      generateBlockFolder(true, spanItem, index, $(".ContentContainer")[i]);
     })
   }
 
@@ -167,88 +159,19 @@ function viewHomepageContentAsBlock() {
 
   homepageNewSpan();
   clientStatus("CS7", "Ok", 400);
-
-  $(".ContentContainer").on({
-    mouseover: function(e) {
-      if (e.target.getAttribute("class") == 'ContentContainer') {
-        e.stopImmediatePropagation();
-        if ( !$(".NewContentButton").length ) {
-          NewContentButton = document.createElement('div');
-          NewContentButton.setAttribute("class", "Folder NewContentButton");
-          NewContentButton.title = "Add New Item";
-          ItemIcon = document.createElement('i');
-          ItemIcon.setAttribute("class", "fas fa-plus");
-          NewContentButton.appendChild(ItemIcon);
-          e.currentTarget.appendChild(NewContentButton);
-
-          $(NewContentButton).on("click", function() {
-            BlockOut = document.createElement('div');
-            BlockOut.setAttribute('class', "BlockOut")
-            document.body.appendChild(BlockOut);
-
-            SpanName = e.currentTarget.childNodes[0].innerText;
-          
-            centralActionMain = document.createElement('div');
-            centralActionMain.setAttribute('class', "centralActionMain")
-            BlockOut.appendChild(centralActionMain);
-
-            var ActionMainCancel = document.createElement('div');
-            ActionMainCancel.setAttribute('class', "ActionMainCancel NewItemCancel");
-            ActionMainCancel.setAttribute('id', "ActionMainCancel")
-            ActionMainCancel.innerHTML = "Cancel";
-            centralActionMain.appendChild(ActionMainCancel);
-
-            var NewSpanNewFolder = document.createElement('div');
-            NewSpanNewFolder.setAttribute('class', "NewItemOption NewSpanNewFolder")
-            var NewSpanNewFolderIcon = document.createElement('i');
-            NewSpanNewFolderIcon.setAttribute('class', "fas fa-folder-plus");
-            NewSpanNewFolder.appendChild(NewSpanNewFolderIcon);
-            var NewSpanNewFolderTitle = document.createElement('div');
-            NewSpanNewFolderTitle.setAttribute('class', "NewItemTitle")
-            NewSpanNewFolderTitle.innerText = "New Folder"
-            NewSpanNewFolder.appendChild(NewSpanNewFolderTitle);
-            centralActionMain.appendChild(NewSpanNewFolder);
-
-            var NewSpanNewFile = document.createElement('div');
-            NewSpanNewFile.setAttribute('class', "NewItemOption NewSpanNewFile")
-            var NewSpanNewFileIcon = document.createElement('i');
-            NewSpanNewFileIcon.setAttribute('class', "fas fa-file-alt");
-            NewSpanNewFile.appendChild(NewSpanNewFileIcon);
-            var NewSpanNewFileTitle = document.createElement('div');
-            NewSpanNewFileTitle.setAttribute('class', "NewItemTitle")
-            NewSpanNewFileTitle.innerText = "New File"
-            NewSpanNewFile.appendChild(NewSpanNewFileTitle);
-            centralActionMain.appendChild(NewSpanNewFile);
-
-            ActionMainCancel.addEventListener("click", function() { BlockOut.remove(); });
-
-            NewSpanNewFolder.addEventListener("click", function() { displayCentralActionMain("New Folder", "Create", SpanName) });
-            NewSpanNewFile.addEventListener("click", function() { displayCentralActionMain("New File", "Create", SpanName) });
-          })
-        }
-      }
-    },
-    mouseleave: function(e) {
-      $(".NewContentButton").remove();
-    }
-  })
-}
+} 
 
 function viewContentAsBlock() {
-  $("#fileContainer").empty();
-
+  $(".fileContainer").empty();
   if (pageContent[0][1].length < 1) {setDirectoryToThis(); return;}
-
-  let ContentContainer = document.createElement('div');
-  ContentContainer.setAttribute("class", "ContentContainer");
-  document.getElementById('fileContainer').appendChild(ContentContainer);
+  $(".fileContainer")[0].innerHTML += "<div class='ContentContainer'></div>"
 
   pageContent[0][1].forEach(function(Item, index) {
-    generateBlockFolder(false, Item, index, ContentContainer);
+    generateBlockFolder(false, Item, index, $(".ContentContainer")[0]);
   })
 
   $("div[type='folder']").each(function(i, folder) {
-    ContentContainer.prepend(folder);
+    $(".ContentContainer")[0].prepend(folder);
   })
 
   clientStatus("CS7", "Ok", 400);
@@ -257,55 +180,37 @@ function viewContentAsBlock() {
 function generateBlockFolder(isHomepage, Item, index, Parent) {
   let ItemType = ItemChecker(Item[2]);
 
-  let Folder = document.createElement('div');
-  Folder.setAttribute("class", "Folder");
-  !isHomepage ? Folder.setAttribute("directory", Item[1]) : Folder.setAttribute("directory", pageContent[i][0]+"\\"+Item[0]);
-  Folder.setAttribute("type", ItemType)
-  Folder.setAttribute("onclick", "clickedItem(this)");
-  Folder.setAttribute("Nano-Path", Item[6])
-  !isHomepage ? Folder.title = Item[1] : Folder.title = pageContent[i][0]+"\\"+Item[0];
-  Parent.appendChild(Folder);
+  Parent.innerHTML += "<div class='Item' directory='"+(!isHomepage ? Item[1] : pageContent[i][0]+"\\"+Item[0])+"' title='"+(!isHomepage ? Item[1] : pageContent[i][0]+"\\"+Item[0])+"' type='"+ItemType+"' rc='"+(!Item[2].isFi ? 'Nano_Folder' : 'Nano_File')+"' rcOSP='DIV,IMG' onclick='clickedItem(this)' nano-path='"+Item[6]+"'><h4>"+Item[0]+"</h4><img loading='lazy'></img></div>"
 
-  let FolderTitle = document.createElement('div');
-  FolderTitle.setAttribute("class", "FolderName");
-  !isHomepage ? FolderTitle.innerHTML = Item[0] : FolderTitle.innerHTML = Item[0];
-  Folder.appendChild(FolderTitle);
-
-  let FolderImage = document.createElement('img');
-  FolderImage.setAttribute('class', "FolderImage");
-  FolderImage.setAttribute('loading', "lazy");
-
-  Folder.setAttribute("rcOSP", "DIV,IMG");
+  let Block_Item = Parent.querySelectorAll('.Item')[index];
+  let Item_Img = Block_Item.childNodes[1];
 
   if (!Item[2].isFi) {
-    Folder.setAttribute("rc", "Nano_Folder");
-    FolderImage.height = "90"; FolderImage.width = '90';
-    FolderImage.src = "https://drive.Nanode.one/assets/FileIcons/Folder.svg";
+    Item_Img.height = "90"; Item_Img.width = '90';
+    Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/Folder.svg";
   } else {
-    Folder.setAttribute("rc", "Nano_File");
     if (!Item[2].isImg) {
-      FolderImage.setAttribute('class', "ItemImage");
-      FolderImage.style.cssText = "width: 80px; left: calc(50% - 40px)";
+      Item_Img.setAttribute('class', "Item_Image");
+      Item_Img.style.cssText = "width: 80px; left: calc(50% - 40px)";
       if (ItemType == "text") {
-        FolderImage.src = "https://drive.Nanode.one/assets/FileIcons/DocumentFile.svg";
+        Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/DocumentFile.svg";
       } else if (ItemType == "audio") {
-        FolderImage.src = "https://drive.Nanode.one/assets/FileIcons/AudioFile.svg";
-        FolderImage.style.cssText = "width: 70px; left: calc(50% - 35px)";
+        Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/AudioFile.svg";
+        Item_Img.style.cssText = "width: 70px; left: calc(50% - 35px)";
       } else if (ItemType == 'video') {
-        FolderImage.src = "https://drive.Nanode.one/assets/FileIcons/VideoFile.svg";
-        FolderImage.style.cssText = "width: 60px; left: calc(50% - 30px)";
+        Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/VideoFile.svg";
+        Item_Img.style.cssText = "width: 60px; left: calc(50% - 30px)";
       }
        else {
-        FolderImage.src = "https://drive.Nanode.one/assets/FileIcons/File.svg";
+        Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/File.svg";
       }
     } else {
-      FolderImage.height = "90"; FolderImage.width = "120";
-      FolderImage.src = '/storage/'+Item[6]+"?h=90&w=120";
-      FolderImage.setAttribute("class", "FileImage File");
+      Item_Img.height = "90"; Item_Img.width = "120";
+      Item_Img.src = '/storage/'+Item[6]+"?h=90&w=120";
+      Item_Img.setAttribute("class", "File_Image File");
     }
   }
-  if (Item[5].Color) { Folder.style.borderBottom = "2px solid "+ Item[5].Color}
-  Folder.appendChild(FolderImage);
+  if (Item[5].Color) { Block_Item.style.borderBottom = "2px solid "+ Item[5].Color}
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -313,13 +218,15 @@ function generateBlockFolder(isHomepage, Item, index, Parent) {
 ////////////////////////////////////////////////////////////////////////
 
 function viewHomepageContentAsList() {
-  $("#fileContainer").empty();
+  $(".fileContainer").empty();
   for (i=0; i<pageContent.length; i++) {
+
+    // $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
 
     let ContentContainer = document.createElement('div');
     ContentContainer.setAttribute("class", "ListContentContainer");
     ContentContainer.setAttribute("rc", "Homepage_Span");
-    document.getElementById('fileContainer').appendChild(ContentContainer);
+    $(".fileContainer")[0].appendChild(ContentContainer);
         
     let ListTitle = document.createElement('a');
     ListTitle.setAttribute("contenteditable", "true");
@@ -352,11 +259,11 @@ function viewHomepageContentAsList() {
 }
 
 function viewContentAsList() {
-  $("#fileContainer").empty();
+  $(".fileContainer").empty();
 
   let ContentContainer = document.createElement('div');
   ContentContainer.setAttribute("class", "ListContentContainer");
-  document.getElementById('fileContainer').appendChild(ContentContainer);
+  $(".fileContainer")[0].appendChild(ContentContainer);
 
   ListContentTable = document.createElement('table');
   ListContentTable.setAttribute("class", "ListContentTable");
@@ -375,7 +282,7 @@ function viewContentAsList() {
   })
 
   $("div[type='folder']").each(function(i, folder) {
-    $("#fileContainer").prepend(folder);
+    $(".fileContainer")[0].prepend(folder);
   })
 
   clientStatus("CS7", "Ok", 400);
@@ -434,7 +341,7 @@ function displayConfirmCancelBox(Action, Title, Accept, Decline, Text) {
   
   let BlockOut = document.createElement('div');
   BlockOut.setAttribute('class', "BlockOut")
-  BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<p class='centralDirectoryInfoText'>"+Text+"</p> <div id='ActionMainAccept' class='ActionMainAccept'>"+Accept+"</div> <div id='ActionMainCancel' class='ActionMainCancel'>"+Decline+"</div> </div> "
+  BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<p class='centralDirectoryInfoText'>"+Text+"</p> <div class='AMAccept'>"+Accept+"</div> <div class='AMCancel'>"+Decline+"</div> </div> "
   document.body.appendChild(BlockOut);
 
   ActionMainCancel.addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
@@ -468,7 +375,7 @@ function displayCentralActionMain(Title, Accept, Span) {
   // Creates Blockout and the Main Central Box, with Input area, Accept and Cancel Buttons
   let BlockOut = document.createElement('div');
   BlockOut.setAttribute('class', "BlockOut")
-  BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<input type='text' id='ActionMainEntry' class='ActionMainEntry' placeholder='"+Title+"...'> <div id='ActionMainAccept' class='ActionMainAccept'>"+Accept+"</div> <div id='ActionMainCancel' class='ActionMainCancel'>Cancel</div> </div> "
+  BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<input type='text' class='AMEntry' placeholder='"+Title+"...'> <div class='AMAccept'>"+Accept+"</div> <div class='AMCancel'>Cancel</div> </div> "
   document.body.appendChild(BlockOut);
 
 
@@ -495,8 +402,8 @@ function displayCentralActionMain(Title, Accept, Span) {
     });
   })
 
-  ActionMainCancel.addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
-  ActionMainAccept.addEventListener("click", function() {
+  $(".AMCancel")[0].addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
+  $(".AMAccept")[0].addEventListener("click", function() {
 
       let UICOL = $("#colorSettingsBtn")[0]; let UIPWD = $("input[CusTag]")[0]; let UIPIN = $("input[CusTag]")[1]; let UIST = $("input[CusTag]")[2]; let UIET = $("input[CusTag]")[3];
       let acceptInputs = false;
@@ -714,7 +621,7 @@ function displayUploadDownloadOverlay(Title, ContextMenu) {
     $(".fileInformationContent")[0].style.height = "calc(100% - 415px)";
     var UpDownOverlayContainer = document.createElement('div');
     UpDownOverlayContainer.setAttribute('class', "UpDownOverlayContainer")   // UpDownOverlayContainer
-    document.getElementById('fileInformation').appendChild(UpDownOverlayContainer);
+    $('.fileInformation')[0].appendChild(UpDownOverlayContainer);
 
     if (Title == "Upload") {
       DownloadItems = [];

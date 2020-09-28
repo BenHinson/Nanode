@@ -121,7 +121,7 @@ function handleSettings() {
       }
     }
   }
-  displayDetails() == true ? $('.toggleDetailsBtn')[0].style.color = UserSettings["HighL"] : $('.toggleDetailsBtn')[0].style.color = "#5b5b5f";
+  displayDetails() == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
 }
 
 

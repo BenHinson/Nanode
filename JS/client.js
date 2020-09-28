@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Connect to socket.io
   window.socket = io.connect('https://Nanode.one');
-  setTimeout(function() { clientStatus("CS0", "Wait") }, 200)
-
 
   // Check for Connection
   if (socket !== undefined) {
 
+    setTimeout(function() { clientStatus("CS0", "Wait") }, 200)
     socket.emit('CallSettings', "Read");
+    socket.emit('directoryLocation', {directoryPath})
 
     socket.on('connect', function() {
       setTimeout(function() { clientStatus("CS0", "Ok") }, 400)
@@ -190,10 +190,6 @@ function ItemActions(selected) {
 }
 
 
-// https://johnny.github.io/jquery-sortable/
-// https://www.javatpoint.com/jquery-ui-sortable
-// https://api.jqueryui.com/sortable/
-
 function setupFileMove(Caller) {
   if (Caller == "Codex") {
     $(".codexWrapper").sortable({
@@ -260,7 +256,7 @@ function setupFileMove(Caller) {
     $(".ListContentTable").sortable({
       items: "tr[nano-path]",                 // YES
       connectWith: ".ListContentTable",       // YES
-      containment: "#fileContainer",          // YES
+      containment: ".fileContainer",          // YES
       delay: 150,                             // Maybe
       // axis: "y",                              Maybe
       cursor: "move",                         // Likely
@@ -277,5 +273,5 @@ function setupFileMove(Caller) {
       // stop: function (event, ui) { ui.item.toggleClass("LCTHighlight"); },
     })
   }
-  // $("#fileContainer").sortable();
+  // $(".fileContainer").sortable();
 }

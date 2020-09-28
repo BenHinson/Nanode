@@ -10,7 +10,7 @@ $("#directoryControlNewFile").on("click", function() { displayCentralActionMain(
 $("#directoryControlNewFolder").on("click", function() { displayCentralActionMain("New Folder", "Create") });
 $("#returnToHomepage").on("click", function() { directoryPath = 'Homepage'; socket.emit('directoryLocation', {directoryPath}) })
 $("#directoryControlRefresh").mousedown( function() { directoryRefresh(); } )
-$("#fileInformationSlideBar").on("click", function() { displayFileInformation(); })
+$(".fileInformationSlideBar").on("click", function() { displayFileInformation(); })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,15 +24,15 @@ function displayFileInformation(state) {
   if (!fileInformationOpen || state == false) {
     $(".DLCRight")[0].style.right = "";
     $(".fileInformation")[0].style.right = "";
-    $("#fileInformationSlideBar").css({ "transform": "rotate(90deg)", "right": "245px"})
-    $("#fileInformationSlideBar")[0].title = "Hide Details and Upload Bar";
-    $("#fileContainer")[0].style.width = "calc(100% - 270px)";
+    $(".fileInformationSlideBar").css({ "transform": "rotate(90deg)", "right": "216px"})
+    $(".fileInformationSlideBar")[0].title = "Hide Details and Upload Bar";
+    $(".fileContainer")[0].style.width = "calc(100% - 250px)";
   } else {
     $(".DLCRight")[0].style.right = "50px";
-    $(".fileInformation")[0].style.right = "-220px";
-    $("#fileInformationSlideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
-    $("#fileInformationSlideBar")[0].title = "Display Details and Upload Bar";
-    $("#fileContainer")[0].style.width = "calc(100% - 25px)";
+    $(".fileInformation")[0].style.right = "-240px";
+    $(".fileInformationSlideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
+    $(".fileInformationSlideBar")[0].title = "Display Details and Upload Bar";
+    $(".fileContainer")[0].style.width = "calc(100% - 15px)";
   }
   fileInformationOpen = !fileInformationOpen;
 }
@@ -42,7 +42,7 @@ $(".toggleDetailsBtn").on("click", function() {
   let currDetails = displayDetails();
   currDetails = !currDetails;
   localStorage.setItem('displayDetails', currDetails);
-  currDetails == true ? $('.toggleDetailsBtn')[0].style.color = UserSettings["HighL"] : $('.toggleDetailsBtn')[0].style.color = "#5b5b5f";
+  currDetails == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
 })
 
 
@@ -206,8 +206,7 @@ function cancelUploadDownloadItems() {
   clientStatus("CS9", "False", 600);
   ToBeUploaded = [];
   uploadStatus = false;
-  $("#uploadItemCount")[0].innerText = "Item Count";
-  $("#uploadSizeCount")[0].innerText = "Upload Max - 100 MB";
+  $(".uploadNumber")[0].innerText = "Max - 100 MB";
   $("#uploadStartStopButton")[0].innerText = "Upload";
   $("#uploadStartStopButton")[0].title = "Drag and Drop or Select Items to Upload";
   $("#uploadClearItems")[0].style.cursor = "not-allowed";
@@ -237,8 +236,9 @@ var fileUpload = $("#fileUploadBtn, #folderUploadBtn");
       uploadFileDir(file, "");
     })
     totalItems = this.files.length;
-    $("#uploadItemCount")[0].innerText = totalItems + " Items";
-    $("#uploadSizeCount")[0].innerText = (totalSize / 1048576).toFixed(2) + " MB";
+    $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
+    // $("#uploadItemCount")[0].innerText = totalItems + " Items";
+    // $("#uploadSizeCount")[0].innerText = (totalSize / 1048576).toFixed(2) + " MB";
   }
 })
 
@@ -288,8 +288,9 @@ function traverseFileTree(path) {
   	path.file(function(file) {
       uploadFileDir(file, path)
     	totalSize += file.size;
-      $("#UpDownOverlayItems")[0].innerText += file.name+"\n";
-    	$("#uploadSizeCount")[0].innerText = (totalSize / 1048576).toFixed(2) + " MB";
+      $("#UpDownOverlayItems")[0].innerText += file.name+" - "+file.size+"\n";
+    	// $("#uploadSizeCount")[0].innerText = (totalSize / 1048576).toFixed(2) + " MB";
+      $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
     });
   }
   else if (path.isDirectory) {
@@ -300,7 +301,7 @@ function traverseFileTree(path) {
     dirReader.readEntries(function(entries) {
       for (var i=0; i<entries.length; i++) {
         totalItems++;
-        $("#uploadItemCount")[0].innerText = totalItems + " Items";
+        // $(".uploadNumber")[0].innerText = totalItems + " Items";
         traverseFileTree(entries[i], path);
       }
     });
