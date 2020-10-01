@@ -242,7 +242,8 @@ function UploadDetailsAndEmitter(CodexWanted, file, itemNumber) {
 // =============================================================================================
 
 function loadBinPage() {
-  socket.emit('CallBinContent');
+  let emitAction = "Call";
+  socket.emit('Bin', {emitAction});
   clientStatus("CS7", "Ok", 400);
 }
 function readBin(binContent) {
@@ -251,10 +252,15 @@ function readBin(binContent) {
     let binSize = 0;
     binContent.forEach(function(Item, index) {
       binSize += Item[4];
-      $(".binWrapper").prepend("<div> <h3>"+Item[1]+"</h3> <h4>Deleted: "+dateFormater(Item[3])+"</h4> <h4>Type: "+ItemChecker(Item[2])+"</h4> <h4>Size: "+convertSize(Item[4])+"</h4> </div>")
+      $(".binWrapper").prepend("<div nano-path="+Item[0]+"> <h6 class='binActBtns' act='Rescue'>Rescue</h6> <h3>"+Item[1]+"</h3> <h4>Deleted: "+dateFormater(Item[3])+"</h4> <h4>"+Item[2].mimeT+"</h4> <h4>"+convertSize(Item[4])+"</h4> <h5 class='binActBtns' act='Delete'>Delete</h5> </div>")
     })
+    $(".BinDetails")[0].innerHTML = "Total ⌥ "+binContent.length+" Items @ "+convertSize(binSize);
 
-    $(".BinDetails")[0].innerHTML = "Total ⌥ "+convertSize(binSize)+" | Deleted ⌥ "+binContent.length;
+    $(".binActBtns").on("click", function(e) {
+      let emitAction = e.currentTarget.getAttribute('act');
+      let binItem = e.currentTarget.parentNode.getAttribute('nano-path')
+      socket.emit('Bin', {emitAction, binItem})
+    })
 }
 
 // =============================================================================================

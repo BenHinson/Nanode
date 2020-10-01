@@ -1,26 +1,5 @@
 :root {
-  --highlight-color:  #8a97c5;
-}
-
-#EXAMPLE {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  resize: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-image: url(https://drive.nanode.one/assets/Arrow_Right_Black.svg);
-  background-position: center;
-}
-
-#EXAMPLE:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.dark-theme #EXAMPLE {
-  letter-spacing: 1px;
-  font-weight: 200;
+  --highlight-color:  #18ec58;
 }
 
 .pageBlockOut {
@@ -637,7 +616,7 @@
   color: #f1f1f1;
 }
 
-.BinContainer h5 {
+.BinContainer > h5 {
   position: absolute;
   top: 88px;
   color: #505058;
@@ -648,38 +627,39 @@
   font-family: monospace;
 }
 
-.dark-theme .BinContainer h5 {
+.dark-theme .BinContainer > h5 {
   color: #c8c8dc;
 }
 
-.BinContainer h5.BinInfo {
+.BinContainer > h5.BinInfo {
   top: 58px;
   font-size: 14px;
   opacity: 1;
 }
 
 .BinContainer .binWrapper > div {
+  position: relative;
   height: 80px;
   width: 100%;
   margin: 15px 0;
-  padding: 0 8px;
+  padding: 0 24px;
   border-radius: 8px;
   color: #141416;
   background: #f8f8f8;
-  border-left: 1px solid #000;
-  -webkit-transition: border-left 600ms;
-  transition: border-left 600ms;
+  -webkit-transition: padding 600ms;
+  transition: padding 600ms;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
 }
 
 .dark-theme .BinContainer .binWrapper > div {
   color: #f6f6f6;
   background: #141416;
-  border-left: 1px solid #f1f1f1;
 }
 
 .BinContainer .binWrapper > div:hover {
-  border-left: 10px solid #3eb916;
+  padding: 0 36px;
 }
 
 .BinContainer .binWrapper > div h3 {
@@ -697,6 +677,62 @@
   font-weight: 100;
   opacity: 0.6;
   font-size: 13px;
+}
+
+.BinContainer .binWrapper > div .binActBtns {
+  position: absolute;
+  height: 16px;
+  width: 80px;
+  top: 32px;
+  -webkit-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+  text-align: center;
+  font-variant: all-small-caps;
+  font-weight: 200;
+  letter-spacing: 1px;
+  font-family: inter, sans-serif;
+  line-height: 14px;
+  -webkit-transition: all 300ms;
+  transition: all 300ms;
+  background: #f8f8f8;
+}
+
+.dark-theme .BinContainer .binWrapper > div .binActBtns {
+  background: #141416;
+}
+
+.BinContainer .binWrapper > div h5 {
+  right: -30px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  -webkit-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+  border-top: 1px solid #b50c0c;
+}
+
+.BinContainer .binWrapper > div h5:hover {
+  height: 32px;
+  top: 24px;
+  line-height: 25px;
+  background: #b50c0c !important;
+}
+
+.BinContainer .binWrapper > div h6 {
+  font-size: 14px;
+  top: 31px;
+  line-height: 18px;
+  left: -32px;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  background: #3eb916 !important;
+}
+
+.BinContainer .binWrapper > div h6:hover {
+  height: 28px;
+  top: 26px;
+  line-height: 28px;
+  -webkit-transform: rotate(-90deg) translateY(8px);
+          transform: rotate(-90deg) translateY(8px);
 }
 
 .SettingsContainer .settingsWrapper {

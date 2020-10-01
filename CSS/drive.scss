@@ -1,13 +1,10 @@
 $darkTheme: (
-  dark0: rgb(15, 15, 15),
-  dark1: #202225,
   dark2: #292b2f,
   dark3: #36393f,
   dark4: #2f3136,
   dark5: rgb(60, 63, 70),
   dark6: rgb(75, 80, 90),
   dark7: rgb(91, 97, 109),
-  dark8: #b9bbbe,
 );
 $lightTheme: (
   light1: rgb(250, 250, 250),
@@ -16,8 +13,6 @@ $lightTheme: (
   light4: rgb(220, 220, 220),
   light5: rgb(190, 190, 190),
   light6: rgb(180, 180, 180),
-  light7: rgb(170, 170, 170),
-  light8: rgb(150, 150, 150)
 );
 
 $colorTheme: (
@@ -25,7 +20,8 @@ $colorTheme: (
 );
 
 :root {
-  --highlight-color:  #8a97c5;
+  // --highlight-color:  #8a97c5;
+  --highlight-color:  #18ec58;
 }
 
 

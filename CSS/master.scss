@@ -1,5 +1,10 @@
 $highlightColor: #8a97c5;
 
+:root {
+  // --highlight-color:  var(--highlight-color);
+  --highlight-color:  #18ec58;
+}
+
 
 * {
   padding: 0;
@@ -177,14 +182,14 @@ $cubeWidth: 400px;
   background-color: rgba(0,0,0,0.05);
   border: 1px solid rgba(0,0,0,0.3);
   transition: border-color .2s ease-in-out;
-  border-bottom: 2px solid $highlightColor;
+  border-bottom: 2px solid var(--highlight-color);
   border-radius: 3px;
   .dark-theme & {
     color: #fff;
   }
 }
 .loginTextInput:focus {
-  border: 1px solid $highlightColor;
+  border: 1px solid var(--highlight-color);
   background-color: rgba(0,0,0,0.1);
   .dark-theme & {
     background-color: rgba(0,0,0,0.2);
@@ -202,11 +207,12 @@ $cubeWidth: 400px;
   border: none;
   border-radius: 5px;
   color: #fff;
-  background-color: $highlightColor;
-  transition: background-color .2s ease-in-out;
+  background-color: transparent;
+  border: 1px solid var(--highlight-color);
+  transition: background-color 400ms ease-in-out;
   cursor: pointer;
   &:hover {
-    background-color: #7883a7;
+    background-color: var(--highlight-color);
   }
 }
 

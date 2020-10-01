@@ -193,7 +193,7 @@ function generateBlockFolder(isHomepage, Item, index, Parent) {
       Item_Img.setAttribute('class', "Item_Image");
       Item_Img.style.cssText = "width: 80px; left: calc(50% - 40px)";
       if (ItemType == "text") {
-        Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/DocumentFile.svg";
+        Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/TextFile.svg";
       } else if (ItemType == "audio") {
         Item_Img.src = "https://drive.Nanode.one/assets/FileIcons/AudioFile.svg";
         Item_Img.style.cssText = "width: 70px; left: calc(50% - 35px)";
@@ -221,34 +221,20 @@ function viewHomepageContentAsList() {
   $(".fileContainer").empty();
   for (i=0; i<pageContent.length; i++) {
 
-    // $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
+    $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
+    let Table = $('.ListContentTable')[i];
 
-    let ContentContainer = document.createElement('div');
-    ContentContainer.setAttribute("class", "ListContentContainer");
-    ContentContainer.setAttribute("rc", "Homepage_Span");
-    $(".fileContainer")[0].appendChild(ContentContainer);
-        
-    let ListTitle = document.createElement('a');
-    ListTitle.setAttribute("contenteditable", "true");
-    ListTitle.innerText = pageContent[i][0];
-    ContentContainer.appendChild(ListTitle);
-
-    ListContentTable = document.createElement('table');
-    ListContentTable.setAttribute("class", "ListContentTable");
-    ContentContainer.appendChild(ListContentTable);
-
-    rowData = ["", " ", "Type", "Modified", "Size", ""];
-    addTableRow("th", rowData);
+    let rowData = ["", " ", "Type", "Modified", "Size", ""];
+    addTableRow(Table, "th", rowData);
 
     pageContent[i][1].forEach(function(spanItem, index) {
-      let ItemType = ItemChecker(spanItem[2]);
-      rowData = ["", spanItem[0], ItemType, dateFormater(spanItem[3]), spanItem[4], pageContent[i][0]+"\\"+spanItem[0], spanItem[6]]
-      if (ItemType != "folder") { rowData[0] = pageContent[i][1][index][2] }
-      addTableRow("td", rowData, index, spanItem, spanItem[5].Color);
+      rowData = ["", spanItem[0], ItemChecker(spanItem[2]), dateFormater(spanItem[3]), spanItem[4], pageContent[i][0]+"\\"+spanItem[0], spanItem[6]]
+      if (ItemChecker(spanItem[2]) != "folder") { rowData[0] = pageContent[i][1][index][2] }
+      addTableRow(Table, "td", rowData, index, spanItem, spanItem[5].Color);
     })
 
-    $($("tr[type='folder']", ListContentTable).get().reverse()).each(function(i, folder) {
-      $(folder).insertAfter( ListContentTable.children[0]);
+    $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
+      $(folder).insertAfter( Table.children[0]);
     })
   }
 
@@ -270,7 +256,7 @@ function viewContentAsList() {
   ContentContainer.appendChild(ListContentTable);
   
   rowData = ["", " ", "Type", "Modified", "Size", ""];
-  addTableRow("th", rowData);
+  addTableRow(ListContentTable, "th", rowData);
   
   if (pageContent[0][1] && pageContent[0][1].length < 1) {setDirectoryToThis(); return;}
 
@@ -278,7 +264,7 @@ function viewContentAsList() {
     let ItemType = ItemChecker(Item[2]);
     rowData = ["", Item[0], ItemType, Item[3], Item[4], Item[1], Item[6]]
     if (ItemType != "folder") { rowData[0] = Item[3] }
-    addTableRow("td", rowData, index, Item, Item[5].Color);
+    addTableRow(ListContentTable, "td", rowData, index, Item, Item[5].Color);
   })
 
   $("div[type='folder']").each(function(i, folder) {
@@ -288,15 +274,18 @@ function viewContentAsList() {
   clientStatus("CS7", "Ok", 400);
 }
 
-function addTableRow(type, data, index, Item, Color) {
-  var tableRow = document.createElement('tr');
+function addTableRow(Table, type, data, index, Item, Color) {
+  let tableRow = document.createElement('tr');
   if (type == "td" && data[5]) {
     tableRow.setAttribute("directory", data[5])
     tableRow.setAttribute("onclick", "clickedItem(this)");
     tableRow.setAttribute("type", data[2]);
     tableRow.setAttribute("Nano-Path", data.pop())
+    tableRow.setAttribute("rc", (data[2] == "folder" ? "Nano_Folder" : "Nano_File")  )
+    tableRow.setAttribute("rcOSP", "TD");
     tableRow.title = data[5];
   }
+
   for (q=0; q<data.length - 1; q++) {
     let tableInformation = document.createElement(type);
     if (q != 0) { tableInformation.innerText = data[q] == "" ? "-" : isNaN(data[q].toString().charAt(0)) ? data[q].charAt(0).toUpperCase() + data[q].slice(1): data[q]; }
@@ -307,30 +296,18 @@ function addTableRow(type, data, index, Item, Color) {
       let tableImage = document.createElement('img');
       tableImage.setAttribute('loading', "lazy");
       tableImage.height = "32"; tableImage.width = "32";
-      if (data[2] != "folder") {
-        tableRow.setAttribute("rc", "Nano_File");
-        if (data[2] == "image") {
-          tableImage.src = '/storage/'+Item[6]+"?h=32&w=32";
-        } else if (data[2] == "text") {
-          tableImage.src =  "https://drive.Nanode.one/assets/FileIcons/DocumentFile.svg";
-        } else if (data[2] == 'audio') {
-          tableImage.src =  "https://drive.Nanode.one/assets/FileIcons/AudioFile.svg";
-        } else if (data[2] == 'video') {
-          tableImage.src = "https://drive.Nanode.one/assets/FileIcons/VideoFile.svg";
-        } else {
-          tableImage.src = "https://drive.Nanode.one/assets/FileIcons/File.svg";
-        }
-      } else {
-        tableImage.src = "https://drive.Nanode.one/assets/FileIcons/Folder.svg";
-        tableRow.setAttribute("rc", "Nano_Folder");
-      }
-      tableRow.setAttribute("rcOSP", "TD");
+
+      if (data[2] == "folder")        tableImage.src = "/assets/FileIcons/Folder.svg"
+      else if (data[2] == "unknown")  tableImage.src = "/assets/FileIcons/File.svg";
+      else if (data[2] == "image")    tableImage.src = '/storage/'+Item[6]+"?h=32&w=32";
+      else                            tableImage.src = "/assets/FileIcons/"+data[2]+"File.svg";
+      
       tableInformation.appendChild(tableImage);
     }
     tableRow.appendChild(tableInformation);
   }
   if (Color) { tableRow.style.boxShadow = Color+" -3px 0px"}
-  ListContentTable.appendChild(tableRow);
+  Table.appendChild(tableRow);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -344,8 +321,8 @@ function displayConfirmCancelBox(Action, Title, Accept, Decline, Text) {
   BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<p class='centralDirectoryInfoText'>"+Text+"</p> <div class='AMAccept'>"+Accept+"</div> <div class='AMCancel'>"+Decline+"</div> </div> "
   document.body.appendChild(BlockOut);
 
-  ActionMainCancel.addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
-  ActionMainAccept.addEventListener("click", function() {
+  $(".AMCancel")[0].addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
+  $(".AMAccept")[0].addEventListener("click", function() {
     if (Action == "Delete") {
       if (!RCElement.hasAttribute('Nano-path') && RCElement.getAttribute('rc').includes('Span')) {
         let TestSpanName = RCElement.childNodes[0].innerText;
@@ -543,7 +520,7 @@ function callFolderInformation(selected) {
   }
 }
 
-TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By"}
+TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
 
 function displayFolderInformation(ReturnedInformation) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS5", "User", 600);
@@ -555,7 +532,7 @@ function displayFolderInformation(ReturnedInformation) {
 
   itemInfo.innerHTML = "<tr><td>Size</td><td>"+ISize+"</td></tr> <tr><td>Type</td><td>"+IType+"</td></tr> <tr><td>Secured</td><td>"+ReturnedInformation[6]+"</td></tr> ";
 
-  for (var key in ReturnedInformation[3]) if (ReturnedInformation[3][key] != "") {itemInfo.innerHTML += "<tr><td>"+TimeKey[key]+"</td><td>"+dateFormater(ReturnedInformation[3][key])+"</td></tr>" }
+  for (var key in ReturnedInformation[3]) if (ReturnedInformation[3][key] != "" && key != "DeleT") {itemInfo.innerHTML += "<tr><td>"+TimeKey[key]+"</td><td>"+dateFormater(ReturnedInformation[3][key])+"</td></tr>" }
 
   $('.fileInformationContent')[0].appendChild(itemInfo);
 }
@@ -782,6 +759,7 @@ function displayImageLarge(selected, table) {
 
 function displayTextContent(selected, table) {
   clientStatus("CS7", "Wait", 500); clientStatus("CS8", "User"); clientStatus("CS4", "Wait", 400);
+  
   var BlockOut = document.createElement('div');
   BlockOut.setAttribute('class', "BlockOut");
   document.body.appendChild(BlockOut);

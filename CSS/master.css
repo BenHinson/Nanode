@@ -1,3 +1,7 @@
+:root {
+  --highlight-color:  #18ec58;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -219,7 +223,7 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.3);
   -webkit-transition: border-color .2s ease-in-out;
   transition: border-color .2s ease-in-out;
-  border-bottom: 2px solid #8a97c5;
+  border-bottom: 2px solid var(--highlight-color);
   border-radius: 3px;
 }
 
@@ -228,7 +232,7 @@ body {
 }
 
 .loginTextInput:focus {
-  border: 1px solid #8a97c5;
+  border: 1px solid var(--highlight-color);
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -250,14 +254,15 @@ body {
   border: none;
   border-radius: 5px;
   color: #fff;
-  background-color: #8a97c5;
-  -webkit-transition: background-color .2s ease-in-out;
-  transition: background-color .2s ease-in-out;
+  background-color: transparent;
+  border: 1px solid var(--highlight-color);
+  -webkit-transition: background-color 400ms ease-in-out;
+  transition: background-color 400ms ease-in-out;
   cursor: pointer;
 }
 
 .loginButtonInput:hover {
-  background-color: #7883a7;
+  background-color: var(--highlight-color);
 }
 
 .forgotPasswordBtn {

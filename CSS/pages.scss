@@ -1,22 +1,6 @@
 :root {
-  --highlight-color:  #8a97c5;
-}
-
-#EXAMPLE {
-  display: flex;
-  resize: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-image: url(https://drive.nanode.one/assets/Arrow_Right_Black.svg);
-  background-position: center;
-  &:hover {
-    opacity: 1;
-    background: rgba(0,0,0,0.1);
-  }
-  .dark-theme & {
-    letter-spacing: 1px;
-    font-weight: 200;
-  }
+  // --highlight-color:  #8a97c5;
+  --highlight-color:  #18ec58;
 }
 
 
@@ -544,7 +528,7 @@
       color: #f1f1f1;
     }
   }
-  & h5 {
+  > h5 {
     position: absolute;
     top: 88px;
     color: #505058;
@@ -563,25 +547,27 @@
     }
   }
   & .binWrapper > div {
+    position: relative;
     height: 80px;
     width: 100%;
     margin: 15px 0;
-    padding: 0 8px;
+    padding: 0 24px;
     border-radius: 8px;
     color: #141416;
     background: #f8f8f8;
-    border-left: 1px solid #000;
-    transition: border-left 600ms;
+    transition: padding 600ms;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: pointer;
 
     .dark-theme & {
       color: #f6f6f6;
       background: #141416;
-      border-left: 1px solid #f1f1f1;
     }
     &:hover {
-      border-left: 10px solid #3eb916;
+      padding: 0 36px;
     }
+
     & h3 {
       color: #202020;
       font-size: 16px;
@@ -595,6 +581,56 @@
       font-weight: 100;
       opacity: 0.6;
       font-size: 13px;
+    }
+
+    .binActBtns {
+      position: absolute;
+      height: 16px;
+      width: 80px;
+      top: 32px;
+      transform: rotate(-90deg);
+
+      text-align: center;
+      font-variant: all-small-caps;
+      font-weight: 200;
+      letter-spacing: 1px;
+      font-family: inter, sans-serif;
+      line-height: 14px;
+      
+      transition: all 300ms;
+
+      background: #f8f8f8;
+      .dark-theme & {
+        background: #141416;
+      }
+    }
+    & h5 {
+      right: -30px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+      transform: rotate(-90deg);
+      border-top: 1px solid #b50c0c;
+      &:hover {
+        height: 32px;
+        top: 24px;
+        line-height: 25px;
+        background: #b50c0c !important;
+      }
+    }
+    & h6 {
+      font-size: 14px;
+      top: 31px;
+      line-height: 18px;
+      left: -32px;
+      border-top-right-radius: 8px;
+      border-top-left-radius: 8px;
+      background: #3eb916 !important;
+      &:hover {
+        height: 28px;
+        top: 26px;
+        line-height: 28px;
+        transform: rotate(-90deg) translateY(8px);
+      }
     }
   }
 }
