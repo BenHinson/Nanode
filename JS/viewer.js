@@ -464,7 +464,7 @@ function chooseSpanDropdownListener() {
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-function callFolderInformation(selected) {
+function callItemInformation(selected) {
   if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
   if (displayDetails()) {
     ItemNanoPath = selected.getAttribute('Nano-path');
@@ -522,7 +522,7 @@ function callFolderInformation(selected) {
 
 TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
 
-function displayFolderInformation(ReturnedInformation) {
+function displayItemInformation(ReturnedInformation) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS5", "User", 600);
   let itemInfo = document.createElement('table');
   itemInfo.setAttribute('class', "itemInformation itemInformationBlock itemInformationTable");
@@ -545,7 +545,7 @@ function displayFolderInformation(ReturnedInformation) {
 function displaySecurityEntry(itemSecurity) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS6", "False");
 
-  if (!fileInformationOpen) {displayFileInformation(); }
+  if (!fileInformationOpen) {displayItemInformation(); }
   $(".fileInformationContent").empty();
 
   for (i=0; i<itemSecurity.length; i++) {

@@ -2,10 +2,31 @@
   <h1>Change Log</h1>
   
   <h2>September 2020</h2>
+    <h4>General</h4>
+    <ul>
+      <li><u>Performance and Cleanup</u> - Server and Client Side cleanup and code reductions. Minified CSS/HTML/JS Files to improve load times. Multiple functions converted to asynchronous. Removal of unused classes and instances of identical ID/Class on elements.</li>
+      <li><u>Startup</u> - Added 'General' span underneath Master Folders. This span <h5>cannot be renamed</h5>.</li>
+      <li><u>Bug Fixed</u> - where the initial creation of the master folders would be run on each login, changing pointers to new empty folders. (didnt remove old ones from user-file)</li>
+    </ul>
+
+    <h4>Panels</h4>
+    <span>Further work on the left-bar panels, including a standardized design and layout, with animated hot-switching between.</span>
+    <div>Panels: <h6>Settings, Bin and Codex are almost fully complete.</h6></div>
+    <ul>
+      <li>Settings - Still to be Added: (Bin Count, Timezones, Locked Icons, Last Accessed, Starting Directory, Lock all Links) All others functional.</li>
+      <li>Bin - Functional, can view deleted <h6>single</h6> files and either permanantly delete or retrieve them. Still no limit on size or items.</li>
+      <li>Codex - Added audio player for uploaded audio files using a much simpler, efficient system than Alpharium via streams from file urls. Only volume left.</li>
+      <li>Codex - Added Folders and Sub-directories to help sort and order files in the codex. Can view all sub-items in folders. Works using recursion.</li>
+    </ul>
+
     <h4>Development Portal</h4>
     <span>Development Portal Added, with pages currently being completed and a standardized layout finalized.</span>
+
     <h4>Drag and Drop</h4>
-    <span>Moving Files around is in early development, and stands as a purely cosmetic, temporary layout until a refresh. Continued development of this is planned, as well as it to work for both List and Block views of the file system. Mobile integration is being looked into. This is being done using, <a href="//javatpoint.com/jquery-ui-sortable">jQueryUI Sortable</a> currently.</span>
+    <span>The movement of files and folders is being worked on, with most server-side systems in place and functional. This is being done using, <a href="//javatpoint.com/jquery-ui-sortable">jQueryUI Sortable</a> </span>
+    <span>Current implementation is only on codex for moving files into and back out-of folders. (No folder movement or order change)</span>
+    <span>No current mobile drag and drop at the moment, and it won't be looked into until after the desktop version is finalized and implemented.</span>
+
 
   <h2>August 2020</h2>
     <h4>Alpharium to Nanode</h4>
@@ -20,7 +41,7 @@
     <span>Click download to start the download of the files. <h3>Note: Duplicates of a file are not downloaded.</h3> These files will be downloaded as a Zip. To Un-Zip the file and retreive your items:</span> <code>Find the File Location, Right-Click > Extract Here. This creates folder: 'Download'. Open to view your downloaded items.</code>
     <span>To read more about how the Download process works, Explore <h5>Development Portal > Calls > Read > Downloads</h5></span>
 
-    <h4>Additional Drive Pages</h4>
+    <h4>Additional Drive Pages - Panels</h4>
     <span>This update added the addition of differing Pages. <h3>Note: Being a Major Features, these pages are undergoing development at different stages.</h3></span>
     <span>Pages: Contacts, Panels, Codex, Bin and Settings. Have been added, along with the selector to access them. These pages heavily link into the future of Nanode and what our goal is.</span>
     <ul>

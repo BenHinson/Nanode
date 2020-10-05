@@ -9,7 +9,7 @@ RightClickObjectMenu = {
     "New File": [{"Command": "displayCentralDirectoryManager", 'Var1':'New File', 'Var2':'Create'}], 
     "Refresh": [{"Command": "directoryRefresh"}],
     "Nano_SPLIT_1": "", 
-    "RC_VAR_Details": [{"Command": "displayFileInformation"}],
+    "RC_VAR_Details": [{"Command": "displayItemInformation"}],
     "RC_VAR_Switch_View": [{"Command": "toggleContentView"}], 
     "Change Theme": [{'Command':'changeTheme'}],
     "Nano_SPLIT_2": "", 
@@ -23,7 +23,7 @@ RightClickObjectMenu = {
   },
   "Nano_Folder" : {
     "Open": [{"Command": "ItemActions"}],
-    "View Details": [{"Command": "displayFileInformation", "Var1": false}, {"Command": "callFolderInformation", "Var1": "RCElement"}],
+    "View Details": [{"Command": "callItemInformation", "Var1": "RCElement"}],
     "Security": "",
     "Nano_SPLIT_1": "",
     "Move To": "",
@@ -37,7 +37,7 @@ RightClickObjectMenu = {
   },
   "Nano_File" : {
     "Open": [{"Command": "ItemActions"}],
-    "View Details": [{"Command": "displayFileInformation", "Var1": false}, {"Command": "callFolderInformation", "Var1": "RCElement"}],
+    "View Details": [{"Command": "callItemInformation", "Var1": "RCElement"}],
     "Security": "",
     "Nano_SPLIT_1": "",
     "Copy To": "",
@@ -51,6 +51,12 @@ RightClickObjectMenu = {
     "Share": "",
     "Download": [{"Command": "displayUploadDownloadOverlay", "Var1": "Download", "Var2": "ContextMenu"}],
   },
+
+  "Codex_Item" : {
+    "Open": [{"Command": "codexItemAction", "Var1": "Click", "Var2": "RCElement"}],
+    "Rename": [{"Command": "codexItemAction", "Var1": "Rename", "Var2": "RCElement"}],
+    "Delete" : [{"Command": "codexItemAction", "Var1": "Delete", "Var2": "RCElement"}]
+  }
 }
 
 document.addEventListener("contextmenu", function(e) {
@@ -90,7 +96,7 @@ document.addEventListener("contextmenu", function(e) {
     $("#rightClickContainer").fadeIn(100, startFocusOut());
 
     $("#rightClickContainer > li").unbind();
-    $("#rightClickContainer > li").click(function(e) {
+    $("#rightClickContainer > li").not( $(".Nano_SPLIT") ).click(function(e) {
       let RCAction = e.currentTarget.getAttribute("RCAction");
       RCAction = RightClickObjectMenu[menuName][RCAction];
       window[RCAction[0].Command](RCAction[0].Var1, RCAction[0].Var2, RCAction[0].Var3, RCAction[0].Var4, RCAction[0].Var5);

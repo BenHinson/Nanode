@@ -10,7 +10,7 @@ $("#directoryControlNewFile").on("click", function() { displayCentralActionMain(
 $("#directoryControlNewFolder").on("click", function() { displayCentralActionMain("New Folder", "Create") });
 $("#returnToHomepage").on("click", function() { directoryPath = 'Homepage'; socket.emit('directoryLocation', {directoryPath}) })
 $("#directoryControlRefresh").mousedown( function() { directoryRefresh(); } )
-$(".fileInformationSlideBar").on("click", function() { displayFileInformation(); })
+$(".fileInformationSlideBar").on("click", function() { displayItemInformation(); })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ function directoryRefresh() {
   clientStatus("CS2", "True", 400);clientStatus("CS4", "Wait", 500);
 }
 
-function displayFileInformation(state) {
+function displayItemInformation(state) {
   if (!fileInformationOpen || state == false) {
     $(".DLCRight")[0].style.right = "";
     $(".fileInformation")[0].style.right = "";
@@ -265,7 +265,7 @@ function unhighlight(e) {dropArea.classList.remove('highlight')}
 
 dropArea.addEventListener("drop", function(e) {
   if (!fileInformationOpen || $(".fileInformation")[0].style.width < 1) {
-    displayFileInformation(false);
+    displayItemInformation(false);
   }
   displayUploadDownloadOverlay("Upload");
   $("#UpDownOverlayItems")[0].innerText = "";

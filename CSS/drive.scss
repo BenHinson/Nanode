@@ -361,14 +361,15 @@ body {
   }
 }
 
-///////////////////////////////////////////////////////////////// LISTCONTENT
+///////////////////////////////////////////////////////////////// LISTCONTENTa
+
 .ListContentContainer {
   width: 100%;
-  margin: 40px 0 0 0;
+  margin: 15px 0 0 0;
   border-radius: 5px;
   & a {
     position: absolute;
-    margin: -20px 0 0 0;
+    margin: 10px 0 0 0;
     border-radius: 3px;
     padding: 0 12px;
     font-size: 16px;
@@ -389,7 +390,7 @@ body {
   & table {
     position: relative;
     width: 100%;
-    margin: 8px 0 0 0;
+    margin: 35px 0 0 0;
     color: map-get($darkTheme, dark2);
     background: transparent;
     border-radius: 5px;
@@ -1330,24 +1331,29 @@ body {
     font-family: 'Segoe UI';
     list-style: none;
     padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
-    &.nano_SPLIT {
-      margin: 4px;
+
+    &.Nano_SPLIT {
+      margin: 6px;
       padding: 0;
-      cursor: auto;
+      opacity: 0.4;
       border-top: 1px solid black;
+      cursor: auto;
       .dark-theme & {
         border-top: 1px solid whitesmoke;
       }
     }
   }
-}
-#rightClickContainer li:not(.nano_SPLIT):hover {
-  background: #d3d3d3;
-  .dark-theme & {
-    background: #6b779f;
+  :not(.nano_SPLIT):hover {
+    background: #d3d3d3;
+    .dark-theme & {
+      background: #6b779f;
+      background: rgba(0, 0, 0, 0.6);
+    }
   }
 }
+
 
 
 

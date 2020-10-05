@@ -6,6 +6,8 @@ previousDirectorys = [];
 currentViewType = '';
 UserSettings = {};
 
+// document.getElementsByClassName("Sec2")[0].scrollIntoView({behavior: 'smooth', block: 'center'}); Possible Usage Somewhere
+
 //////////////////////////////////////////
 //////////////////////////////////////////
 
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('ReturnFolderInformation', function(ReturnedInformation) {
       clientStatus("CS3", "True", 600);
-      displayFolderInformation(ReturnedInformation);
+      displayItemInformation(ReturnedInformation);
     })
     socket.on('ShareableLink', function(shareableLink) {
       clientStatus("CS3", "True", 500);
@@ -158,7 +160,7 @@ function clickedItem(selected, fromRC) {
       }
       selected.setAttribute('selected', true)
       selected.style.background = "rgba(118,128,138,0.5)";
-      callFolderInformation(selected);
+      callItemInformation(selected);
       clientStatus("CS5", "User");
     } else {
       selected.removeAttribute('selected');
@@ -252,26 +254,73 @@ function setupFileMove(Caller) {
     $(".ContentContainer").sortable({
       items: "div[nano-path]",
     })
-  } else if (UserSettings.ViewT == 1) {
+  }
+
+  else if (UserSettings.ViewT == 1) {
     $(".ListContentTable").sortable({
-      items: "tr[nano-path]",                 // YES
-      connectWith: ".ListContentTable",       // YES
-      containment: ".fileContainer",          // YES
-      delay: 150,                             // Maybe
-      // axis: "y",                              Maybe
-      cursor: "move",                         // Likely
-      
+      items: "tr[nano-path]",
+      connectWith: ".ListContentTable",
+      containment: "#databaseBackgroundMain",
+      delay: 150,
+      cursor: "move",
       tolerance: 'pointer',
-      
-      // forceHelperSize: true,
+      placeholder: "listItem-Placeholder",    // TO BE MADE
       forcePlaceholderSize: true,
       helper: "clone",
+
+      start: function() {
+
+        
+        // cancel: ".codexItemFolder",
+        // fixed: ".codexItemFolder",
+
+        $('tr[type=folder]').each(function() {
+            $(this).data('pos', $(this).index());
+        });
+      },
+      // change: function(e) {
+      //   toChange = $(this);
+      //   firstItem = $('<div></div>').prependTo(this);
+      //   $('.codexItemFolder').detach().each(function() {
+      //       var target = $(this).data('pos');
+      //       $(this).insertAfter($('div', toChange).eq(target));
+      //   });
+      //   firstItem.remove();
+      // }
+
+    }).disableSelection();
+
       
-      placeholder: "placeholder",
-      // placeholder: '<tr class="LCTHighlight></tr>',
-      // start: function (event, ui) { ui.item.toggleClass("LCTHighlight"); },
-      // stop: function (event, ui) { ui.item.toggleClass("LCTHighlight"); },
-    })
+
+    // $("div > .codexItemFolder").droppable({
+    //   accept: ".codexItem",
+    //   hoverClass: "codexItem-Hover",
+    //   drop: function(e, droppedItem) {
+    //     let dropItem = droppedItem.draggable[0];
+    //     dropItem.remove();
+    //     if ($(e.target).hasClass('codexItemFolder')) {
+    //       let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path')}
+    //       socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
+    //     }
+    //   },
+    // })
+
+    // $(".CC_Directory").droppable({
+    //   accept: ".codexItem",
+    //   hoverClass: "CC_Dir-Hover",
+    //   drop: function(e, droppedItem) {
+    //     if (CodexPath != "Home") {
+    //       let dropItem = droppedItem.draggable[0];
+    //       dropItem.remove();
+    //       let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
+    //       socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
+    //     }
+    //   }
+    // })
+
+
+
+
   }
   // $(".fileContainer").sortable();
 }

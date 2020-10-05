@@ -1,5 +1,6 @@
 Current = "User";
 
+Expanded = false;
 CodexPath = "Home";
 CodexDirPath_Text = ["Home"];
 CodexDirPath_Nano = ["Home"];
@@ -95,10 +96,13 @@ function loadCodexPage() {
   }
 
   $("#NewCodexItem").off()
-  $("#NewCodexItem").on("click", function () { // Create Folder in Codex
-    if (CodexWanted == "Audio") { // With .prepend dont do item[0]
+  $("#NewCodexItem").on("click", function () { // Create Folder or Text File in Codex
+
+    if (CodexWanted == "Text") {
+      console.log("Making File")
+    } else {
       $(".codexWrapper").prepend("<div class='codexItem codexItemAudio codexItemFolder'><i></i><input type='text' placeholder='Name...' contenteditable></input></div>");
-      $("h4[contenteditable]").focus()
+      $("h4[contenteditable]").focus();
     }
 
     $("input[contenteditable]").change(function(e) {
@@ -121,6 +125,19 @@ function loadCodexPage() {
       loadCodexPage();
     }
   })
+
+  $(".codexContentExpand").on("click", function() {
+    if (!Expanded) { 
+      $(".CodexContainer")[0].style.left = "-300px";
+      $(".CodexContentContainer")[0].style.width = "calc(100% - 50px)";
+      $(".codexContentExpand")[0].classList = "codexContentExpand fas fa-angle-double-right";
+    } else {
+      $(".CodexContainer")[0].style.left = "50px";
+      $(".CodexContentContainer")[0].style.width = "calc(100% - 350px)";
+      $(".codexContentExpand")[0].classList = "codexContentExpand fas fa-angle-double-left";
+    }
+    Expanded = !Expanded;
+  })
 }
 
 function readCodex(codexContents) {
@@ -139,11 +156,13 @@ function readCodex(codexContents) {
   for (item in content) {
 
     if (content[item].Type == "Folder") {
-      $(".codexWrapper").prepend("<div class='codexItem codexItemFolder' nano-path="+content[item].UUID+"><i></i><h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4></div>");
+      $(".codexWrapper").prepend("<div class='codexItem codexItemFolder' nano-path="+content[item].UUID+" rc='Codex_Item' rcOSP='H4 I'><i></i><h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4></div>");
     } else {
       let Type = content[item].Type.length > 0 ? content[item].Type.split("/").pop().charAt(0).toUpperCase() + content[item].Type.split("/").pop().slice(1) : "Unknown";
       let codexItem = document.createElement('div');
-      codexItem.setAttribute("Nano-Path", content[item].UUID)
+      codexItem.setAttribute("Nano-Path", content[item].UUID);
+      codexItem.setAttribute("rc", "Codex_Item");
+      codexItem.setAttribute("rcOSP", "H4 DIV")
       codexItem.classList = "codexItem";
   
       if (CodexWanted == "Text") {
@@ -163,39 +182,7 @@ function readCodex(codexContents) {
   }
   setupFileMove("Codex");
 
-  $(".codexItem").on("click", function(e) {
-
-    if ($(this).hasClass("codexItemFolder")) {
-      CodexPath = e.currentTarget.getAttribute('nano-path');
-      let selectedDirectory = this.children[1].getAttribute('title')
-      $(".CC_Directory")[0].innerText = selectedDirectory;
-      CodexDirPath_Text.push(selectedDirectory); CodexDirPath_Nano.push(CodexPath);
-      let emitAction = "Call";
-      socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
-      return;
-    }
-
-    if ( $(".selectedCodexItem")[0] ) { $(".selectedCodexItem")[0].classList.remove("selectedCodexItem") }
-    e.currentTarget.classList.add("selectedCodexItem");
-    
-    $(".codexTextContainer pre").empty(); $(".codexVideoContainer video")[0].src = "";
-    $(".codexVideoContainer,.codexTextContainer").css('visibility', 'hidden');
-
-    if ($(".CodexContentContainer")[0].style.right != "0px" && CodexList() != "Audio") { $(".CodexContentContainer")[0].style.right = "0px";}
-    $(".PagePanel > div > span").on("click", function() { $(".CodexContentContainer")[0].style.right = "100vw"; })
-    
-    if (CodexList() == "Video") {
-      $(".codexVideoContainer").css('visibility', 'visible');
-      $(".codexVideoContainer > video")[0].src = "/storage/"+e.currentTarget.getAttribute("Nano-path")+"?cdx=2";
-    } else if (CodexList() == "Text") {
-      $(".codexTextContainer").css('visibility', 'visible');
-      $(".codexTextContainer > pre").load("/storage/"+e.currentTarget.getAttribute("Nano-path")+"?cdx=1");
-    } else if (CodexList() == "Audio") {
-      let OID = e.currentTarget.getAttribute('nano-path')
-      audioNumber = audioOrder.indexOf(OID);
-      playAudio();
-    }
-  })
+  $(".codexItem").on("click", function(e) {codexItemAction("Click", e)})
 }
 
 function codexUploadProgress(itemNumber) {
@@ -238,45 +225,60 @@ function UploadDetailsAndEmitter(CodexWanted, file, itemNumber) {
   }
 }
 
-// =============================================================================================
-// =============================================================================================
 
-function loadBinPage() {
-  let emitAction = "Call";
-  socket.emit('Bin', {emitAction});
-  clientStatus("CS7", "Ok", 400);
-}
-function readBin(binContent) {
-    $(".binWrapper").empty();
+function codexItemAction(Call, e) {
+
+  e == "RCElement" ? e = RCElement : e = e.currentTarget;
+
+  if (Call == "Click") {
+
+    if ($(e).hasClass("codexItemFolder")) {
+      CodexPath = e.getAttribute('nano-path');
+      let selectedDirectory = e.children[1].getAttribute('title')
+      $(".CC_Directory")[0].innerText = selectedDirectory;
+      CodexDirPath_Text.push(selectedDirectory); CodexDirPath_Nano.push(CodexPath);
+      let emitAction = "Call";
+      socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
+      return;
+    }
+  
+    if ( $(".selectedCodexItem")[0] ) { $(".selectedCodexItem")[0].classList.remove("selectedCodexItem") }
+    e.classList.add("selectedCodexItem");
     
-    let binSize = 0;
-    binContent.forEach(function(Item, index) {
-      binSize += Item[4];
-      $(".binWrapper").prepend("<div nano-path="+Item[0]+"> <h6 class='binActBtns' act='Rescue'>Rescue</h6> <h3>"+Item[1]+"</h3> <h4>Deleted: "+dateFormater(Item[3])+"</h4> <h4>"+Item[2].mimeT+"</h4> <h4>"+convertSize(Item[4])+"</h4> <h5 class='binActBtns' act='Delete'>Delete</h5> </div>")
-    })
-    $(".BinDetails")[0].innerHTML = "Total ⌥ "+binContent.length+" Items @ "+convertSize(binSize);
+    $(".codexTextContainer pre").empty(); $(".codexVideoContainer video")[0].src = "";
+    $(".codexVideoContainer,.codexTextContainer").css('visibility', 'hidden');
+  
+    if ($(".CodexContentContainer")[0].style.right != "0px" && CodexList() != "Audio") { $(".CodexContentContainer")[0].style.right = "0px";}
+    $(".PagePanel > div > span").on("click", function() { $(".CodexContentContainer")[0].style.right = "100vw"; })
+    
+    if (CodexList() == "Video") {
+      $(".codexVideoContainer").css('visibility', 'visible');
+      $(".codexVideoContainer > video")[0].src = "/storage/"+e.getAttribute("Nano-path")+"?cdx=2";
+    } else if (CodexList() == "Text") {
+      $(".codexTextContainer").css('visibility', 'visible');
+      $(".codexTextContainer > pre").load("/storage/"+e.getAttribute("Nano-path")+"?cdx=1");
+    } else if (CodexList() == "Audio") {
+      let OID = e.getAttribute('nano-path')
+      audioNumber = audioOrder.indexOf(OID);
+      playAudio();
+    }
+  }
+  else if (Call == "Rename") {
 
-    $(".binActBtns").on("click", function(e) {
-      let emitAction = e.currentTarget.getAttribute('act');
-      let binItem = e.currentTarget.parentNode.getAttribute('nano-path')
-      socket.emit('Bin', {emitAction, binItem})
+    let inputName = $(RCElement).find("h4")[0];
+    inputName.setAttribute("contenteditable", true)
+    inputName.focus();
+
+    $("h4[contenteditable=true]").on('change', function(e) {
+      // change doesnt work with elements that aren't 'textarea', 'input'. reeeeeeeee
     })
+  }
+  else if (Call == "Delete") {
+    let emitAction = "Delete"; let CodexPath = e.getAttribute('nano-path');
+    socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
+  }
+
 }
-
-// =============================================================================================
-// =============================================================================================
-
-
-function loadSettingsPage() {}
-
-
-
-
-
-// =============================================================================================
-// =============================================================================================
-// =============================================================================================
-// =============================================================================================
 
 function playAudio() {
   let audioPlaying = audioOrder[audioNumber];
@@ -357,3 +359,59 @@ function CodexAudioListeners() {
   })
 
 }
+
+
+// =============================================================================================
+// =============================================================================================
+
+BinParent = 0;
+
+function loadBinPage() {
+  let bin_Parent_Cycle = ["Main", "Codex"]
+  $(".BinParent")[0].innerText = bin_Parent_Cycle[BinParent];
+  let emitAction = "Call"; let Of = bin_Parent_Cycle[BinParent];
+  socket.emit('Bin', {emitAction, Of});
+  clientStatus("CS7", "Ok", 400);
+
+  $(".BinParent").off();
+  $(".BinParent").on("click", function() {
+    bin_Parent_Cycle[BinParent + 1] ? BinParent++ : BinParent = 0;
+    $(".BinParent")[0].innerText = bin_Parent_Cycle[BinParent];
+
+    let emitAction = "Call"; let Of = bin_Parent_Cycle[BinParent];
+    socket.emit('Bin', {emitAction, Of});
+  })
+}
+function readBin(binContent) {
+  let bin_Parent_Cycle = ["Main", "Codex"]
+  $(".binWrapper").empty();
+  
+  let binSize = 0;
+  binContent.forEach(function(Item, index) {
+    binSize += Item[4];
+    $(".binWrapper").prepend("<div nano-path="+Item[0]+"> <h6 class='binActBtns' act='Rescue'>Rescue</h6> <h3>"+(typeof Item[1] == "object" ? Item[1].Cur : Item[1])+"</h3> <h4>Deleted: "+dateFormater(Item[3])+"</h4> <h4>"+Item[2].mimeT+"</h4> <h4>"+convertSize(Item[4])+"</h4> <h5 class='binActBtns' act='Delete'>Delete</h5> </div>")
+  })
+  $(".BinDetails")[0].innerHTML = "Total ⌥ "+binContent.length+" Items @ "+convertSize(binSize);
+
+  $(".binActBtns").on("click", function(e) {
+    let emitAction = e.currentTarget.getAttribute('act');
+    let binItem = e.currentTarget.parentNode.getAttribute('nano-path')
+    let Of = bin_Parent_Cycle[BinParent];
+    socket.emit('Bin', {emitAction, binItem, Of})
+  })
+}
+
+// =============================================================================================
+// =============================================================================================
+
+
+function loadSettingsPage() {}
+
+
+
+
+
+// =============================================================================================
+// =============================================================================================
+// =============================================================================================
+// =============================================================================================

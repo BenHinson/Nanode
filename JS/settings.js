@@ -130,7 +130,7 @@ displayDetails = function() {
 }
 
 function dateFormater(date) {
-  if (!date.length) { return "-"; }
+  if (date == null || !date.length) { return "-"; }
   if (dateFormat == 0) {
     let newDate = date.split('/')
     let hold = newDate[1];
