@@ -102,6 +102,11 @@
   color: #f1f1f1;
 }
 
+.CodexContainer .codexUploader div {
+  -webkit-transition: opacity 300ms;
+  transition: opacity 300ms;
+}
+
 .CodexContainer .codexUploader .CodexItemButton {
   position: absolute;
   height: 44px;
@@ -138,14 +143,17 @@
   width: 160px;
   top: 24px;
   left: 52px;
+  opacity: 0;
 }
 
 .CodexContainer .codexUploader #CUCount {
+  opacity: 0;
   position: absolute;
   left: 50px;
 }
 
 .CodexContainer .codexUploader #CUSize {
+  opacity: 0;
   position: absolute;
   right: 50px;
 }

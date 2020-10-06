@@ -140,17 +140,16 @@ function clickedItem(selected, fromRC) {
     if (selected.hasAttribute('selected')) {
       selected.removeAttribute('selected')
       selected.style.background = "";
-      return;
     } else {
       selected.setAttribute('selected', true)
       selected.style.background = "rgba(118,128,138,0.5)";
-      return;
     }
+    return;
   }
 
-  if (fromRC) {selected = selected.currentTarget}
+  if (fromRC) { selected = selected.currentTarget; }
 
-  if (!selected.hasAttribute('class') || !selected.getAttribute('class').includes("noOpen")) {
+  if (!$(selected).hasClass('noOpen')) {
     if (!selected.hasAttribute('selected') && displayDetails()) {
       if ($("tr[selected='true']").length >= 1) {
         $("tr[selected='true']").each(function(index, item) {
@@ -163,8 +162,6 @@ function clickedItem(selected, fromRC) {
       callItemInformation(selected);
       clientStatus("CS5", "User");
     } else {
-      selected.removeAttribute('selected');
-      selected.style.background = '';
       ItemActions(selected);
       clientStatus("CS5", "Ok", 500);
     }
@@ -227,8 +224,7 @@ function setupFileMove(Caller) {
       accept: ".codexItem",
       hoverClass: "codexItem-Hover",
       drop: function(e, droppedItem) {
-        let dropItem = droppedItem.draggable[0];
-        dropItem.remove();
+        droppedItem.draggable[0].remove();
         if ($(e.target).hasClass('codexItemFolder')) {
           let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path')}
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
@@ -241,8 +237,7 @@ function setupFileMove(Caller) {
       hoverClass: "CC_Dir-Hover",
       drop: function(e, droppedItem) {
         if (CodexPath != "Home") {
-          let dropItem = droppedItem.draggable[0];
-          dropItem.remove();
+          droppedItem.draggable[0].remove();
           let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
@@ -257,70 +252,61 @@ function setupFileMove(Caller) {
   }
 
   else if (UserSettings.ViewT == 1) {
-    $(".ListContentTable").sortable({
-      items: "tr[nano-path]",
-      connectWith: ".ListContentTable",
+    $( "tr[nano-path]" ).draggable({
       containment: "#databaseBackgroundMain",
+      connectToSortable: ".ListContentTable",
+      revert: "invalid",
+
       delay: 150,
       cursor: "move",
       tolerance: 'pointer',
-      placeholder: "listItem-Placeholder",    // TO BE MADE
-      forcePlaceholderSize: true,
-      helper: "clone",
-
-      start: function() {
-
-        
-        // cancel: ".codexItemFolder",
-        // fixed: ".codexItemFolder",
-
-        $('tr[type=folder]').each(function() {
-            $(this).data('pos', $(this).index());
-        });
+      scroll: false,
+      cursorAt: { top: 18, left: 20 },
+      helper: function(e) {
+        return $( "<div class='listItem-Placeholder' nano-path="+e.currentTarget.getAttribute('nano-path')+"><img src="+$(e.currentTarget).find('img')[0].getAttribute('src')+" ></img>"+e.currentTarget.childNodes[1].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
       },
-      // change: function(e) {
-      //   toChange = $(this);
-      //   firstItem = $('<div></div>').prependTo(this);
-      //   $('.codexItemFolder').detach().each(function() {
-      //       var target = $(this).data('pos');
-      //       $(this).insertAfter($('div', toChange).eq(target));
-      //   });
-      //   firstItem.remove();
-      // }
-
     }).disableSelection();
 
-      
 
-    // $("div > .codexItemFolder").droppable({
-    //   accept: ".codexItem",
-    //   hoverClass: "codexItem-Hover",
-    //   drop: function(e, droppedItem) {
-    //     let dropItem = droppedItem.draggable[0];
-    //     dropItem.remove();
-    //     if ($(e.target).hasClass('codexItemFolder')) {
-    //       let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path')}
-    //       socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
-    //     }
-    //   },
-    // })
+    $("tr[type=folder]").droppable({
+      accept: "tr[nano-path]",
+      hoverClass: "listItem-Hover",
+      tolerance: 'pointer',
+      drop: function(e, droppedItem) {
+        droppedItem.draggable[0].remove(); 
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path') });
+      },
+    })
 
-    // $(".CC_Directory").droppable({
-    //   accept: ".codexItem",
-    //   hoverClass: "CC_Dir-Hover",
-    //   drop: function(e, droppedItem) {
-    //     if (CodexPath != "Home") {
-    //       let dropItem = droppedItem.draggable[0];
-    //       dropItem.remove();
-    //       let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
-    //       socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
-    //     }
-    //   }
-    // })
-
-
-
-
+    $(".dirBtn").droppable({
+      accept: "tr[nano-path]",
+      hoverClass: "dirBtn-Hover",
+      tolerance: 'pointer',
+      drop: function(e, droppedItem) {
+        droppedItem.draggable[0].remove();
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path') });
+      }
+    })
   }
-  // $(".fileContainer").sortable();
+}
+
+// Allow the ability to move files between spans on the homepage
+// Long hold over a folder opens it? So you can move files deep into folders. 
+// Ctrl+Z to undo Moves?
+// Mayyyybeee allow you to move files into codex? 
+// Scrap Path for Items, its kinda useless and just adds more problems, can be worked out on the client end anyway.
+// Change up the 'share' on files to allow shorter links, also save the state of share (public / link / one time only) into the json file.
+// One Time / limited time View / Share - Show Error page / image if view limit exceeded
+// Change up the file information sidebar - adding notes, color choice, all times, add security, share, prevent share links.
+
+// Clean up main server socket code to work for 'Main' directory like how codex/bin work.
+
+shortcutKeys = {
+  "Ctrl+A": "All",
+  "Ctrl+N": "New",
+  "Delete": "Delete",
+  "Arrow_Up": "Move Up an Item",
+  "Arrow_Down": "Move Down an Item",
+  "Arrow_Left": "Back a directory",
+  "Arrow_Right": "Forward a directory",
 }

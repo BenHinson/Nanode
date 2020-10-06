@@ -70,6 +70,7 @@ function loadCodexPage() {
 
     $("#UploadCodexItem").on("click", function() { // Uploading Files and Folders
       $("#codexUploadBtn").click();
+      $("#CUSize, #CUCount, #codexUploadProgress").css("opacity", "1");
 
       var codexUpload = $("#codexUploadBtn");
       [].forEach.call(codexUpload, function(e) {
@@ -194,6 +195,7 @@ function codexUploadProgress(itemNumber) {
       $("#codexUploadProgress")[0].value = 0;
       $("#CUCount")[0].innerText = "Items ⌥";
       $("#CUSize")[0].innerText = "⌥ Size";
+      $("#CUSize, #CUCount, #codexUploadProgress").css("opacity", "0");
     }, 5000)
   }
 }

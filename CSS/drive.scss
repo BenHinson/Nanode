@@ -145,6 +145,15 @@ body {
     background: rgba(0,0,0,0.1);
   }
 }
+
+.dirBtn-Hover {
+  background: rgba(0, 0, 0, 0.15);
+  .dark-theme & {
+    color: var(--highlight-color);
+    background: rgb(30, 30, 34);
+  }
+}
+
 .currentDirBtn {
   opacity: 1;
 }
@@ -361,7 +370,7 @@ body {
   }
 }
 
-///////////////////////////////////////////////////////////////// LISTCONTENTa
+///////////////////////////////////////////////////////////////// LISTCONTENT
 
 .ListContentContainer {
   width: 100%;
@@ -446,6 +455,40 @@ body {
   }
 }
 
+.listItem-Placeholder {
+  height: 38px;
+  min-width: 200px;
+  box-shadow: 0 0 3px black;
+  padding: 2px 4px 4px 40px;
+  font-size: 14px;
+  font-weight: 100;
+  font-family: inherit;
+  z-index: 990;
+  background: #f1f1f1;
+  .dark-theme & { background: #1e1e22;  }
+
+  & h5 {
+    position: absolute;
+    font-size: 12px;
+    font-weight: 100;
+    opacity: 0.8;
+    left: 40px;
+    bottom: 3px;
+  }
+
+  & img {
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    height: 32px;
+    width: 32px;
+    object-fit: contain;
+  }
+}
+
+.listItem-Hover {
+  box-shadow: 0px 0px 4px 0px var(--highlight-color);
+}
 ///////////////////////////////////////////////////////////////// LEFTBAR
 .PagePanel {
   position: fixed;
@@ -559,7 +602,7 @@ body {
   }
 }
 
-.fileInformationSlideBar {
+.fileInformationSideBar {
   position: absolute;
   top: 36px;
   right: 218px;

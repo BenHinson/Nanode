@@ -91,6 +91,7 @@
     .dark-theme & {
       color: #f1f1f1;
     }
+    & div {transition: opacity 300ms;}
 
     .CodexItemButton {
       position: absolute;
@@ -135,12 +136,15 @@
       width: 160px;
       top: 24px;
       left: 52px;
+      opacity: 0;
     }
     & #CUCount {
+      opacity: 0;
       position: absolute;
       left: 50px;
     }
     & #CUSize {
+      opacity: 0;
       position: absolute;
       right: 50px;
     }

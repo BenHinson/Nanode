@@ -10,7 +10,7 @@ $("#directoryControlNewFile").on("click", function() { displayCentralActionMain(
 $("#directoryControlNewFolder").on("click", function() { displayCentralActionMain("New Folder", "Create") });
 $("#returnToHomepage").on("click", function() { directoryPath = 'Homepage'; socket.emit('directoryLocation', {directoryPath}) })
 $("#directoryControlRefresh").mousedown( function() { directoryRefresh(); } )
-$(".fileInformationSlideBar").on("click", function() { displayItemInformation(); })
+$(".fileInformationSideBar").on("click", function() { displaySideBar(); })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,18 +20,18 @@ function directoryRefresh() {
   clientStatus("CS2", "True", 400);clientStatus("CS4", "Wait", 500);
 }
 
-function displayItemInformation(state) {
+function displaySideBar(state) {
   if (!fileInformationOpen || state == false) {
     $(".DLCRight")[0].style.right = "";
     $(".fileInformation")[0].style.right = "";
-    $(".fileInformationSlideBar").css({ "transform": "rotate(90deg)", "right": "216px"})
-    $(".fileInformationSlideBar")[0].title = "Hide Details and Upload Bar";
+    $(".fileInformationSideBar").css({ "transform": "rotate(90deg)", "right": "216px"})
+    $(".fileInformationSideBar")[0].title = "Hide Details and Upload Bar";
     $(".fileContainer")[0].style.width = "calc(100% - 250px)";
   } else {
     $(".DLCRight")[0].style.right = "50px";
     $(".fileInformation")[0].style.right = "-240px";
-    $(".fileInformationSlideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
-    $(".fileInformationSlideBar")[0].title = "Display Details and Upload Bar";
+    $(".fileInformationSideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
+    $(".fileInformationSideBar")[0].title = "Display Details and Upload Bar";
     $(".fileContainer")[0].style.width = "calc(100% - 15px)";
   }
   fileInformationOpen = !fileInformationOpen;
@@ -265,7 +265,7 @@ function unhighlight(e) {dropArea.classList.remove('highlight')}
 
 dropArea.addEventListener("drop", function(e) {
   if (!fileInformationOpen || $(".fileInformation")[0].style.width < 1) {
-    displayItemInformation(false);
+    displaySideBar(false);
   }
   displayUploadDownloadOverlay("Upload");
   $("#UpDownOverlayItems")[0].innerText = "";

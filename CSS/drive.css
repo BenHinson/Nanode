@@ -146,6 +146,15 @@ body {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.dirBtn-Hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.dark-theme .dirBtn-Hover {
+  color: var(--highlight-color);
+  background: #1e1e22;
+}
+
 .currentDirBtn {
   opacity: 1;
 }
@@ -571,6 +580,47 @@ body {
   background: rgba(0, 0, 0, 0.09);
 }
 
+.listItem-Placeholder {
+  height: 38px;
+  min-width: 200px;
+  -webkit-box-shadow: 0 0 3px black;
+          box-shadow: 0 0 3px black;
+  padding: 2px 4px 4px 40px;
+  font-size: 14px;
+  font-weight: 100;
+  font-family: inherit;
+  z-index: 990;
+  background: #f1f1f1;
+}
+
+.dark-theme .listItem-Placeholder {
+  background: #1e1e22;
+}
+
+.listItem-Placeholder h5 {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 100;
+  opacity: 0.8;
+  left: 40px;
+  bottom: 3px;
+}
+
+.listItem-Placeholder img {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  height: 32px;
+  width: 32px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.listItem-Hover {
+  -webkit-box-shadow: 0px 0px 4px 0px var(--highlight-color);
+          box-shadow: 0px 0px 4px 0px var(--highlight-color);
+}
+
 .PagePanel {
   position: fixed;
   height: 100%;
@@ -683,7 +733,7 @@ body {
   transition: text-align 300ms;
 }
 
-.fileInformationSlideBar {
+.fileInformationSideBar {
   position: absolute;
   top: 36px;
   right: 218px;
@@ -701,7 +751,7 @@ body {
   cursor: pointer;
 }
 
-.dark-theme .fileInformationSlideBar {
+.dark-theme .fileInformationSideBar {
   opacity: 0.7;
   background-image: url(https://drive.nanode.one/assets/svg/slideBarWhite.svg);
 }
