@@ -1,10 +1,8 @@
+pageContent = '';
 NanoSelected = "";
-TempParent = "";
-directoryPath = "Homepage";
-TempdirectoryPath = "";
-previousDirectorys = [];
-currentViewType = '';
 UserSettings = {};
+
+directoryPath = "Homepage";
 
 // document.getElementsByClassName("Sec2")[0].scrollIntoView({behavior: 'smooth', block: 'center'}); Possible Usage Somewhere
 
@@ -19,42 +17,30 @@ document.addEventListener('DOMContentLoaded', function() {
   // Check for Connection
   if (socket !== undefined) {
 
-    setTimeout(function() { clientStatus("CS0", "Wait") }, 200)
+    // setTimeout(function() { clientStatus("CS0", "Wait") }, 200)
     socket.emit('CallSettings', "Read");
-    socket.emit('directoryLocation', {directoryPath})
+    socket.emit('directoryLocation', (directoryPath))
 
-    socket.on('connect', function() {
-      setTimeout(function() { clientStatus("CS0", "Ok") }, 400)
-    })
-    socket.on('connect_error', function() {
-      clientStatus("CS0", "False");
-    })
-    socket.on('connect_failed', function() {
-      clientStatus("CS0", "Wait");
-    })
-    socket.on('error', function() {
-      console.log("Connection Error.");
-    })
-    socket.on("connection:sockid", function(sockID) {
-      document.cookie = "sockID="+sockID+";domain=Nanode.one;secure;HttpOnly"
-    })
+    socket.on('connect', function() { setTimeout(function() { clientStatus("CS0", "Ok") }, 1000) })
+    socket.on('connect_error', function() { clientStatus("CS0", "False"); })
+    socket.on('connect_failed', function() { clientStatus("CS0", "Wait"); })
+    socket.on("connection:sockid", function(sockID) { document.cookie = "sockID="+sockID+";domain=Nanode.one;secure;HttpOnly" })
 
 
-    socket.on('HomepageFolders', function(FoldersAndSpans) {
-      Parent = "Homepage"; directoryPath = "Homepage";
+    socket.on("Directory", ({Parent_Path, Contents}) => {
       clientStatus("CS3", "True", 800);
-      displayHomepageDirectory(FoldersAndSpans);
-
+      clientStatus("CS7", "Wait", 400);
+      if (Parent_Path != "Homepage") {directoryInfo = Contents.shift();}
+      NanoPath = Parent_Path; directoryPath = (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name);
+      pageContent = Contents;
+      if (Parent_Path == "Homepage") { UserSettings.ViewT == 0 ? viewHomepageContentAsBlock() : viewHomepageContentAsList() }
+      else { UserSettings.ViewT == 0 ? viewContentAsBlock() : viewContentAsList() }
       setupFileMove();
-    })
-    socket.on('DirectoryFolders', function(dirContents) {
-      Parent = TempParent; directoryPath = TempdirectoryPath;
 
-      NanoPath = dirContents[0][0];
-      clientStatus("CS3", "True", 700);
-      displayDirectory(dirContents);
+      uploadDirectory = NanoPath == "Homepage" ? "Uploads" : directoryInfo.Name;
+      uploadDirectoryLocation(NanoPath, uploadDirectory);
 
-      setupFileMove();
+      Route_WIP("Directory", NanoPath, (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name))
     })
 
 
@@ -76,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     socket.on('ItemLocked', function(itemSecurity) {
-      NanoPath = PreviousNanoPath.pop(); directoryPath = PreviousTextPath.pop();
       displaySecurityEntry(itemSecurity);
     })
     socket.on('ItemEntryRefused', function() {
@@ -117,6 +102,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+shortcutKeys = {
+  "Ctrl+A": "All",
+  "Ctrl+N": "New",
+  "Delete": "Delete",
+  "Arrow_Up": "Move Up an Item",
+  "Arrow_Down": "Move Down an Item",
+  "Arrow_Left": "Back a directory",
+  "Arrow_Right": "Forward a directory",
+}
 var keyMap = {};
 onkeydown = onkeyup = function(e) {
   keyMap[e.keyCode] = e.type == 'keydown';
@@ -133,7 +127,6 @@ function clientStatus(Light, Status, Time) {
 }
 
 
-downloadSelection = false;
 function clickedItem(selected, fromRC) {
 
   if (keyMap[16] == true || keyMap[17] == true) {
@@ -176,14 +169,9 @@ function ItemActions(selected) {
   if (type == 'image') {
     selected.tagName == 'TR' ? displayImageLarge(selected, "table") : displayImageLarge(selected);
   } else if (type == 'folder') {
-    TempParent = currentViewType == "Block" ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
-    PreviousNanoPath.push(NanoPath); PreviousTextPath.push(directoryPath);
-    TempNanoPath = selected.getAttribute("Nano-Path");
-    ForwardNanoPath.pop(); ForwardTextPath.pop();
-    TempdirectoryPath = selected.getAttribute('directory');
-    socket.emit('directoryLocation', {directoryPath:TempNanoPath});
+    socket.emit('directoryLocation', (selected.getAttribute('nano-path')));
   } else if (type == 'text') {
-    socket.emit('readTextContent', {directoryPath:NanoPath})
+    socket.emit('readTextContent', {"directoryPath":NanoPath})
     selected.tagName == 'TR' ? displayTextContent(selected, "table") : displayTextContent(selected);
   }
 }
@@ -252,6 +240,8 @@ function setupFileMove(Caller) {
   }
 
   else if (UserSettings.ViewT == 1) {
+    var hoveringOver;
+
     $( "tr[nano-path]" ).draggable({
       containment: "#databaseBackgroundMain",
       connectToSortable: ".ListContentTable",
@@ -272,9 +262,32 @@ function setupFileMove(Caller) {
       accept: "tr[nano-path]",
       hoverClass: "listItem-Hover",
       tolerance: 'pointer',
+      greedy: true,
+      over: function(e) {
+        clearTimeout(hoveringOver)
+        hoveringOver = setTimeout(function() {
+          console.log("OPEN FOLDER AFTER LONG HOVER OVER")
+          // socket.emit('directoryLocation', (e.target.getAttribute("Nano-Path")));
+        }, 1500)
+      },
+      out : function() {
+        clearTimeout(hoveringOver)
+      },
       drop: function(e, droppedItem) {
         droppedItem.draggable[0].remove(); 
-        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path') });
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Folder" });
+      },
+    })
+
+    $("[Home-Span]").droppable({
+      accept: "tr[nano-path]",
+      hoverClass: "listSpan-Hover",
+      tolerance: 'pointer',
+      drop: function(e, droppedItem) {
+        if (!e.target.contains(droppedItem.draggable[0])) {
+          droppedItem.draggable[0].remove();
+          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('home-span'), "ToType": "Span" });
+        }
       },
     })
 
@@ -284,29 +297,148 @@ function setupFileMove(Caller) {
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
         droppedItem.draggable[0].remove();
-        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path') });
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Directory" });
       }
     })
   }
 }
 
-// Allow the ability to move files between spans on the homepage
-// Long hold over a folder opens it? So you can move files deep into folders. 
+
+
+Directory_Route = []; // The Current Route, is whats used for the dir btns. Doesnt Store Forward
+Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
+TreeNumber = 0; // Current Tree Index
+TreeSteps = 0; // Current Index in Tree Index
+FolderCall = true; // If Route Was Called by Clicking on a Folder
+
+function Route_WIP(Action, Nano_Path, Text_Path) {
+
+  if (Action == "Directory" && FolderCall == true) {
+    Directory_Route.push({"Nano": Nano_Path, "Text": Text_Path})
+    if (Directory_Tree.length && Directory_Tree[TreeNumber][TreeSteps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
+      Directory_Tree = Directory_Tree.slice(0, TreeNumber + 1)
+    }
+    Directory_Tree[TreeNumber] = Directory_Route;
+    TreeSteps++;
+  }
+
+  FolderCall = true;
+
+  // Shortcuts
+  // Refresh dupes last item;
+
+  // Be able to drag an item into that path and have it open.
+  // Have it work for locked items too. if locked stay locked.
+  // Have it work for shortcuts.
+
+  $("#directoryLocation")[0].innerHTML = " <div class='dirBtn' nano-path='"+Directory_Route[0].Nano+"' title='"+Directory_Route[0].Text+"' >"+Directory_Route[0].Text+"</div> ";
+  for (i=1; i<Directory_Route.length; i++) {
+    $("#directoryLocation")[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-path='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
+  }
+  $(".dirBtn").last()[0].classList.add('currentDirBtn');
+
+
+  // Path Buttons
+  $(".dirBtn").on("click", function(e) {
+    NanoPath = e.target.getAttribute("Nano-path");
+
+    let Route_Obj = Directory_Route.find(o => o.Nano === NanoPath); // Find Index of selected Nano-Path in Directory_Route
+    Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) ); // Remove objects after the Index
+    
+    if (Directory_Tree[TreeNumber] != Directory_Route) { Directory_Tree.push(Directory_Route); TreeNumber++; TreeSteps = Directory_Route.length;}
+    
+    socket.emit('directoryLocation', (NanoPath));
+    clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+  })
+
+
+  // Forward
+  $("#directoryControlForward").off();
+  if (Directory_Tree[TreeNumber][TreeSteps] || Directory_Tree[TreeNumber + 1]) {
+    $("#directoryControlForward")[0].classList.remove('notActive')
+    $("#directoryControlForward").on("click", function(e) {
+      if ( Directory_Tree[TreeNumber][TreeSteps] ) {
+        Directory_Route = Directory_Tree[TreeNumber].slice(0, TreeSteps + 1);
+      } else if (Directory_Tree[TreeNumber + 1]) {
+        Directory_Route = Directory_Tree[TreeNumber + 1];
+        TreeNumber++;
+      }
+      TreeSteps = Directory_Route.length;
+
+      FolderCall = false;
+      socket.emit('directoryLocation', (Directory_Tree[TreeNumber][TreeSteps - 1].Nano))
+      clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+    })
+  } else { $("#directoryControlForward")[0].classList.add('notActive'); }
+
+  // Back
+  $("#directoryControlBack").off();
+  if ( TreeNumber > 0 || (TreeNumber == 0 && TreeSteps > 1)) {
+    $("#directoryControlBack")[0].classList.remove('notActive')
+    $("#directoryControlBack").on("click", function(e) {
+      if ( Directory_Route.length > 1 ) {
+        var callingFor = Directory_Route[Directory_Route.length - 2].Nano;
+        Directory_Route = Directory_Route.slice(0, Directory_Route.length - 1 );
+      } else if (Directory_Tree.length > 1) {
+        Directory_Route = Directory_Tree[TreeNumber - 1];
+        var callingFor = Directory_Route[Directory_Route.length - 1].Nano;
+        TreeNumber--;
+      } else {return;}
+      
+      FolderCall = false;
+      TreeSteps = Directory_Route.length;
+      socket.emit('directoryLocation', (callingFor))
+      clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+    })
+  } else { $("#directoryControlBack")[0].classList.add('notActive'); };
+  
+  // Home
+  $("#returnToHomepage").off();
+  if (JSON.stringify(Directory_Tree[TreeNumber]) !== JSON.stringify([{"Nano": "Homepage", "Text": "Homepage"}])) {
+    $("#returnToHomepage")[0].classList.remove('notActive')
+    $("#returnToHomepage").on("click", function() {
+      Directory_Route = [];
+      Directory_Tree.push(Directory_Route);
+
+      TreeNumber++;
+      TreeSteps = 1;
+
+      NanoPath = "Homepage"; directoryPath = 'Homepage';
+
+      socket.emit('directoryLocation', (NanoPath));
+      clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+    })
+  } else { $("#returnToHomepage")[0].classList.add('notActive'); }
+
+
+  $("#directoryControlRefresh").off();
+  $("#directoryControlRefresh").mousedown( function() {
+    FolderCall = false;
+    socket.emit('directoryLocation', (NanoPath));
+    clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+  })
+}
+
+
+
+
+// Long hold over a folder opens it? So you can move files deep into folders in one go. 
 // Ctrl+Z to undo Moves?
 // Mayyyybeee allow you to move files into codex? 
 // Scrap Path for Items, its kinda useless and just adds more problems, can be worked out on the client end anyway.
 // Change up the 'share' on files to allow shorter links, also save the state of share (public / link / one time only) into the json file.
 // One Time / limited time View / Share - Show Error page / image if view limit exceeded
 // Change up the file information sidebar - adding notes, color choice, all times, add security, share, prevent share links.
+// Loading icon for stuff. It is quick atm but might not be all the time / in the future.
 
-// Clean up main server socket code to work for 'Main' directory like how codex/bin work.
 
-shortcutKeys = {
-  "Ctrl+A": "All",
-  "Ctrl+N": "New",
-  "Delete": "Delete",
-  "Arrow_Up": "Move Up an Item",
-  "Arrow_Down": "Move Down an Item",
-  "Arrow_Left": "Back a directory",
-  "Arrow_Right": "Forward a directory",
-}
+// Add descriptions to files in the 'details panel'
+// Details panel allows the creation of shortcuts inside other files, or in a 'related' object of another file
+// Different Search types - names / in details / type / size etc
+
+
+
+
+// Added Features
+// Allow the ability to move files between spans on the homepage
+// Complete Rework of the Directory Path System, Adding Forward / Backward / Home / Path Buttons, with multiple layers so you can get back to where you were.

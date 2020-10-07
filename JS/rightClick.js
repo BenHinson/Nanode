@@ -127,7 +127,7 @@ function RC_VAR_Details(Option, e) {
   return fileInformationOpen ? "Hide Details" : "Display Details";
 }
 function RC_VAR_Switch_View(Option, e) {
-  return currentViewType != "Block" ? "Block View" : "List View";
+  return UserSettings.ViewT == 0 ? "List View" : "Block View";
 }
 
 

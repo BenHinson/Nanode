@@ -180,7 +180,6 @@ body {
   top: 28px;
   z-index: 1;
   color: map-get($colorTheme, colorSlightFadedText);
-  cursor: pointer;
   .dark-theme & {
     color: map-get($lightTheme, light1);
   }
@@ -217,16 +216,21 @@ body {
       transform: scaleX(0);
       transition: transform 0.2s ease-in-out;
     }
-    &:hover {
+    &:hover:not(.notActive) {
       opacity: 0.7;
     }
-    &:hover:after {
+    &:hover:not(.notActive):after {
       transform: scaleX(1);
     }
     &.SelectedPage {
       box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
       opacity: 0.7;
     }
+  }
+
+  & .notActive {
+    opacity: 0.6;
+    cursor: default;
   }
 }
 
@@ -376,6 +380,8 @@ body {
   width: 100%;
   margin: 15px 0 0 0;
   border-radius: 5px;
+  transition: box-shadow 300ms;
+
   & a {
     position: absolute;
     margin: 10px 0 0 0;
@@ -486,8 +492,12 @@ body {
   }
 }
 
+
 .listItem-Hover {
   box-shadow: 0px 0px 4px 0px var(--highlight-color);
+}
+.listSpan-Hover {
+  box-shadow: 0px 0px 4px 1px var(--highlight-color);
 }
 ///////////////////////////////////////////////////////////////// LEFTBAR
 .PagePanel {

@@ -1,4 +1,3 @@
-pageContent = '';
 DownloadItems = [];
 dirPathPass = false;
 
@@ -15,72 +14,23 @@ var ItemChecker = function(checkObj) {
   return "unknown";
 }
 
+///////////////////////////////////////////
 
 function homepageNewSpan() {
   $(".fileContainer")[0].innerHTML += " <div class='directoryControlNewSpan' id='directoryControlNewSpan'>New Span</div>";
   $("#directoryControlNewSpan").on("click", function() { displayCentralActionMain("New Span", "Create") });
 }
 
-function setDirectoryToThis() {
-  if (dirPathPass == true && directoryPath != "Homepage") {dirPathPass = false; return;} dirPathPass = false;
-  if (directoryPath != "Homepage") { PreviousNanoPath.push(NanoPath); PreviousTextPath.push(directoryPath); } 
-
-  let dirPathSplit = Parent.split();
-
-  if (!directoryPath || NanoPath == "Homepage") { dirPathOrder = ["B"]; $(directoryLocation).empty();
-  } else if (directoryPath == "Homepage" || directoryPath.split(/[\\\/]/).length == 2) { dirPathOrder = ["B", "A", "B"]; dirPathSplit = directoryPath.split(/[\\\/]/); $(directoryLocation).empty();
-  } else { dirPathOrder = ["A", "B"]; }
-
-  dirPathOrder.forEach(function(dirStep, index) {
-    if (dirStep == "B") {
-      let dirBtn = document.createElement('div');
-      dirBtn.setAttribute('class', "dirBtn");
-      dirBtn.setAttribute('Nano-path', dirPathSplit.length == 2 && index == 0 ? "Homepage" : NanoPath );
-      dirBtn.setAttribute('text-path', dirPathSplit.length == 2 && index == 0 ? "Homepage" : directoryPath )
-      dirBtn.innerText = index == 2 ? dirPathSplit[1] : dirPathSplit[0];
-      directoryLocation.appendChild(dirBtn);
-      if (dirPathOrder.length == index + 1) {
-        if ($(".currentDirBtn")[0]) {$(".currentDirBtn")[0].classList.remove('currentDirBtn');}
-        dirBtn.classList.add('currentDirBtn')
-      }
-    } else if (dirStep == "A") {
-      let dirArrow = document.createElement('div');
-      dirArrow.setAttribute('class', "dirArrow");
-      directoryLocation.appendChild(dirArrow)
-    }
-  })
-
-  $(".dirBtn").off();
-  $(".dirBtn").on("click", function(e) {
-    NanoPath = e.target.getAttribute("Nano-path")
-    directoryPath = e.target.getAttribute("text-path");
-    socket.emit('directoryLocation', {directoryPath:NanoPath});
-    
-    dirPathPass = true;
-    Parent = e.target.innerText;
-
-    for (let i=0; i<directoryLocation.children.length; i++) {
-      if (directoryLocation.lastChild !== e.target) {
-        directoryLocation.lastChild.remove();
-      } else {
-        directoryLocation.lastChild.classList.add('currentDirBtn');
-        return;
-      }
-    }
-  })
-}
-
-// 7
-
 function uploadDirectoryLocation(Page, location) {
   let dirLocBtn = $("#uploadDirectory")[0];
-  dirLocBtn.title = 'Uploads to '+location;
-  dirLocBtn.innerText = uploadDirectory;
+  dirLocBtn.innerText = location;
+  $(dirLocBtn).off()
+
   if (Page == "Homepage" && NanoPath == Page) {
     dirLocBtn.style.cursor = "pointer";
     dirLocBtn.title = "Choose Span to Upload Into";
 
-
+    // Choose Which Span to Upload Into
     $(dirLocBtn).on("click", function() {
 
       if ( $(".uploadSpanContainer") ) { $(".uploadSpanContainer").remove() }
@@ -121,26 +71,6 @@ function uploadDirectoryLocation(Page, location) {
 }
 
 ////////////////////////////////////////////////////////////////////////
-///////////////////////    DISPLAY DIR    //////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
-function displayHomepageDirectory(SpansAndContent) {
-  pageContent = SpansAndContent; NanoPath = "Homepage"; uploadDirectory = "Uploads"; Parent = 'Homepage';
-  clientStatus("CS7", "Wait", 400);
-  UserSettings.ViewT == 0 ? viewHomepageContentAsBlock() : viewHomepageContentAsList();
-  uploadDirectoryLocation("Homepage", uploadDirectory);
-  setDirectoryToThis();
-}
-
-function displayDirectory(dirContents) {
-  pageContent = dirContents; uploadDirectory = Parent;
-  clientStatus("CS7", "Wait", 400);
-  UserSettings.ViewT == 0 ? viewContentAsBlock() : viewContentAsList();
-  uploadDirectoryLocation(false, uploadDirectory);
-  setDirectoryToThis();
-}
-
-////////////////////////////////////////////////////////////////////////
 ///////////////////////////   BLOCK   //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
@@ -163,7 +93,6 @@ function viewHomepageContentAsBlock() {
 
 function viewContentAsBlock() {
   $(".fileContainer").empty();
-  if (pageContent[0][1].length < 1) {setDirectoryToThis(); return;}
   $(".fileContainer")[0].innerHTML += "<div class='ContentContainer'></div>"
 
   pageContent[0][1].forEach(function(Item, index) {
@@ -221,7 +150,7 @@ function viewHomepageContentAsList() {
   $(".fileContainer").empty();
   for (i=0; i<pageContent.length; i++) {
 
-    $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
+    $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span' Home-Span='"+pageContent[i][0]+"'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
     let Table = $('.ListContentTable')[i];
 
     let rowData = ["", " ", "Type", "Modified", "Size", ""];
@@ -249,6 +178,7 @@ function viewContentAsList() {
 
   let ContentContainer = document.createElement('div');
   ContentContainer.setAttribute("class", "ListContentContainer");
+  ContentContainer.style.margin = "0";
   $(".fileContainer")[0].appendChild(ContentContainer);
 
   ListContentTable = document.createElement('table');
@@ -257,8 +187,6 @@ function viewContentAsList() {
   
   rowData = ["", " ", "Type", "Modified", "Size", ""];
   addTableRow(ListContentTable, "th", rowData);
-  
-  if (pageContent[0][1] && pageContent[0][1].length < 1) {setDirectoryToThis(); return;}
 
   pageContent[0][1].forEach(function(Item, index) {
     let ItemType = ItemChecker(Item[2]);
@@ -478,7 +406,7 @@ function callItemInformation(selected) {
     let folderName = document.createElement('h3');
     folderName.setAttribute('class', "itemInformation itemInformationName");
     folderName.setAttribute("contenteditable", "true");
-    folderName.innerText = currentViewType[0] == 0 ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
+    folderName.innerText = UserSettings.ViewT == 0 ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
     $('.fileInformationContent')[0].appendChild(folderName);
 
     let folderUUID = document.createElement('p');
@@ -551,7 +479,7 @@ function displaySecurityEntry(itemSecurity) {
   for (i=0; i<itemSecurity.length; i++) {
     securityContainer = document.createElement('div');
     securityContainer.setAttribute("class", "securityContainer");
-    document.getElementById("fileInformationContent").appendChild(securityContainer)
+    $(".fileInformationContent")[0].appendChild(securityContainer)
 
     secureIcon = document.createElement('i');
     if (itemSecurity[i] == "Password") { secureIcon.setAttribute("class", "itemLockIcon far fa-keyboard"); }
@@ -622,13 +550,13 @@ function displayUploadDownloadOverlay(Title, ContextMenu) {
     if (ContextMenu == "ContextMenu") {
       if (!DownloadItems.includes(RCElement.getAttribute('Nano-path'))) { 
         DownloadItems.push( RCElement.getAttribute('Nano-path') )
-        $("#UpDownOverlayItems")[0].innerText += (currentViewType == "Block" ? RCElement.childNodes[0].innerText :  RCElement.childNodes[1].innerText)+ "\n";
+        $("#UpDownOverlayItems")[0].innerText += (UserSettings.ViewT == 0 ? RCElement.childNodes[0].innerText :  RCElement.childNodes[1].innerText)+ "\n";
       }
       if ( $("[selected='true']") ) { 
         $("[selected='true']").each(function(index, item) {
           if (!DownloadItems.includes(item.getAttribute('Nano-path'))) { 
             DownloadItems.push(item.getAttribute('Nano-path')) 
-            $("#UpDownOverlayItems")[0].innerText += (currentViewType == "Block" ? item.childNodes[0].innerText :  item.childNodes[1].innerText)+ "\n";
+            $("#UpDownOverlayItems")[0].innerText += (UserSettings.ViewT == 0 ? item.childNodes[0].innerText :  item.childNodes[1].innerText)+ "\n";
           }
         })
       }
@@ -670,7 +598,7 @@ function displayColorPicker(calledBy, callback) {
   document.body.appendChild(colorContainer);
 
   if (typeof RCElement !== 'undefined' && RCElement.hasAttribute('style')) {
-    let RGBColor = currentViewType == "Block" ? $(RCElement).css('borderBottom').replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',') : $(RCElement).css('boxShadow').replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
+    let RGBColor = UserSettings.ViewT == 0 ? $(RCElement).css('borderBottom').replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',') : $(RCElement).css('boxShadow').replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
     let HexColor = "#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2);
     $("#colorPickEntry")[0].value = HexColor
     $("#colorPickEntry")[0].style.color = HexColor;

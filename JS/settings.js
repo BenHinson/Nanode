@@ -103,12 +103,11 @@ function handleSettings() {
     else if (key == "Theme") {
       UserSettings[key] == 0 ? document.body.classList.add('dark-theme') : document.body.classList.remove('dark-theme');
     }
-    else if (key == "ViewT") { 
-      currentViewType = UserSettings[key];
-      if (currentViewType == 0) {
+    else if (key == "ViewT") {
+      if (UserSettings.ViewT == 0) {
         directoryPath == "Homepage" ? viewHomepageContentAsBlock() : viewContentAsBlock();
         clientStatus("CS6", "Off");
-      } else if (currentViewType == 1) {
+      } else if (UserSettings.ViewT == 1) {
         directoryPath == "Homepage" ? viewHomepageContentAsList() : viewContentAsList();
         clientStatus("CS6", "True");
       }

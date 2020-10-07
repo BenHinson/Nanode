@@ -189,7 +189,6 @@ body {
   top: 28px;
   z-index: 1;
   color: #4b505a;
-  cursor: pointer;
 }
 
 .dark-theme .directoryLocationControls {
@@ -239,11 +238,11 @@ body {
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
 }
 
-.directoryLocationControls .directoryControlButton:hover {
+.directoryLocationControls .directoryControlButton:hover:not(.notActive) {
   opacity: 0.7;
 }
 
-.directoryLocationControls .directoryControlButton:hover:after {
+.directoryLocationControls .directoryControlButton:hover:not(.notActive):after {
   -webkit-transform: scaleX(1);
           transform: scaleX(1);
 }
@@ -252,6 +251,11 @@ body {
   -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
           box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
   opacity: 0.7;
+}
+
+.directoryLocationControls .notActive {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .fileContainer {
@@ -437,6 +441,10 @@ body {
   width: 100%;
   margin: 15px 0 0 0;
   border-radius: 5px;
+  -webkit-transition: -webkit-box-shadow 300ms;
+  transition: -webkit-box-shadow 300ms;
+  transition: box-shadow 300ms;
+  transition: box-shadow 300ms, -webkit-box-shadow 300ms;
 }
 
 .ListContentContainer a {
@@ -619,6 +627,11 @@ body {
 .listItem-Hover {
   -webkit-box-shadow: 0px 0px 4px 0px var(--highlight-color);
           box-shadow: 0px 0px 4px 0px var(--highlight-color);
+}
+
+.listSpan-Hover {
+  -webkit-box-shadow: 0px 0px 4px 1px var(--highlight-color);
+          box-shadow: 0px 0px 4px 1px var(--highlight-color);
 }
 
 .PagePanel {

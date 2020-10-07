@@ -1,24 +1,14 @@
-// viewType = "Blocks";
 fileInformationOpen = true;
-PreviousNanoPath = [];  PreviousTextPath = [];
-ForwardNanoPath = [];  ForwardTextPath = [];
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 $("#directoryControlNewFile").on("click", function() { displayCentralActionMain("New File", "Create") });
 $("#directoryControlNewFolder").on("click", function() { displayCentralActionMain("New Folder", "Create") });
-$("#returnToHomepage").on("click", function() { directoryPath = 'Homepage'; socket.emit('directoryLocation', {directoryPath}) })
-$("#directoryControlRefresh").mousedown( function() { directoryRefresh(); } )
 $(".fileInformationSideBar").on("click", function() { displaySideBar(); })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function directoryRefresh() {
-  socket.emit('directoryLocation', {directoryPath:NanoPath});
-  clientStatus("CS2", "True", 400);clientStatus("CS4", "Wait", 500);
-}
 
 function displaySideBar(state) {
   if (!fileInformationOpen || state == false) {
@@ -79,12 +69,7 @@ function dragElement(element) {
 function renameSpan(e) {
   var target = e ? e.target : RCElement.children[0];
   var currentSpanName = target.innerText;
-  if (currentViewType != "Block") {
-    target.style.borderLeft = '2px solid #ccc';
-    target.style.borderRight = '2px solid #ccc';
-  } else {
-    target.style.borderBottom = '1px solid';
-  }
+  target.style.borderBottom = '1px solid';
   
   $(target).keypress(function(e){
     if (e.keyCode == 13) { e.preventDefault(); }
@@ -132,8 +117,8 @@ function renameItem(e) {
     e.target.style.background = 'rgba(0,0,0,0.1)';
   } else if (RCElement) { 
     var targetID = RCElement.getAttribute('Nano-path');
-    var nameInput = currentViewType != "Block" ? RCElement.children[1] : RCElement.children[0];
-    currentViewType != "Block" ? nameInput.style.cssText = "font-size: 16px; border-bottom: 1px solid #666;" : nameInput.classList.add("FolderNameEdit");
+    var nameInput = UserSettings.ViewT == 0 ? RCElement.children[0] : RCElement.children[1];
+    UserSettings.ViewT == 0 ? nameInput.classList.add("FolderNameEdit") : nameInput.style.cssText = "font-size: 16px; border-bottom: 1px solid #666;";
     nameInput.setAttribute('contenteditable', "true");
     nameInput.parentNode.classList.add("noHover", "noOpen");
   }
