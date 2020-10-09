@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang='en-GB'>
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Secure File Storage">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nanode</title>
-    <link rel="shortcut icon" type="image/x-icon" href="assets/logo/N_Colour.svg"/>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/logo/N_Colour.svg" alt='Nanode'/>
     <link rel="stylesheet" href="./CSS/master.css">
   </head>
   <body class="dark-theme" style="background: #121214;">
 
     <section class="HomeSection Sec1">
-      <img class="NanodeLogo" src="assets/Nanode/Nanode.svg">
-      <img class="NanodeFade" src="">
+      <img class="NanodeLogo" src="assets/Nanode/Nanode.svg" alt='Nanode'>
+      <img class="NanodeFade" src="" alt='_'>
       <p class="NanodeVersion">Digital Storage<br><br>Alpha 2.3.0</p>
       <div class="NanoHome NHT"></div><div class="NanoHome NHB"></div>
       <!-- <div class="NanoHome NHL"></div> <div class="NanoHome NHR"></div> -->
-      <a class="NanoHome NHC NHTLC" href="https://drive.nanode.one"><svg></svg><h3>STORAGE</h3><img src="assets/Nanode/Drive.svg"></a>
-      <a class="NanoHome NHC NHTRC" href="https://account.nanode.one"><svg></svg><h3>ACCOUNT</h3><img src="assets/Nanode/User.svg"></a>
-      <a class="NanoHome NHC NHBLC"><svg></svg><h3>SETTINGS</h3><img src="assets/Nanode/Set.svg"></a>
-      <a class="NanoHome NHC NHBRC" href="https://dev.nanode.one"><svg></svg><h3>DEVELOPMENT</h3><img src="assets/Nanode/Dev.svg"></a>
+      <a class="NanoHome NHC NHTLC" href="https://drive.nanode.one"><svg></svg><h3>STORAGE</h3><img src="assets/Nanode/Drive.svg" alt='Drive'></a>
+      <a class="NanoHome NHC NHTRC" href="https://account.nanode.one"><svg></svg><h3>ACCOUNT</h3><img src="assets/Nanode/User.svg" alt='User'></a>
+      <a class="NanoHome NHC NHBLC"><svg></svg><h3>SETTINGS</h3><img src="assets/Nanode/Set.svg" alt='Settings'></a>
+      <a class="NanoHome NHC NHBRC" href="https://dev.nanode.one"><svg></svg><h3>DEVELOPMENT</h3><img src="assets/Nanode/Dev.svg" alt='Dev'></a>
     </section>
 
     <section class="HomeSection Sec2">
-      <img class="NanoPCB" src="assets/Nanode/PCB.svg">
+      <img class="NanoPCB" src="assets/Nanode/PCB.svg" alt='PCB'>
 
       <div class="PCBText">
         <div class="PCBInfo PCBIEncrypt">
@@ -59,8 +59,8 @@
     </section>
 
     <section class="HomeSection Sec3">
-      <img class="NanoFlow" src="assets/Nanode/Flow_C.svg">
-      <img class="NanoFlowText" src="assets/Nanode/Flow_Text.svg">
+      <img class="NanoFlow" src="assets/Nanode/Flow_C.svg" alt='Flow Diagram'>
+      <img class="NanoFlowText" src="assets/Nanode/Flow_Text.svg" alt='Flow Description'>
     </section>
 
     <section class="HomeSection Sec4">
@@ -77,23 +77,32 @@
       <div class="settingsWrapper">
         <h4>Account</h4>
           <span><a href="//account.nanode.one">View Account Settings</a></span>
-          <span><h5>Lock all Links</h5><input class="SWBtnOne" id="SW_LockLinks" type="button" value="Lock"></input></span>
-          <span><h5>Last Accessed</h5><input id="SW_LastAc" type="text" placeholder="No Logged Time"></input></span>
+          <span><h5>Lock all Links</h5>
+            <input class="SWBtnOne" id="SW_LockLinks" type="button" value="Lock"></input></span>
+          <span><h5>Last Accessed</h5> <label for='LastAc'>Last Accessed</label>
+            <input name='LastAc' id="SW_LastAc" type="text" placeholder="No Logged Time"></input></span>
         <h4>Directory</h4>
-          <span><h5>Starting Directory</h5><input id="SW_Dir" type="text"></span>
-          <span><h5>Bin Size</h5><input id="SW_Bin" type="number"></span>
-          <span><h5>Locked Folders</h5><input class="SWBtnThree" id="SW_LockF_Pad" type="button" value="Padlock"><input class="SWBtnThree" id="SW_LockF_Bor" type="button" value="Border"><input class="SWBtnThree" id="SW_LockF_Non" type="button" value="None"></span>
+          <span><h5>Starting Directory</h5> <label for='Dir'>Starting Directory</label>
+            <input name='Dir' id="SW_Dir" type="text"></span>
+          <span><h5>Bin Size</h5> <label for='Bin'>Bin Size</label>
+            <input name='Bin' id="SW_Bin" type="number"></span>
+          <span><h5>Locked Folders</h5>
+            <input class="SWBtnThree" id="SW_LockF_Pad" type="button" value="Padlock"><input class="SWBtnThree" id="SW_LockF_Bor" type="button" value="Border"><input class="SWBtnThree" id="SW_LockF_Non" type="button" value="None"></span>
         <h4>Style</h4>
-          <span><h5>Date Format</h5><input class="SWBtnTwo" id="SW_Date_ddmmyy" type="button" value="dd/mm/yy"><input class="SWBtnTwo" id="SW_Date_mmddyy" type="button" value="mm/dd/yy"></span>
-          <span><h5>Time Zone ± GMT</h5><input id="SW_TimeZ" type="number"></span>
-          <span><h5>Theme</h5><input class="SWBtnTwo" id="SW_Theme_Dark" type="button" value="Dark"><input class="SWBtnTwo" id="SW_Theme_Light" type="button" value="Light"></span>
-          <span><h5>View Type</h5><input class="SWBtnTwo" id="SW_ViewT_Block" type="button" value="Block"><input class="SWBtnTwo" id="SW_ViewT_List" type="button" value="List"></span>
-          <span><h5>Highlight Colour</h5><input id="SW_HighL" type="color"></span>
-          <span><h5>Background Image</h5><input id="SW_BGImg" type="url" placeholder="URL or Item ID"></span>
+          <span><h5>Date Format</h5>
+            <input class="SWBtnTwo" id="SW_Date_ddmmyy" type="button" value="dd/mm/yy"><input class="SWBtnTwo" id="SW_Date_mmddyy" type="button" value="mm/dd/yy"></span>
+          <span><h5>Time Zone ± GMT</h5> <label for='TimeZ'>Time Zone ± GMT</label>  
+            <input name='TimeZ' id="SW_TimeZ" type="number"></span>
+          <span><h5>Theme</h5>
+            <input class="SWBtnTwo" id="SW_Theme_Dark" type="button" value="Dark"><input class="SWBtnTwo" id="SW_Theme_Light" type="button" value="Light"></span>
+          <span><h5>View Type</h5>
+            <input class="SWBtnTwo" id="SW_ViewT_Block" type="button" value="Block"><input class="SWBtnTwo" id="SW_ViewT_List" type="button" value="List"></span>
+          <span><h5>Highlight Colour</h5>  <label for='HighL'>Highlight Colour</label>
+            <input name='HighL' id="SW_HighL" type="color"></span>
+          <span><h5>Background Image</h5>  <label for='BGImg'>Background Image</label>
+            <input name='BGImg' id="SW_BGImg" type="url" placeholder="URL or Item ID"></span>
       </div>
     </div>
-
-
 
   </body>
 </html>
@@ -105,12 +114,12 @@
 <script>
   $(".NanodeFade")[0].src = "assets/Nanode/Fade"+(Math.floor(Math.random() * Math.floor(4))) + ( ( ( window.innerWidth <= 700 ) && ( window.innerHeight <= 1000 ) ) ? ".png" : ".svg" )
 
-  for (i = 0; i < 50; i++) {
-    x = (Math.random() * Math.floor(400)).toFixed(5);
-    y = (Math.random() * Math.floor(400)).toFixed(5);
-    z = (Math.random() * Math.floor(200)).toFixed(5) * ((Math.random()*2).toFixed() == 2 ? 1 : -1);
-    $(".Map3d")[0].innerHTML += "<div class='point' style='transform:translate3d("+x+"px,"+y+"px,"+z+"px);'></div>";
-  }
+  // for (i = 0; i < 50; i++) {
+  //   x = (Math.random() * Math.floor(400)).toFixed(5);
+  //   y = (Math.random() * Math.floor(400)).toFixed(5);
+  //   z = (Math.random() * Math.floor(200)).toFixed(5) * ((Math.random()*2).toFixed() == 2 ? 1 : -1);
+  //   $(".Map3d")[0].innerHTML += "<div class='point' style='transform:translate3d("+x+"px,"+y+"px,"+z+"px);'></div>";
+  // }
 
 $(".NHC")
   .mouseenter(function(e) {

@@ -10,6 +10,59 @@ $(".fileInformationSideBar").on("click", function() { displaySideBar(); })
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+$("#directoryControlForward").on("click", function() {
+  if ( Directory_Tree[Tree_Number].Route[Tree_Steps] ) {
+    Directory_Route = Directory_Tree[Tree_Number].Route.slice(0, Tree_Steps + 1);
+    Tree_Steps = Directory_Route.length;
+  } else if (Directory_Tree[Tree_Number + 1]) {
+    Directory_Route = Directory_Tree[Tree_Number + 1].Route;
+    Tree_Number++;
+    Tree_Steps = Directory_Tree[Tree_Number].Start;
+  } else { return; }
+
+  FolderCall = false;
+  socket.emit('directoryLocation', (Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Nano))
+  clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+})
+
+$("#directoryControlBack").on("click", function(e) {
+  if ( Tree_Steps > Directory_Tree[Tree_Number].Start) {
+    Directory_Route = Directory_Route.slice(0, Tree_Steps - 1 );
+  } else if (Directory_Tree[Tree_Number - 1]) {
+    Directory_Route = Directory_Tree[Tree_Number - 1].Route;
+    Tree_Number--;
+  } else { return; }
+  
+  Tree_Steps = Directory_Route.length;
+
+  FolderCall = false;
+  socket.emit('directoryLocation', (Directory_Route[Tree_Steps - 1].Nano))
+  clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+})
+
+$("#returnToHomepage").on("click", function() {
+  if (JSON.stringify(Directory_Tree[Tree_Number]) !== JSON.stringify({"Start": 1, "Route": [{"Nano": "Homepage", "Text": "Homepage"}]})) {
+    Directory_Route = [{"Nano": "Homepage", "Text": "Homepage"}]
+    Directory_Tree.push({"Start": 1, "Route": Directory_Route});
+
+    Tree_Number++;
+    Tree_Steps = 1;
+    FolderCall = false;
+  
+    socket.emit('directoryLocation', ("Homepage"));
+    clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+  } else { return; }
+})
+
+$("#directoryControlRefresh").mousedown( function() {
+  FolderCall = false;
+  socket.emit('directoryLocation', (NanoPath));
+  clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 function displaySideBar(state) {
   if (!fileInformationOpen || state == false) {
     $(".DLCRight")[0].style.right = "";
@@ -91,22 +144,13 @@ function renameSpan(e) {
   },20)
 }
 
-
 function collapseSpan() {
   if (RCElement.hasAttribute('collapsed') == true) {
-    RCElement.style.height = "";
     RCElement.removeAttribute('collapsed');
-    let spanElements = $(RCElement).children().not('a')
-    for (let i=0; i<spanElements.length; i++) {
-      spanElements[i].style.display = "";
-    }
+    $(RCElement).find('table').css("visibility", "visible")
   } else {
     RCElement.setAttribute('collapsed', true);
-    let spanElements = $(RCElement).children().not('a')
-    for (let i=0; i<spanElements.length; i++) {
-      spanElements[i].style.display = "none";
-    }
-    RCElement.style.height = "20px";
+    $(RCElement).find('table').css("visibility", "collapse")
   }
 }
 

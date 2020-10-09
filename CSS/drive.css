@@ -598,11 +598,13 @@ body {
   font-weight: 100;
   font-family: inherit;
   z-index: 990;
+  color: #292b2f;
   background: #f1f1f1;
 }
 
 .dark-theme .listItem-Placeholder {
   background: #1e1e22;
+  color: #f1f1f1;
 }
 
 .listItem-Placeholder h5 {

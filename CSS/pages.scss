@@ -33,12 +33,15 @@
   box-sizing: border-box;
   z-index: 5;
 
-  transition: left 0.8s ease-in-out;
-
   .dark-theme & {
     background: #1a1a1d;
     box-shadow: 2px 0px 4px 0px #050505;
   }
+}
+
+.Displayed_Page {
+  left: 50px;
+  transition: left 0.8s ease-in-out;
 }
 
 
@@ -456,24 +459,26 @@
   }
 
 }
-
 .CodexContentContainer {
   position: fixed;
   height: 100%;
   width: calc(100% - 350px);
   top: 0;
-  right: 100vw;
+  left: -100vw;
   z-index: 5;
 
   color: #121214;
   background: #e4e4e6;
-  transition: 
-    right 800ms ease-in-out,
-    width 800ms ease-in-out;
 
   .dark-theme & {
     color: #f1f1f1;
     background: #121214;
+  }
+
+  &.Displayed_Container {
+    transition: 
+    right 800ms ease-in-out,
+    width 800ms ease-in-out;
   }
 
   .codexVideoContainer {

@@ -76,6 +76,7 @@ function uploadDirectoryLocation(Page, location) {
 
 function viewHomepageContentAsBlock() {
   $(".fileContainer").empty();
+  // $(".fileContainer > *:not('.blockItem-Placeholder')").remove();
   for (i=0; i<pageContent.length; i++) {
     
     $(".fileContainer")[0].innerHTML += "<div class='ContentContainer' rc='ContentContainer'><a contenteditable='true'>"+pageContent[i][0]+"</a></div>"
@@ -93,6 +94,7 @@ function viewHomepageContentAsBlock() {
 
 function viewContentAsBlock() {
   $(".fileContainer").empty();
+  // $(".fileContainer > *:not('.blockItem-Placeholder')").remove();
   $(".fileContainer")[0].innerHTML += "<div class='ContentContainer'></div>"
 
   pageContent[0][1].forEach(function(Item, index) {
@@ -147,7 +149,7 @@ function generateBlockFolder(isHomepage, Item, index, Parent) {
 ////////////////////////////////////////////////////////////////////////
 
 function viewHomepageContentAsList() {
-  $(".fileContainer").empty();
+  $(".fileContainer > *:not('.listItem-Placeholder')").remove();
   for (i=0; i<pageContent.length; i++) {
 
     $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span' Home-Span='"+pageContent[i][0]+"'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
@@ -174,7 +176,7 @@ function viewHomepageContentAsList() {
 }
 
 function viewContentAsList() {
-  $(".fileContainer").empty();
+  $(".fileContainer > *:not('.listItem-Placeholder')").remove();
 
   let ContentContainer = document.createElement('div');
   ContentContainer.setAttribute("class", "ListContentContainer");

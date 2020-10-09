@@ -2,7 +2,6 @@
 
 // FOR ISSUE RELATING TO THE LARGE GAP ON SUB PAGES. REMOVE FLEX-BOX AND -WEBKIT-BOX FOR THE FILE CONTAINER (warning... Fucks homepage. Need to add special case for this. reee)
 
-
 RightClickObjectMenu = {
   "File_Container" : {
     "New Folder": [{"Command": "displayCentralDirectoryManager", 'Var1':'New Folder', 'Var2':'Create'}], 

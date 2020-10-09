@@ -1,23 +1,26 @@
+directoryPath = "Homepage";
+Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
+Directory_Route = []; // The Current Route, is whats used for the dir btns. Doesnt Store Forward
+Tree_Number = 0; // Current Tree Index
+Tree_Steps = 0; // Current Index in Tree
+FolderCall = true; // If Route Was Called by Clicking on a Folder
+
 pageContent = '';
 NanoSelected = "";
 UserSettings = {};
 
-directoryPath = "Homepage";
 
-// document.getElementsByClassName("Sec2")[0].scrollIntoView({behavior: 'smooth', block: 'center'}); Possible Usage Somewhere
+// Connect to socket.io
+window.socket = io.connect('https://Nanode.one');
 
 //////////////////////////////////////////
 //////////////////////////////////////////
 
 document.addEventListener('DOMContentLoaded', function() {
 
-  // Connect to socket.io
-  window.socket = io.connect('https://Nanode.one');
-
   // Check for Connection
   if (socket !== undefined) {
 
-    // setTimeout(function() { clientStatus("CS0", "Wait") }, 200)
     socket.emit('CallSettings', "Read");
     socket.emit('directoryLocation', (directoryPath))
 
@@ -28,8 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     socket.on("Directory", ({Parent_Path, Contents}) => {
-      clientStatus("CS3", "True", 800);
-      clientStatus("CS7", "Wait", 400);
+      clientStatus("CS3", "True", 800); clientStatus("CS7", "Wait", 400);
       if (Parent_Path != "Homepage") {directoryInfo = Contents.shift();}
       NanoPath = Parent_Path; directoryPath = (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name);
       pageContent = Contents;
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
       uploadDirectory = NanoPath == "Homepage" ? "Uploads" : directoryInfo.Name;
       uploadDirectoryLocation(NanoPath, uploadDirectory);
 
-      Route_WIP("Directory", NanoPath, (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name))
+      Route(NanoPath, (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name))
     })
 
 
@@ -118,11 +120,13 @@ onkeydown = onkeyup = function(e) {
 
 function clientStatus(Light, Status, Time) {
   lightColours = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
-  document.getElementById(Light).style.cssText = "background: "+lightColours[Status]+"; color:"+lightColours[Status]+";";
-  if (Time) {
-    setTimeout(function() {
-      document.getElementById(Light).style.cssText = "background: none; color: none;";
-    }, Time)
+  if (document.getElementById(Light) != undefined) {
+    document.getElementById(Light).style.cssText = "background: "+lightColours[Status]+"; color:"+lightColours[Status]+";";
+    if (Time) {
+      setTimeout(function() {
+        document.getElementById(Light).style.cssText = "background: none; color: none;";
+      }, Time)
+    }
   }
 }
 
@@ -243,6 +247,7 @@ function setupFileMove(Caller) {
     var hoveringOver;
 
     $( "tr[nano-path]" ).draggable({
+      appendTo: '.fileContainer',
       containment: "#databaseBackgroundMain",
       connectToSortable: ".ListContentTable",
       revert: "invalid",
@@ -267,15 +272,17 @@ function setupFileMove(Caller) {
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
           console.log("OPEN FOLDER AFTER LONG HOVER OVER")
-          // socket.emit('directoryLocation', (e.target.getAttribute("Nano-Path")));
+          // FolderCall = false;
+          socket.emit('directoryLocation', (e.target.getAttribute("Nano-Path")));
         }, 1500)
       },
       out : function() {
         clearTimeout(hoveringOver)
       },
       drop: function(e, droppedItem) {
-        droppedItem.draggable[0].remove(); 
-        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Folder" });
+        droppedItem.draggable[0].remove();
+        FolderCall = false;
+        socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Folder" });
       },
     })
 
@@ -286,137 +293,73 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         if (!e.target.contains(droppedItem.draggable[0])) {
           droppedItem.draggable[0].remove();
-          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('home-span'), "ToType": "Span" });
+          FolderCall = false;
+          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('home-span'), "ToType": "Span" });
         }
       },
     })
 
-    $(".dirBtn").droppable({
-      accept: "tr[nano-path]",
-      hoverClass: "dirBtn-Hover",
-      tolerance: 'pointer',
-      drop: function(e, droppedItem) {
-        droppedItem.draggable[0].remove();
-        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Directory" });
-      }
-    })
+    // isnt the current path. if i choose to open that path, remember to sort out the Route Code
+
+    // $(".dirBtn").droppable({
+    //   accept: "tr[nano-path]",
+    //   hoverClass: "dirBtn-Hover",
+    //   tolerance: 'pointer',
+    //   drop: function(e, droppedItem) {
+    //     console.log(307)
+    //     droppedItem.draggable[0].remove();
+    //     FolderCall = false;
+    //     socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Directory" });
+    //   }
+    // })
   }
 }
 
 
+function Route(Nano_Path, Text_Path) {
 
-Directory_Route = []; // The Current Route, is whats used for the dir btns. Doesnt Store Forward
-Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
-TreeNumber = 0; // Current Tree Index
-TreeSteps = 0; // Current Index in Tree Index
-FolderCall = true; // If Route Was Called by Clicking on a Folder
-
-function Route_WIP(Action, Nano_Path, Text_Path) {
-
-  if (Action == "Directory" && FolderCall == true) {
+  if (FolderCall == true) {
     Directory_Route.push({"Nano": Nano_Path, "Text": Text_Path})
-    if (Directory_Tree.length && Directory_Tree[TreeNumber][TreeSteps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
-      Directory_Tree = Directory_Tree.slice(0, TreeNumber + 1)
+    if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
+      Directory_Tree = Directory_Tree.slice(0, Tree_Number + 1);
     }
-    Directory_Tree[TreeNumber] = Directory_Route;
-    TreeSteps++;
+    if (!Directory_Tree[Tree_Number]) { Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
+    Directory_Tree[Tree_Number].Route = Directory_Route;
+    Tree_Steps++;
   }
 
   FolderCall = true;
 
-  // Shortcuts
-  // Refresh dupes last item;
-
-  // Be able to drag an item into that path and have it open.
-  // Have it work for locked items too. if locked stay locked.
-  // Have it work for shortcuts.
-
-  $("#directoryLocation")[0].innerHTML = " <div class='dirBtn' nano-path='"+Directory_Route[0].Nano+"' title='"+Directory_Route[0].Text+"' >"+Directory_Route[0].Text+"</div> ";
-  for (i=1; i<Directory_Route.length; i++) {
+  $("#directoryLocation")[0].innerHTML = "<div class='dirBtn' nano-path='Homepage' title='Homepage' >Homepage</div>";
+  for (i=1; i<Tree_Steps; i++) {
     $("#directoryLocation")[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-path='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
   }
   $(".dirBtn").last()[0].classList.add('currentDirBtn');
 
 
-  // Path Buttons
   $(".dirBtn").on("click", function(e) {
-    NanoPath = e.target.getAttribute("Nano-path");
-
-    let Route_Obj = Directory_Route.find(o => o.Nano === NanoPath); // Find Index of selected Nano-Path in Directory_Route
-    Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) ); // Remove objects after the Index
+    let NanoPath = e.target.getAttribute("Nano-path");
+    let Route_Obj = Directory_Route.find(o => o.Nano === NanoPath); // Find Object with Nano=NanoPath in Directory_Route
+    Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
     
-    if (Directory_Tree[TreeNumber] != Directory_Route) { Directory_Tree.push(Directory_Route); TreeNumber++; TreeSteps = Directory_Route.length;}
+    if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
+    {Tree_Number++;   Tree_Steps = Directory_Route.length;   Directory_Tree.push({"Start":Tree_Steps, "Route": Directory_Route});}
     
-    socket.emit('directoryLocation', (NanoPath));
-    clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
-  })
-
-
-  // Forward
-  $("#directoryControlForward").off();
-  if (Directory_Tree[TreeNumber][TreeSteps] || Directory_Tree[TreeNumber + 1]) {
-    $("#directoryControlForward")[0].classList.remove('notActive')
-    $("#directoryControlForward").on("click", function(e) {
-      if ( Directory_Tree[TreeNumber][TreeSteps] ) {
-        Directory_Route = Directory_Tree[TreeNumber].slice(0, TreeSteps + 1);
-      } else if (Directory_Tree[TreeNumber + 1]) {
-        Directory_Route = Directory_Tree[TreeNumber + 1];
-        TreeNumber++;
-      }
-      TreeSteps = Directory_Route.length;
-
-      FolderCall = false;
-      socket.emit('directoryLocation', (Directory_Tree[TreeNumber][TreeSteps - 1].Nano))
-      clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
-    })
-  } else { $("#directoryControlForward")[0].classList.add('notActive'); }
-
-  // Back
-  $("#directoryControlBack").off();
-  if ( TreeNumber > 0 || (TreeNumber == 0 && TreeSteps > 1)) {
-    $("#directoryControlBack")[0].classList.remove('notActive')
-    $("#directoryControlBack").on("click", function(e) {
-      if ( Directory_Route.length > 1 ) {
-        var callingFor = Directory_Route[Directory_Route.length - 2].Nano;
-        Directory_Route = Directory_Route.slice(0, Directory_Route.length - 1 );
-      } else if (Directory_Tree.length > 1) {
-        Directory_Route = Directory_Tree[TreeNumber - 1];
-        var callingFor = Directory_Route[Directory_Route.length - 1].Nano;
-        TreeNumber--;
-      } else {return;}
-      
-      FolderCall = false;
-      TreeSteps = Directory_Route.length;
-      socket.emit('directoryLocation', (callingFor))
-      clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
-    })
-  } else { $("#directoryControlBack")[0].classList.add('notActive'); };
-  
-  // Home
-  $("#returnToHomepage").off();
-  if (JSON.stringify(Directory_Tree[TreeNumber]) !== JSON.stringify([{"Nano": "Homepage", "Text": "Homepage"}])) {
-    $("#returnToHomepage")[0].classList.remove('notActive')
-    $("#returnToHomepage").on("click", function() {
-      Directory_Route = [];
-      Directory_Tree.push(Directory_Route);
-
-      TreeNumber++;
-      TreeSteps = 1;
-
-      NanoPath = "Homepage"; directoryPath = 'Homepage';
-
-      socket.emit('directoryLocation', (NanoPath));
-      clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
-    })
-  } else { $("#returnToHomepage")[0].classList.add('notActive'); }
-
-
-  $("#directoryControlRefresh").off();
-  $("#directoryControlRefresh").mousedown( function() {
     FolderCall = false;
+
     socket.emit('directoryLocation', (NanoPath));
     clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
   })
+
+
+  if (Directory_Tree[Tree_Number].Route[Tree_Steps] || Directory_Tree[Tree_Number + 1])
+  {$("#directoryControlForward")[0].classList.remove('notActive')} else {$("#directoryControlForward")[0].classList.add('notActive');}
+
+  if (Directory_Route.length > 1 || Directory_Tree[Tree_Number - 1])
+  {$("#directoryControlBack")[0].classList.remove('notActive')} else { $("#directoryControlBack")[0].classList.add('notActive');}
+
+  if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Nano": "Homepage", "Text": "Homepage"}]))
+  {$("#returnToHomepage")[0].classList.remove('notActive')} else { $("#returnToHomepage")[0].classList.add('notActive');}
 }
 
 

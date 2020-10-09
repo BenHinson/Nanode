@@ -8,6 +8,7 @@ AudioListeners = false;
 audioOrder = [];
 audioNumber = 0;
 
+// Remove left styling and add / remove a class that does it for me and includes the animations so its not active when not needed
 
 $(".PagePanel > div > span").on("click", function(e) {
   let P2O = e.currentTarget.getAttribute("drvpage");
@@ -15,16 +16,21 @@ $(".PagePanel > div > span").on("click", function(e) {
   if (P2O != Current) {
     if (Current != "User") { // Runs When Going from "User" to Panel  OR  between Panels
       $("."+Current+"Container")[0].style.left = "-300px";
+      let opening = Current;
+      setTimeout(function(e){ $("."+opening+"Container")[0].classList.remove('Displayed_Page'); }, 800)
     }
     $(".SelectedPage")[0].classList.remove('SelectedPage');
     e.currentTarget.classList.add('SelectedPage');
     Current = P2O;
     window["load"+Current+"Page"](); // Calls the Function to Handle the Data of each page
     if (Current != "User") {
+      $("."+Current+"Container")[0].classList.add('Displayed_Page');
       $("."+Current+"Container")[0].style.left = "50px";
     }
   } else if (P2O != "User") { // Return to File System
     $("."+Current+"Container")[0].style.left = "-300px";
+    let closing = Current;
+    setTimeout(function(e){ $("."+closing+"Container")[0].classList.remove('Displayed_Page'); }, 800)
     Current = "User";
     $(".SelectedPage")[0].classList.remove('SelectedPage');
     $("[drvPage=User]")[0].classList.add('SelectedPage');
@@ -250,8 +256,11 @@ function codexItemAction(Call, e) {
     $(".codexTextContainer pre").empty(); $(".codexVideoContainer video")[0].src = "";
     $(".codexVideoContainer,.codexTextContainer").css('visibility', 'hidden');
   
-    if ($(".CodexContentContainer")[0].style.right != "0px" && CodexList() != "Audio") { $(".CodexContentContainer")[0].style.right = "0px";}
-    $(".PagePanel > div > span").on("click", function() { $(".CodexContentContainer")[0].style.right = "100vw"; })
+    if ($(".CodexContentContainer")[0].style.right != "0px" && CodexList() != "Audio") { $(".CodexContentContainer")[0].classList.add('Displayed_Container'); $(".CodexContentContainer")[0].style.right = "0px";}
+    $(".PagePanel > div > span").on("click", function() { 
+      $(".CodexContentContainer")[0].style.right = "100vw"; 
+      setTimeout(function(e){ $("."+Current+"Container")[0].classList.remove('Displayed_Page'); }, 400)
+    })
     
     if (CodexList() == "Video") {
       $(".codexVideoContainer").css('visibility', 'visible');

@@ -1,4 +1,4 @@
-window.socket = io.connect('https://nanode.one');
+if (typeof socket == 'undefined') { window.socket = io.connect('https://nanode.one'); }
 
 settingsOpen = true;
 NotLogged = false;
@@ -103,7 +103,7 @@ function handleSettings() {
     else if (key == "Theme") {
       UserSettings[key] == 0 ? document.body.classList.add('dark-theme') : document.body.classList.remove('dark-theme');
     }
-    else if (key == "ViewT") {
+    else if (key == "ViewT" && typeof directoryPath != 'undefined') {
       if (UserSettings.ViewT == 0) {
         directoryPath == "Homepage" ? viewHomepageContentAsBlock() : viewContentAsBlock();
         clientStatus("CS6", "Off");
