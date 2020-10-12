@@ -96,8 +96,116 @@ body {
   }
 }
 
+.fileContainer {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: calc(100% - 250px);
+  top: 80px;
+  padding: 0 24px 80px 40px;
+  transition: box-shadow 0.3s;
+  overflow-x: auto;
+  height: inherit;
+  transition: width 600ms;
+  &.highlight {
+    box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
+    .dark-theme & {
+      box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
+    }
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
 
+  .directoryControlNewSpan {
+    width: 100%;
+    height: 40px;
+    margin: 24px 0 60px 0;
+    padding: 8px;
+    border: 1px dashed rgb(100, 100, 100);
+    border-radius: 5px;
+    text-align: center;
+    color: rgb(100, 100, 100);
+    user-select: none;
+    background: rgba(0, 0, 0, 0.06);
+    transition: background-color, border-color .2s ease-in-out;
+    cursor: pointer;
+    .dark-theme & {
+      color: #666;
+    }
+    &:hover {
+      color: #aaa;
+      border-color: #aaa;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.directoryLocationControls {
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  max-width: 170px;
+  width: 30%;
+  top: 28px;
+  z-index: 1;
+  color: map-get($colorTheme, colorSlightFadedText);
+  .dark-theme & {
+    color: map-get($lightTheme, light1);
+  }
+
+  & > span {
+    width: 45px;
+    &:after {
+      border-bottom: 4px solid var(--highlight-color);
+    }
+  }
+
+  &.DLCLeft {
+    left: 70px;
+  }
+  &.DLCRight {
+    right: 285px;
+    transition: right 600ms;
+  }
+
+  & .directoryControlButton {
+    height: 40px;
+    padding: 4px 8px;
+    font-size: 22px;
+    z-index: 1;
+    text-align: center;
+    color: map-get($colorTheme, colorSlightFadedText);
+    cursor: pointer;
+    .dark-theme & {
+      color: #ccc;
+    }
+    &:after {
+      display:block;
+      content: '';
+      transform: scaleX(0);
+      transition: transform 0.2s ease-in-out;
+    }
+    &:hover:not(.notActive) {
+      opacity: 0.7;
+    }
+    &:hover:not(.notActive):after {
+      transform: scaleX(1);
+    }
+    &.SelectedPage {
+      box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
+      opacity: 0.7;
+    }
+  }
+
+  & .notActive {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+///////////////////////////////////////////////////////// DIRECTORY LOCATION
 
 .homepageBtnContainer {
   width: 40px;
@@ -170,115 +278,6 @@ body {
   }
 }
 
-
-.directoryLocationControls {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  max-width: 170px;
-  width: 30%;
-  top: 28px;
-  z-index: 1;
-  color: map-get($colorTheme, colorSlightFadedText);
-  .dark-theme & {
-    color: map-get($lightTheme, light1);
-  }
-
-  & > span {
-    width: 45px;
-    &:after {
-      border-bottom: 4px solid var(--highlight-color);
-    }
-  }
-
-  &.DLCLeft {
-    left: 70px;
-  }
-  &.DLCRight {
-    right: 285px;
-    transition: right 600ms;
-  }
-
-  & .directoryControlButton {
-    height: 40px;
-    padding: 4px 8px;
-    font-size: 22px;
-    z-index: 1;
-    text-align: center;
-    color: map-get($colorTheme, colorSlightFadedText);
-    cursor: pointer;
-    .dark-theme & {
-      color: #ccc;
-    }
-    &:after {
-      display:block;
-      content: '';
-      transform: scaleX(0);
-      transition: transform 0.2s ease-in-out;
-    }
-    &:hover:not(.notActive) {
-      opacity: 0.7;
-    }
-    &:hover:not(.notActive):after {
-      transform: scaleX(1);
-    }
-    &.SelectedPage {
-      box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
-      opacity: 0.7;
-    }
-  }
-
-  & .notActive {
-    opacity: 0.6;
-    cursor: default;
-  }
-}
-
-.fileContainer {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  width: calc(100% - 250px);
-  top: 80px;
-  padding: 0 24px 80px 40px;
-  transition: box-shadow 0.3s;
-  overflow-x: auto;
-  height: inherit;
-  transition: width 600ms;
-  &.highlight {
-    box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
-    .dark-theme & {
-      box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
-    }
-  }
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-
-  .directoryControlNewSpan {
-    width: 100%;
-    height: 40px;
-    margin: 24px 0 60px 0;
-    padding: 8px;
-    border: 1px dashed rgb(100, 100, 100);
-    border-radius: 5px;
-    text-align: center;
-    color: rgb(100, 100, 100);
-    user-select: none;
-    background: rgba(0, 0, 0, 0.06);
-    transition: background-color, border-color .2s ease-in-out;
-    cursor: pointer;
-    .dark-theme & {
-      color: #666;
-    }
-    &:hover {
-      color: #aaa;
-      border-color: #aaa;
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-}
 
 ///////////////////////////////////////////////////////////////// FOLDER FILE
 
@@ -501,6 +500,7 @@ body {
   box-shadow: 0px 0px 4px 1px var(--highlight-color);
 }
 ///////////////////////////////////////////////////////////////// LEFTBAR
+
 .PagePanel {
   position: fixed;
   height: 100%;
@@ -577,6 +577,7 @@ body {
 }
 
 ///////////////////////////////////////////////////////////////// FILE INFORMATION
+
 .fileInformation {
   position: absolute;
   height: 100%;
@@ -835,6 +836,8 @@ body {
   cursor: pointer;
   z-index: 5;
 
+  transition: background-color 300ms;
+
   &:hover {
     background: rgba(0,0,0,.1);
   }
@@ -864,7 +867,6 @@ body {
      }
   }
 }
-
 
 // Upload and Download Container
 

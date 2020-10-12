@@ -9,6 +9,46 @@ pageContent = '';
 NanoSelected = "";
 UserSettings = {};
 
+///////////////////////////
+
+// Item Information | Overhall and Redesign. 
+      // Path, Not from Call Unless Shortcut. Work out on client.
+      // Edit name.
+      // Notes, Descriptions, Colour, Times, Security, Share, Lock Button.
+      // Create Shortcuts. (show details > change directory > place shortcut here).
+      // Different Share Options - Public short url, Cant Guess Public long url, Limited Amount viewing (Save Share State in object).
+      // CC / internaly add people to view the file via adding UID's to file data. Show Error page if cant view.
+
+// Top Bar | Additions
+      // Condense buttons a bit more.
+      // Is 'New File' really needed? It could be moved. Its in codex. Actually... yeah get codex text to work.
+      // Directory Location should be    Homepage > > > Space    at longer things to keep space. On hover expand. Or make text smaller.
+      // Add search to the bar.   names / in details / type / size etc
+      // At smaller screen sizes, sort out the bottom part.
+      // Use some custom svg assets for the icons.
+
+// Login | Overhall and Redesign
+      // Remember this device. Keep me logged in. Forgot password. Email check. Login verfication.
+      // see: https://uidesigndaily.com/uploads/1083/day_1083.png
+
+// Accounts | Addition and Drive Call to it like settings?
+      // Public Username / Profile Image / Change Password / 2FA / ID / Email / Lock / Last Accessed
+      // Storage Summary -> Allocated / Used / Breakdown File Types
+      // Notifications, External shared file view count.
+
+// Waiting to Be Done
+      // Move files into Codex?
+      // Finish Settings
+      // Sort List By clicking on columns.
+      // Remove Frame Bar and Move over.
+
+
+// Added Features ------------------------------ October
+// Drag Files and Folders into and out of directories, between Spans, and navigate through directories by hovering over folders. (List Only atm)
+// Complete Rework of the Directory Path System, Adding Forward / Backward / Home / Path Buttons, with multiple layers so you can get back to where you were.
+// Long hold over a folder opens it. So you can move files deep into folders in one go.
+
+
 
 // Connect to socket.io
 window.socket = io.connect('https://Nanode.one');
@@ -37,12 +77,12 @@ document.addEventListener('DOMContentLoaded', function() {
       pageContent = Contents;
       if (Parent_Path == "Homepage") { UserSettings.ViewT == 0 ? viewHomepageContentAsBlock() : viewHomepageContentAsList() }
       else { UserSettings.ViewT == 0 ? viewContentAsBlock() : viewContentAsList() }
-      setupFileMove();
-
+      
       uploadDirectory = NanoPath == "Homepage" ? "Uploads" : directoryInfo.Name;
       uploadDirectoryLocation(NanoPath, uploadDirectory);
-
+      
       Route(NanoPath, (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name))
+      setupFileMove();
     })
 
 
@@ -247,10 +287,12 @@ function setupFileMove(Caller) {
     var hoveringOver;
 
     $( "tr[nano-path]" ).draggable({
-      appendTo: '.fileContainer',
+      appendTo: '#databaseBackgroundMain',
       containment: "#databaseBackgroundMain",
       connectToSortable: ".ListContentTable",
-      revert: "invalid",
+      revert: true,
+
+      refreshPositions: true,
 
       delay: 150,
       cursor: "move",
@@ -262,17 +304,15 @@ function setupFileMove(Caller) {
       },
     }).disableSelection();
 
-
     $("tr[type=folder]").droppable({
       accept: "tr[nano-path]",
       hoverClass: "listItem-Hover",
       tolerance: 'pointer',
       greedy: true,
+
       over: function(e) {
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
-          console.log("OPEN FOLDER AFTER LONG HOVER OVER")
-          // FolderCall = false;
           socket.emit('directoryLocation', (e.target.getAttribute("Nano-Path")));
         }, 1500)
       },
@@ -280,38 +320,47 @@ function setupFileMove(Caller) {
         clearTimeout(hoveringOver)
       },
       drop: function(e, droppedItem) {
+        clearTimeout(hoveringOver)
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Folder" });
         droppedItem.draggable[0].remove();
-        FolderCall = false;
-        socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Folder" });
       },
     })
 
-    $("[Home-Span]").droppable({
+    $(".ListContentContainer").droppable({
       accept: "tr[nano-path]",
       hoverClass: "listSpan-Hover",
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
         if (!e.target.contains(droppedItem.draggable[0])) {
-          droppedItem.draggable[0].remove();
+
+          if (e.target.hasAttribute('home-span')) { var dirTo = e.target.getAttribute('home-span'); dirToType = "Span"; }
+          else { var dirTo = NanoPath; dirToType = "Folder" }
+
           FolderCall = false;
-          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('home-span'), "ToType": "Span" });
+          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": dirTo, "ToType": dirToType });
+          droppedItem.draggable[0].remove();
+          $(".listItem-Placeholder")[0].remove();
         }
       },
     })
 
-    // isnt the current path. if i choose to open that path, remember to sort out the Route Code
+    $(".dirBtn").droppable({
+      accept: "tr[nano-path]",
+      hoverClass: "dirBtn-Hover",
+      tolerance: 'pointer',
+      drop: function(e, droppedItem) {
+        if (e.target.getAttribute('nano-path') != NanoPath) {
 
-    // $(".dirBtn").droppable({
-    //   accept: "tr[nano-path]",
-    //   hoverClass: "dirBtn-Hover",
-    //   tolerance: 'pointer',
-    //   drop: function(e, droppedItem) {
-    //     console.log(307)
-    //     droppedItem.draggable[0].remove();
-    //     FolderCall = false;
-    //     socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Directory" });
-    //   }
-    // })
+          if (e.target.getAttribute('nano-path') == "Homepage") { var dirTo = "General"; dirToType = "Span"; }
+          else { var dirTo = e.target.getAttribute('nano-path'); dirToType = "Folder" }
+          
+          FolderCall = false;
+          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": dirTo, "ToType": dirToType });
+          droppedItem.draggable[0].remove();
+          $(".listItem-Placeholder")[0].remove();
+        }
+      }
+    })
   }
 }
 
@@ -361,27 +410,3 @@ function Route(Nano_Path, Text_Path) {
   if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Nano": "Homepage", "Text": "Homepage"}]))
   {$("#returnToHomepage")[0].classList.remove('notActive')} else { $("#returnToHomepage")[0].classList.add('notActive');}
 }
-
-
-
-
-// Long hold over a folder opens it? So you can move files deep into folders in one go. 
-// Ctrl+Z to undo Moves?
-// Mayyyybeee allow you to move files into codex? 
-// Scrap Path for Items, its kinda useless and just adds more problems, can be worked out on the client end anyway.
-// Change up the 'share' on files to allow shorter links, also save the state of share (public / link / one time only) into the json file.
-// One Time / limited time View / Share - Show Error page / image if view limit exceeded
-// Change up the file information sidebar - adding notes, color choice, all times, add security, share, prevent share links.
-// Loading icon for stuff. It is quick atm but might not be all the time / in the future.
-
-
-// Add descriptions to files in the 'details panel'
-// Details panel allows the creation of shortcuts inside other files, or in a 'related' object of another file
-// Different Search types - names / in details / type / size etc
-
-
-
-
-// Added Features
-// Allow the ability to move files between spans on the homepage
-// Complete Rework of the Directory Path System, Adding Forward / Backward / Home / Path Buttons, with multiple layers so you can get back to where you were.

@@ -142,17 +142,13 @@ body {
 }
 
 .loginBackground {
-  position: absolute;
-  top: 0;
-  z-index: 99;
-  width: 100vw;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   background-image: url(https://drive.nanode.one/assets/svg/loginBackgroundLight.svg);
   background-color: #fff;
 }
 
 .dark-theme .loginBackground {
-  background-color: #26262b;
   background-color: #121214;
   background-image: url(https://drive.nanode.one/assets/svg/loginBackgroundDark.svg);
 }
@@ -163,145 +159,160 @@ body {
   width: 500px;
   top: calc(50vh - 190px);
   left: calc(50vw - 250px);
+  color: #0c0c0c;
   background-color: #f6f6f6;
   border-radius: 5px;
   -webkit-box-shadow: 2px 5px 8px 0 rgba(0, 0, 0, 0.2);
           box-shadow: 2px 5px 8px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .dark-theme .mainLoginContainer {
+  color: #fff;
   background-color: #151517;
   -webkit-box-shadow: 4px 10px 10px 0 rgba(0, 0, 0, 0.2);
           box-shadow: 4px 10px 10px 0 rgba(0, 0, 0, 0.2);
 }
 
-.loginForm {
-  width: 90%;
-  height: 70%;
-  margin: 5%;
-  font-family: 'Roboto';
-  font-size: 12px;
-}
-
-.loginMainTitle {
-  font-size: 22px;
+.mainLoginContainer .MainTitle {
   font-weight: 600;
-  font-size: 24px;
   line-height: 30px;
   color: #4d4b4b;
-  text-align: center;
-  margin-bottom: 8px;
+  margin-top: 1rem;
 }
 
-.dark-theme .loginMainTitle {
+.dark-theme .mainLoginContainer .MainTitle {
   color: #ececec;
 }
 
-.loginSecondaryTitle {
-  text-align: center;
+.mainLoginContainer .SecondaryTitle {
   color: #999;
   font-size: 15px;
   line-height: 20px;
-  margin-bottom: 8px;
+  margin: 0.5rem;
 }
 
-.loginInputTitle {
+.mainLoginContainer span {
+  margin-right: 3px;
+  font-size: 13px;
+  font-weight: 100;
+  opacity: 0.5;
+}
+
+.mainLoginContainer button {
+  display: inline-block;
+  border: none;
+  color: #7185c4;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mainLoginContainer button:hover {
+  text-decoration: underline;
+}
+
+form {
+  width: 90%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin: 0.25rem 5%;
   font-size: 12px;
-  color: #8e9297;
-  margin-bottom: 6px;
-  font-weight: 400;
-  font-family: 'Helvetica';
-}
-
-.loginTextInput {
-  height: 40px;
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  color: black;
-  background-color: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  -webkit-transition: border-color .2s ease-in-out;
-  transition: border-color .2s ease-in-out;
-  border-bottom: 2px solid var(--highlight-color);
-  border-radius: 3px;
-}
-
-.dark-theme .loginTextInput {
   color: #fff;
 }
 
-.loginTextInput:focus {
+form .InputTitle {
+  color: #c5c5c5;
+  margin: 6px 0;
+  font-size: 16px;
+  text-align: left;
+}
+
+form .InputTitle p {
+  display: inline-block;
+  font-size: 12px;
+  padding: 0 1rem;
+  color: #d60000;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+form .InputTitle i {
+  font-size: 12px;
+  color: #f04747;
+}
+
+form .TextInput {
+  height: 44px;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  font-size: 15px;
+  color: black;
+  background-color: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  -webkit-transition: border-color 200ms ease-in-out;
+  transition: border-color 200ms ease-in-out;
+  border-bottom: 1px solid var(--highlight-color);
+  border-radius: 3px;
+}
+
+.dark-theme form .TextInput {
+  color: #fff;
+}
+
+form .TextInput::-webkit-input-placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+form .TextInput:-ms-input-placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+form .TextInput::-ms-input-placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+form .TextInput::placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+form .TextInput:focus {
   border: 1px solid var(--highlight-color);
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.dark-theme .loginTextInput:focus {
+.dark-theme form .TextInput:focus {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-.loginButtonInput {
-  width: 100%;
+form .ButtonInput {
   height: 40px;
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center;
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 15px;
+  font-weight: 400;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
   border: none;
   border-radius: 5px;
-  color: #fff;
+  color: #eeeeee;
   background-color: transparent;
   border: 1px solid var(--highlight-color);
+  cursor: pointer;
   -webkit-transition: background-color 400ms ease-in-out;
   transition: background-color 400ms ease-in-out;
-  cursor: pointer;
 }
 
-.loginButtonInput:hover {
+form .ButtonInput:hover {
   background-color: var(--highlight-color);
-}
-
-.forgotPasswordBtn {
-  display: block;
-  border: none;
-  color: #7185c4;
-  background: #e9eaee;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
-
-.dark-theme .forgotPasswordBtn {
-  background: #46484f75;
-}
-
-.forgotPasswordBtn:hover {
-  text-decoration: underline;
-}
-
-.loginAccountReg {
-  margin: 17px 3px 0 0;
-  font-size: 12px;
-  color: #8e9297;
-}
-
-.loginAccountRegBtn {
-  border: none;
-  margin-left: 3px;
-  color: #7185c4;
-  background: #e9eaee;
-  cursor: pointer;
-}
-
-.dark-theme .loginAccountRegBtn {
-  background: #46484f75;
-}
-
-.loginAccountRegBtn:hover {
-  text-decoration: underline;
 }
 
 .HomeSection {

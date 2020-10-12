@@ -92,88 +92,69 @@ body {
           box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
 }
 
-.homepageBtnContainer {
-  width: 40px;
-  padding: 1px 10px;
-}
-
-#directoryLocation {
+.fileContainer {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   position: absolute;
-  top: 28px;
-  width: calc(100vw - 720px);
-  left: 200px;
-  height: 32px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  border: none;
-  color: #4b505a;
-  font-size: 18px;
-  font-weight: 400;
-  font-family: 'Segoe UI';
-  resize: none;
-  overflow: hidden;
-  text-align: left;
-  background: transparent;
-  border-bottom: 1px solid var(--highlight-color);
+  width: calc(100% - 250px);
+  top: 80px;
+  padding: 0 24px 80px 40px;
+  -webkit-transition: -webkit-box-shadow 0.3s;
+  transition: -webkit-box-shadow 0.3s;
+  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, -webkit-box-shadow 0.3s;
+  overflow-x: auto;
+  height: inherit;
+  -webkit-transition: width 600ms;
+  transition: width 600ms;
 }
 
-.dark-theme #directoryLocation {
-  letter-spacing: 1px;
-  font-weight: 200;
-  color: #fafafa;
+.fileContainer.highlight {
+  -webkit-box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
+          box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
 }
 
-.dirBtn {
-  height: 30px;
-  max-width: 150px;
-  padding: 2px 8px 0px 8px;
-  border-radius: 3px;
-  opacity: 0.6;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.dark-theme .fileContainer.highlight {
+  -webkit-box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
+          box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
+}
+
+.fileContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.fileContainer .directoryControlNewSpan {
+  width: 100%;
+  height: 40px;
+  margin: 24px 0 60px 0;
+  padding: 8px;
+  border: 1px dashed #646464;
+  border-radius: 5px;
+  text-align: center;
+  color: #646464;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  background: rgba(0, 0, 0, 0.06);
+  -webkit-transition: background-color, border-color .2s ease-in-out;
+  transition: background-color, border-color .2s ease-in-out;
   cursor: pointer;
 }
 
-.dirBtn:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.1);
+.dark-theme .fileContainer .directoryControlNewSpan {
+  color: #666;
 }
 
-.dirBtn-Hover {
-  background: rgba(0, 0, 0, 0.15);
-}
-
-.dark-theme .dirBtn-Hover {
-  color: var(--highlight-color);
-  background: #1e1e22;
-}
-
-.currentDirBtn {
-  opacity: 1;
-}
-
-.dirArrow {
-  height: 30px;
-  width: 30px;
-  padding: 4px;
-  background-image: url(https://drive.nanode.one/assets/svg/Arrow_Right_Black.svg);
-  background-position: center;
-  opacity: 0.4;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.dark-theme .dirArrow {
-  background-image: url(https://drive.nanode.one/assets/svg/Arrow_Right_White.svg);
+.fileContainer .directoryControlNewSpan:hover {
+  color: #aaa;
+  border-color: #aaa;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .directoryLocationControls {
@@ -258,69 +239,88 @@ body {
   cursor: default;
 }
 
-.fileContainer {
+.homepageBtnContainer {
+  width: 40px;
+  padding: 1px 10px;
+}
+
+#directoryLocation {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
   position: absolute;
-  width: calc(100% - 250px);
-  top: 80px;
-  padding: 0 24px 80px 40px;
-  -webkit-transition: -webkit-box-shadow 0.3s;
-  transition: -webkit-box-shadow 0.3s;
-  transition: box-shadow 0.3s;
-  transition: box-shadow 0.3s, -webkit-box-shadow 0.3s;
-  overflow-x: auto;
-  height: inherit;
-  -webkit-transition: width 600ms;
-  transition: width 600ms;
+  top: 28px;
+  width: calc(100vw - 720px);
+  left: 200px;
+  height: 32px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border: none;
+  color: #4b505a;
+  font-size: 18px;
+  font-weight: 400;
+  font-family: 'Segoe UI';
+  resize: none;
+  overflow: hidden;
+  text-align: left;
+  background: transparent;
+  border-bottom: 1px solid var(--highlight-color);
 }
 
-.fileContainer.highlight {
-  -webkit-box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
-          box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
+.dark-theme #directoryLocation {
+  letter-spacing: 1px;
+  font-weight: 200;
+  color: #fafafa;
 }
 
-.dark-theme .fileContainer.highlight {
-  -webkit-box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
-          box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
-}
-
-.fileContainer::-webkit-scrollbar {
-  display: none;
-}
-
-.fileContainer .directoryControlNewSpan {
-  width: 100%;
-  height: 40px;
-  margin: 24px 0 60px 0;
-  padding: 8px;
-  border: 1px dashed #646464;
-  border-radius: 5px;
-  text-align: center;
-  color: #646464;
+.dirBtn {
+  height: 30px;
+  max-width: 150px;
+  padding: 2px 8px 0px 8px;
+  border-radius: 3px;
+  opacity: 0.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  background: rgba(0, 0, 0, 0.06);
-  -webkit-transition: background-color, border-color .2s ease-in-out;
-  transition: background-color, border-color .2s ease-in-out;
   cursor: pointer;
 }
 
-.dark-theme .fileContainer .directoryControlNewSpan {
-  color: #666;
+.dirBtn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
 }
 
-.fileContainer .directoryControlNewSpan:hover {
-  color: #aaa;
-  border-color: #aaa;
-  background-color: rgba(0, 0, 0, 0.1);
+.dirBtn-Hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.dark-theme .dirBtn-Hover {
+  color: var(--highlight-color);
+  background: #1e1e22;
+}
+
+.currentDirBtn {
+  opacity: 1;
+}
+
+.dirArrow {
+  height: 30px;
+  width: 30px;
+  padding: 4px;
+  background-image: url(https://drive.nanode.one/assets/svg/Arrow_Right_Black.svg);
+  background-position: center;
+  opacity: 0.4;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.dark-theme .dirArrow {
+  background-image: url(https://drive.nanode.one/assets/svg/Arrow_Right_White.svg);
 }
 
 .File_Image {
@@ -1038,6 +1038,8 @@ body {
           user-select: none;
   cursor: pointer;
   z-index: 5;
+  -webkit-transition: background-color 300ms;
+  transition: background-color 300ms;
 }
 
 #uploadStartStopButton:hover {

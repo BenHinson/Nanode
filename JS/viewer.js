@@ -1,6 +1,11 @@
 DownloadItems = [];
 dirPathPass = false;
 
+//////////////////////////
+const fileContainer = document.getElementById('fileContainer');
+//////////////////////////
+
+
 var ItemChecker = function(checkObj) {
   if (!checkObj.isFi) { return "folder" }
   if (checkObj.isImg) { return "image" }
@@ -17,7 +22,7 @@ var ItemChecker = function(checkObj) {
 ///////////////////////////////////////////
 
 function homepageNewSpan() {
-  $(".fileContainer")[0].innerHTML += " <div class='directoryControlNewSpan' id='directoryControlNewSpan'>New Span</div>";
+  fileContainer.innerHTML += `<div class='directoryControlNewSpan' id='directoryControlNewSpan'>New Span</div>`;
   $("#directoryControlNewSpan").on("click", function() { displayCentralActionMain("New Span", "Create") });
 }
 
@@ -75,12 +80,10 @@ function uploadDirectoryLocation(Page, location) {
 ////////////////////////////////////////////////////////////////////////
 
 function viewHomepageContentAsBlock() {
-  $(".fileContainer").empty();
-  // $(".fileContainer > *:not('.blockItem-Placeholder')").remove();
-  for (i=0; i<pageContent.length; i++) {
-    
-    $(".fileContainer")[0].innerHTML += "<div class='ContentContainer' rc='ContentContainer'><a contenteditable='true'>"+pageContent[i][0]+"</a></div>"
+  fileContainer.innerHTML = '';
 
+  for (i=0; i<pageContent.length; i++) {
+    fileContainer.innerHTML += "<div class='ContentContainer' rc='ContentContainer'><a contenteditable='true'>"+pageContent[i][0]+"</a></div>"
     pageContent[i][1].forEach(function(spanItem, index) {
       generateBlockFolder(true, spanItem, index, $(".ContentContainer")[i]);
     })
@@ -93,9 +96,7 @@ function viewHomepageContentAsBlock() {
 } 
 
 function viewContentAsBlock() {
-  $(".fileContainer").empty();
-  // $(".fileContainer > *:not('.blockItem-Placeholder')").remove();
-  $(".fileContainer")[0].innerHTML += "<div class='ContentContainer'></div>"
+  fileContainer.innerHTML = "<div class='ContentContainer'></div>"
 
   pageContent[0][1].forEach(function(Item, index) {
     generateBlockFolder(false, Item, index, $(".ContentContainer")[0]);
@@ -149,10 +150,10 @@ function generateBlockFolder(isHomepage, Item, index, Parent) {
 ////////////////////////////////////////////////////////////////////////
 
 function viewHomepageContentAsList() {
-  $(".fileContainer > *:not('.listItem-Placeholder')").remove();
+  fileContainer.innerHTML = '';
   for (i=0; i<pageContent.length; i++) {
 
-    $(".fileContainer")[0].innerHTML += "<div class='ListContentContainer' rc='Homepage_Span' Home-Span='"+pageContent[i][0]+"'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
+    fileContainer.innerHTML += "<div class='ListContentContainer' rc='Homepage_Span' Home-Span='"+pageContent[i][0]+"'><a contenteditable='true'>"+pageContent[i][0]+"</a><table class='ListContentTable'></table></div>";
     let Table = $('.ListContentTable')[i];
 
     let rowData = ["", " ", "Type", "Modified", "Size", ""];
@@ -176,15 +177,16 @@ function viewHomepageContentAsList() {
 }
 
 function viewContentAsList() {
-  $(".fileContainer > *:not('.listItem-Placeholder')").remove();
+  fileContainer.innerHTML = '';
 
   let ContentContainer = document.createElement('div');
   ContentContainer.setAttribute("class", "ListContentContainer");
-  ContentContainer.style.margin = "0";
-  $(".fileContainer")[0].appendChild(ContentContainer);
+  ContentContainer.style.margin = "1px 0px";
+  fileContainer.appendChild(ContentContainer);
 
   ListContentTable = document.createElement('table');
   ListContentTable.setAttribute("class", "ListContentTable");
+  ListContentTable.style.margin = "25px 0px 0px 0px"
   ContentContainer.appendChild(ListContentTable);
   
   rowData = ["", " ", "Type", "Modified", "Size", ""];
@@ -198,7 +200,7 @@ function viewContentAsList() {
   })
 
   $("div[type='folder']").each(function(i, folder) {
-    $(".fileContainer")[0].prepend(folder);
+    fileContainer.prepend(folder)
   })
 
   clientStatus("CS7", "Ok", 400);
@@ -238,6 +240,86 @@ function addTableRow(Table, type, data, index, Item, Color) {
   }
   if (Color) { tableRow.style.boxShadow = Color+" -3px 0px"}
   Table.appendChild(tableRow);
+}
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+function callItemInformation(selected) {
+  if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
+  if (displayDetails()) {
+
+    
+
+    ItemNanoPath = selected.getAttribute('Nano-path');
+    ItemsTextPath = selected.getAttribute('directory');
+    clientStatus("CS2", "True", 500); clientStatus("CS5", "Wait", 300); clientStatus("CS4", "Wait", 400);
+    socket.emit('ItemInformation', {"Path":ItemNanoPath});
+
+    $('.fileInformationContent').empty();
+    clientStatus("CS7", "Wait", 300);
+
+    let folderName = document.createElement('h3');
+    folderName.setAttribute('class', "itemInformation itemInformationName");
+    folderName.setAttribute("contenteditable", "true");
+    folderName.innerText = UserSettings.ViewT == 0 ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
+    $('.fileInformationContent')[0].appendChild(folderName);
+
+    let folderUUID = document.createElement('p');
+    folderUUID.setAttribute('class', "itemInformationUUID");
+    folderUUID.innerText = selected.getAttribute('Nano-path');
+    $('.fileInformationContent')[0].appendChild(folderUUID);
+
+    let folderDirectory = document.createElement('p');
+    folderDirectory.setAttribute('class', "itemInformation itemInformationBlock")
+    folderDirectory.innerHTML = "Path<br><input class='itemInformationDirectory' value='"+ItemsTextPath+"' title="+ItemsTextPath+" readonly><br>";
+    $('.fileInformationContent')[0].appendChild(folderDirectory);
+
+    if (selected.getAttribute("type") != "folder") {
+      let shareLinkIcon = document.createElement('i');
+      shareLinkIcon.setAttribute('class', "shareLinkIcon fas fa-link")
+      shareLinkIcon.title = "Get a Shareable Link for this item"
+      $('.fileInformationContent')[0].appendChild(shareLinkIcon);
+  
+      let shareableLinkInput = document.createElement('input');
+      shareableLinkInput.setAttribute('class', "shareableLinkInput")
+      shareableLinkInput.setAttribute('placeholder', "Generate Shareable Link");
+      shareableLinkInput.setAttribute('readonly', true);
+      $('.fileInformationContent')[0].appendChild(shareableLinkInput);
+  
+      $(".shareLinkIcon").on("click", function() {
+        if (!shareableLinkInput.value) {
+          clientStatus("CS2", "True", 600); clientStatus("CS5", "User", 500);
+          socket.emit("GenerateShareableLink", {Path: ItemNanoPath})
+        }
+      })
+  
+      $(".shareableLinkInput").on("click", function(e) {
+        $(".shareableLinkInput").select();
+        document.execCommand('copy');
+      })
+    }
+    
+    $('.itemInformationName').on('click', function(e) { renameItem(e) })
+  }
+}
+
+TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
+
+function displayItemInformation(ReturnedInformation) {
+  clientStatus("CS7", "Wait", 400); clientStatus("CS5", "User", 600);
+  let itemInfo = document.createElement('table');
+  itemInfo.setAttribute('class', "itemInformation itemInformationBlock itemInformationTable");
+  let IType = ReturnedInformation[1].isFi ? ReturnedInformation[1].isImg ? "Image" : "File" : "Folder";
+  let ISize = (ReturnedInformation[2] !== null && ReturnedInformation[2] != "") ? (ReturnedInformation[2] / 1024 / 1024).toFixed(2)+" MB" : "-";
+  if (ISize.charAt(0) == "0") ISize = (ReturnedInformation[2] / 1024).toFixed(2)+' KB';
+
+  itemInfo.innerHTML = "<tr><td>Size</td><td>"+ISize+"</td></tr> <tr><td>Type</td><td>"+IType+"</td></tr> <tr><td>Secured</td><td>"+ReturnedInformation[6]+"</td></tr> ";
+
+  for (var key in ReturnedInformation[3]) if (ReturnedInformation[3][key] != "" && key != "DeleT") {itemInfo.innerHTML += "<tr><td>"+TimeKey[key]+"</td><td>"+dateFormater(ReturnedInformation[3][key])+"</td></tr>" }
+
+  $('.fileInformationContent')[0].appendChild(itemInfo);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -394,82 +476,6 @@ function chooseSpanDropdownListener() {
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-function callItemInformation(selected) {
-  if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
-  if (displayDetails()) {
-    ItemNanoPath = selected.getAttribute('Nano-path');
-    ItemsTextPath = selected.getAttribute('directory');
-    clientStatus("CS2", "True", 500); clientStatus("CS5", "Wait", 300); clientStatus("CS4", "Wait", 400);
-    socket.emit('ItemInformation', {"Path":ItemNanoPath});
-
-    $('.fileInformationContent').empty();
-    clientStatus("CS7", "Wait", 300);
-
-    let folderName = document.createElement('h3');
-    folderName.setAttribute('class', "itemInformation itemInformationName");
-    folderName.setAttribute("contenteditable", "true");
-    folderName.innerText = UserSettings.ViewT == 0 ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
-    $('.fileInformationContent')[0].appendChild(folderName);
-
-    let folderUUID = document.createElement('p');
-    folderUUID.setAttribute('class', "itemInformationUUID");
-    folderUUID.innerText = selected.getAttribute('Nano-path');
-    $('.fileInformationContent')[0].appendChild(folderUUID);
-
-    let folderDirectory = document.createElement('p');
-    folderDirectory.setAttribute('class', "itemInformation itemInformationBlock")
-    folderDirectory.innerHTML = "Path<br><input class='itemInformationDirectory' value='"+ItemsTextPath+"' title="+ItemsTextPath+" readonly><br>";
-    $('.fileInformationContent')[0].appendChild(folderDirectory);
-
-    if (selected.getAttribute("type") != "folder") {
-      let shareLinkIcon = document.createElement('i');
-      shareLinkIcon.setAttribute('class', "shareLinkIcon fas fa-link")
-      shareLinkIcon.title = "Get a Shareable Link for this item"
-      $('.fileInformationContent')[0].appendChild(shareLinkIcon);
-  
-      let shareableLinkInput = document.createElement('input');
-      shareableLinkInput.setAttribute('class', "shareableLinkInput")
-      shareableLinkInput.setAttribute('placeholder', "Generate Shareable Link");
-      shareableLinkInput.setAttribute('readonly', true);
-      $('.fileInformationContent')[0].appendChild(shareableLinkInput);
-  
-      $(".shareLinkIcon").on("click", function() {
-        if (!shareableLinkInput.value) {
-          clientStatus("CS2", "True", 600); clientStatus("CS5", "User", 500);
-          socket.emit("GenerateShareableLink", {Path: ItemNanoPath})
-        }
-      })
-  
-      $(".shareableLinkInput").on("click", function(e) {
-        $(".shareableLinkInput").select();
-        document.execCommand('copy');
-      })
-    }
-    
-    $('.itemInformationName').on('click', function(e) { renameItem(e) })
-  }
-}
-
-TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
-
-function displayItemInformation(ReturnedInformation) {
-  clientStatus("CS7", "Wait", 400); clientStatus("CS5", "User", 600);
-  let itemInfo = document.createElement('table');
-  itemInfo.setAttribute('class', "itemInformation itemInformationBlock itemInformationTable");
-  let IType = ReturnedInformation[1].isFi ? ReturnedInformation[1].isImg ? "Image" : "File" : "Folder";
-  let ISize = (ReturnedInformation[2] !== null && ReturnedInformation[2] != "") ? (ReturnedInformation[2] / 1024 / 1024).toFixed(2)+" MB" : "-";
-  if (ISize.charAt(0) == "0") ISize = (ReturnedInformation[2] / 1024).toFixed(2)+' KB';
-
-  itemInfo.innerHTML = "<tr><td>Size</td><td>"+ISize+"</td></tr> <tr><td>Type</td><td>"+IType+"</td></tr> <tr><td>Secured</td><td>"+ReturnedInformation[6]+"</td></tr> ";
-
-  for (var key in ReturnedInformation[3]) if (ReturnedInformation[3][key] != "" && key != "DeleT") {itemInfo.innerHTML += "<tr><td>"+TimeKey[key]+"</td><td>"+dateFormater(ReturnedInformation[3][key])+"</td></tr>" }
-
-  $('.fileInformationContent')[0].appendChild(itemInfo);
-}
-
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
 
 
 function displaySecurityEntry(itemSecurity) {

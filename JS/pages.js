@@ -8,7 +8,6 @@ AudioListeners = false;
 audioOrder = [];
 audioNumber = 0;
 
-// Remove left styling and add / remove a class that does it for me and includes the animations so its not active when not needed
 
 $(".PagePanel > div > span").on("click", function(e) {
   let P2O = e.currentTarget.getAttribute("drvpage");
@@ -258,8 +257,8 @@ function codexItemAction(Call, e) {
   
     if ($(".CodexContentContainer")[0].style.right != "0px" && CodexList() != "Audio") { $(".CodexContentContainer")[0].classList.add('Displayed_Container'); $(".CodexContentContainer")[0].style.right = "0px";}
     $(".PagePanel > div > span").on("click", function() { 
-      $(".CodexContentContainer")[0].style.right = "100vw"; 
-      setTimeout(function(e){ $("."+Current+"Container")[0].classList.remove('Displayed_Page'); }, 400)
+      $(".CodexContentContainer")[0].style.right = "100vw";
+      setTimeout(function(e){ $(".CodexContentContainer")[0].classList.remove('Displayed_Page'); }, 400)
     })
     
     if (CodexList() == "Video") {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang='en-GB'>
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Secure File Storage">
@@ -13,21 +13,22 @@
 
     <div class="loginBackground">
       <div class="mainLoginContainer">
-        <form id="loginForm" class="loginForm" action="/login" method="POST">
-          <div class="loginMainTitle">Welcome</div>
-          <div class="loginSecondaryTitle">Login to view your drive</div>
+        <h2 class="MainTitle">Welcome</h2>
+        <div class="SecondaryTitle">Login to your drive</div>
 
-          <div id="loginInputTitleUser" class="loginInputTitle">USERNAME</div>
-          <input id="loginUsername" class="loginTextInput" type="text" autocomplete="off" name="username" placeholder aria-label="Username" maxlength="64" spellcheck="false" value style="margin-bottom: 25px;" required>
+        <form id="loginForm" method="POST">
+          <div id="TitleEmail" class="InputTitle">Email</div>
+          <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required>
 
-          <div id="loginInputTitlePwd" class="loginInputTitle">PASSWORD
-            <p id="PWReqs" style="color: #d60000; width: max-content; display: none"> Minimum:  8 Characters / 1 Number / 1 Uppercase / 1 Lowercase / 1 Special Character</p>
-          </div>
-          <input id="loginPwd" class="loginTextInput" type="password" autocomplete="new-password"  name="password" placeholder aria-label="Password" maxlength="64" spellcheck="false" value style="margin-bottom: 10px;" required>
-          <button type="button" class="forgotPasswordBtn">Forgot your password?</button>
-          <input id="loginBtn" class="loginButtonInput" type="submit" value="Login">
-          <div class="loginAccountReg"><span id="accountStatus">Dont have an account?</span><button type="button" id="loginAccountRegBtn" class="loginAccountRegBtn">Register Here</button></div>
+          <div id="TitlePwd" class="InputTitle">Password</div>
+          <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required>
+
+          <!-- <button>Forgot your password?</button> -->
+          <input id="loginBtn" class="ButtonInput" type="submit" value="Login">
         </form>
+
+        <span id="accountStatus">Dont have an account?</span>
+        <button onclick="loginSignupFormSwitch()">Signup</button>
       </div>
     </div>
 
@@ -35,13 +36,6 @@
   </body>
 </html>
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
 <script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script text="text/javascript" src="JS/login.js"></script>
-
-<script> 
-$(function(){
-  $("#Frame").load("/Frame/Frame.html");
-});
-</script>
