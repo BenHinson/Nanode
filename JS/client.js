@@ -9,45 +9,13 @@ pageContent = '';
 NanoSelected = "";
 UserSettings = {};
 
-///////////////////////////
 
-// Item Information | Overhall and Redesign. 
-      // Path, Not from Call Unless Shortcut. Work out on client.
-      // Edit name.
-      // Notes, Descriptions, Colour, Times, Security, Share, Lock Button.
-      // Create Shortcuts. (show details > change directory > place shortcut here).
-      // Different Share Options - Public short url, Cant Guess Public long url, Limited Amount viewing (Save Share State in object).
-      // CC / internaly add people to view the file via adding UID's to file data. Show Error page if cant view.
-
-// Top Bar | Additions
-      // Condense buttons a bit more.
-      // Is 'New File' really needed? It could be moved. Its in codex. Actually... yeah get codex text to work.
-      // Directory Location should be    Homepage > > > Space    at longer things to keep space. On hover expand. Or make text smaller.
-      // Add search to the bar.   names / in details / type / size etc
-      // At smaller screen sizes, sort out the bottom part.
-      // Use some custom svg assets for the icons.
-
-// Login | Overhall and Redesign
-      // Remember this device. Keep me logged in. Forgot password. Email check. Login verfication.
-      // see: https://uidesigndaily.com/uploads/1083/day_1083.png
-
-// Accounts | Addition and Drive Call to it like settings?
-      // Public Username / Profile Image / Change Password / 2FA / ID / Email / Lock / Last Accessed
-      // Storage Summary -> Allocated / Used / Breakdown File Types
-      // Notifications, External shared file view count.
-
-// Waiting to Be Done
-      // Move files into Codex?
-      // Finish Settings
-      // Sort List By clicking on columns.
-      // Remove Frame Bar and Move over.
-
+// location-arrow font awesome for send to people in new file information side
 
 // Added Features ------------------------------ October
 // Drag Files and Folders into and out of directories, between Spans, and navigate through directories by hovering over folders. (List Only atm)
 // Complete Rework of the Directory Path System, Adding Forward / Backward / Home / Path Buttons, with multiple layers so you can get back to where you were.
 // Long hold over a folder opens it. So you can move files deep into folders in one go.
-
 
 
 // Connect to socket.io
@@ -73,15 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on("Directory", ({Parent_Path, Contents}) => {
       clientStatus("CS3", "True", 800); clientStatus("CS7", "Wait", 400);
       if (Parent_Path != "Homepage") {directoryInfo = Contents.shift();}
-      NanoPath = Parent_Path; directoryPath = (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name);
+      NanoID = Parent_Path; directoryPath = (NanoID == "Homepage" ? "Homepage" : directoryInfo.Name);
       pageContent = Contents;
       if (Parent_Path == "Homepage") { UserSettings.ViewT == 0 ? viewHomepageContentAsBlock() : viewHomepageContentAsList() }
       else { UserSettings.ViewT == 0 ? viewContentAsBlock() : viewContentAsList() }
       
-      uploadDirectory = NanoPath == "Homepage" ? "Uploads" : directoryInfo.Name;
-      uploadDirectoryLocation(NanoPath, uploadDirectory);
+      uploadDirectory = NanoID == "Homepage" ? "Uploads" : directoryInfo.Name;
+      uploadDirectoryLocation(NanoID, uploadDirectory);
       
-      Route(NanoPath, (NanoPath == "Homepage" ? "Homepage" : directoryInfo.Name))
+      Route(NanoID, (NanoID == "Homepage" ? "Homepage" : directoryInfo.Name))
       setupFileMove();
     })
 
@@ -112,10 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
 
-    socket.on('ReturnFolderInformation', function(ReturnedInformation) {
-      clientStatus("CS3", "True", 600);
-      displayItemInformation(ReturnedInformation);
-    })
+
     socket.on('ShareableLink', function(shareableLink) {
       clientStatus("CS3", "True", 500);
       $(".shareableLinkInput")[0].value = shareableLink.shareableLink;
@@ -132,8 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $("#fileBeingUploaded")[0].innerText = "";
         ToBeUploaded = [];
         uploadStatus = false;
-        $("#uploadItemCount")[0].innerText = "Item Count";
-        $("#uploadSizeCount")[0].innerText = "Upload Max - 100 MB";
+        $(".uploadNumber")[0].innerText = "Max - 100 MB";
         $("#uploadStartStopButton")[0].innerText = "Upload";
         $("#uploadStartStopButton")[0].title = "Drag and Drop or Select Items to Upload";
         $("#uploadClearItems")[0].style.cursor = "not-allowed";
@@ -208,14 +172,14 @@ function clickedItem(selected, fromRC) {
 
 function ItemActions(selected) {
   if (!selected && RCElement) { selected = RCElement }
-  NanoSelected = selected.getAttribute("Nano-Path");
+  NanoSelected = selected.getAttribute("nano-id");
   type = selected.getAttribute("type");
   if (type == 'image') {
     selected.tagName == 'TR' ? displayImageLarge(selected, "table") : displayImageLarge(selected);
   } else if (type == 'folder') {
-    socket.emit('directoryLocation', (selected.getAttribute('nano-path')));
+    socket.emit('directoryLocation', (selected.getAttribute('nano-id')));
   } else if (type == 'text') {
-    socket.emit('readTextContent', {"directoryPath":NanoPath})
+    socket.emit('readTextContent', {"directoryPath":NanoID})
     selected.tagName == 'TR' ? displayTextContent(selected, "table") : displayTextContent(selected);
   }
 }
@@ -258,7 +222,7 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         droppedItem.draggable[0].remove();
         if ($(e.target).hasClass('codexItemFolder')) {
-          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path')}
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id')}
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
       },
@@ -270,7 +234,7 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         if (CodexPath != "Home") {
           droppedItem.draggable[0].remove();
-          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
       }
@@ -279,14 +243,14 @@ function setupFileMove(Caller) {
 
   else if (UserSettings.ViewT == 0) {
     $(".ContentContainer").sortable({
-      items: "div[nano-path]",
+      items: "div[nano-id]",
     })
   }
 
   else if (UserSettings.ViewT == 1) {
     var hoveringOver;
 
-    $( "tr[nano-path]" ).draggable({
+    $( "tr[nano-id]" ).draggable({
       appendTo: '#databaseBackgroundMain',
       containment: "#databaseBackgroundMain",
       connectToSortable: ".ListContentTable",
@@ -300,12 +264,12 @@ function setupFileMove(Caller) {
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        return $( "<div class='listItem-Placeholder' nano-path="+e.currentTarget.getAttribute('nano-path')+"><img src="+$(e.currentTarget).find('img')[0].getAttribute('src')+" ></img>"+e.currentTarget.childNodes[1].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
+        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].getAttribute('src')+" ></img>"+e.currentTarget.childNodes[1].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
       },
     }).disableSelection();
 
     $("tr[type=folder]").droppable({
-      accept: "tr[nano-path]",
+      accept: "tr[nano-id]",
       hoverClass: "listItem-Hover",
       tolerance: 'pointer',
       greedy: true,
@@ -313,7 +277,7 @@ function setupFileMove(Caller) {
       over: function(e) {
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
-          socket.emit('directoryLocation', (e.target.getAttribute("Nano-Path")));
+          socket.emit('directoryLocation', (e.target.getAttribute("nano-id")));
         }, 1500)
       },
       out : function() {
@@ -321,23 +285,23 @@ function setupFileMove(Caller) {
       },
       drop: function(e, droppedItem) {
         clearTimeout(hoveringOver)
-        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": e.target.getAttribute('nano-path'), "ToType": "Folder" });
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "ToType": "Folder" });
         droppedItem.draggable[0].remove();
       },
     })
 
     $(".ListContentContainer").droppable({
-      accept: "tr[nano-path]",
+      accept: "tr[nano-id]",
       hoverClass: "listSpan-Hover",
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
         if (!e.target.contains(droppedItem.draggable[0])) {
 
           if (e.target.hasAttribute('home-span')) { var dirTo = e.target.getAttribute('home-span'); dirToType = "Span"; }
-          else { var dirTo = NanoPath; dirToType = "Folder" }
+          else { var dirTo = NanoID; dirToType = "Folder" }
 
           FolderCall = false;
-          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoPath, "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": dirTo, "ToType": dirToType });
+          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoID, "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": dirTo, "ToType": dirToType });
           droppedItem.draggable[0].remove();
           $(".listItem-Placeholder")[0].remove();
         }
@@ -345,17 +309,17 @@ function setupFileMove(Caller) {
     })
 
     $(".dirBtn").droppable({
-      accept: "tr[nano-path]",
+      accept: "tr[nano-id]",
       hoverClass: "dirBtn-Hover",
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
-        if (e.target.getAttribute('nano-path') != NanoPath) {
+        if (e.target.getAttribute('nano-id') != NanoID) {
 
-          if (e.target.getAttribute('nano-path') == "Homepage") { var dirTo = "General"; dirToType = "Span"; }
-          else { var dirTo = e.target.getAttribute('nano-path'); dirToType = "Folder" }
+          if (e.target.getAttribute('nano-id') == "Homepage") { var dirTo = "General"; dirToType = "Span"; }
+          else { var dirTo = e.target.getAttribute('nano-id'); dirToType = "Folder" }
           
           FolderCall = false;
-          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-path'), "To": dirTo, "ToType": dirToType });
+          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": dirTo, "ToType": dirToType });
           droppedItem.draggable[0].remove();
           $(".listItem-Placeholder")[0].remove();
         }
@@ -379,16 +343,16 @@ function Route(Nano_Path, Text_Path) {
 
   FolderCall = true;
 
-  $("#directoryLocation")[0].innerHTML = "<div class='dirBtn' nano-path='Homepage' title='Homepage' >Homepage</div>";
+  $("#directoryLocation")[0].innerHTML = "<div class='dirBtn' nano-id='Homepage' title='Homepage' >Homepage</div>";
   for (i=1; i<Tree_Steps; i++) {
-    $("#directoryLocation")[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-path='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
+    $("#directoryLocation")[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-id='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
   }
   $(".dirBtn").last()[0].classList.add('currentDirBtn');
 
 
   $(".dirBtn").on("click", function(e) {
-    let NanoPath = e.target.getAttribute("Nano-path");
-    let Route_Obj = Directory_Route.find(o => o.Nano === NanoPath); // Find Object with Nano=NanoPath in Directory_Route
+    let NanoID = e.target.getAttribute("nano-id");
+    let Route_Obj = Directory_Route.find(o => o.Nano === NanoID); // Find Object with Nano=NanoID in Directory_Route
     Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
     
     if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
@@ -396,7 +360,7 @@ function Route(Nano_Path, Text_Path) {
     
     FolderCall = false;
 
-    socket.emit('directoryLocation', (NanoPath));
+    socket.emit('directoryLocation', (NanoID));
     clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
   })
 

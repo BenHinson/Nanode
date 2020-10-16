@@ -3,6 +3,7 @@ dirPathPass = false;
 
 //////////////////////////
 const fileContainer = document.getElementById('fileContainer');
+const ItemInfo = document.getElementsByClassName('fileInformationContent')[0];
 //////////////////////////
 
 
@@ -31,7 +32,7 @@ function uploadDirectoryLocation(Page, location) {
   dirLocBtn.innerText = location;
   $(dirLocBtn).off()
 
-  if (Page == "Homepage" && NanoPath == Page) {
+  if (Page == "Homepage" && NanoID == Page) {
     dirLocBtn.style.cursor = "pointer";
     dirLocBtn.title = "Choose Span to Upload Into";
 
@@ -75,6 +76,18 @@ function uploadDirectoryLocation(Page, location) {
   }
 }
 
+function ItemsPath(Parent, Name) {
+  if (directoryPath == "Homepage") {
+    return Parent+" > "+Name;
+  } else {
+    let path = "";
+    for (let i=0; i<Directory_Route.length; i++) {
+      path += Directory_Route[i].Text+" > "
+    }
+    path += Name;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////   BLOCK   //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -93,7 +106,7 @@ function viewHomepageContentAsBlock() {
 
   homepageNewSpan();
   clientStatus("CS7", "Ok", 400);
-} 
+}
 
 function viewContentAsBlock() {
   fileContainer.innerHTML = "<div class='ContentContainer'></div>"
@@ -112,7 +125,7 @@ function viewContentAsBlock() {
 function generateBlockFolder(isHomepage, Item, index, Parent) {
   let ItemType = ItemChecker(Item[2]);
 
-  Parent.innerHTML += "<div class='Item' directory='"+(!isHomepage ? Item[1] : pageContent[i][0]+"\\"+Item[0])+"' title='"+(!isHomepage ? Item[1] : pageContent[i][0]+"\\"+Item[0])+"' type='"+ItemType+"' rc='"+(!Item[2].isFi ? 'Nano_Folder' : 'Nano_File')+"' rcOSP='DIV,IMG' onclick='clickedItem(this)' nano-path='"+Item[6]+"'><h4>"+Item[0]+"</h4><img loading='lazy'></img></div>"
+  Parent.innerHTML += "<div class='Item' directory='"+ItemsPath(pageContent[i][0], Item[0])+"' title='"+ItemsPath(pageContent[i][0], Item[0])+"' type='"+ItemType+"' rc='"+(!Item[2].isFi ? 'Nano_Folder' : 'Nano_File')+"' rcOSP='DIV,IMG' onclick='clickedItem(this)' nano-id='"+Item[6]+"'><h4>"+Item[0]+"</h4><img loading='lazy'></img></div>"
 
   let Block_Item = Parent.querySelectorAll('.Item')[index];
   let Item_Img = Block_Item.childNodes[1];
@@ -160,7 +173,7 @@ function viewHomepageContentAsList() {
     addTableRow(Table, "th", rowData);
 
     pageContent[i][1].forEach(function(spanItem, index) {
-      rowData = ["", spanItem[0], ItemChecker(spanItem[2]), dateFormater(spanItem[3]), spanItem[4], pageContent[i][0]+"\\"+spanItem[0], spanItem[6]]
+      rowData = ["", spanItem[0], ItemChecker(spanItem[2]), dateFormater(spanItem[3]), spanItem[4], ItemsPath(pageContent[i][0], spanItem[0]), spanItem[6]]
       if (ItemChecker(spanItem[2]) != "folder") { rowData[0] = pageContent[i][1][index][2] }
       addTableRow(Table, "td", rowData, index, spanItem, spanItem[5].Color);
     })
@@ -194,7 +207,7 @@ function viewContentAsList() {
 
   pageContent[0][1].forEach(function(Item, index) {
     let ItemType = ItemChecker(Item[2]);
-    rowData = ["", Item[0], ItemType, Item[3], Item[4], Item[1], Item[6]]
+    rowData = ["", Item[0], ItemType, Item[3], Item[4], ItemsPath("", Item[0]), Item[6]]
     if (ItemType != "folder") { rowData[0] = Item[3] }
     addTableRow(ListContentTable, "td", rowData, index, Item, Item[5].Color);
   })
@@ -212,7 +225,7 @@ function addTableRow(Table, type, data, index, Item, Color) {
     tableRow.setAttribute("directory", data[5])
     tableRow.setAttribute("onclick", "clickedItem(this)");
     tableRow.setAttribute("type", data[2]);
-    tableRow.setAttribute("Nano-Path", data.pop())
+    tableRow.setAttribute("nano-id", data.pop())
     tableRow.setAttribute("rc", (data[2] == "folder" ? "Nano_Folder" : "Nano_File")  )
     tableRow.setAttribute("rcOSP", "TD");
     tableRow.title = data[5];
@@ -244,83 +257,66 @@ function addTableRow(Table, type, data, index, Item, Color) {
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
-function callItemInformation(selected) {
-  if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
-  if (displayDetails()) {
-
-    
-
-    ItemNanoPath = selected.getAttribute('Nano-path');
-    ItemsTextPath = selected.getAttribute('directory');
-    clientStatus("CS2", "True", 500); clientStatus("CS5", "Wait", 300); clientStatus("CS4", "Wait", 400);
-    socket.emit('ItemInformation', {"Path":ItemNanoPath});
-
-    $('.fileInformationContent').empty();
-    clientStatus("CS7", "Wait", 300);
-
-    let folderName = document.createElement('h3');
-    folderName.setAttribute('class', "itemInformation itemInformationName");
-    folderName.setAttribute("contenteditable", "true");
-    folderName.innerText = UserSettings.ViewT == 0 ? selected.childNodes[0].innerText : selected.childNodes[1].innerText;
-    $('.fileInformationContent')[0].appendChild(folderName);
-
-    let folderUUID = document.createElement('p');
-    folderUUID.setAttribute('class', "itemInformationUUID");
-    folderUUID.innerText = selected.getAttribute('Nano-path');
-    $('.fileInformationContent')[0].appendChild(folderUUID);
-
-    let folderDirectory = document.createElement('p');
-    folderDirectory.setAttribute('class', "itemInformation itemInformationBlock")
-    folderDirectory.innerHTML = "Path<br><input class='itemInformationDirectory' value='"+ItemsTextPath+"' title="+ItemsTextPath+" readonly><br>";
-    $('.fileInformationContent')[0].appendChild(folderDirectory);
-
-    if (selected.getAttribute("type") != "folder") {
-      let shareLinkIcon = document.createElement('i');
-      shareLinkIcon.setAttribute('class', "shareLinkIcon fas fa-link")
-      shareLinkIcon.title = "Get a Shareable Link for this item"
-      $('.fileInformationContent')[0].appendChild(shareLinkIcon);
-  
-      let shareableLinkInput = document.createElement('input');
-      shareableLinkInput.setAttribute('class', "shareableLinkInput")
-      shareableLinkInput.setAttribute('placeholder', "Generate Shareable Link");
-      shareableLinkInput.setAttribute('readonly', true);
-      $('.fileInformationContent')[0].appendChild(shareableLinkInput);
-  
-      $(".shareLinkIcon").on("click", function() {
-        if (!shareableLinkInput.value) {
-          clientStatus("CS2", "True", 600); clientStatus("CS5", "User", 500);
-          socket.emit("GenerateShareableLink", {Path: ItemNanoPath})
-        }
-      })
-  
-      $(".shareableLinkInput").on("click", function(e) {
-        $(".shareableLinkInput").select();
-        document.execCommand('copy');
-      })
-    }
-    
-    $('.itemInformationName').on('click', function(e) { renameItem(e) })
-  }
-}
+////////////////////////////////////////////////////////////////////////   249 to 305
 
 TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
+SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
 
-function displayItemInformation(ReturnedInformation) {
-  clientStatus("CS7", "Wait", 400); clientStatus("CS5", "User", 600);
-  let itemInfo = document.createElement('table');
-  itemInfo.setAttribute('class', "itemInformation itemInformationBlock itemInformationTable");
-  let IType = ReturnedInformation[1].isFi ? ReturnedInformation[1].isImg ? "Image" : "File" : "Folder";
-  let ISize = (ReturnedInformation[2] !== null && ReturnedInformation[2] != "") ? (ReturnedInformation[2] / 1024 / 1024).toFixed(2)+" MB" : "-";
-  if (ISize.charAt(0) == "0") ISize = (ReturnedInformation[2] / 1024).toFixed(2)+' KB';
+async function callItemInformation(selected) {
+  if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
+  clientStatus("CS2", "True", 500); clientStatus("CS4", "Wait", 400);
+  clientStatus("CS5", "Wait", 300); clientStatus("CS7", "Wait", 300);
 
-  itemInfo.innerHTML = "<tr><td>Size</td><td>"+ISize+"</td></tr> <tr><td>Type</td><td>"+IType+"</td></tr> <tr><td>Secured</td><td>"+ReturnedInformation[6]+"</td></tr> ";
+  if (!SideBarOpen) {displaySideBar()};
 
-  for (var key in ReturnedInformation[3]) if (ReturnedInformation[3][key] != "" && key != "DeleT") {itemInfo.innerHTML += "<tr><td>"+TimeKey[key]+"</td><td>"+dateFormater(ReturnedInformation[3][key])+"</td></tr>" }
+  const SelctedID = selected.getAttribute('nano-id');
+  const NanoPath = selected.getAttribute('directory');
 
-  $('.fileInformationContent')[0].appendChild(itemInfo);
+  const Request = await fetch('//drive.nanode.one/user/files/'+SelctedID);
+  const RequestInfo = await Request.json();
+  clientStatus("CS3", "True", 600);
+  
+
+  ItemInfo.innerHTML = `
+    <h3 class='itemInformationName' contenteditable='true'>${RequestInfo.Name.Cur}</h3>
+    <p class='itemInformationUUID'>${RequestInfo.UUID}</p>
+    <p class='itemInformation itemInformationBlock'>Path
+      <br><input class='itemInformationDirectory' value='${NanoPath}' title='${NanoPath}' readonly=true>
+    </p>
+    <i class='shareLinkIcon fas fa-link' title='Get a Shareable Link for this item'></i>
+    <input class='shareableLinkInput' placeholder='Generate Shareable Link' readonly=true>
+
+    <table class='itemInformation itemInformationBlock itemInformationTable'>
+      <tbody>
+        <tr><td>Size</td><td>${convertSize(RequestInfo.Size)}</td></tr>
+        <tr><td>Type</td><td>${RequestInfo.Type.isFi ? (RequestInfo.Type.isImg ? "Image" : "File"): "Folder"}</td></tr>
+        <tr><td>Secured</td><td>${SecureKey[RequestInfo.Security]}</td></tr>
+      </tbody>
+    </table>
+  `
+
+  const ItemInfoTable = $(ItemInfo).find('tbody')[0];
+  for (let key in RequestInfo.Time) {
+    if (RequestInfo.Time[key] != '' && key != "DeleT") {
+      ItemInfoTable.innerHTML += `<tr><td>${TimeKey[key]}</td><td>${dateFormater(RequestInfo.Time[key])}</td></tr>`
+    }
+  }
+
+
+  $('.itemInformationName').on('click', function(e) { renameItem(e) })
+
+  $(".shareLinkIcon").on("click", function() {
+    if (!shareableLinkInput.value) { socket.emit("GenerateShareableLink", {Path: ItemNanoID})  }
+  })
+
+  $(".shareableLinkInput").on("click", function(e) {
+    $(".shareableLinkInput").select(); document.execCommand('copy');
+  })
 }
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -336,7 +332,7 @@ function displayConfirmCancelBox(Action, Title, Accept, Decline, Text) {
   $(".AMCancel")[0].addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
   $(".AMAccept")[0].addEventListener("click", function() {
     if (Action == "Delete") {
-      if (!RCElement.hasAttribute('Nano-path') && RCElement.getAttribute('rc').includes('Span')) {
+      if (!RCElement.hasAttribute('nano-id') && RCElement.getAttribute('rc').includes('Span')) {
         let TestSpanName = RCElement.childNodes[0].innerText;
         for (i=0; i<pageContent.length; i++) {
           if (pageContent[i][0].includes(TestSpanName)) {
@@ -344,8 +340,8 @@ function displayConfirmCancelBox(Action, Title, Accept, Decline, Text) {
             socket.emit('ItemEdit', {"Action": "Delete", "Item": "Span", "ID": SpanName})
           }
         }
-      } else if (RCElement.hasAttribute('Nano-path')) {
-        socket.emit('ItemEdit', {"Action": "Delete", "Item": "FileFolder", "Path": NanoPath, "ID": RCElement.getAttribute('Nano-path')})
+      } else if (RCElement.hasAttribute('nano-id')) {
+        socket.emit('ItemEdit', {"Action": "Delete", "Item": "FileFolder", "Path": NanoID, "ID": RCElement.getAttribute('nano-id')})
       }
     }
     BlockOut.remove();
@@ -428,7 +424,7 @@ function displayCentralActionMain(Title, Accept, Span) {
           if (directoryPath == "Homepage") {
             socket.emit('ItemManager', {Directory:directoryPath, Type:Title, Name:ActionMainEntry.value, Span:$("#ChooseSpanDropdown")[0].textContent, Tags:customTags})
           } else {
-            socket.emit('ItemManager', {Directory:NanoPath, Path:directoryPath, Type:Title, Name:ActionMainEntry.value, Tags:customTags})
+            socket.emit('ItemManager', {Directory:NanoID, Path:directoryPath, Type:Title, Name:ActionMainEntry.value, Tags:customTags})
           }
         }
         BlockOut.remove();
@@ -481,7 +477,7 @@ function chooseSpanDropdownListener() {
 function displaySecurityEntry(itemSecurity) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS6", "False");
 
-  if (!fileInformationOpen) {displayItemInformation(); }
+  if (!SideBarOpen) {displayItemInformation(); }
   $(".fileInformationContent").empty();
 
   for (i=0; i<itemSecurity.length; i++) {
@@ -556,14 +552,14 @@ function displayUploadDownloadOverlay(Title, ContextMenu) {
   if (Title == "Download") {
     if ( $(".downloadStatus")[0] ) {$(".downloadStatus")[0].remove();}
     if (ContextMenu == "ContextMenu") {
-      if (!DownloadItems.includes(RCElement.getAttribute('Nano-path'))) { 
-        DownloadItems.push( RCElement.getAttribute('Nano-path') )
+      if (!DownloadItems.includes(RCElement.getAttribute('nano-id'))) { 
+        DownloadItems.push( RCElement.getAttribute('nano-id') )
         $("#UpDownOverlayItems")[0].innerText += (UserSettings.ViewT == 0 ? RCElement.childNodes[0].innerText :  RCElement.childNodes[1].innerText)+ "\n";
       }
       if ( $("[selected='true']") ) { 
         $("[selected='true']").each(function(index, item) {
-          if (!DownloadItems.includes(item.getAttribute('Nano-path'))) { 
-            DownloadItems.push(item.getAttribute('Nano-path')) 
+          if (!DownloadItems.includes(item.getAttribute('nano-id'))) { 
+            DownloadItems.push(item.getAttribute('nano-id')) 
             $("#UpDownOverlayItems")[0].innerText += (UserSettings.ViewT == 0 ? item.childNodes[0].innerText :  item.childNodes[1].innerText)+ "\n";
           }
         })
@@ -652,7 +648,7 @@ function displayColorPicker(calledBy, callback) {
     $(".colorContainer")[0].remove();
 
     if (typeof RCElement !== 'undefined' && calledBy == "RC") {
-      socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "Path": NanoPath, "ID": RCElement.getAttribute('Nano-path'), "EditData":{"Tags": {"Color": ColorPicked}} })
+      socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "Path": NanoID, "ID": RCElement.getAttribute('nano-id'), "EditData":{"Tags": {"Color": ColorPicked}} })
       return;
     }
     callback(ColorPicked)

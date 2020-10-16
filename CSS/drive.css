@@ -63,6 +63,7 @@ body {
   margin: 7px;
   background: url("/assets/Logo/NWafer.png");
   background-size: contain;
+  background-repeat: no-repeat;
 }
 
 #databaseBackgroundMain {
@@ -76,6 +77,7 @@ body {
   transition: -webkit-box-shadow 0.3s;
   transition: box-shadow 0.3s;
   transition: box-shadow 0.3s, -webkit-box-shadow 0.3s;
+  overflow: hidden;
 }
 
 .dark-theme #databaseBackgroundMain {
@@ -168,6 +170,7 @@ body {
   max-width: 170px;
   width: 30%;
   top: 28px;
+  left: 70px;
   z-index: 1;
   color: #4b505a;
 }
@@ -182,16 +185,6 @@ body {
 
 .directoryLocationControls > span:after {
   border-bottom: 4px solid var(--highlight-color);
-}
-
-.directoryLocationControls.DLCLeft {
-  left: 70px;
-}
-
-.directoryLocationControls.DLCRight {
-  right: 285px;
-  -webkit-transition: right 600ms;
-  transition: right 600ms;
 }
 
 .directoryLocationControls .directoryControlButton {
@@ -1295,7 +1288,6 @@ body {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  max-height: 220px;
   top: calc(50vh + 15px);
   overflow-y: scroll;
   padding: 12px;
@@ -1725,22 +1717,30 @@ body {
   }
   .fileInformation {
     background: #f1f1f1;
-    right: 0px;
     z-index: 1;
   }
   .dark-theme .fileInformation {
     background-color: #1a1a1d;
   }
+  .PagePanel {
+    display: block !important;
+  }
 }
 
 @media only screen and (max-width: 600px) {
+  #databaseBackgroundMain {
+    width: 100vw;
+  }
   #directoryLocation {
     width: calc(100% - 100px);
     left: 22px;
-    top: 30px;
+    top: 26px;
   }
   .fileContainer {
     top: 65px;
+  }
+  .homepageSpanContainer {
+    margin: 20px 0 0 0;
   }
   .ListContentTable th:nth-child(4) {
     display: none !important;
@@ -1760,40 +1760,35 @@ body {
     background: red;
     border: 5px solid blue;
   }
-  .PagePanel {
-    display: none;
-  }
-  #databaseBackgroundMain {
-    width: 100vw;
-  }
   .directoryLocationControls {
     position: fixed;
     height: 40px;
-    min-width: 50%;
+    min-width: 100%;
     top: calc(100% - 40px);
+    left: 0;
     background: #e9e9e9;
     -webkit-box-shadow: -5px 0px 5px 0 #555;
             box-shadow: -5px 0px 5px 0 #555;
-    margin-left: 0;
+    z-index: 20;
   }
   .dark-theme .directoryLocationControls {
     background-color: #202028;
   }
-  .directoryLocationControls.DLCLeft {
-    z-index: 4;
-    left: 0;
+  .directoryLocationControls #displayLeftBar {
+    display: block !important;
   }
-  .directoryLocationControls.DLCRight {
-    left: 50%;
-  }
-  .homepageSpanContainer {
-    margin: 20px 0 0 0;
+  .directoryLocationControls #displaySideBar {
+    display: block !important;
   }
   .fileInformation {
     height: calc(100% - 40px);
   }
-  .displayTextContainer {
-    width: 90%;
+  .fileInformationSideBar {
+    display: none;
+  }
+  .PagePanel {
+    display: none;
+    height: calc(100% - 40px);
   }
 }
 

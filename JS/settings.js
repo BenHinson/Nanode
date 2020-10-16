@@ -149,6 +149,7 @@ function timeFormaterReverse(time) {
 }
 
 function convertSize(InputSize) {
+  if (!InputSize) { return '-' }
   let size = (InputSize / 1024 / 1024 / 1024).toFixed(2)+ " GB";
   if (size.charAt(0) == "0") {
     size = (InputSize / 1024 / 1024).toFixed(2)+" MB";

@@ -1,36 +1,61 @@
+function elem(id) { return document.getElementById(id) }
 const container = document.getElementsByClassName('mainLoginContainer')[0];
-var currentLoginPage = 'login'
 
-window.socket = io.connect('https://nanode.one');
+var currentLoginPage = 'login';
 
-socket.on("connection:sockid", function(sockID) {
-  document.cookie = "sockID="+sockID+";domain=nanode.one;secure"
-})
-socket.on("WrongUsernameOrPassword", function() {
-  $("#email")[0].style.border = "1px solid #f04747"; $("#TitleEmail")[0].innerHTML = "Username <i> - wrong username or password</i>";
-  $("#pwd")[0].style.border = "1px solid #f04747"; $("#TitlePwd")[0].innerHTML = "Password <i> - wrong username or password</i>";
-})
-socket.on("AccountAlreadyExists", function() {
-  $("#loginUsername")[0].style.border = "1px solid #f04747"; $("#loginInputTitleUser")[0].innerHTML = "USERNAME <i style='color: #f04747;'> - account already exists</i>";
-})
-socket.on("UserRegistered", function() { loginSignupFormSwitch(); });
+const reponseMap = {
+  "Incorrect_Cred": "Email <i> - wrong email or password </i>",
+  "Invalid_Email" : "Email <i> - enter a valid email</i>",
+  "Already_Exist" : "Email <i> - account already exists</i>"
+}
 
+listenToBtn();
+function listenToBtn() {
+  elem('loginBtn').addEventListener("click", async(e) => {
+    e.preventDefault();
 
+    const email = elem('email'); const emailTitle = elem('TitleEmail')
+    const pwd = elem('pwd'); const pwdTitle = elem('TitlePwd');
+    const form = elem('loginForm');
 
-$("#loginBtn").on("click", function(e) {
-  e.preventDefault();
-  $("#email")[0].style.border = ""; $("#TitleEmail")[0].innerHTML = "Email";
-  $("#pwd")[0].style.border = ""; $("#TitlePwd")[0].innerHTML = "Password";
+    if ( !email.value ) { 
+      email.style.border = "1px solid #f04747";
+      emailTitle.innerHTML = "Email <i> - field required</i>";
+    } else {
+      email.style.border = "";
+      emailTitle.innerHTML = "Email"; 
+    }
+  
+    if ( !pwd.value ) { 
+      pwd.style.border = "1px solid #f04747";
+      pwdTitle.innerHTML = "Password <i> - field required</i><p style='display:none;'></p>";
+    } else {
+      pwd.style.border = "";
+      pwdTitle.innerHTML = ( currentLoginPage == 'login') ? "Password" : "Password<p>Min: 8 Long | Number | Uppercase | Lowercase | Special Character</p>"; 
+    }
+  
+    if (form.getAttribute('action')) {
+      try { 
+        const response = await fetch( form.getAttribute('action'), { method: 'POST', body: new URLSearchParams(new FormData(form)) })
+        const responseData = await response.json();
 
-  if ( !($("#email")[0].value) ) { 
-    $("#email")[0].style.border = "1px solid #f04747"; $("#TitleEmail")[0].innerHTML = "Email <i> - field required</i>"; return; }
+        if (responseData.Acc_Server == "_Login") {
+          location = '//nanode.one';
+        } else if (responseData.Acc_Server == "_Registed") {
+          loginSignupFormSwitch();
+        } else if (responseData.Acc_Server) {
+          elem("email").style.border = "1px solid #f04747";
+          elem("TitleEmail").innerHTML = "Email <i> - "+reponseMap[responseData.Acc_Server];
 
-  if ( !($("#pwd")[0].value) ) { 
-    $("#pwd")[0].style.border = "1px solid #f04747"; $("#TitlePwd")[0].innerHTML = "Password <i'> - field required</i>"; return; }
+          if (responseData.Acc_Server == "Incorrect_Cred") {
+            elem("pwd").style.border = "1px solid #f04747"; elem('TitlePwd').innerHTML = "Password <i> - wrong email or password</i>";
+          }
+        }
 
-  $("#loginForm").submit();
-  return false;
-})
+      } catch(error) {console.log(error)}
+    }
+  })
+}
 
 
 function loginSignupFormSwitch() {
@@ -53,12 +78,13 @@ function loginSignupFormSwitch() {
     <button onclick="loginSignupFormSwitch()">Login</button>
     `
     inputChecker();
+    listenToBtn();
   } else { currentLoginPage = "login"
     container.innerHTML = `
     <h2 class="MainTitle">Welcome</h2>
     <div class="SecondaryTitle">Login to your drive</div>
 
-    <form id="loginForm" action="/login" method="POST">
+    <form id="loginForm" method="POST" action="/login">
       <div id="TitleEmail" class="InputTitle">Email</div>
       <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required>
 
@@ -71,19 +97,28 @@ function loginSignupFormSwitch() {
     <span id="accountStatus">Dont have an account?</span>
     <button onclick="loginSignupFormSwitch()">Signup</button>
     `
+    listenToBtn();
   }
 }
 
 function inputChecker() {
-  $("#pwd").off();
-  $("#pwd").on("input", function(e) {
+  elem('pwd').addEventListener('input', function(e) {
     let sufficient = e.target.value.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)
     if (sufficient) {
-      $("p")[0].style.color = "#00d610";
-      $("#loginForm")[0].action = "/signup";
+      document.getElementsByTagName('p')[0].style.color = "#00d610"
+      elem('loginForm').action = "/signup";
     } else { 
-      $("#loginForm")[0].action = "";
-      $("p")[0].style.color = "#d60000";
+      elem('loginForm').action = "";
+      document.getElementsByTagName('p')[0].style.color = "#d60000";
     }
   })
 }
+
+
+// background-image: url(//drive.nanode.one/assets/nanode/system.svg);
+// background-repeat: no-repeat;
+// background-clip: border-box;
+// background-position: center;
+// background-size: 800px;
+
+// background-color: #151517c4;

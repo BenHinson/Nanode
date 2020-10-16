@@ -1,9 +1,8 @@
-fileInformationOpen = true;
-
+SideBarOpen = window.innerWidth > 600 ? false : true;
+displaySideBar();
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-$("#directoryControlNewFile").on("click", function() { displayCentralActionMain("New File", "Create") });
 $("#directoryControlNewFolder").on("click", function() { displayCentralActionMain("New Folder", "Create") });
 $(".fileInformationSideBar").on("click", function() { displaySideBar(); })
 
@@ -54,30 +53,31 @@ $("#returnToHomepage").on("click", function() {
   } else { return; }
 })
 
-$("#directoryControlRefresh").mousedown( function() {
-  FolderCall = false;
-  socket.emit('directoryLocation', (NanoPath));
-  clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+$("#displaySideBar").on("click", function() {
+  displaySideBar()
+})
+
+$("#displayLeftBar").on("click", function() {
+  window.getComputedStyle(document.getElementsByClassName('PagePanel')[0], null).getPropertyValue('display') == "none" ? 
+  $(".PagePanel")[0].style.display = 'block' : $(".PagePanel")[0].style.display = 'none';
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function displaySideBar(state) {
-  if (!fileInformationOpen || state == false) {
-    $(".DLCRight")[0].style.right = "";
+  if (!SideBarOpen || state == false) {
     $(".fileInformation")[0].style.right = "";
     $(".fileInformationSideBar").css({ "transform": "rotate(90deg)", "right": "216px"})
     $(".fileInformationSideBar")[0].title = "Hide Details and Upload Bar";
     $(".fileContainer")[0].style.width = "calc(100% - 250px)";
   } else {
-    $(".DLCRight")[0].style.right = "50px";
     $(".fileInformation")[0].style.right = "-240px";
     $(".fileInformationSideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
     $(".fileInformationSideBar")[0].title = "Display Details and Upload Bar";
     $(".fileContainer")[0].style.width = "calc(100% - 15px)";
   }
-  fileInformationOpen = !fileInformationOpen;
+  SideBarOpen = !SideBarOpen;
 }
 
 
@@ -134,7 +134,7 @@ function renameSpan(e) {
         target.style.cssText = '';
         if (target.innerText != currentSpanName && target.innerText.length > 1) {
           let EditData = {"Name": target.innerText}
-          socket.emit('ItemEdit', {"Action": "Edit", "Item": "Span", "ID": currentSpanName, "Path": NanoPath, EditData})
+          socket.emit('ItemEdit', {"Action": "Edit", "Item": "Span", "ID": currentSpanName, "Path": NanoID, EditData})
         } else {
           target.innerText = currentSpanName;
         }
@@ -157,10 +157,10 @@ function collapseSpan() {
 
 function renameItem(e) {
   if (e && e.target.getAttribute) { 
-    var targetID = ItemNanoPath; var nameInput = e.target;
+    var targetID = ItemNanoID; var nameInput = e.target;
     e.target.style.background = 'rgba(0,0,0,0.1)';
   } else if (RCElement) { 
-    var targetID = RCElement.getAttribute('Nano-path');
+    var targetID = RCElement.getAttribute('nano-id');
     var nameInput = UserSettings.ViewT == 0 ? RCElement.children[0] : RCElement.children[1];
     UserSettings.ViewT == 0 ? nameInput.classList.add("FolderNameEdit") : nameInput.style.cssText = "font-size: 16px; border-bottom: 1px solid #666;";
     nameInput.setAttribute('contenteditable', "true");
@@ -178,7 +178,7 @@ function renameItem(e) {
         if (typeof RCElement !== 'undefined' && RCElement) { if (nameInput.tagName != 'H3') {nameInput.removeAttribute('contenteditable');} nameInput.classList.remove("FolderNameEdit"); nameInput.parentNode.classList.remove("noHover", "noOpen");}
         if (nameInput.innerText != currentItemName && nameInput.innerText.length > 1) {
           let EditData = {"Name": {"Cur": nameInput.innerText}}
-          socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": targetID, "Path": NanoPath, EditData})
+          socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": targetID, "Path": NanoID, EditData})
         } else {
           nameInput.innerText = currentItemName;
         }
@@ -206,7 +206,7 @@ document.getElementById("uploadStartStopButton").addEventListener("click", funct
       for (var i=0; i<ToBeUploaded.length; i++) {
         $("#fileBeingUploaded")[0].innerText = ToBeUploaded[i][2].name;
 
-        ItemInfo = {"Parent":NanoPath, "Path":ToBeUploaded[i][0], "ItemPath":ToBeUploaded[i][1], "ParentText": uploadDirectory, "Name":ToBeUploaded[i][2].name, "isFi":ToBeUploaded[i][2].isFile == false ? false : true, "Type": ToBeUploaded[i][2].type, "Size": ToBeUploaded[i][2].size, "Time": {"ModiT": ToBeUploaded[i][2].lastModified}, "Number":ToBeUploaded[i][3]}
+        ItemInfo = {"Parent":NanoID, "Path":ToBeUploaded[i][0], "ItemPath":ToBeUploaded[i][1], "ParentText": uploadDirectory, "Name":ToBeUploaded[i][2].name, "isFi":ToBeUploaded[i][2].isFile == false ? false : true, "Type": ToBeUploaded[i][2].type, "Size": ToBeUploaded[i][2].size, "Time": {"ModiT": ToBeUploaded[i][2].lastModified}, "Number":ToBeUploaded[i][3]}
         ItemData = ToBeUploaded[i][2];
 
         socket.emit('fileUpload', {ItemInfo, ItemData, totalItems});
@@ -229,7 +229,13 @@ function uploadCountdown() {
   }, 500)
 }
 
-document.getElementById("uploadClearItems").addEventListener("click", function(){ cancelUploadDownloadItems(); });
+document.getElementById("uploadClearItems").addEventListener("click", function(){ 
+  ToBeUploaded = [];
+  uploadStatus = false;
+  $(".uploadNumber")[0].innerText = "Max - 100 MB";
+  $("#uploadStartStopButton")[0].innerText = "Choose Items";
+  $("#UpDownOverlayItems")[0].innerText = "";
+});
 
 function cancelUploadDownloadItems() {
   clientStatus("CS9", "False", 600);
@@ -246,7 +252,7 @@ function cancelUploadDownloadItems() {
   currentUpDownOverlay = false;
   downloadSelection = false;
   
-  $(".UpDownOverlayContainer")[0].remove();
+  $(".UpDownOverlayContainer").remove();
   $(".fileInformationContent")[0].style.height = "";
 }
 
@@ -293,7 +299,7 @@ function unhighlight(e) {dropArea.classList.remove('highlight')}
 
 
 dropArea.addEventListener("drop", function(e) {
-  if (!fileInformationOpen || $(".fileInformation")[0].style.width < 1) {
+  if (!SideBarOpen || $(".fileInformation")[0].style.width < 1) {
     displaySideBar(false);
   }
   displayUploadDownloadOverlay("Upload");
@@ -301,7 +307,7 @@ dropArea.addEventListener("drop", function(e) {
   document.getElementById("uploadStartStopButton").innerText = "Loading Items";
   ToBeUploaded = []; itemNumber = 0; totalSize = 0;
   totalItems = e.dataTransfer.items.length;
-  $("#uploadItemCount")[0].innerText = totalItems + " Items";
+  $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
   uploadCountdown();
   dropped = e.dataTransfer.items;
 
@@ -318,7 +324,6 @@ function traverseFileTree(path) {
       uploadFileDir(file, path)
     	totalSize += file.size;
       $("#UpDownOverlayItems")[0].innerText += file.name+" - "+file.size+"\n";
-    	// $("#uploadSizeCount")[0].innerText = (totalSize / 1048576).toFixed(2) + " MB";
       $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
     });
   }

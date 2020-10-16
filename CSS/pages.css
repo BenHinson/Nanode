@@ -536,11 +536,11 @@
 }
 
 .CodexContentContainer {
-  position: fixed;
+  position: absolute;
   height: 100%;
   width: calc(100% - 350px);
   top: 0;
-  right: 100vw;
+  left: -100vw;
   z-index: 5;
   color: #121214;
   background: #e4e4e6;
@@ -552,8 +552,8 @@
 }
 
 .CodexContentContainer.Displayed_Container {
-  -webkit-transition: right 800ms ease-in-out, width 800ms ease-in-out;
-  transition: right 800ms ease-in-out, width 800ms ease-in-out;
+  -webkit-transition: left 800ms ease-in-out, width 800ms ease-in-out;
+  transition: left 800ms ease-in-out, width 800ms ease-in-out;
 }
 
 .CodexContentContainer .codexVideoContainer {

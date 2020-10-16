@@ -4,8 +4,8 @@
 
 RightClickObjectMenu = {
   "File_Container" : {
-    "New Folder": [{"Command": "displayCentralDirectoryManager", 'Var1':'New Folder', 'Var2':'Create'}], 
-    "New File": [{"Command": "displayCentralDirectoryManager", 'Var1':'New File', 'Var2':'Create'}], 
+    "New Folder": [{"Command": "displayCentralActionMain", 'Var1':'New Folder', 'Var2':'Create'}], 
+    "New File": [{"Command": "displayCentralActionMain", 'Var1':'New File', 'Var2':'Create'}], 
     "Refresh": [{"Command": "directoryRefresh"}],
     "Nano_SPLIT_1": "", 
     "RC_VAR_Details": [{"Command": "displayItemInformation"}],
@@ -123,7 +123,7 @@ function RC_VAR_Collapse(Option, e) {
   return (e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse";
 }
 function RC_VAR_Details(Option, e) {
-  return fileInformationOpen ? "Hide Details" : "Display Details";
+  return SideBarOpen ? "Hide Details" : "Display Details";
 }
 function RC_VAR_Switch_View(Option, e) {
   return UserSettings.ViewT == 0 ? "List View" : "Block View";
