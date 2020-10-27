@@ -85,15 +85,17 @@ body {
   height: 100vh;
   right: 0;
   background-size: cover;
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, filter 0.3s;
   overflow: hidden;
   .dark-theme & {
     background-color: #26262b;
   }
   &.highlight {
     box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
+    filter: brightness(0.9);
     .dark-theme & {
-      box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
+      box-shadow: inset 0px 0px 20px 10px rgba(254, 254, 254, 0.3);
+      filter: brightness(0.6);
     }
   }
 }
@@ -409,7 +411,7 @@ body {
       color: #f1f1f1;
     }
     & tr {
-      &:hover:not(.noHover) {
+      &:not(:first-child):hover:not(.noHover) {
         opacity: 0.7;
         transform: translateX(5px);
         // box-shadow: 0px 2px 0px var(--highlight-color);
@@ -635,99 +637,169 @@ body {
   width: 100%;
   top: 50px;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 0px;
+  font-size: 15px;
+  overflow: hidden;
   overflow-y: auto;
+  white-space: normal;
+  color: #1a1a1d;
+  .dark-theme & { color: #eee; }
 
-  .itemInformation {
-    width: 100%;
+  .ItemInfo_Name {
+    font-size: 18px;
     font-weight: 400;
-    padding: 10px 0 0 8px;
-    white-space: normal;
-    .dark-theme & {
-      font-weight: 100;
-      color: #ccc;
-    }
-
-    &.itemInformationName {
-      padding: 5px 0 5px 8px;
-      color: map-get($darkTheme, dark2);
-      .dark-theme & {
-        color: #27ce8e;
-      }
-    }
-    &.itemInformationBlock {
-      font-size: 13px;
-      line-height: 20px;
-      margin-bottom: 16px;
-
-      .itemInformationDirectory {
-        width: 96%;
-        font-size: 14px;
-        padding: 4px;
-        border-radius: 3px;
-        border: none;
-        background: rgba(0,0,0,0.05);
-        border-bottom: 1px solid map-get($darkTheme, dark6);
-        .dark-theme & {
-          color: #93c0af;
-          border-color: map-get($lightTheme, light6);
-        }
-      }
-
-      &.itemInformationTable {
-        width: 100%;
-        margin-top: 20px;
-        font-size: 14px;
-        border-collapse: collapse;
-        table-layout: fixed;
-        & td {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          height: 28px;
-        }
-        & td:nth-child(1) { padding: 0 0 2px 20px; font-variant: all-petite-caps; opacity: 0.8; }
-        & td:nth-child(2) { text-align: right; padding-right: 20px; font-family: 'Inter', sans-serif; font-size: 12px; }
-      }
-    }
-  }
-  .itemInformationUUID {
-    padding: 4px 0 5px 8px;
-    font-size: 10px;
-    color: map-get($darkTheme, dark7);
-    border-bottom: 1px solid map-get($darkTheme, dark6);
-    .dark-theme & {
-      color: map-get($lightTheme, light5);
-      border-color: map-get($lightTheme, light6);
-    }
-  }
-
-  .shareLinkIcon {
-    padding: 5px 10px;
-    cursor: pointer;
-    color: map-get($darkTheme, dark3);
-    .dark-theme & {
-      color: map-get($lightTheme, light3);
-    }
-  }
-  .shareableLinkInput {
-    width: 78%;
-    padding: 4px;
+    padding: 5px;
+    background: transparent;
     border: none;
-    border-radius: 3px;
-    font-size: 13px;
-    background: rgba(0,0,0,0.05);
-    color: map-get($darkTheme, dark3);
-    border-bottom: 1px solid map-get($darkTheme, dark6);
-    .dark-theme & {
-      color: map-get($lightTheme, light3);
-      border-color: map-get($lightTheme, light6);
+    .dark-theme & { color: var(--highlight-color); }
+    &:focus {
+      border: 1px solid #666;
+      border-radius: 3px;
     }
-    ::placeholder {
-      color: map-get($darkTheme, dark5);
-      .dark-theme & {
-        color: map-get($lightTheme, light5);
+  }
+
+  .ItemInfo_UUID {
+    padding: 5px 0px;
+    text-align: center;
+    font-size: 11px;
+    opacity: 0.6;
+    border-bottom: 1px solid #393c44;
+  }
+
+  img {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 8px 0;
+  }
+
+  .ItemInfo_Directory {
+    width: 100%;
+    margin-top: -1px;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    border-top: 1px solid #393c44;
+    border-bottom: 1px solid #393c44;
+    color: inherit;
+  }
+
+  button {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100px;
+    padding: 8px 4px;
+    border-radius: 3px;
+    border: none;
+    color: inherit;
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: box-shadow 300ms ease;
+    > i {
+      color: var(--highlight-color);
+      font-size: 15px;
+      padding: 2px 4px;
+    }
+    &:hover {
+      box-shadow: 0 0 6px var(--highlight-color);
+    }
+    .dark-theme & { background: rgba(0, 0, 0, 0.2); }
+  }
+
+  table {
+    width: 100%;
+    margin: 8px 0;
+    font-size: 13px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-top: 1px solid #393c44;
+    & td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      height: 26px;
+
+      > input {
+        height: 20px;
+        width: 50px;
+        border: none;
+        background: transparent;
       }
+    }
+    & td:nth-child(1) { padding: 0 0 2px 15px; font-variant: all-petite-caps; opacity: 0.7; }
+    & td:nth-child(2) { text-align: right; padding-right: 15px; font-family: 'Inter', sans-serif; font-size: 12px; }
+  }
+
+  sub {
+    opacity: 0.6;
+    padding: 0 5px;
+    font-size: 11px;
+  }
+
+  textarea {
+    height: 50px;
+    width: 100%;
+    margin: 6px 0;
+    padding: 2px 5px;
+    resize: vertical;
+    font-size: 12px;
+    color: inherit;
+    border: 1px solid#828489;
+    background: transparent;
+    .dark-theme & { background: rgba(0, 0, 0, 0.05); border-color: #393c44;}
+  }
+
+  span {
+    display: inline-flex;
+    justify-content: space-around;
+    height: 34px;
+    width: 100%;
+    margin: 4px 0;
+    color: inherit;
+    > input {
+      height: 32px;
+      // width: calc(100% - 35px);
+      width: 100%;
+      padding: 3px 4px 6px 8px;
+      color: inherit;
+      border: 1px solid#828489;
+      background: transparent;
+      .dark-theme & { background: rgba(0, 0, 0, 0.05); border-color: #393c44;}
+    }
+    .Input_Ops_Btn {
+      display: inline-block;
+      height: 31px;
+      width: 30px;
+      padding: 10px 4px;
+      font-size: 12px;
+      text-align: center;
+      background: #afb4b9;
+      border-radius: 2px;
+      cursor: pointer;
+      &:hover { color: var(--highlight-color); }
+      .dark-theme & { background: #4e535a; }
+    }
+  }
+
+  div {
+    margin: -6px 0px 6px 0;
+    span {
+      justify-content: space-between;
+    }
+    button {
+      width: 65px;
+      &.selected {
+        border: 1px solid var(--highlight-color);
+      }
+    }
+    > input {
+      height: 32px;
+      width: 100%;
+      padding: 3px 4px 6px 8px;
+      color: inherit;
+      border: 1px solid #828489;
+      background: transparent;
     }
   }
 }
@@ -870,6 +942,8 @@ body {
   height: 170px;
   width: 100%;
   bottom: 150px;
+  background:#f1f1f1;
+  .dark-theme & { background: #1a1a1d; }
 
   > .uploadOverlayBtn  {
     position: absolute;
@@ -1307,53 +1381,21 @@ body {
 ///////////////////////////////////////////////////////////////// LOCKED
 ///////////////////////////////////////////////////////////////// LOCKED
 
-
-
-
-.securityContainer {
-  position: relative;
-  width: 200px;
-  height: 32px;
-  border-radius: 3px;
-  margin: 10px 0 0 10px;
-  padding: 2px;
-  box-shadow: 0 0 8px #666;
-  .dark-theme & {
-    color: #d8d8d8;
-    background-color: #2d2d38;
-    box-shadow: 0 0 8px #1e1e1e;
-  }
-}
 .securityEntry {
+  height: fit-content;
+  transition: background-image 0.3s;
   &:hover {
-    box-shadow: inset 0px 0px 4px #666;
+    background-image: linear-gradient(to bottom right, var(--highlight-color), #30725d);
+  }
+  > input {
+    cursor: pointer !important;
+    height: auto !important;
+    padding: 2px 0px 6px 0 !important;
   }
 }
 .itemLockIcon {
-  position: relative;
-  left: 0;
-  padding: 5px 3px 0 6px;
+  padding: 9px 9px 9px 2px;
   font-size: 16px;
-}
-.panelSecureInput {
-  height: 24px;
-  width: 164px;
-  margin: 2px 0 0 4px;
-  padding: 0 0 0 6px;
-  border: none;
-  border-radius: 3px;
-  font-family: monospace;
-  font-size: 15px;
-  color: #484848;
-  background-color: #dbdbdb;
-  .dark-theme & {
-    color: #bebebe;
-    background-color: #232328;
-  }
-}
-#panelSecureInput::placeholder {
-  font-size: 13px;
-  font-style: italic;
 }
 
 
@@ -1411,6 +1453,11 @@ body {
 
 
 ///////////////////////////////////////////////
+@media only screen and (min-width: 600px) {
+  .PagePanel {
+    display: block !important;
+  }
+}
 
 @media only screen and (max-width: 1000px) {
   .fileContainer {
@@ -1452,11 +1499,6 @@ body {
       background-color: #1a1a1d;
     }
   }
-
-  .PagePanel {
-    display: block !important;
-  }
-
 }
 
 @media only screen and (max-width: 600px) {

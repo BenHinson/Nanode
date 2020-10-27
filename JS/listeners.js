@@ -1,5 +1,6 @@
 SideBarOpen = window.innerWidth > 600 ? false : true;
 displaySideBar();
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +60,7 @@ $("#displaySideBar").on("click", function() {
 
 $("#displayLeftBar").on("click", function() {
   window.getComputedStyle(document.getElementsByClassName('PagePanel')[0], null).getPropertyValue('display') == "none" ? 
-  $(".PagePanel")[0].style.display = 'block' : $(".PagePanel")[0].style.display = 'none';
+  $(".PagePanel")[0].style.display = "block" : $(".PagePanel")[0].style.display = "none";
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +207,7 @@ document.getElementById("uploadStartStopButton").addEventListener("click", funct
       for (var i=0; i<ToBeUploaded.length; i++) {
         $("#fileBeingUploaded")[0].innerText = ToBeUploaded[i][2].name;
 
-        ItemInfo = {"Parent":NanoID, "Path":ToBeUploaded[i][0], "ItemPath":ToBeUploaded[i][1], "ParentText": uploadDirectory, "Name":ToBeUploaded[i][2].name, "isFi":ToBeUploaded[i][2].isFile == false ? false : true, "Type": ToBeUploaded[i][2].type, "Size": ToBeUploaded[i][2].size, "Time": {"ModiT": ToBeUploaded[i][2].lastModified}, "Number":ToBeUploaded[i][3]}
+        let ItemInfo = {"Parent":NanoID, "Path":ToBeUploaded[i][0], "ItemPath":ToBeUploaded[i][1], "ParentText": uploadDirectory, "Name":ToBeUploaded[i][2].name, "isFi":ToBeUploaded[i][2].isFile == false ? false : true, "Type": ToBeUploaded[i][2].type, "Size": ToBeUploaded[i][2].size, "Time": {"ModiT": ToBeUploaded[i][2].lastModified}, "Number":ToBeUploaded[i][3]}
         ItemData = ToBeUploaded[i][2];
 
         socket.emit('fileUpload', {ItemInfo, ItemData, totalItems});
@@ -282,14 +283,18 @@ let dropArea = document.getElementById("databaseBackgroundMain");
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
   dropArea.addEventListener(eventName, preventDefaults, false)   
-  document.body.addEventListener(eventName, preventDefaults, false)
+  document.body.addEventListener(eventName, preventDefaults, false);
 });
-function preventDefaults (e) {e.preventDefault(); e.stopPropagation();}
+function preventDefaults(e) {e.preventDefault(); e.stopPropagation();}
 
-['dragenter', 'dragover'].forEach(eventName => {
+// ['dragenter', 'dragover'].forEach(eventName => {
+//   dropArea.addEventListener(eventName, highlight, false)
+// })
+
+['dragenter', "dragover"].forEach(eventName => {
   dropArea.addEventListener(eventName, highlight, false)
 })
-function highlight(e) {dropArea.classList.add('highlight')}
+function highlight(e) { if (e.dataTransfer.types[0] == "Files") {dropArea.classList.add('highlight')} }
 
 ;['dragleave', 'drop'].forEach(eventName => {
   dropArea.addEventListener(eventName, unhighlight, false)
@@ -299,6 +304,7 @@ function unhighlight(e) {dropArea.classList.remove('highlight')}
 
 
 dropArea.addEventListener("drop", function(e) {
+  if (!e.dataTransfer.files.length) { return; }
   if (!SideBarOpen || $(".fileInformation")[0].style.width < 1) {
     displaySideBar(false);
   }

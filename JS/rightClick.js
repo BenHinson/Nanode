@@ -110,6 +110,7 @@ document.addEventListener("contextmenu", function(e) {
 function startFocusOut() {
   setTimeout(function() {
     $(document).on("click",function(){
+      $('#rightClickContainer').empty();
       $("#rightClickContainer").hide();
       $(document).off("click");
     });

@@ -670,6 +670,19 @@ form .ButtonInput:hover {
   background: rgba(54, 53, 53, 0.8);
 }
 
+.settingsContainer h6 {
+  position: absolute;
+  top: 40%;
+  left: 10%;
+  font-size: 26px;
+  z-index: 15;
+  width: 80%;
+  text-align: center;
+  text-shadow: 0 0 20px black;
+  color: #c8c8dc;
+  font-weight: 400;
+}
+
 .settingsContainer h2 {
   color: #fd1422;
   font-size: 24px;

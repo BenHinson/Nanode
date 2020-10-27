@@ -429,6 +429,18 @@ form {
     &::-webkit-scrollbar-thumb { background: #1d1d20; border-radius: 0px; }
     &::-webkit-scrollbar-thumb:hover { background: rgba(54, 53, 53, 0.8); }
   }
+  & h6 {
+    position: absolute;
+    top: 40%;
+    left: 10%;
+    font-size: 26px;
+    z-index: 15;
+    width: 80%;
+    text-align: center;
+    text-shadow: 0 0 20px black;
+    color: rgb(200, 200, 220);
+    font-weight: 400;
+  }
 
   & h2 {
     color: #fd1422;

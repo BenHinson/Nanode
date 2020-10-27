@@ -9,13 +9,28 @@ pageContent = '';
 NanoSelected = "";
 UserSettings = {};
 
-
-// location-arrow font awesome for send to people in new file information side
+// List page that shows all links to 'download', 'view' or 'share' that the user has created. 'Shows size and names of contents' removal deleted item.
+// centralActionMain NEEEDS a rework.
+// Share on Item Information uses Icon  'location-arrow'  to send it.
 
 // Added Features ------------------------------ October
 // Drag Files and Folders into and out of directories, between Spans, and navigate through directories by hovering over folders. (List Only atm)
 // Complete Rework of the Directory Path System, Adding Forward / Backward / Home / Path Buttons, with multiple layers so you can get back to where you were.
 // Long hold over a folder opens it. So you can move files deep into folders in one go.
+// Item information TOTAL rework. Server api support to return file object. -> drive.nanode.one/user/ x / x / x eg: codex/text/home
+// Mobile Rework of navigation bar. Can now access left bar.
+// Server change of time-saving. now full string. And logging more times.
+// Server change of return clipped image. now accepts null.   storage/ ObjectID ?h=128&w=null. Will scale to fit.
+// Now using nodemon on the server to help with restarts. bless nodemon.
+// New helpfully functions on client: RGBtoHEX && Date/Time Converter.
+// Calling file Information is now consistent with the sidebar. (opens side-bar is called).
+// Rework and condense of the file display system. No longer two different functions for homepage and non homepage.
+// New global functions: capFirstLetter (capatalize first letter), ItemImage. and Refining of ItemChecker (The Items Type).
+// Dragging and Dropping Non-Files while over the client doest run the upload code that subsequently errors as its not a file.
+// Along With File Information Rework, download has been reworked, improved, and code shortened. Also No longer calling user file for each item.
+// Generating a link for items has been developed, with each link looking like so in the database:
+//    {"_id": {"url": `the url path pointer. 16 character nanoid.`}, {"owner:" `uuid`}, {"object": `object id in users database`}, {"file": `name of item`}, {"mime": `mime-type of item`}}
+// Easier Method on server end to read and write account information, reducing development time for account info related features.
 
 
 // Connect to socket.io
@@ -43,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (Parent_Path != "Homepage") {directoryInfo = Contents.shift();}
       NanoID = Parent_Path; directoryPath = (NanoID == "Homepage" ? "Homepage" : directoryInfo.Name);
       pageContent = Contents;
-      if (Parent_Path == "Homepage") { UserSettings.ViewT == 0 ? viewHomepageContentAsBlock() : viewHomepageContentAsList() }
-      else { UserSettings.ViewT == 0 ? viewContentAsBlock() : viewContentAsList() }
+      UserSettings.ViewT == 0 ? viewContentAsBlock(NanoID) : viewContentAsList(NanoID);
       
       uploadDirectory = NanoID == "Homepage" ? "Uploads" : directoryInfo.Name;
       uploadDirectoryLocation(NanoID, uploadDirectory);
@@ -80,13 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
 
-
-    socket.on('ShareableLink', function(shareableLink) {
+    socket.on('Link_Return', function(Returned) {
       clientStatus("CS3", "True", 500);
-      $(".shareableLinkInput")[0].value = shareableLink.shareableLink;
-      $(".shareableLinkInput").select();
-      document.execCommand('copy');
-    })
+      $(".ItemInfo_Link_Input")[0].value = Returned;
+      $(".ItemInfo_Link_Input").on("click", function() {
+        $(".ItemInfo_Link_Input")[0].select();
+        document.execCommand('copy');
+      })
+    });
 
     socket.on('UploadProgress', function(UploadProgress) {
       clientStatus("CS9", "Wait", 300);
@@ -108,19 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-shortcutKeys = {
-  "Ctrl+A": "All",
-  "Ctrl+N": "New",
-  "Delete": "Delete",
-  "Arrow_Up": "Move Up an Item",
-  "Arrow_Down": "Move Down an Item",
-  "Arrow_Left": "Back a directory",
-  "Arrow_Right": "Forward a directory",
-}
-var keyMap = {};
-onkeydown = onkeyup = function(e) {
-  keyMap[e.keyCode] = e.type == 'keydown';
-}
 
 function clientStatus(Light, Status, Time) {
   lightColours = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
@@ -134,9 +136,7 @@ function clientStatus(Light, Status, Time) {
   }
 }
 
-
 function clickedItem(selected, fromRC) {
-
   if (keyMap[16] == true || keyMap[17] == true) {
     if (selected.hasAttribute('selected')) {
       selected.removeAttribute('selected')
@@ -169,13 +169,12 @@ function clickedItem(selected, fromRC) {
   }
 }
 
-
 function ItemActions(selected) {
   if (!selected && RCElement) { selected = RCElement }
   NanoSelected = selected.getAttribute("nano-id");
   type = selected.getAttribute("type");
   if (type == 'image') {
-    selected.tagName == 'TR' ? displayImageLarge(selected, "table") : displayImageLarge(selected);
+    displayImageLarge(selected);
   } else if (type == 'folder') {
     socket.emit('directoryLocation', (selected.getAttribute('nano-id')));
   } else if (type == 'text') {
@@ -183,7 +182,6 @@ function ItemActions(selected) {
     selected.tagName == 'TR' ? displayTextContent(selected, "table") : displayTextContent(selected);
   }
 }
-
 
 function setupFileMove(Caller) {
   if (Caller == "Codex") {
@@ -264,7 +262,7 @@ function setupFileMove(Caller) {
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].getAttribute('src')+" ></img>"+e.currentTarget.childNodes[1].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
+        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+" ></img>"+e.currentTarget.childNodes[3].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
       },
     }).disableSelection();
 
@@ -327,7 +325,6 @@ function setupFileMove(Caller) {
     })
   }
 }
-
 
 function Route(Nano_Path, Text_Path) {
 

@@ -73,10 +73,10 @@ body {
   height: 100vh;
   right: 0;
   background-size: cover;
-  -webkit-transition: -webkit-box-shadow 0.3s;
-  transition: -webkit-box-shadow 0.3s;
-  transition: box-shadow 0.3s;
-  transition: box-shadow 0.3s, -webkit-box-shadow 0.3s;
+  -webkit-transition: -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: box-shadow 0.3s, filter 0.3s;
+  transition: box-shadow 0.3s, filter 0.3s, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
   overflow: hidden;
 }
 
@@ -87,11 +87,15 @@ body {
 #databaseBackgroundMain.highlight {
   -webkit-box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
           box-shadow: inset 0px 0px 15px 6px rgba(0, 0, 0, 0.4);
+  -webkit-filter: brightness(0.9);
+          filter: brightness(0.9);
 }
 
 .dark-theme #databaseBackgroundMain.highlight {
-  -webkit-box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
-          box-shadow: inset 0px 0px 20px 10px rgba(150, 150, 150, 0.3);
+  -webkit-box-shadow: inset 0px 0px 20px 10px rgba(254, 254, 254, 0.3);
+          box-shadow: inset 0px 0px 20px 10px rgba(254, 254, 254, 0.3);
+  -webkit-filter: brightness(0.6);
+          filter: brightness(0.6);
 }
 
 .fileContainer {
@@ -487,7 +491,7 @@ body {
   cursor: pointer;
 }
 
-.ListContentContainer table tr:hover:not(.noHover) {
+.ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
   opacity: 0.7;
   -webkit-transform: translateX(5px);
           transform: translateX(5px);
@@ -495,7 +499,7 @@ body {
   border-radius: 6px;
 }
 
-.dark-theme .ListContentContainer table tr:hover:not(.noHover) {
+.dark-theme .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
   background: rgba(0, 0, 0, 0.2);
 }
 
@@ -770,148 +774,228 @@ body {
   width: 100%;
   top: 50px;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 0px;
+  font-size: 15px;
+  overflow: hidden;
   overflow-y: auto;
-}
-
-.fileInformationContent .itemInformation {
-  width: 100%;
-  font-weight: 400;
-  padding: 10px 0 0 8px;
   white-space: normal;
+  color: #1a1a1d;
 }
 
-.dark-theme .fileInformationContent .itemInformation {
-  font-weight: 100;
-  color: #ccc;
+.dark-theme .fileInformationContent {
+  color: #eee;
 }
 
-.fileInformationContent .itemInformation.itemInformationName {
-  padding: 5px 0 5px 8px;
-  color: #292b2f;
+.fileInformationContent .ItemInfo_Name {
+  font-size: 18px;
+  font-weight: 400;
+  padding: 5px;
+  background: transparent;
+  border: none;
 }
 
-.dark-theme .fileInformationContent .itemInformation.itemInformationName {
-  color: #27ce8e;
+.dark-theme .fileInformationContent .ItemInfo_Name {
+  color: var(--highlight-color);
 }
 
-.fileInformationContent .itemInformation.itemInformationBlock {
-  font-size: 13px;
-  line-height: 20px;
-  margin-bottom: 16px;
+.fileInformationContent .ItemInfo_Name:focus {
+  border: 1px solid #666;
+  border-radius: 3px;
 }
 
-.fileInformationContent .itemInformation.itemInformationBlock .itemInformationDirectory {
-  width: 96%;
-  font-size: 14px;
-  padding: 4px;
+.fileInformationContent .ItemInfo_UUID {
+  padding: 5px 0px;
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.6;
+  border-bottom: 1px solid #393c44;
+}
+
+.fileInformationContent img {
+  position: relative;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  margin: 8px 0;
+}
+
+.fileInformationContent .ItemInfo_Directory {
+  width: 100%;
+  margin-top: -1px;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  border-top: 1px solid #393c44;
+  border-bottom: 1px solid #393c44;
+  color: inherit;
+}
+
+.fileInformationContent button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  width: 100px;
+  padding: 8px 4px;
   border-radius: 3px;
   border: none;
-  background: rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid #4b505a;
+  color: inherit;
+  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  -webkit-transition: -webkit-box-shadow 300ms ease;
+  transition: -webkit-box-shadow 300ms ease;
+  transition: box-shadow 300ms ease;
+  transition: box-shadow 300ms ease, -webkit-box-shadow 300ms ease;
 }
 
-.dark-theme .fileInformationContent .itemInformation.itemInformationBlock .itemInformationDirectory {
-  color: #93c0af;
-  border-color: #b4b4b4;
+.fileInformationContent button > i {
+  color: var(--highlight-color);
+  font-size: 15px;
+  padding: 2px 4px;
 }
 
-.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable {
+.fileInformationContent button:hover {
+  -webkit-box-shadow: 0 0 6px var(--highlight-color);
+          box-shadow: 0 0 6px var(--highlight-color);
+}
+
+.dark-theme .fileInformationContent button {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.fileInformationContent table {
   width: 100%;
-  margin-top: 20px;
-  font-size: 14px;
+  margin: 8px 0;
+  font-size: 13px;
   border-collapse: collapse;
   table-layout: fixed;
+  border-top: 1px solid #393c44;
 }
 
-.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable td {
+.fileInformationContent table td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  height: 28px;
+  height: 26px;
 }
 
-.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable td:nth-child(1) {
-  padding: 0 0 2px 20px;
+.fileInformationContent table td > input {
+  height: 20px;
+  width: 50px;
+  border: none;
+  background: transparent;
+}
+
+.fileInformationContent table td:nth-child(1) {
+  padding: 0 0 2px 15px;
   font-variant: all-petite-caps;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-.fileInformationContent .itemInformation.itemInformationBlock.itemInformationTable td:nth-child(2) {
+.fileInformationContent table td:nth-child(2) {
   text-align: right;
-  padding-right: 20px;
+  padding-right: 15px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
 }
 
-.fileInformationContent .itemInformationUUID {
-  padding: 4px 0 5px 8px;
-  font-size: 10px;
-  color: #5b616d;
-  border-bottom: 1px solid #4b505a;
+.fileInformationContent sub {
+  opacity: 0.6;
+  padding: 0 5px;
+  font-size: 11px;
 }
 
-.dark-theme .fileInformationContent .itemInformationUUID {
-  color: #bebebe;
-  border-color: #b4b4b4;
+.fileInformationContent textarea {
+  height: 50px;
+  width: 100%;
+  margin: 6px 0;
+  padding: 2px 5px;
+  resize: vertical;
+  font-size: 12px;
+  color: inherit;
+  border: 1px solid #828489;
+  background: transparent;
 }
 
-.fileInformationContent .shareLinkIcon {
-  padding: 5px 10px;
-  cursor: pointer;
-  color: #36393f;
-}
-
-.dark-theme .fileInformationContent .shareLinkIcon {
-  color: #e6e6e6;
-}
-
-.fileInformationContent .shareableLinkInput {
-  width: 78%;
-  padding: 4px;
-  border: none;
-  border-radius: 3px;
-  font-size: 13px;
+.dark-theme .fileInformationContent textarea {
   background: rgba(0, 0, 0, 0.05);
-  color: #36393f;
-  border-bottom: 1px solid #4b505a;
+  border-color: #393c44;
 }
 
-.dark-theme .fileInformationContent .shareableLinkInput {
-  color: #e6e6e6;
-  border-color: #b4b4b4;
+.fileInformationContent span {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  height: 34px;
+  width: 100%;
+  margin: 4px 0;
+  color: inherit;
 }
 
-.fileInformationContent .shareableLinkInput ::-webkit-input-placeholder {
-  color: #3c3f46;
+.fileInformationContent span > input {
+  height: 32px;
+  width: 100%;
+  padding: 3px 4px 6px 8px;
+  color: inherit;
+  border: 1px solid #828489;
+  background: transparent;
 }
 
-.fileInformationContent .shareableLinkInput :-ms-input-placeholder {
-  color: #3c3f46;
+.dark-theme .fileInformationContent span > input {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: #393c44;
 }
 
-.fileInformationContent .shareableLinkInput ::-ms-input-placeholder {
-  color: #3c3f46;
+.fileInformationContent span .Input_Ops_Btn {
+  display: inline-block;
+  height: 31px;
+  width: 30px;
+  padding: 10px 4px;
+  font-size: 12px;
+  text-align: center;
+  background: #afb4b9;
+  border-radius: 2px;
+  cursor: pointer;
 }
 
-.fileInformationContent .shareableLinkInput ::placeholder {
-  color: #3c3f46;
+.fileInformationContent span .Input_Ops_Btn:hover {
+  color: var(--highlight-color);
 }
 
-.dark-theme .fileInformationContent .shareableLinkInput ::-webkit-input-placeholder {
-  color: #bebebe;
+.dark-theme .fileInformationContent span .Input_Ops_Btn {
+  background: #4e535a;
 }
 
-.dark-theme .fileInformationContent .shareableLinkInput :-ms-input-placeholder {
-  color: #bebebe;
+.fileInformationContent div {
+  margin: -6px 0px 6px 0;
 }
 
-.dark-theme .fileInformationContent .shareableLinkInput ::-ms-input-placeholder {
-  color: #bebebe;
+.fileInformationContent div span {
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
-.dark-theme .fileInformationContent .shareableLinkInput ::placeholder {
-  color: #bebebe;
+.fileInformationContent div button {
+  width: 65px;
+}
+
+.fileInformationContent div button.selected {
+  border: 1px solid var(--highlight-color);
+}
+
+.fileInformationContent div > input {
+  height: 32px;
+  width: 100%;
+  padding: 3px 4px 6px 8px;
+  color: inherit;
+  border: 1px solid #828489;
+  background: transparent;
 }
 
 .fileUploadControls {
@@ -1076,6 +1160,11 @@ body {
   height: 170px;
   width: 100%;
   bottom: 150px;
+  background: #f1f1f1;
+}
+
+.dark-theme .UpDownOverlayContainer {
+  background: #1a1a1d;
 }
 
 .UpDownOverlayContainer > .uploadOverlayBtn {
@@ -1564,72 +1653,28 @@ body {
   background: #1e1e23;
 }
 
-.securityContainer {
-  position: relative;
-  width: 200px;
-  height: 32px;
-  border-radius: 3px;
-  margin: 10px 0 0 10px;
-  padding: 2px;
-  -webkit-box-shadow: 0 0 8px #666;
-          box-shadow: 0 0 8px #666;
-}
-
-.dark-theme .securityContainer {
-  color: #d8d8d8;
-  background-color: #2d2d38;
-  -webkit-box-shadow: 0 0 8px #1e1e1e;
-          box-shadow: 0 0 8px #1e1e1e;
+.securityEntry {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  -webkit-transition: background-image 0.3s;
+  transition: background-image 0.3s;
 }
 
 .securityEntry:hover {
-  -webkit-box-shadow: inset 0px 0px 4px #666;
-          box-shadow: inset 0px 0px 4px #666;
+  background-image: -webkit-gradient(linear, left top, right bottom, from(var(--highlight-color)), to(#30725d));
+  background-image: linear-gradient(to bottom right, var(--highlight-color), #30725d);
+}
+
+.securityEntry > input {
+  cursor: pointer !important;
+  height: auto !important;
+  padding: 2px 0px 6px 0 !important;
 }
 
 .itemLockIcon {
-  position: relative;
-  left: 0;
-  padding: 5px 3px 0 6px;
+  padding: 9px 9px 9px 2px;
   font-size: 16px;
-}
-
-.panelSecureInput {
-  height: 24px;
-  width: 164px;
-  margin: 2px 0 0 4px;
-  padding: 0 0 0 6px;
-  border: none;
-  border-radius: 3px;
-  font-family: monospace;
-  font-size: 15px;
-  color: #484848;
-  background-color: #dbdbdb;
-}
-
-.dark-theme .panelSecureInput {
-  color: #bebebe;
-  background-color: #232328;
-}
-
-#panelSecureInput::-webkit-input-placeholder {
-  font-size: 13px;
-  font-style: italic;
-}
-
-#panelSecureInput:-ms-input-placeholder {
-  font-size: 13px;
-  font-style: italic;
-}
-
-#panelSecureInput::-ms-input-placeholder {
-  font-size: 13px;
-  font-style: italic;
-}
-
-#panelSecureInput::placeholder {
-  font-size: 13px;
-  font-style: italic;
 }
 
 #rightClickContainer {
@@ -1685,6 +1730,12 @@ body {
   background: rgba(0, 0, 0, 0.6);
 }
 
+@media only screen and (min-width: 600px) {
+  .PagePanel {
+    display: block !important;
+  }
+}
+
 @media only screen and (max-width: 1000px) {
   .fileContainer {
     top: 82px;
@@ -1721,9 +1772,6 @@ body {
   }
   .dark-theme .fileInformation {
     background-color: #1a1a1d;
-  }
-  .PagePanel {
-    display: block !important;
   }
 }
 
