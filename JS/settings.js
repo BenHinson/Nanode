@@ -42,8 +42,8 @@ function readSettings(calledSettings) {
   for (key in keys) {
     let objID = settingsMap[keys[key]]
     if ( typeof UserSettings[keys[key]] == "number" ) {
-      $("#"+  objID[ UserSettings[keys[key]] ]   +"")[0].classList.add("SW_Selected");
-    } else {
+      $("#"+ objID[ UserSettings[keys[key]] ] +"")[0].classList.add("SW_Selected");
+    } else if ( $("#"+objID+"")[0] ) {
       $("#"+objID+"")[0].value = UserSettings[keys[key]];
     }
   }
@@ -90,7 +90,6 @@ $(" input[type=text], input[type=number], input[type=url], input[type=color] ").
     if (itemType.isFi && itemType.isImg) { console.log("accepted") }
     else {console.log("not a valid file for a background."); return;}
   }
-
   socket.emit('CallSettings', "Write", update);
 
   UserSettings[key] = newVal;
@@ -98,21 +97,14 @@ $(" input[type=text], input[type=number], input[type=url], input[type=color] ").
 })
 
 
-
-// Fetch Account Data
-// document.addEventListener('DOMContentLoaded', async() => {
-//   try { 
-//     const Acc_response = await fetch( "Account", { method: 'POST' })
-//     const Acc_Data = await response.json();
-
-//     if (Acc_Data.Account != "NULL_ACC" && typeof Acc_Data.Account == "object") {
-//       console.log(Acc_Data.Account);
-//     } else {
-//       console.log(Acc_Data.Account);
-//       console.log("Not Logged In");
-//     }
-//   } catch(error) {console.log(error)}
-// })
+function changeSetting(setting, newVal) {
+  if (setting.match(/Date|Theme|ViewT/g)) {
+    newVal = [setting, UserSettings[setting] == 0 ? 1 : 0]
+    UserSettings[setting] = newVal[1];
+    socket.emit('CallSettings', "Write", newVal);
+  }
+  handleSettings();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,17 +183,12 @@ function RGBtoHEX(rgb){
 }
 function convertSize(InputSize) {
   if (!InputSize) { return '-' }
-  let size = (InputSize / 1024 / 1024 / 1024).toFixed(2)+ " GB";
-  if (size.charAt(0) == "0") {
-    size = (InputSize / 1024 / 1024).toFixed(2)+" MB";
-    if (size.charAt(0) == "0") {
-      size = (InputSize / 1024).toFixed(2)+' KB'
-    }
-    if (size.charAt(0) == "0") {
-      size = (InputSize).toFixed(2)+' Bytes'
-    }
+  let fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  for (let i=0; i<fileSizes.length; i++) {
+    if (InputSize <= 1024) { return InputSize+" "+fileSizes[i] }
+    else { InputSize = parseFloat(InputSize / 1024).toFixed(2) }
   }
-  return size;
+  return InputSize;
 }
 function ItemImage(type, OID, Block) {
   if (!type.isFi)           return "/assets/FileIcons/Folder.svg";

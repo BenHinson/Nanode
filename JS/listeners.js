@@ -63,8 +63,21 @@ $("#displayLeftBar").on("click", function() {
   $(".PagePanel")[0].style.display = "block" : $(".PagePanel")[0].style.display = "none";
 })
 
+$(".toggleDetailsBtn").on("click", function() {
+  let currDetails = displayDetails();
+  currDetails = !currDetails;
+  localStorage.setItem('displayDetails', currDetails);
+  currDetails == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
+})
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function refreshDirectory() {
+  FolderCall = false;
+  socket.emit('directoryLocation', (NanoID));
+}
 
 function displaySideBar(state) {
   if (!SideBarOpen || state == false) {
@@ -82,12 +95,6 @@ function displaySideBar(state) {
 }
 
 
-$(".toggleDetailsBtn").on("click", function() {
-  let currDetails = displayDetails();
-  currDetails = !currDetails;
-  localStorage.setItem('displayDetails', currDetails);
-  currDetails == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
-})
 
 
 function dragElement(element) {
@@ -119,6 +126,15 @@ function dragElement(element) {
   }
 }
 
+function collapseSpan() {
+  if (RCElement.hasAttribute('collapsed') == true) {
+    RCElement.removeAttribute('collapsed');
+    $(RCElement).find('table').css("visibility", "visible")
+  } else {
+    RCElement.setAttribute('collapsed', true);
+    $(RCElement).find('table').css("visibility", "collapse")
+  }
+}
 
 function renameSpan(e) {
   var target = e ? e.target : RCElement.children[0];
@@ -143,16 +159,6 @@ function renameSpan(e) {
       $(document).off("click");
     });
   },20)
-}
-
-function collapseSpan() {
-  if (RCElement.hasAttribute('collapsed') == true) {
-    RCElement.removeAttribute('collapsed');
-    $(RCElement).find('table').css("visibility", "visible")
-  } else {
-    RCElement.setAttribute('collapsed', true);
-    $(RCElement).find('table').css("visibility", "collapse")
-  }
 }
 
 

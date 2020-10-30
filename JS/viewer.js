@@ -213,10 +213,13 @@ async function callItemInformation(selected) {
     <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.Description ? RequestInfo.Description : ""}</textarea>
 
     <sub>SHARE - with another Nanode account</sub>
-    <span> <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
+    <span> <input style='border-color: red;' class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
 
     <sub>LINK - view only</sub>
     <span> <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer;'></span>
+
+    <sub>DOWNLOAD LINK</sub>
+    <span> <input class='ItemInfo_Download_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer'> </span>
   `
   // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Share_Btn'></i>
   // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Link_Btn'></i> 
@@ -291,6 +294,10 @@ function ItemInfoListeners(ItemRequest) {
   // Write the link ID to the object. On read of the object data. If link / shared, add: block links, and fill in Link to the link. Options still work, allowing change.
   $(".ItemInfo_Link_Input").on("click", function(e) {
     if (!e.target.value) { socket.emit('Share', ({Action: "Link", objectID: ItemRequest.UUID})); }
+  })
+
+  $(".ItemInfo_Download_Input").on("click", function(e) {
+    if (!e.target.value) { socket.emit('downloadItems', "SHARE", [ItemRequest.UUID]); }
   })
 }
 ////////////////////////////////////////////////////////////////////////
@@ -452,7 +459,7 @@ function chooseSpanDropdownListener() {
 function displaySecurityEntry(itemSecurity) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS6", "False");
 
-  if (!SideBarOpen) {displayItemInformation(); }
+  if (!SideBarOpen) {displaySideBar(); }
   $(".fileInformationContent").empty();
 
   for (i=0; i<itemSecurity.length; i++) {
@@ -539,17 +546,16 @@ function displayUploadDownloadOverlay(Title, ContextMenu) {
         })
       }
       $(".DODownload").off();
-      $(".DODownload").on("click", function() {
+      $(".DODownload").on("click", function(e) {
+
+        $(".DODownload").off();
         socket.emit('downloadItems', "SELF", DownloadItems)
         DownloadItems = [];
         $("#UpDownOverlayItems")[0].innerHTML = "<div class='downloadIcon'></div><div class='downloadStatus'>Downloading</div>";
 
-        socket.on('DownloadURLID', function(url) {
-          window.open("https://drive.Nanode.one/download?q="+url);
-          setTimeout(function() {
-            cancelUploadDownloadItems();
-          }, 5000)
-        })
+        socket.on('DownloadURLID', function(url) { window.open("https://link.Nanode.one/download/"+url);})
+        setTimeout(function() { cancelUploadDownloadItems(); }, 5000)
+
       })
     }
   }

@@ -94,11 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
 
-    socket.on('Link_Return', function(Returned) {
+    socket.on('Link_Return', function(Type, Returned) {
       clientStatus("CS3", "True", 500);
-      $(".ItemInfo_Link_Input")[0].value = Returned;
-      $(".ItemInfo_Link_Input").on("click", function() {
-        $(".ItemInfo_Link_Input")[0].select();
+      let element = ''
+      if (Type == "LINK") { element = $(".ItemInfo_Link_Input")[0] };
+      if (Type == "DOWNLOAD") { element = $(".ItemInfo_Download_Input")[0] };
+
+      element.value = Returned;
+      $(element).on("click", function(e) {
+        e.target.select();
         document.execCommand('copy');
       })
     });
@@ -354,7 +358,7 @@ function Route(Nano_Path, Text_Path) {
     
     if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
     {Tree_Number++;   Tree_Steps = Directory_Route.length;   Directory_Tree.push({"Start":Tree_Steps, "Route": Directory_Route});}
-    
+
     FolderCall = false;
 
     socket.emit('directoryLocation', (NanoID));

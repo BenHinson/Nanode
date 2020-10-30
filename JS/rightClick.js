@@ -6,11 +6,11 @@ RightClickObjectMenu = {
   "File_Container" : {
     "New Folder": [{"Command": "displayCentralActionMain", 'Var1':'New Folder', 'Var2':'Create'}], 
     "New File": [{"Command": "displayCentralActionMain", 'Var1':'New File', 'Var2':'Create'}], 
-    "Refresh": [{"Command": "directoryRefresh"}],
+    "Refresh": [{"Command": "refreshDirectory"}],
     "Nano_SPLIT_1": "", 
-    "RC_VAR_Details": [{"Command": "displayItemInformation"}],
-    "RC_VAR_Switch_View": [{"Command": "toggleContentView"}], 
-    "Change Theme": [{'Command':'changeTheme'}],
+    "RC_VAR_Details": [{"Command": "displaySideBar"}],
+    "RC_VAR_Switch_View": [{"Command": 'changeSetting', 'Var1': 'ViewT'}], 
+    "RC_VAR_Change_Theme": [{"Command":'changeSetting', 'Var1': 'Theme'}],
     "Nano_SPLIT_2": "", 
     "Upload": [{"Command": "displayUploadDownloadOverlay", 'Var1':'Upload'}],
   },
@@ -118,8 +118,6 @@ function startFocusOut() {
 }
 
 
-
-
 function RC_VAR_Collapse(Option, e) {
   return (e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse";
 }
@@ -129,5 +127,6 @@ function RC_VAR_Details(Option, e) {
 function RC_VAR_Switch_View(Option, e) {
   return UserSettings.ViewT == 0 ? "List View" : "Block View";
 }
-
-
+function RC_VAR_Change_Theme(Option, e) {
+  return UserSettings.Theme == 0 ? "Light Theme" : "Dark Theme";
+}

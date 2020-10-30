@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang='en-GB'>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nanode.one/CSS/download.css">
+    <title><%= ejs_title %></title>
+  </head>
+  <body>
+
+    <section>
+      <div>
+        <a href="//www.Nanode.one"><img src="https://Nanode.one/assets/Nanode/Nanode.svg" style="width: 140px"></a>
+
+        <h4><%= ejs_name %>.zip</h4>
+        <h5><%= ejs_size %></h5>
+        <h5><%= ejs_items %></h5>
+
+        <span>
+          <button id='previewBtn' style='opacity: <%= ejs_preview ? 1 : 0.6 %>; cursor: <%= ejs_preview ? "pointer" : "not-allowed" %>;'> <% ejs_preview ? "" : "No" %> Preview</button>
+          <button style='opacity: <%= ejs_scanned ? 1 : 0.6 %>;'> <%= ejs_scanned ? ejs_scanned : "Not Scanned" %></button>
+        </span>
+      </div>
+
+      <div style="display: none;" id='previewBox'>
+
+      </div>
+    </section>
+    
+    <section>
+      <div style='padding: 0px; border-radius: 3px;'>
+        <a download='Nanode_<%= ejs_name %>.zip' target='_blank' href='<%= ejs_url %>' class='downloadBtn' tabindex="0">Download</a>
+      </div>
+
+      <div>
+        <table>
+          <tbody>
+            <tr><th>NAME</th><th>TYPE</th></tr>
+            <% ejs_contents.forEach(function(item) { %>
+              <tr> <td><%= item.Name %></td> <td><%= item.Mime %></td> </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </body>
+</html>
+
+<script>
+  const downloadItem = "<%= ejs_item %>";
+  const previewCount = <%= ejs_preview_count %>;
+  let previewItem = (previewCount >= 0 ? 0 : false);
+  let previewOpen = false;
+  const previewBox = document.getElementById('previewBox');
+
+  document.getElementById('previewBtn').addEventListener('click', function() {
+    if (previewOpen) {
+      previewBox.style.display = 'none';
+    } else if (previewCount && previewItem < previewCount) {
+      previewBox.style.display = 'flex';
+      previewBox.innerHTML = `<img src='https://link.nanode.one/download/preview/${downloadItem}?item=${previewItem}'></img>`
+    } else {return};
+    previewOpen = !previewOpen;
+  })
+</script>
