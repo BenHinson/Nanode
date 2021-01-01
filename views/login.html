@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en-GB'>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Secure File Storage">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Nanode</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/logo/Nanode_Fade.svg"/>
+    <link rel="stylesheet" href="../CSS/Master/master.css">
+  </head>
+  <body class="dark-theme">
+
+    <div class="loginBackground">
+      <div class="mainLoginContainer">
+        <h2 class="MainTitle">Welcome</h2>
+        <div class="SecondaryTitle">Login to your drive</div>
+
+        <form id="loginForm" method="POST" action='/login'>
+          <div id="TitleEmail" class="InputTitle">Email</div>
+          <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required>
+
+          <div id="TitlePwd" class="InputTitle">Password</div>
+          <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required>
+
+          <!-- <button>Forgot your password?</button> -->
+          <input id="loginBtn" class="ButtonInput" type="submit" value="Login">
+        </form>
+
+        <span id="accountStatus">Dont have an account?</span>
+        <button onclick="loginSignupFormSwitch()">Signup</button>
+      </div>
+    </div>
+
+  </div>
+  </body>
+</html>
+
+<script text="text/javascript" src="../JS/login.js"></script>

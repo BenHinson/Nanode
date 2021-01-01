@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang='en-GB'>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Secure File Storage">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+
+    <title>Nano Drive</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/Nanode_Fade.svg"/>
+    <link rel="stylesheet" href="/CSS/drive.css">
+    <!-- <link rel="stylesheet" href="/CSS/pages.css"> -->
+  </head>
+
+
+  <body class="dark-theme">
+
+    <div class="Frame">
+      <button id="colorTheme" onclick="changeTheme()" title="Change Theme"><i class="fas fa-adjust controlsFade"></i></button>
+      <div class="clientStatus">
+        <div id='Recon_Btn' style="display: none;">Reconnect</div>
+        <div id="CS0"></div>  <div id="CS1"></div>  <div id="CS2"></div>  <div id="CS3"></div>  <div id="CS4"></div>  <div id="CS5"></div>  <div id="CS6"></div>  <div id="CS7"></div>  <div id="CS8"></div>  <div id="CS9"></div>
+      </div>
+    </div>
+
+
+    <div class='PageList'>
+      <div>
+        <a title="Nanode" id="NanodeRtn" href="//nanode.one" width="130" height="30"></a>
+        <span drvPage="User" title="User" class="SelectedPage"><i class="fas fa-user"></i><p>Home</p></span>
+        <span drvPage="Contacts" title="Contacts"><i class="fas fa-users"></i><p>Share</p></span>
+        <span drvPage="Blocks" title="Blocks"><i class="fas fa-th"></i><p>Blocks</p></span>
+        <span drvPage="Codex" title="Codex"><i class="fas fa-stream"></i><p>Lists</p></span>
+      </div>
+
+      <div class='PagesTwo'>
+        <span drvPage="Bin" title="Bin"><i class="fas fa-trash-alt"></i><p>Bin</p></span>
+        <span drvPage="Settings" title="Settings"><i class="fas fa-cog"></i><p>Settings</p></span>
+      </div>
+
+      <div class='Storage'>
+        <h3>Storage</h3>
+        <p>65.3 GB / 100 GB</p>
+        <progress value='65.3' max="100" ></progress>
+      </div>
+    </div>
+
+
+    <div class='PageContainer'>
+
+      <div class='PageControls'>
+        <span id="directoryControlBack" title="Back"><i class="fas fa-chevron-left"></i></span>
+        <span id="directoryControlForward" title="Forward"><i class="fas fa-chevron-right"></i></span>
+      </div>
+
+      <div class='PageHeader'>
+        <div id='directoryLocation' type='text' placeholder='Current Directory'></div>
+        <input class='search' type="text" placeholder="Search...">
+        <!-- <div class='PageInformationToggle'><i class='fas fa-chevron-right'></i></div> -->
+      </div>
+
+      <div class='Page'>
+        <div class='fileContainer' rc='File_Container'></div>
+      </div>
+    </div>
+
+
+    <div class='PageInformation'>
+      <div class='New' title="New Folder or Upload Files"><i class='fas fa-plus'></i>New</div>
+      <i class='toggleDetailsBtn fas fa-info-circle' title='Toggle Details'></i>
+      <div class='ItemInformation'></div>
+    </div>
+
+
+    <div class='UploadBtns'>
+      <input id="fileUploadBtn" type="file" multiple></input>
+      <input id="folderUploadBtn" type="file" multiple webkitdirectory mozdirectory></input>
+      <input id="codexUploadBtn" type="file" accept="text/*" multiple>
+    </div>
+    
+    <div style='visibility: hidden;' class='Upload_Container'>
+      <div class='UC_Queue_Viewer'><table><tbody></tbody></table></div>
+      <div class='UC_Top'>
+        <h4 onclick="Upload_Listeners.Control(this)" class='Upload_Control' action='Choose'>Choose Items</h4>
+        <span>
+          <i onclick="Upload_Visuals.Queue(this)" class='fas fa-chevron-up'></i>
+          <i onclick="PopUp_Upload.Close()" class='fas fa-times'></i>
+        </span>
+      </div>
+      <div class='UC_Bottom'>
+        <button Upload_Folder onclick="document.getElementById('folderUploadBtn').click()">Folder</button>
+        <button Upload_Files onclick="document.getElementById('fileUploadBtn').click()">Files</button>
+        <p>0 Items</p>
+        <p>0 B</p>
+        <div class='Upload_Progress'><progress value='0' max='100'></progress><p title='Estimated'>?</p></div>
+      </div>
+    </div>
+
+    <table class='RightClickContainer'></table>
+
+  </body>
+</html>
+
+
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+<script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+<script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script text="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script text="text/javascript" src="/JS/client.js"></script>
+<script text="text/javascript" src="/JS/settings.js"></script>
+<script text="text/javascript" src="/JS/listeners.js"></script>
+<script text="text/javascript" src="/JS/viewer.js"></script>
+<script text="text/javascript" src="/JS/pages.js"></script>
+<script text="text/javascript" src="/JS/rightClick.js"></script>
+<script text="text/javascript" src="/JS/theme.js"></script>
+<script text="text/javascript" src="/JS/upload.js"></script>

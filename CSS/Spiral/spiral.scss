@@ -1,0 +1,114 @@
+:root {
+  --background: #0f1923;
+  --menu: rgba(60, 60, 65, 0.3);
+  --text: #f1f1f1;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  outline: none;
+  font-family: 'Segoe UI', monospace;
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  color: var(--text);
+}
+body {
+  display: grid;
+  box-sizing: border-box;
+  background: #121214;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { border-radius: 4px; background: linear-gradient(135deg, #0b0d27, #296985);}
+::-webkit-scrollbar-corner { background: var(--background); }
+
+canvas {
+  background: var(--background);
+}
+
+menu {
+  position: fixed;
+  height: auto;
+  width: 160px;
+  margin: 5px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--menu);
+  overflow: hidden;
+
+  i {
+    position: absolute;
+    top: 10px;
+    padding: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    &:hover { opacity: 0.8 }
+    &#collapse { right: 44px; }
+    &#fullscreen { right: 14px; }
+  }
+  
+  h3 {
+    font-variant: all-petite-caps;
+    border-bottom: 1px solid;
+    margin-bottom: 6px;
+    padding-bottom: 3px;
+  }
+  h5 {
+    padding-top: 5px;
+  }
+  h6 {
+    padding: 5px 0;
+    font-size: 10px;
+    font-variant: all-petite-caps;
+    text-align: center;
+    opacity: 0.8;
+  }
+
+  span {
+    height: 30px;
+    width: 100%;
+    margin: 5px 0;
+    display: inline-flex;
+    justify-content: space-between;
+
+    input{ cursor: pointer; }
+
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50% }
+    input[type="color"] {
+      height: 29px;
+      width: 29px;
+      background: none;
+      border: none;
+    }
+
+    input[type="checkbox"] {
+      height: 14px;
+      width: 14px;
+      margin: 8px;
+    }
+  }
+  
+  input[type="number"] {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid;
+    font-size: 14px;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    height: 30px;
+    width: 100%;
+    margin-top: 10px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    font-variant: all-petite-caps;
+    background: linear-gradient(40deg, #2d3381, #529ce3);
+    border: none;
+    cursor: pointer;
+  }
+}

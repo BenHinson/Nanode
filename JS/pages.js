@@ -9,7 +9,7 @@ audioOrder = [];
 audioNumber = 0;
 
 
-$(".PagePanel > div > span").on("click", function(e) {
+$(".PageList > div > span").on("click", function(e) {
   let P2O = e.currentTarget.getAttribute("drvpage");
 
   if (P2O != Current) {
@@ -33,9 +33,24 @@ $(".PagePanel > div > span").on("click", function(e) {
     Current = "User";
     $(".SelectedPage")[0].classList.remove('SelectedPage');
     $("[drvPage=User]")[0].classList.add('SelectedPage');
+
+  } else if (P2O == "User") {
+    Homepage();
   }
 })
 
+
+function Homepage() {
+  if (JSON.stringify(Directory_Tree[Tree_Number]) !== JSON.stringify({"Start": 1, "Route": [{"Nano": "Homepage", "Text": "Homepage"}]})) {
+    Directory_Route = [{"Nano": "Homepage", "Text": "Homepage"}]
+    Directory_Tree.push({"Start": 1, "Route": Directory_Route});
+
+    Tree_Number++;
+    Tree_Steps = 1;
+    Directory_Call("Homepage", false)
+    clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+  } else { return; }
+}
 
 // =============================================================================================
 // =============================================================================================
@@ -153,11 +168,12 @@ function readCodex(codexContents) {
   audioNumber = 0;
 
   CodexWanted = CodexList();
-  $(".codexAudioPlayer")[0].style.display = "none";  $(".codexWrapper")[0].style.height = "calc(100% - 121px)";
+  $(".codexAudioPlayer")[0].style.display = "none";  $(".codexWrapper")[0].style.height = "calc(100% - 120px)";
   if (CodexWanted == "Audio") {
     if (!AudioListeners) { AudioListeners = true; CodexAudioListeners(); }
-    $(".codexAudioPlayer")[0].style.display = ""; $(".codexWrapper")[0].style.height = "calc(100% - 241px)";
+    $(".codexAudioPlayer")[0].style.display = ""; $(".codexWrapper")[0].style.height = "calc(100% - 220px)";
   }
+  CodexListeners();
 
   for (item in content) {
 
@@ -256,7 +272,7 @@ function codexItemAction(Call, e) {
     $(".codexVideoContainer,.codexTextContainer").css('visibility', 'hidden');
   
     if ($(".CodexContentContainer")[0].style.left != "350px" && CodexList() != "Audio") { $(".CodexContentContainer")[0].classList.add('Displayed_Container'); $(".CodexContentContainer")[0].style.left = "350px";}
-    $(".PagePanel > div > span").on("click", function() {
+    $(".PageList > div > span").on("click", function() {
       $(".CodexContentContainer")[0].style.left = "-100vw";
       setTimeout(function(e){ $(".CodexContentContainer")[0].classList.remove('Displayed_Page'); }, 400)
     })
@@ -287,7 +303,6 @@ function codexItemAction(Call, e) {
     let emitAction = "Delete"; let CodexPath = e.getAttribute('nano-id');
     socket.emit('Codex', {emitAction, CodexWanted, CodexPath});
   }
-
 }
 
 function playAudio() {
@@ -302,7 +317,6 @@ function playAudio() {
 }
 
 function CodexAudioListeners() {
-
   window.audio = new Audio;
 
   $("#playPause").on("click", function() {
@@ -350,6 +364,12 @@ function CodexAudioListeners() {
   //   audio.volume = JSON.parse(localStorage.getItem('volume'));
   //   volumeSlider.value = audio.volume * 150;
   // }
+}
+
+function CodexListeners() {
+  $(".CC_Return").off();
+  $(".CC_Expand").off();
+  $("CC_Directory").off();
 
   $(".CC_Return").on("click", function() {
     if (CodexDirPath_Nano.length > 1) {
@@ -367,7 +387,6 @@ function CodexAudioListeners() {
   $("CC_Directory").on("click", function() {
     let emitAction = "Call"; socket.emit('Codex', {emitAction, CodexWanted, CodexPath})
   })
-
 }
 
 

@@ -4,9 +4,9 @@ const container = document.getElementsByClassName('mainLoginContainer')[0];
 var currentLoginPage = 'login';
 
 const reponseMap = {
-  "Incorrect_Cred": "Email <i> - wrong email or password </i>",
-  "Invalid_Email" : "Email <i> - enter a valid email</i>",
-  "Already_Exist" : "Email <i> - account already exists</i>"
+  "Incorrect_Cred": "wrong email or password </i>",
+  "Invalid_Email" : "enter a valid email</i>",
+  "Already_Exists" : "account already exists</i>"
 }
 
 listenToBtn();
@@ -41,7 +41,7 @@ function listenToBtn() {
 
         if (responseData.Acc_Server == "_Login") {
           location = '//nanode.one';
-        } else if (responseData.Acc_Server == "_Registed") {
+        } else if (responseData.Acc_Server == "_Registered") {
           loginSignupFormSwitch();
         } else if (responseData.Acc_Server) {
           elem("email").style.border = "1px solid #f04747";

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Prime Spiral">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spiral</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/Nanode_Fade.svg" alt='Nanode'/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="../CSS/Spiral/spiral.css">
+</head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <menu>
+      <h3>Spiral</h3>
+      <i id='fullscreen' class="fas fa-expand" onclick="toggleFullscreen()"></i>
+      <i id='collapse' class="fas fa-chevron-up" title='Collapse Menu' onclick="toggleMenu()"></i>
+
+      <h5>Primes Within</h5>
+      <input type="number" name="primes" value='10000' max='20000000' onchange="Count = this.value">
+
+      <h5>Scale To</h5>
+      <input type="number" name="scale" value='100' onchange="Scale = this.value">
+
+      <span> <h5>Background</h5> <input type="color" name="background" value='#0f1923' onchange=" document.documentElement.style.setProperty('--background', this.value); "> </span>
+      <span> <h5>Pixel</h5> <input type="color" name="pixel" value='#99cdff' onchange="setColour(this.value)"> </span>
+
+      <span> <h5>Rainbow</h5> <input type="checkbox" name="rainbow" onchange="setEffect('rainbow', this.checked)"> </span>
+      <span> <h5>Frosted</h5> <input type="checkbox" name="frosted" onchange="setEffect('frosted', this.checked)"> </span>
+
+      <button onclick="generate()">Generate</button>
+
+      <h6 id='generateDetails'></h6>
+
+    </menu>
+
+  </body>
+
+</html>
+
+
+<script> // 47813 - 182
+
+  let Canvas, Ctx, Data, canvasHeight, canvasWidth, Count=10000, Scale=100, PrimeCount, Time;
+  let Menu=true, Fullscreen=false, Effect=false, PixelRotation=1, PixelColour = [153,205,255,255];
+
+  generate = function() {
+    Time = new Date().getTime();
+    createCanvas();
+    primeCount(Count).forEach(point => { let Degrees = point * ( 180 / Math.PI );
+      document.querySelector('#generateDetails').innerText = `Found ${PrimeCount} primes in ${ new Date().getTime() - Time }ms`
+      drawPixel(
+          (canvasWidth / 4) + ((Math.cos(Degrees) * point) / Scale),
+          (canvasHeight / 4) + ((Math.sin(Degrees) * point) / Scale))
+    });
+    Ctx.putImageData(Data, 0, 0); }
+
+  createCanvas = function() {
+    [canvasHeight, canvasWidth] = [window.outerHeight,window.outerWidth];
+    Canvas = document.querySelector('canvas');
+    Canvas.style = `height:${canvasHeight}px;width:${canvasWidth}px;`
+    Canvas.height = canvasHeight; Canvas.width = canvasWidth;
+    Ctx = Canvas.getContext('2d');
+    Ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    Data = Ctx.getImageData(0, 0, canvasWidth, canvasHeight); }
+
+  primeCount = function(n, Primes=[2]) {
+    for (let i=3; i<n; i+=2 ) {
+      if (isPrime(i)) { Primes.push(i) }
+    }; PrimeCount = Primes.length; return Primes;};
+
+  isPrime = function(num, max=Math.sqrt(num)) {
+    for (let i=2; i<max; i++) {
+      if ( num % i === 0 ) { return false; }
+    } return true;};
+
+
+  drawPixel = function(x, y) {
+    Pixel = (~~x + ~~y * canvasWidth) * 8;
+    if (Effect != false) { pixelEffect(); }
+    Data.data[Pixel + 0] = PixelColour[0]; Data.data[Pixel + 1] = PixelColour[1];
+    Data.data[Pixel + 2] = PixelColour[2];  Data.data[Pixel + 3] = PixelColour[3]; }
+
+  setEffect = function(type, checked) {
+    if (type == "rainbow" && checked) { Effect = "rainbow"; PixelColour = [255,0,0,255]; }
+    else if (type == "frosted" && checked) { Effect = "frosted"; PixelColour = [0,0,0,255]; }
+    else {Effect = false; setColour(document.querySelector('[name=pixel]').value) }
+  }
+  EffectRotation = function() { 
+    PixelRotation = ( PixelRotation+1 > 6 ? 1 : PixelRotation+1 ) 
+  }
+  pixelEffect = function() {
+    if (Effect == "rainbow") {
+      switch(PixelRotation) {
+        case (1): (PixelColour[1] + 1 > 255) ? EffectRotation() : PixelColour[1] = PixelColour[1] + 1; break; // 255,0,0    >   255,255,0
+        case (2): (PixelColour[0] - 1 <  0 ) ? EffectRotation() : PixelColour[0] = PixelColour[0] - 1; break; // 255,255,0  >   0,255,0
+        case (3): (PixelColour[2] + 1 > 255) ? EffectRotation() : PixelColour[2] = PixelColour[2] + 1; break; // 0,255,0    >   0,255,255
+        case (4): (PixelColour[1] - 1 <  0 ) ? EffectRotation() : PixelColour[1] = PixelColour[1] - 1; break; // 0,255,255  >   0,0,255 
+        case (5): (PixelColour[0] + 1 > 255) ? EffectRotation() : PixelColour[0] = PixelColour[0] + 1; break; // 0,0,255    >   255,0,255
+        case (6): (PixelColour[2] - 1 <  0 ) ? EffectRotation() : PixelColour[2] = PixelColour[2] - 1; break; // 255,0,255  >   255,0,0
+      }
+    }
+    else if (Effect == 'frosted') {
+      PixelColour[0] = ( (PixelColour[0] + 1 > 255) ? 0 : PixelColour[0] + 1 );
+      PixelColour[1] = ( (PixelColour[1] + 1 > 255) ? 0 : PixelColour[1] + 1 );
+      PixelColour[2] = ( (PixelColour[2] + 1 > 255) ? 0 : PixelColour[2] + 1 );
+      PixelColour[3] = ( (PixelColour[3] + 1 > 255) ? 0 : PixelColour[3] + 1 );
+    }
+    return;
+  }
+
+  
+  ///////////////////////
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    createCanvas();
+  })
+
+  setColour = function(hex) {
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    PixelColour[0] = parseInt(result[1], 16);
+    PixelColour[1] = parseInt(result[2], 16);
+    PixelColour[2] = parseInt(result[3], 16);
+  }
+
+  toggleFullscreen = function() {
+    Fullscreen ? document.exitFullscreen() : document.body.requestFullscreen();
+    document.querySelector('#fullscreen').classList = (Fullscreen ? 'fas fa-expand' : 'fas fa-compress')
+    Fullscreen = !Fullscreen;
+  }
+
+  toggleMenu = function() {
+    document.querySelector('menu').style.height = (Menu ? "30px" : "auto");
+    document.querySelector('#collapse').classList = (Menu ? 'fas fa-chevron-down' : 'fas fa-chevron-up');
+    document.querySelector('#collapse').title = (Menu ? 'Expand Menu' : 'Collapse Menu');
+    Menu = !Menu;
+  }
+
+</script>

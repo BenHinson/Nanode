@@ -1,24 +1,19 @@
 // HTML with attribute of 'rc-name' |  right-click-name of the object  |  rc-name="centralContentBox"
 
-// FOR ISSUE RELATING TO THE LARGE GAP ON SUB PAGES. REMOVE FLEX-BOX AND -WEBKIT-BOX FOR THE FILE CONTAINER (warning... Fucks homepage. Need to add special case for this. reee)
-
 RightClickObjectMenu = {
   "File_Container" : {
-    "New Folder": [{"Command": "displayCentralActionMain", 'Var1':'New Folder', 'Var2':'Create'}], 
-    "New File": [{"Command": "displayCentralActionMain", 'Var1':'New File', 'Var2':'Create'}], 
+    "New Folder": [{"Command": "displayCentralActionMain", 'Var1':'New Folder', 'Var2':'Create'}],
     "Refresh": [{"Command": "refreshDirectory"}],
-    "Nano_SPLIT_1": "", 
-    "RC_VAR_Details": [{"Command": "displaySideBar"}],
+    "Nano_SPLIT_1": "",
     "RC_VAR_Switch_View": [{"Command": 'changeSetting', 'Var1': 'ViewT'}], 
     "RC_VAR_Change_Theme": [{"Command":'changeSetting', 'Var1': 'Theme'}],
     "Nano_SPLIT_2": "", 
-    "Upload": [{"Command": "displayUploadDownloadOverlay", 'Var1':'Upload'}],
+    "Upload": [{"Command": "PopUp_Upload", 'Var1':'Upload'}],
   },
   "Homepage_Span" : {
-    "Rename": [{"Command": "renameSpan"}], 
     "RC_VAR_Collapse": [{"Command": "collapseSpan"}],
     "Nano_SPLIT_1": "", 
-    "Delete": [{"Command": "displayConfirmCancelBox", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin.<br>Folders, Spans and their content <u>cannot</u> be reclaimed."}]
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin.<br>Folders, Spans and their content <u>cannot</u> be reclaimed."}]
   },
   "Nano_Folder" : {
     "Open": [{"Command": "ItemActions"}],
@@ -28,11 +23,11 @@ RightClickObjectMenu = {
     "Move To": "",
     "Create Shotcut": "",
     "Nano_SPLIT_2": "",
-    "Change Colour": [{"Command": "displayColorPicker", "Var1": "RC"}],
+    "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
-    "Delete": [{"Command": "displayConfirmCancelBox", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin<br>Folders and Spans <u>cannot</u> be reclaimed"}],
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin<br>Folders and Spans <u>cannot</u> be reclaimed"}],
     "Nano_SPLIT_3": "",
-    "Download": [{"Command": "displayUploadDownloadOverlay", "Var1": "Download", "Var2": "ContextMenu"}],
+    "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
   },
   "Nano_File" : {
     "Open": [{"Command": "ItemActions"}],
@@ -43,12 +38,12 @@ RightClickObjectMenu = {
     "Move To": "",
     "Create Shotcut": "",
     "Nano_SPLIT_2": "",
-    "Change Colour": [{"Command": "displayColorPicker", "Var1": "RC"}],
+    "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
-    "Delete": [{"Command": "displayConfirmCancelBox", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin<br>Folders and Spans <u>cannot</u> be reclaimed"}],
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin<br>Folders and Spans <u>cannot</u> be reclaimed"}],
     "Nano_SPLIT_3": "",
     "Share": "",
-    "Download": [{"Command": "displayUploadDownloadOverlay", "Var1": "Download", "Var2": "ContextMenu"}],
+    "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
   },
 
   "Codex_Item" : {
@@ -76,7 +71,7 @@ document.addEventListener("contextmenu", function(e) {
     var menuName = RCElement.getAttribute("rc");
     let menuItems = RightClickObjectMenu[menuName];
   
-    $("#rightClickContainer").empty();
+    $(".RightClickContainer").empty();
 
     for (var Option in menuItems) {
       if (menuItems.hasOwnProperty(Option)) {
@@ -85,17 +80,17 @@ document.addEventListener("contextmenu", function(e) {
         let newOption = document.createElement('li');
         !Option.includes("Nano_SPLIT") ? newOption.innerText = VarOption : newOption.setAttribute("class", "Nano_SPLIT");
         newOption.setAttribute("RCAction", Option)
-        document.getElementById('rightClickContainer').appendChild(newOption);
+        $('.RightClickContainer')[0].appendChild(newOption);
       }
     }
 
-    let MenuHeight = $("#rightClickContainer").height();
-    $("#rightClickContainer").css("top", (($("body").height() < (e.pageY + MenuHeight)) ? (e.pageY - (MenuHeight - 5)) : (e.pageY - 5) ))
-    $("#rightClickContainer").css("left", (($("body").width() < (e.pageX + 185)) ? (e.pageX - 185) : (e.pageX - 5) ))
-    $("#rightClickContainer").fadeIn(100, startFocusOut());
+    let MenuHeight = $(".RightClickContainer").height();
+    $(".RightClickContainer").css("top", (($("body").height() < (e.pageY + MenuHeight)) ? (e.pageY - (MenuHeight - 5)) : (e.pageY - 5) ))
+    $(".RightClickContainer").css("left", (($("body").width() < (e.pageX + 185)) ? (e.pageX - 185) : (e.pageX - 5) ))
+    $(".RightClickContainer").fadeIn(100, startFocusOut());
 
-    $("#rightClickContainer > li").unbind();
-    $("#rightClickContainer > li").not( $(".Nano_SPLIT") ).click(function(e) {
+    $(".RightClickContainer > li").unbind();
+    $(".RightClickContainer > li").not( $(".Nano_SPLIT") ).click(function(e) {
       let RCAction = e.currentTarget.getAttribute("RCAction");
       RCAction = RightClickObjectMenu[menuName][RCAction];
       window[RCAction[0].Command](RCAction[0].Var1, RCAction[0].Var2, RCAction[0].Var3, RCAction[0].Var4, RCAction[0].Var5);
@@ -110,23 +105,14 @@ document.addEventListener("contextmenu", function(e) {
 function startFocusOut() {
   setTimeout(function() {
     $(document).on("click",function(){
-      $('#rightClickContainer').empty();
-      $("#rightClickContainer").hide();
+      $('.RightClickContainer').empty();
+      $(".RightClickContainer").hide();
       $(document).off("click");
     });
   }, 20)
 }
 
 
-function RC_VAR_Collapse(Option, e) {
-  return (e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse";
-}
-function RC_VAR_Details(Option, e) {
-  return SideBarOpen ? "Hide Details" : "Display Details";
-}
-function RC_VAR_Switch_View(Option, e) {
-  return UserSettings.ViewT == 0 ? "List View" : "Block View";
-}
-function RC_VAR_Change_Theme(Option, e) {
-  return UserSettings.Theme == 0 ? "Light Theme" : "Dark Theme";
-}
+function RC_VAR_Collapse(Option, e) { return (e.target.parentNode.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+function RC_VAR_Switch_View(Option, e) { return UserSettings.ViewT == 0 ? "List View" : "Block View"; }
+function RC_VAR_Change_Theme(Option, e) { return UserSettings.Theme == 0 ? "Light Theme" : "Dark Theme"; }

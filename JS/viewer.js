@@ -1,103 +1,67 @@
 DownloadItems = [];
 dirPathPass = false;
 
-// indianred --- lovely colour
-
-//////////////////////////
-
-const fileContainer = document.getElementById('fileContainer');
-const ItemInfo = document.getElementsByClassName('fileInformationContent')[0];
-
-///////////////////////////////////////////
-
-function homepageNewSpan() {
-  fileContainer.innerHTML += `<div class='directoryControlNewSpan' id='directoryControlNewSpan'>New Span</div>`;
-  $("#directoryControlNewSpan").on("click", function() { displayCentralActionMain("New Span", "Create") });
+const TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
+const SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
+const sec_icons = {"Password": "far fa-keyboard", "Pin": "fas fa-th", "Time": "far fa-clock"}
+const sec_values = {
+  "Password": " 'placeholder='Password' inputType='Pass' type='password'' ",
+  "Pin": " 'placeholder='Pin Code • 1-9' inputType='Pin' type='password'' ",
+  "Time": " 'value='Time Restricted' readOnly type='text' inputType='Time'' "
 }
 
-function uploadDirectoryLocation(Page, location) {
-  let dirLocBtn = $("#uploadDirectory")[0];
-  dirLocBtn.innerText = location;
-  $(dirLocBtn).off()
+const fileContainer = document.getElementsByClassName('fileContainer')[0];
+const ItemInfo = document.getElementsByClassName('ItemInformation')[0];
 
-  if (Page == "Homepage" && NanoID == Page) {
-    dirLocBtn.style.cursor = "pointer";
-    dirLocBtn.title = "Choose Span to Upload Into";
+const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
+const UC_Queue_Viewer = document.getElementsByClassName('UC_Queue_Viewer')[0];
+const UC_Queue_Viewer_Table = document.querySelector('.UC_Queue_Viewer  table  tbody');
 
-    // Choose Which Span to Upload Into
-    $(dirLocBtn).on("click", function() {
-
-      if ( $(".uploadSpanContainer") ) { $(".uploadSpanContainer").remove() }
-      
-      let uploadSpanContainer = document.createElement('div');
-      uploadSpanContainer.setAttribute("class", "uploadSpanContainer");
-      dropdownPos = document.getElementById("uploadDirectory").getBoundingClientRect();
-      document.body.appendChild(uploadSpanContainer);
-
-      spans = [];
-      pageContent.forEach(function(span) {
-        spans.push(span.Parent)
-        uploadSpanContainer.innerHTML += "<div span='"+span.Parent+"' class='UploadSpanOption'>"+span.Parent+"</div>";
-      })
-      if (!spans.includes("Uploads")) { uploadSpanContainer.innerHTML += "<div span='Uploads' class='UploadSpanOption'>Uploads</div>"; }
-      
-      $(uploadSpanContainer).css({"left": dropdownPos.left, "top": dropdownPos.top - $(uploadSpanContainer).height() - 9});
-      
-      $(".fileInformationContent")[0].style.height = "calc(100% - "+ ($(uploadSpanContainer).height() + 225) +"px)";
-
-      $(".UploadSpanOption").on("click", function(e) {
-        $("#uploadDirectory")[0].innerText = e.target.getAttribute('span');
-        $("#uploadDirectory")[0].setAttribute('span', e.target.getAttribute('span'))
-        $(".uploadSpanContainer").remove();
-      })
-      setTimeout(function() {
-        $(document).on("click", function(e) {
-          $(".uploadSpanContainer").remove();
-          $(".fileInformationContent")[0].style.height = "";
-          $(document).off()
-        })
-      }, 200)
-      
-
-
-    })
-  }
-}
-
-function ItemsPath(Parent, Name) {
-  if (directoryPath == "Homepage") {
-    return Parent+" > "+Name;
-  } else {
-    let path = "";
-    for (let i=0; i<Directory_Route.length; i++) {
-      path += Directory_Route[i].Text+" > "
-    }
-    path += Name;
-    return path;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////
 ////////////////////////////   VIEW   //////////////////////////////////
-////////////////////////////////////////////////////////////////////////
+
+async function ViewItem(Type, NanoID) {
+  let BlockOut = PopUpBase();
+  BlockOut.innerHTML = `
+    <div class='Preview'>
+      <svg class='Loading_SVG medium' title='Loading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'> <circle cx='50' cy='50' r='45'></circle> </svg>
+    </div>`;
+
+  if (Type == "image") {
+    let res = await fetch(`https://drive.nanode.one/storage/${NanoID}`);
+    let blob = await res.blob();
+    document.querySelector('.Preview').innerHTML = `<img class='ViewImage' src='${URL.createObjectURL(blob)}'></img>`;
+  }
+
+  if (Type == "video") {
+    document.querySelector('.BlockOut div').insertAdjacentHTML('afterbegin', `<video class='ViewImage' controls name='video' src='https://drive.nanode.one/storage/${NanoID}'></video`);
+  }
+
+  if (Type == "text") {
+    let res = await fetch(`https://drive.nanode.one/storage/${NanoID}`)
+    document.querySelector('.BlockOut div').insertAdjacentHTML('afterbegin', `<div class='ViewText'><pre></pre></div>`);
+    document.querySelector('.ViewText > pre').innerText = await res.text();
+  }
+}
+
 
 function viewContentAsBlock(NanoID) {
   fileContainer.innerHTML = '';
 
-  for (i=0; i<pageContent.length; i++) {
+  for (i=0; i<Directory_Content.length; i++) {
 
     fileContainer.innerHTML += `
       <div class='ContentContainer' ${NanoID == "Homepage" ? `rc='File_Container'` : ``}>
-        ${NanoID == "Homepage" ? `<a contenteditable='true'>${pageContent[i].Parent}</a>` : ``}
+        <a ${NanoID == "Homepage" ? `contenteditable='true' onclick='renameSpan(this)'>${Directory_Content[i].Parent}` : `>${NanoName}` }</a>
       </div>
     `
+
     let Container = $(".ContentContainer")[i];
 
-    for (const [object, item] of Object.entries(pageContent[i].Contents)) {
-      let parent = pageContent[i].Parent ? pageContent[i].Parent : "";
+    for (const [object, item] of Object.entries(Directory_Content[i].Contents)) {
+      let parent = Directory_Content[i].Parent ? Directory_Content[i].Parent : "";
 
       Container.innerHTML += `
-        <div class='Item' directory='${ItemsPath(parent, item.Name)}' type='${ItemChecker(item.Type)}' nano-id='${item.OID}' rc='${!item.Type.isFi ? "Nano_Folder" : "Nano_File"}' rcOSP='DIV,IMG' title='${ItemsPath(parent, item.Name)}' onclick='clickedItem(this)' ${item.Tags.Color ? "style='border-bottom: 2px solid "+item.Tags.Color+"'" : ""}>
+        <div class='Item' directory='${ItemsPath(parent, item.Name)}' type='${ItemChecker(item.Type)}' nano-id='${item.OID}' rc='${!item.Type.isFi ? "Nano_Folder" : "Nano_File"}' rcOSP='DIV,IMG' title='${ItemsPath(parent, item.Name)}' ${item.Tags.Color ? "style='border-bottom: 2px solid "+item.Tags.Color+"'" : ""}>
           <h4>${capFirstLetter(item.Name)}</h4>
           <img loading='lazy' height='90' width='${!item.Type.isFi ? 90 : 120}' src='${ItemImage(item.Type, item.OID, "Block")}'></img>
         </div>
@@ -110,24 +74,23 @@ function viewContentAsBlock(NanoID) {
   }
 
   if (NanoID == "Homepage") {
-    $('.ContentContainer > a').on('click', function(e) { renameSpan(e) })
-    homepageNewSpan();
+    fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
   }
+
+  ItemClickListener(UserSettings.ViewT);
   clientStatus("CS7", "Ok", 400);
 }
 
 function viewContentAsList(NanoID) {
-  $(".fileContainer").empty()
   fileContainer.innerHTML = '';
 
-  for (i=0; i<pageContent.length; i++) {
+  for (i=0; i<Directory_Content.length; i++) {
 
     fileContainer.innerHTML += `
-    <div class='ListContentContainer' ${NanoID == "Homepage" ? `rc='Homepage_Span' Home-Span=${pageContent[i].Parent}` : "style='margin: 1px 0px;'" }>
-        ${NanoID == "Homepage" ? `<a contenteditable='true'>${pageContent[i].Parent}</a>` : ``}
-        <table class='ListContentTable' style='${NanoID == "Homepage" ? "" : 'margin: 25px 0 0 0'}'>
+    <div class='ListContentContainer' ${NanoID == "Homepage" ? `Home-Span='${Directory_Content[i].Parent}'` : "" }>
+      <table class='ListContentTable' ${NanoID == "Homepage" ? `rc='Homepage_Span'` : ``}>
           <tbody>
-            <tr> <th></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
+            <tr ${NanoID == "Homepage" ? `rcOSP='TH'` : ``} > <th><input ${NanoID == "Homepage" ? `spanName value='${Directory_Content[i].Parent}'` : `spanName= disabled value='${NanoName}'` }></input></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
           </tbody>
         </table>
       </div>
@@ -135,11 +98,11 @@ function viewContentAsList(NanoID) {
 
     let Table = fileContainer.querySelectorAll('tbody')[i];
 
-    for (const [object, item] of Object.entries(pageContent[i].Contents)) {
-      parent = pageContent[i].Parent ? pageContent[i].Parent : "";
+    for (const [object, item] of Object.entries(Directory_Content[i].Contents)) {
+      parent = Directory_Content[i].Parent ? Directory_Content[i].Parent : "";
 
       Table.innerHTML += `
-        <tr directory='${ItemsPath(parent, item.Name)}' type='${ItemChecker(item.Type)}' nano-id='${item.OID}' rc='${!item.Type.isFi ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${ItemsPath(parent, item.Name)}' onclick='clickedItem(this)' ${item.Tags.Color ? "style='box-shadow: "+item.Tags.Color+" -3px 0' " : ""}>
+        <tr directory='${ItemsPath(parent, item.Name)}' type='${ItemChecker(item.Type)}' nano-id='${item.OID}' rc='${!item.Type.isFi ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${ItemsPath(parent, item.Name)}' ${item.Tags.Color ? "style='box-shadow: "+item.Tags.Color+" -3px 0' " : ""}>
           <td><img loading='lazy' height='32' width='32' src='${ItemImage(item.Type, item.OID)}'></img></td>
           <td>${capFirstLetter(item.Name)}</td>
           <td>${capFirstLetter(ItemChecker(item.Type))}</td>
@@ -155,49 +118,46 @@ function viewContentAsList(NanoID) {
   }
 
   if (NanoID == "Homepage") {
-    $('.ListContentContainer > a').on('click', function(e) { renameSpan(e) })
-    homepageNewSpan();
+    fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
+    fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
+      name.addEventListener('change', function(e) {
+        socket.emit('ItemEdit', {"Action": "Edit", "Item": "Span", "ID": e.target.defaultValue, EditData: {"Name": e.target.value} })
+      })
+  })
   }
-
+  
+  ItemClickListener(UserSettings.ViewT);
   clientStatus("CS7", "Ok", 400);
+
 }
 
-/////////////////////////   INFORMATION   //////////////////////////////
-
-
-// Create Download Link - Name.
-
-
-TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
-SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
+/////////////////////////   RIGHT BAR   //////////////////////////////
 
 async function callItemInformation(selected) {
   if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
   clientStatus("CS2", "True", 500); clientStatus("CS4", "Wait", 400);
   clientStatus("CS5", "Wait", 300); clientStatus("CS7", "Wait", 300);
 
-  if (!SideBarOpen) {displaySideBar()};
-
   const SelectedID = selected.getAttribute('nano-id');
   const NanoPath = selected.getAttribute('directory');
 
-  const Request = await fetch('//drive.nanode.one/user/files/'+SelectedID);
+  ItemInfo.innerHTML = "<svg class='Loading_SVG medium' style='position:absolute;top: calc(50% - 18px); left: calc(50% - 18px);' title='Loading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'> <circle cx='50' cy='50' r='45'></circle> </svg>";
+
+  const Request = await fetch('https://drive.nanode.one/user/files/'+SelectedID);
   const RequestInfo = await Request.json();
   clientStatus("CS3", "True", 600);
 
   // console.log(RequestInfo)
-
   ItemInfo.innerHTML = `
-
     <input class='ItemInfo_Name' contenteditable='true' value='${RequestInfo.Name.Cur}'>
     <p class='ItemInfo_UUID' title='This Items Unique Identifier'>${RequestInfo.UUID}</p>
 
     ${RequestInfo.Type.isImg ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.UUID+"?h=128&w=null'></img>" : ""}
 
-    <input class='ItemInfo_Directory' value='${NanoPath}' title='Shift-Click to Visit:  ${NanoPath}' readonly=true>
+    <input class='ItemInfo_Directory' value='${NanoPath}' title='${NanoPath}' readonly=true>
 
     <span style='margin: 8px 0 0 0;'>
-      <button class='ItemInfo_Shortcut' title='Create Shortcut Here'><i class='fas fa-thumbtack'></i>Shortcut</button>
+      <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.Type.isFi ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
       <button class='ItemInfo_Download' title='Download This File'><i class='fas fa-cloud-download-alt'></i>Download</button>
     </span>
 
@@ -213,7 +173,7 @@ async function callItemInformation(selected) {
     <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.Description ? RequestInfo.Description : ""}</textarea>
 
     <sub>SHARE - with another Nanode account</sub>
-    <span> <input style='border-color: red;' class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
+    <span> <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
 
     <sub>LINK - view only</sub>
     <span> <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer;'></span>
@@ -226,7 +186,7 @@ async function callItemInformation(selected) {
 
   const ItemInfoTable = $(ItemInfo).find('tbody')[0];
   for (let key in RequestInfo.Time) {
-    if (RequestInfo.Time[key].length && key != "DeleT") {
+    if (RequestInfo.Time[key].length && key.match(/CreaT|ModiT|OpenT|RecovT/g)) {
       ItemInfoTable.innerHTML += `<tr><td>${TimeKey[key]}</td><td title=${RequestInfo.Time[key]}>${dateFormater(RequestInfo.Time[key])}</td></tr>`
     }
   }
@@ -234,29 +194,22 @@ async function callItemInformation(selected) {
 
   ItemInfoListeners(RequestInfo);
 }
-
 function ItemInfoListeners(ItemRequest) {
 
-  // ######## Name
   $(".ItemInfo_Name").on("change", function(e) {
     FolderCall = false;
     socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": ItemRequest.UUID, "Path": NanoID, "EditData":{"Name": {"Cur": e.target.value}}  })
   })
 
-  // Path -> Navigate To on Shift-Click
-  $(".ItemInfo_Directory").on("click", function(e) {
-    if (keyMap[16] == true || keyMap[17] == true) {
-      // Runs of the same architecure as the shortcut. Need to work out a way of sorting out the directory route.
-      // Select the item when I move: use the nano-id to find the item and select it. Scroll page too so its in frame.
+  $(".ItemInfo_Tab").on("click", function(e) {
+    if (ItemRequest.Type.isFi) {
+      let nt_btn = document.createElement('a');
+      nt_btn.href = `/storage/${ItemRequest.Contents}`;
+      nt_btn.target = '_blank';
+      nt_btn.click();
     }
   })
 
-  // Shortcut -> Create Here
-  $(".ItemInfo_Shortcut").on("click", function(e) {
-    // Create Item on Server > Dupe of Selected Item > Change ID > Shortcut True > Add to NanoID (parent).
-  })
-
-  // ######## Download
   $(".ItemInfo_Download").on("click", function(e) {
     if (ItemRequest.Type.isFi) {
       let dl_btn = document.createElement('a')
@@ -271,12 +224,10 @@ function ItemInfoListeners(ItemRequest) {
     }
   })
 
-  // ######## Colour Change
   $(".ItemInfo_Color").on("change", function(e) {
     socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": ItemRequest.UUID, "EditData":{"Tags": {"Color": e.target.value}} })
   })
 
-  // ######## Description
   $(".ItemInfo_Description").on("change", function(e) {
     socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": ItemRequest.UUID, "EditData":{"Description": e.target.value}})
   })
@@ -296,282 +247,216 @@ function ItemInfoListeners(ItemRequest) {
     if (!e.target.value) { socket.emit('Share', ({Action: "Link", objectID: ItemRequest.UUID})); }
   })
 
+  // Download Link
   $(".ItemInfo_Download_Input").on("click", function(e) {
     if (!e.target.value) { socket.emit('downloadItems', "SHARE", [ItemRequest.UUID]); }
   })
 }
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
 
-function displayConfirmCancelBox(Action, Title, Accept, Decline, Text) {
+
+function RightBar_Security_Inputs(itemSecurity) {
+  clientStatus("CS7", "Wait", 400); clientStatus("CS5", "False");
+
+  ItemInfo.innerHTML = '<div class="Locked"><span><h3>Locked</h3><i class="far fa-times-circle"></i></span><h5>Enter the items credentials to view</h5></div>';
+
+  for (i=0; i<itemSecurity.length; i++) {
+    ItemInfo.getElementsByTagName("div")[0].innerHTML +=
+    `<span class='security_option'>
+      <i class='${sec_icons[ itemSecurity[i] ]}'></i>
+      <input class='SecurityInputs ${sec_values[ itemSecurity[i] ]}' ></input>
+    </span>`
+  }
   
+  ItemInfo.getElementsByTagName("div")[0].innerHTML += ` <span class='securityEntry'> <input type='button' class='SecurityInputs' readOnly value='Submit' ></input> </span> `;
+
+  securityEntries = function( Values={} ) {
+    for (i=0; i<itemSecurity.length; i++) {
+      Values[$(".SecurityInputs")[i].getAttribute("inputType")] = $(".SecurityInputs")[i].value;
+    }
+    return Values;
+  }
+  
+  document.querySelector('.Locked > span > i').addEventListener("click", function() { ItemInfo.innerHTML = ''; })
+
+  document.querySelector('.securityEntry').addEventListener("click", async() => {
+    let res = await fetch('https://drive.nanode.one/auth', {
+      method:'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: new Blob( [ JSON.stringify( {"Entries": securityEntries(), "Item": NanoSelected} ) ], { type: 'text/plain' } ),
+    })
+
+    switch (await res.status) {
+      case 200: { ItemInfo.innerHTML = ''; clientStatus("CS5", "Ok", 400); Directory_Call(false, true, true, await res.json()); break;}
+      case 401: { $(".security_option > i").each( function(i, val) { $(val)[0].style.cssText = 'color: crimson'; } );  break;}
+    }
+  })
+}
+
+ 
+//////////////////////////   POP UPS   /////////////////////////////////
+
+function PopUpBase() {
+  clientStatus("CS7", "Wait", 500); clientStatus("CS8", "User");
+
+  if (document.querySelector('.BlockOut')) { return document.querySelector('.BlockOut'); }
   let BlockOut = document.createElement('div');
   BlockOut.setAttribute('class', "BlockOut")
-  BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<p class='centralDirectoryInfoText'>"+Text+"</p> <div class='AMAccept'>"+Accept+"</div> <div class='AMCancel'>"+Decline+"</div> </div> "
-  document.body.appendChild(BlockOut);
+  document.body.appendChild(BlockOut)
+  BlockOut.addEventListener("click", function(e) { e.stopImmediatePropagation(); if (e.target == BlockOut) { BlockOut.remove(); clientStatus("CS8", "Off"); } })
+  return BlockOut;
+}
 
-  $(".AMCancel")[0].addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
-  $(".AMAccept")[0].addEventListener("click", function() {
+
+function PopUp_Accept_Cancel(Action, Title, Accept, Decline, Text) {
+  let BlockOut = PopUpBase();
+  BlockOut.innerHTML = `
+    <div class='Popup_Container'>
+      <div class='Popup_Main'>
+        <h3>${Title}</h3>
+        <p>${Text}</p>
+        <span>
+          <button class='Popup_Reject'>${Decline}</button>
+          <button class='Popup_Accept'>${Accept}</button>
+        </span>
+      </div>
+    </div>
+  `
+
+  $(".Popup_Reject")[0].addEventListener("click", function() { BlockOut.remove(); });
+  $(".Popup_Accept")[0].addEventListener("click", function() {
     if (Action == "Delete") {
       if (!RCElement.hasAttribute('nano-id') && RCElement.getAttribute('rc').includes('Span')) {
         let TestSpanName = RCElement.childNodes[0].innerText;
-        for (i=0; i<pageContent.length; i++) {
-          if (pageContent[i].Parent.includes(TestSpanName)) {
+        for (i=0; i<Directory_Content.length; i++) {
+          if (Directory_Content[i].Parent.includes(TestSpanName)) {
             let SpanName = TestSpanName;
             socket.emit('ItemEdit', {"Action": "Delete", "Item": "Span", "ID": SpanName})
           }
         }
       } else if (RCElement.hasAttribute('nano-id')) {
+        FolderCall = false;
         socket.emit('ItemEdit', {"Action": "Delete", "Item": "FileFolder", "Path": NanoID, "ID": RCElement.getAttribute('nano-id')})
       }
     }
+
     BlockOut.remove();
   });
 }
 
+function PopUp_New_Span() {
+  let BlockOut = PopUpBase();
+  BlockOut.innerHTML = `
+    <div class='Popup_Container'>
+      <div class='Popup_Main'>
+        <h3>New Span</h3>
+        <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='off'></input>
+        <span>
+          <button class='Popup_Reject'>Cancel</button>
+          <button class='Popup_Accept'>Create</button>
+        </span>
+      </div>
+    </div>
+  `
 
-function displayCentralActionMain(Title, Accept, Span) {
-  
-  clientStatus("CS7", "Wait", 400); clientStatus("CS8", "User");
+  document.querySelector('.Popup_Reject').addEventListener('click', function() { BlockOut.remove(); })
+  document.querySelector('.Popup_Accept').addEventListener('click', function() {
+    if (!$(".Popup_Input_Name")[0].value) { $(".Popup_Input_Name")[0].style.borderColor = "crimson"; return; }
 
-  if ($(".BlockOut")) {
-    $(".BlockOut").remove();
-  }
+    FolderCall = false;
+    socket.emit('ItemCreate', {Directory: NanoID, Type: "Span", Name: $(".Popup_Input_Name")[0].value});
 
-  // Creates Blockout and the Main Central Box, with Input area, Accept and Cancel Buttons
-  let BlockOut = document.createElement('div');
-  BlockOut.setAttribute('class', "BlockOut")
-  BlockOut.innerHTML = " <div class='centralActionMain'>"+Title+"<input type='text' class='AMEntry' placeholder='"+Title+"...'> <div class='AMAccept'>"+Accept+"</div> <div class='AMCancel'>Cancel</div> </div> "
-  document.body.appendChild(BlockOut);
-
-
-  if (Title == "New Folder" || Title == "New File") {
-    var CustomTagsContainer = document.createElement('div');
-    CustomTagsContainer.setAttribute('class', "centralActionMain customTagsContainer");
-    BlockOut.appendChild(CustomTagsContainer);
-
-    let itemSettings = document.createElement('table');
-    itemSettings.setAttribute('class', "customTagsTable")
-    itemSettings.innerHTML = spanDropdown()+"<tr><td>Colour</td><td><div id='colorSettingsBtn' CusTag='colour' class='settingsInput' style='padding-top: 2px;cursor: pointer;' >Choose Colour</div></td></tr>  <tr><th colspan='2'>Security</th></tr> <tr><td>Password</td><td> <input CusTag='password' type='text' class='settingsInput' placeholder='Password...'></td></tr> <tr><td>Pin Code</td><td> <input CusTag='pinCode' type='text' class='settingsInput' placeholder='Pin Code • 1-9'></td></tr> <tr><td>Open Times</td><td> <input CusTag='OpenStart' type='text' class='settingsInput settingsInputHalf' placeholder='Start • 09:00'><input CusTag='OpenEnd' type='text' class='settingsInput settingsInputHalf' style='margin-left: 15px;' placeholder='End • 17:00'></td></tr>"
-    CustomTagsContainer.appendChild(itemSettings);
-
-    chooseSpanDropdownListener();
-  }
-
-  function spanDropdown() {
-    if (directoryPath == "Homepage") { return "<tr><td>Span</td><td> <div id='ChooseSpanDropdown' class='settingsInput' style='padding-top: 2px; cursor: pointer;'>"+(!Span ? "Quick Access" : Span)+"<i class='fas fa-caret-down' style='float:right; padding: 6px 10px;'></i></td></tr>" } return "";
-  }
-
-  $('#colorSettingsBtn').on('click', function() {
-    displayColorPicker("ISC", function(chosenColor) {
-      $('#colorSettingsBtn')[0].innerText = chosenColor;
-    });
+    clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
+    BlockOut.remove();
   })
-
-  $(".AMCancel")[0].addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); });
-  $(".AMAccept")[0].addEventListener("click", function() {
-
-      let UICOL = $("#colorSettingsBtn")[0]; let UIPWD = $("input[CusTag]")[0]; let UIPIN = $("input[CusTag]")[1]; let UIST = $("input[CusTag]")[2]; let UIET = $("input[CusTag]")[3];
-      let acceptInputs = false;
-
-      if (!ActionMainEntry.value) {
-        acceptInputs = false; ActionMainEntry.style.border = "2px solid crimson";
-      } else { ActionMainEntry.style.border = ""; acceptInputs = true; }
-
-      if (UIPIN && UIPIN.value) {
-        acceptInputs = (/^[0-9]+$/).test(UIPIN.value);
-        if (!acceptInputs) { UIPIN.style.borderColor = "crimson"; acceptInputs = false; } else { UIPIN.style.borderColor = ""; acceptInputs = true; }
-      }
-
-      if (UIST) {
-        if ( (UIST.value && !UIET.value) || (!UIST.value && UIET.value) ) {
-          acceptInputs = false; UIST.style.borderColor = "crimson"; UIET.style.borderColor = "crimson";
-        } else if ( UIST.value && UIET.value ) {
-          acceptInputs = (/^([01]\d|2[0-3]):?([0-5]\d)$/g).test((UIST.value) && (UIET.value));
-          if (!acceptInputs || (UIST.value.replace(":", "") > UIET.value.replace(":", ""))) { acceptInputs = false; UIST.style.borderColor = "crimson"; UIET.style.borderColor = "crimson"; } else { UIST.style.borderColor = ""; UIET.style.borderColor = ""; acceptInputs = true; }
-        }
-      }
-
-
-      if (acceptInputs) {
-        if ((Title == "New File") && !ActionMainEntry.value.includes(".txt")) {
-          ActionMainEntry.value += ".txt";
-        }
-        if (Title == "New Span") {
-          socket.emit('ItemManager', {Directory:directoryPath, Type:Title, Name:ActionMainEntry.value})
-        } else {
-          clientStatus("CS2", "True", 400);
-          customTags = [ UICOL.value, UIPWD.value, UIPIN.value, UIST.value, UIET.value]
-          if (directoryPath == "Homepage") {
-            socket.emit('ItemManager', {Directory:directoryPath, Type:Title, Name:ActionMainEntry.value, Span:$("#ChooseSpanDropdown")[0].textContent, Tags:customTags})
-          } else {
-            socket.emit('ItemManager', {Directory:NanoID, Path:directoryPath, Type:Title, Name:ActionMainEntry.value, Tags:customTags})
-          }
-        }
-        BlockOut.remove();
-      }
-  });
 }
 
+function PopUp_New_Folder() {
 
-function chooseSpanDropdownListener() {
-  $("#ChooseSpanDropdown").off();
-  $("#ChooseSpanDropdown").on("click", function(e) {
-    if ($(".spanOptionsContainer")) {$(".spanOptionsContainer").remove()};
-    let spanOptionsContainer = document.createElement('div');
-    spanOptionsContainer.setAttribute('class', "spanOptionsContainer")
-    dropdownPos = document.getElementById("ChooseSpanDropdown").getBoundingClientRect();
-    $(spanOptionsContainer).css({"z-index": 10,"left": dropdownPos.left, "top": dropdownPos.top+26});
-    $(".BlockOut")[0].appendChild(spanOptionsContainer);
+  let BlockOut = PopUpBase();
 
-    let spans = [];
-    pageContent.forEach(function(span) { spans.push(span.Parent) })
+  BlockOut.innerHTML = `
+    <div class='Popup_Container'>
+      <div class='Popup_Main'>
+        <h3>New Folder</h3>
+        <div class='Popup_Dropdown' style='top: 15px; right: 15px;'>
+          <div class='Popup_Location' title='Location' ${createLocation()}</div>
+        </div>
+        <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='off'></input>
+        <span>
+          <button class='Popup_Reject'>Cancel</button>
+          <button class='Popup_Accept'>Create</button>
+        </span>
+      </div>
 
-    spans.forEach(function(span) {
-      let spanOption = document.createElement('div');
-      spanOption.setAttribute('class', "SpanDropdownOption");
-      spanOption.innerText = span;
-      spanOptionsContainer.appendChild(spanOption);
-    })
-    if (!spans.includes("Quick Access")) {
-      let spanOption = document.createElement('div');
-      spanOption.setAttribute('class', "SpanDropdownOption");
-      spanOption.innerText = "Quick Access";
-      spanOptionsContainer.appendChild(spanOption);
+      <div class='Popup_Secondary'>
+        <h4>Optional</h4>
+        <textarea class='Popup_Option_Desc' placeholder='Add a Description...' maxlength='100'></textarea>
+        <button class='Popup_Option_Colour'>Choose a Colour...</button>
+        <input class='Popup_Option_Pass' placeholder='Set a Password...' type='password' autocomplete='off' maxlength='128'></input>
+        <input class='Popup_Option_Pin' placeholder='Set a Pin...' type='number' autocomplete='off' maxlength='20'></input>
+      </div>
+
+    </div>
+  `
+
+  $(".Popup_Dropdown_Content a").on("click", function(e) { $(".Popup_Location")[0].value = e.target.innerText; $(".Popup_Location p")[0].innerText = e.target.innerText; })
+  document.querySelector(".Popup_Option_Colour").addEventListener("click", function(e) { ColorPicker("ISC", function(chosenColor) { e.target.value = chosenColor; e.target.style.background = chosenColor; }) })
+  document.querySelector(".Popup_Reject").addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); })
+  document.querySelector(".Popup_Accept").addEventListener("click", function() {
+
+    if (!$(".Popup_Input_Name")[0].value) { $(".Popup_Input_Name")[0].style.borderColor = "crimson"; return; }
+
+    let Options = {
+      Description: $(".Popup_Option_Desc")[0].value,
+      Colour: RGBtoHEX($(".Popup_Option_Colour")[0].value),
+      Pass: $(".Popup_Option_Pass")[0].value,
+      Pin: $(".Popup_Option_Pin")[0].value
     }
+    clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
 
+    FolderCall = false;
+    socket.emit('ItemCreate', {Directory: NanoID, Type: "Folder", Name: $(".Popup_Input_Name")[0].value, Options: Options, Span: (NanoID == "Homepage" ? $(".Popup_Location p")[0].innerText : "NULL"), Path: (NanoID == "Homepage" ? NanoName : "NULL") });
 
-    $(".SpanDropdownOption").on("click", function(e) {
-      $("#ChooseSpanDropdown")[0].innerHTML = "<i class='fas fa-caret-down' style='float:right; padding: 4px 10px;'></i>"+e.target.innerText;
-      $(".spanOptionsContainer").remove();
-    })
-
+    BlockOut.remove();
   })
 }
 
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
-
-
-function displaySecurityEntry(itemSecurity) {
-  clientStatus("CS7", "Wait", 400); clientStatus("CS6", "False");
-
-  if (!SideBarOpen) {displaySideBar(); }
-  $(".fileInformationContent").empty();
-
-  for (i=0; i<itemSecurity.length; i++) {
-    securityContainer = document.createElement('span');
-    $(".fileInformationContent")[0].appendChild(securityContainer)
-
-    secureIcon = document.createElement('i');
-    if (itemSecurity[i] == "Password") { secureIcon.setAttribute("class", "itemLockIcon far fa-keyboard"); }
-    if (itemSecurity[i] == "Pin") { secureIcon.setAttribute("class", "itemLockIcon fas fa-th"); }
-    if (itemSecurity[i] == "Time") { secureIcon.setAttribute("class", "itemLockIcon far fa-clock"); }
-    securityContainer.appendChild(secureIcon);
-
-    secureInput = document.createElement('input');
-    secureInput.setAttribute("class", "panelSecureInput");
-    if (itemSecurity[i] == "Password") { secureInput.setAttribute("placeholder", "Password"); secureInput.setAttribute("inputType", "pass"); }
-    if (itemSecurity[i] == "Pin") { secureInput.setAttribute("placeholder", "Pin Code • 1-9"); secureInput.setAttribute("inputType", "pin"); }
-    secureInput.setAttribute("type", "password");
-    if (itemSecurity[i] == "Time") { secureInput.setAttribute("value", "Time Restricted"); secureInput.setAttribute("readOnly", true); secureInput.setAttribute("type", "text"); secureInput.setAttribute("inputType", "time"); }
-    securityContainer.appendChild(secureInput);
-  }
-
-  $(".fileInformationContent")[0].innerHTML += " <span class='securityEntry' id='securityEntryBtn'><input type='button' class='panelSecureInput' readOnly value='Submit'></input></span> "
-
-  securityEntries = function() {
-    let inputs = {};
-    for (i=0; i<itemSecurity.length; i++) {
-      inputs[$(".panelSecureInput")[i].getAttribute("inputType")] = $(".panelSecureInput")[i].value;
-    }
-    return inputs;
-  }
-
-  $("#securityEntryBtn").on("click", function() {
-    socket.emit('ItemLockEntries', [securityEntries(), NanoSelected]);
-    clientStatus("CS2", "True", 300); clientStatus("CS5", "User", 600);
-  })
-}
-
-
-currentUpDownOverlay = false;
-function displayUploadDownloadOverlay(Title, ContextMenu) {
+function PopUp_Upload() {
   clientStatus("CS7", "Wait", 600);
+  Upload_Visuals.Status("Choose", "Choose Items");
+  Upload_Values[0].innerText = '0 Items';
+  Upload_Values[1].innerText = '0 B';
+  UploadContainer.style.visibility = "visible";
 
-  if (currentUpDownOverlay != Title) {
-    currentUpDownOverlay = Title;
-    if ($(".UpDownOverlayContainer")[0]) {
-      $(".UpDownOverlayContainer")[0].remove();
-    }
-    
-    $(".fileInformationContent")[0].style.height = "calc(100% - 415px)";
-    var UpDownOverlayContainer = document.createElement('div');
-    UpDownOverlayContainer.setAttribute('class', "UpDownOverlayContainer")   // UpDownOverlayContainer
-    $('.fileInformation')[0].appendChild(UpDownOverlayContainer);
-
-    if (Title == "Upload") {
-      DownloadItems = [];
-      UpDownOverlayContainer.innerHTML = "<div class='uploadOverlayBtn UOFolder' id='uploadFolderBtn'>Folder</div>"+
-      "<div class='uploadOverlayBtn UOFile' id='uploadFileBtn'>File</div>"+
-      "<div class='uploadOverlayBtn UOCancel' id='UpDownCancelBtn'>Cancel</div>"+
-      "<div class='UpDownOverlayItems' id='UpDownOverlayItems'></div>";
-
-      $("#uploadFileBtn").on("click", function() { $("#fileUploadBtn").click(); })
-      $("#uploadFolderBtn").on("click", function() { $("#folderUploadBtn").click(); })
-
-    } else if (Title == "Download") {
-      DownloadItems = [];
-      downloadSelection = true;
-      UpDownOverlayContainer.innerHTML = "<div class='DODownload'>Download</div> <div class='uploadOverlayBtn UOCancel' id='UpDownCancelBtn'>Cancel</div> <div class='UpDownOverlayItems' id='UpDownOverlayItems'></div>";
-    }
-  }
-
-  if (Title == "Download") {
-    if ( $(".downloadStatus")[0] ) {$(".downloadStatus")[0].remove();}
-    if (ContextMenu == "ContextMenu") {
-      if (!DownloadItems.includes(RCElement.getAttribute('nano-id'))) { 
-        DownloadItems.push( RCElement.getAttribute('nano-id') )
-        $("#UpDownOverlayItems")[0].innerText += (UserSettings.ViewT == 0 ? RCElement.childNodes[1].innerText :  RCElement.childNodes[3].innerText)+ "\n";
-      }
-      if ( $("[selected='true']") ) { 
-        $("[selected='true']").each(function(index, item) {
-          if (!DownloadItems.includes(item.getAttribute('nano-id'))) { 
-            DownloadItems.push(item.getAttribute('nano-id')) 
-            $("#UpDownOverlayItems")[0].innerText += (UserSettings.ViewT == 0 ? item.childNodes[1].innerText :  item.childNodes[3].innerText)+ "\n";
-          }
-        })
-      }
-      $(".DODownload").off();
-      $(".DODownload").on("click", function(e) {
-
-        $(".DODownload").off();
-        socket.emit('downloadItems', "SELF", DownloadItems)
-        DownloadItems = [];
-        $("#UpDownOverlayItems")[0].innerHTML = "<div class='downloadIcon'></div><div class='downloadStatus'>Downloading</div>";
-
-        socket.on('DownloadURLID', function(url) { window.open("https://link.Nanode.one/download/"+url);})
-        setTimeout(function() { cancelUploadDownloadItems(); }, 5000)
-
-      })
-    }
-  }
-  
-
-  $("#UpDownCancelBtn").on("click", function() {
-    cancelUploadDownloadItems();
-  })
-
+  PopUp_Upload.Close = function() {
+    UploadContainer.style.visibility = 'hidden';
+    UploadContainer.querySelectorAll('span i')[0].classList = 'fas fa-chevron-up'
+    UC_Queue_Viewer.classList.remove('UC_Showing');
+    Progress_Div.classList.remove('UC_Showing');
+    Upload_Actions.Reset_Upload();
+  };
 }
 
 
+function PopUp_Download() {
+  if (RCElement) {
+    if (RCElement.getAttribute('type') != "folder" && RCElement.getAttribute('rc') == "Nano_File") {
+      let dl_btn = document.createElement('a')
+      dl_btn.download = RCElement.getAttribute('directory').split(' > ').shift();
+      dl_btn.href = '/storage/'+RCElement.getAttribute('nano-id');
+      dl_btn.target = '_blank';
+      dl_btn.click();
+    } else {
+      socket.emit('downloadItems', "SELF", [RCElement.getAttribute('nano-id')] )
+      socket.on('DownloadURLID', function(url) { window.open("https://link.Nanode.one/download/"+url);})
+    }
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-function displayColorPicker(calledBy, callback) {
+function ColorPicker(calledBy, callback) {
   clientStatus("CS7", "Wait", 400); clientStatus("CS8", "User");
 
   if ($(".colorContainer")[0]) {$(".colorContainer")[0].remove();}
@@ -581,7 +466,7 @@ function displayColorPicker(calledBy, callback) {
   colorContainer.innerHTML = "<i id='closeColorPicker' class='fas fa-times' title='Close Picker'></i> <input type='text' id='colorPickEntry' class='colorPickEntry' placeholder='#000000'></input> <div class='colorOptionsContainer'></div><i id='acceptColorPicked' class='fas fa-check' title='Accept Colour'></i>";
   document.body.appendChild(colorContainer);
 
-  if (typeof RCElement !== 'undefined' && RCElement.hasAttribute('style')) {
+  if (typeof RCElement === 'object' && RCElement.hasAttribute('style')) {
     let HexColor = UserSettings.ViewT == 0 ? RGBtoHEX($(RCElement).css('borderBottom')) : RGBtoHEX($(RCElement).css('boxShadow'));
 
     $("#colorPickEntry")[0].value = HexColor
@@ -637,47 +522,31 @@ function displayColorPicker(calledBy, callback) {
   dragElement($(".colorContainer")[0]);
 }
 
-function displayImageLarge(selected, table) {
-  clientStatus("CS7", "Wait", 500); clientStatus("CS8", "User");
-  const BlockOut = document.createElement('div');
-  BlockOut.setAttribute('class', "BlockOut")
-  document.body.appendChild(BlockOut);
+function dragElement(element) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  element.onmousedown = dragMouseDown;
 
-  const centralImageOpen = document.createElement('img');
-  centralImageOpen.setAttribute('class', "displayImageLarge")
-  centralImageOpen.style.cssText = "top:50%; left:50%; transform: translateX(-50%) translateY(-50%);";
-  centralImageOpen.src = $(selected).find('img')[0].src.split('?')[0];
+  function dragMouseDown(e) {
+    if (e.target != element) { return; }
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
 
-  BlockOut.appendChild(centralImageOpen);
+  function elementDrag(e) {
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    element.style.top = (element.offsetTop - pos2) + "px";
+    element.style.left = (element.offsetLeft - pos1) + "px";
+  }
 
-  $(".BlockOut")[0].addEventListener("click", function(e){ e.stopImmediatePropagation(); if (e.target == $(".BlockOut")[0]) {e.target.remove()}; clientStatus("CS8", "Off");});
-
-  $(".BlockOut")[0].addEventListener('keydown', function(e) {
-    if (e.keyCode == 37) {
-      if (selected.previousSibling.childNodes[0].hasAttribute("src")) {
-        centralImageOpen.setAttribute('src', selected.previousSibling.childNodes[0].getAttribute("src"))
-      } else {centralImageOpen.setAttribute('src', "/BlankImage.png")}
-      selected = selected.previousSibling;
-    } else if (e.keyCode == 39) {
-      if (selected.nextSibling.childNodes[0].hasAttribute("src")) {
-        centralImageOpen.setAttribute('src', selected.nextSibling.childNodes[0].getAttribute("src"))
-      } else {centralImageOpen.setAttribute('src', "/BlankImage.png")}
-      selected = selected.nextSibling;
-    }
-  });
-}
-
-function displayTextContent(selected, table) {
-  clientStatus("CS7", "Wait", 500); clientStatus("CS8", "User"); clientStatus("CS4", "Wait", 400);
-  
-  document.body.innerHTML += `
-    <div class='BlockOut'>
-      <div class='displayTextContainer'>
-        <input class='displayTextTitle' value=${table == "table" ? selected.childNodes[1].innerText : selected.childNodes[0].innerText}>
-        <textarea class='displayTextContent'></textarea>
-      </div>
-    </div>
-  `
-
-  $(".BlockOut")[0].addEventListener("click", function(e){e.stopImmediatePropagation(); if(e.target == $(".BlockOut")[0]) {e.target.remove()}; clientStatus("CS8", "Off");});
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
 }

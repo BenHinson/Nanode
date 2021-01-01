@@ -1,15 +1,3 @@
-SideBarOpen = window.innerWidth > 600 ? false : true;
-displaySideBar();
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-$("#directoryControlNewFolder").on("click", function() { displayCentralActionMain("New Folder", "Create") });
-$(".fileInformationSideBar").on("click", function() { displaySideBar(); })
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 $("#directoryControlForward").on("click", function() {
   if ( Directory_Tree[Tree_Number].Route[Tree_Steps] ) {
     Directory_Route = Directory_Tree[Tree_Number].Route.slice(0, Tree_Steps + 1);
@@ -19,10 +7,8 @@ $("#directoryControlForward").on("click", function() {
     Tree_Number++;
     Tree_Steps = Directory_Tree[Tree_Number].Start;
   } else { return; }
-
-  FolderCall = false;
-  socket.emit('directoryLocation', (Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Nano))
-  clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
+  
+  Directory_Call(Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Nano, false)
 })
 
 $("#directoryControlBack").on("click", function(e) {
@@ -35,32 +21,7 @@ $("#directoryControlBack").on("click", function(e) {
   
   Tree_Steps = Directory_Route.length;
 
-  FolderCall = false;
-  socket.emit('directoryLocation', (Directory_Route[Tree_Steps - 1].Nano))
-  clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
-})
-
-$("#returnToHomepage").on("click", function() {
-  if (JSON.stringify(Directory_Tree[Tree_Number]) !== JSON.stringify({"Start": 1, "Route": [{"Nano": "Homepage", "Text": "Homepage"}]})) {
-    Directory_Route = [{"Nano": "Homepage", "Text": "Homepage"}]
-    Directory_Tree.push({"Start": 1, "Route": Directory_Route});
-
-    Tree_Number++;
-    Tree_Steps = 1;
-    FolderCall = false;
-  
-    socket.emit('directoryLocation', ("Homepage"));
-    clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
-  } else { return; }
-})
-
-$("#displaySideBar").on("click", function() {
-  displaySideBar()
-})
-
-$("#displayLeftBar").on("click", function() {
-  window.getComputedStyle(document.getElementsByClassName('PagePanel')[0], null).getPropertyValue('display') == "none" ? 
-  $(".PagePanel")[0].style.display = "block" : $(".PagePanel")[0].style.display = "none";
+  Directory_Call(Directory_Route[Tree_Steps - 1].Nano, false)
 })
 
 $(".toggleDetailsBtn").on("click", function() {
@@ -70,99 +31,297 @@ $(".toggleDetailsBtn").on("click", function() {
   currDetails == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
 })
 
+$(".New").on("click", function() {
+  if (document.getElementsByClassName('NewOptions')[0]) { document.getElementsByClassName('NewOptions')[0].remove(); return; }
+  $(".ItemInformation").before( `<span class='NewOptions'> <div id='uploadBtn' style='background:linear-gradient(40deg, #2993d8, #203ed3)'><i class='fas fa-cloud-upload-alt'></i>Upload</div> <div id='folderBtn' style='background:linear-gradient(40deg, #ddaa1f, #b35632)'><i class='fas fa-folder-plus'></i>Folder</div> </span>` )
+
+  document.getElementById('uploadBtn').addEventListener("click", function() { PopUp_Upload() });
+  document.getElementById('folderBtn').addEventListener("click", function() { PopUp_New_Folder() });
+})
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function refreshDirectory() {
-  FolderCall = false;
-  socket.emit('directoryLocation', (NanoID));
-}
 
-function displaySideBar(state) {
-  if (!SideBarOpen || state == false) {
-    $(".fileInformation")[0].style.right = "";
-    $(".fileInformationSideBar").css({ "transform": "rotate(90deg)", "right": "216px"})
-    $(".fileInformationSideBar")[0].title = "Hide Details and Upload Bar";
-    $(".fileContainer")[0].style.width = "calc(100% - 250px)";
-  } else {
-    $(".fileInformation")[0].style.right = "-240px";
-    $(".fileInformationSideBar").css({ "transform": "rotate(-90deg)", "right": "5px"})
-    $(".fileInformationSideBar")[0].title = "Display Details and Upload Bar";
-    $(".fileContainer")[0].style.width = "calc(100% - 15px)";
-  }
-  SideBarOpen = !SideBarOpen;
-}
-
-
-
-
-function dragElement(element) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  element.onmousedown = dragMouseDown;
-
-  function dragMouseDown(e) {
-    if (e.target != element) { return; }
-    e.preventDefault();
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    element.style.top = (element.offsetTop - pos2) + "px";
-    element.style.left = (element.offsetLeft - pos1) + "px";
-  }
-
-  function closeDragElement() {
-    document.onmouseup = null;
-    document.onmousemove = null;
+function clientStatus(Light, Status, Time) {
+  lightColours = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
+  if (document.getElementById(Light) != undefined) {
+    document.getElementById(Light).style.cssText = "background: "+lightColours[Status]+"; color:"+lightColours[Status]+";";
+    if (Time) {
+      setTimeout(function() {
+        document.getElementById(Light).style.cssText = "background: none; color: none;";
+      }, Time)
+    }
   }
 }
 
-function collapseSpan() {
-  if (RCElement.hasAttribute('collapsed') == true) {
-    RCElement.removeAttribute('collapsed');
-    $(RCElement).find('table').css("visibility", "visible")
-  } else {
-    RCElement.setAttribute('collapsed', true);
-    $(RCElement).find('table').css("visibility", "collapse")
-  }
-}
+function ItemClickListener(View) {
+  let Items = (View == 0 ? document.querySelectorAll('div[nano-id]') : document.querySelectorAll('tr[nano-id]'))
+  $(Items).on("click", function(selected) {
 
-function renameSpan(e) {
-  var target = e ? e.target : RCElement.children[0];
-  var currentSpanName = target.innerText;
-  target.style.borderBottom = '1px solid';
-  
-  $(target).keypress(function(e){
-    if (e.keyCode == 13) { e.preventDefault(); }
+    selected = selected.currentTarget;
+
+    if (keyMap[16] == true || keyMap[17] == true) {
+      if (selected.hasAttribute('selected')) {
+        selected.removeAttribute('selected')
+        selected.style.background = "";
+      } else {
+        selected.setAttribute('selected', true)
+        selected.style.background = "rgba(118,128,138,0.5)";
+      }
+      return;
+    }
+
+    if (!selected.classList.contains('noOpen')) {
+      if (!selected.hasAttribute('selected') && displayDetails()) {
+        if ($("tr[selected='true']").length >= 1) {
+          $("tr[selected='true']").each(function(index, item) {
+            item.style.background = '';
+            item.removeAttribute('selected');
+          })
+        }
+        selected.setAttribute('selected', true)
+        selected.style.background = "rgba(118,128,138,0.5)";
+        callItemInformation(selected);
+        clientStatus("CS5", "User");
+      } else {
+        ItemActions(selected);
+        clientStatus("CS5", "Ok", 500);
+      }
+    }
+
   })
+}
 
-  setTimeout(function() {
-    $(document).on("click", function(element) {
-      if (element.target != target) {
-        target.style.cssText = '';
-        if (target.innerText != currentSpanName && target.innerText.length > 1) {
-          let EditData = {"Name": target.innerText}
-          socket.emit('ItemEdit', {"Action": "Edit", "Item": "Span", "ID": currentSpanName, "Path": NanoID, EditData})
-        } else {
-          target.innerText = currentSpanName;
+function ItemActions(selected) {
+  if (!selected && RCElement) { selected = RCElement }
+  NanoSelected = selected.getAttribute("nano-id");
+  type = selected.getAttribute("type");
+
+  if (type == "folder") { Directory_Call(selected.getAttribute('nano-id')); }
+  else if (type.match(/image|text|video/g)) { ViewItem(type, NanoSelected) }
+}
+
+function setupFileMove(Caller) {
+  if (Caller == "Codex") {
+    $(".codexWrapper").sortable({
+      items : ".codexItem",
+      cancel : ".codexItemFolder",
+      fixed: ".codexItemFolder",
+      containment: ".CodexContainer",
+      delay: 150,
+      cursor: "move",
+      tolerance: 'pointer',
+      placeholder: "codexItem-Placeholder",
+      forcePlaceholderSize: true,
+      helper: "clone",
+
+      start: function() {
+        $('.codexItemFolder').each(function() {
+            $(this).data('pos', $(this).index());
+        });
+      },
+      change: function(e) {
+        toChange = $(this);
+        firstItem = $('<div></div>').prependTo(this);
+        $('.codexItemFolder').detach().each(function() {
+            var target = $(this).data('pos');
+            $(this).insertAfter($('div', toChange).eq(target));
+        });
+        firstItem.remove();
+      }
+      
+    }).disableSelection();
+
+    $("div > .codexItemFolder").droppable({
+      accept: ".codexItem",
+      hoverClass: "codexItem-Hover",
+      drop: function(e, droppedItem) {
+        droppedItem.draggable[0].remove();
+        if ($(e.target).hasClass('codexItemFolder')) {
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id')}
+          socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
+        }
+      },
+    })
+
+    $(".CC_Directory").droppable({
+      accept: ".codexItem",
+      hoverClass: "CC_Dir-Hover",
+      drop: function(e, droppedItem) {
+        if (CodexPath != "Home") {
+          droppedItem.draggable[0].remove();
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
+          socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
       }
-      $(document).off("click");
-    });
-  },20)
+    })
+  }
+
+  else if (UserSettings.ViewT == 0) {
+    $(".ContentContainer").sortable({
+      items: "div[nano-id]",
+    })
+  }
+
+  else if (UserSettings.ViewT == 1) {
+    var hoveringOver;
+
+    $("tr[nano-id]").draggable({
+      appendTo: '.PageContainer',
+      containment: ".PageContainer",
+      connectToSortable: ".ListContentTable",
+      revert: true,
+
+      refreshPositions: true,
+
+      delay: 150,
+      cursor: "move",
+      tolerance: 'pointer',
+      scroll: false,
+      cursorAt: { top: 18, left: 20 },
+      helper: function(e) {
+        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+" ></img>"+e.currentTarget.childNodes[3].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
+      },
+    }).disableSelection();
+
+    $("tr[type=folder]").droppable({
+      accept: "tr[nano-id]",
+      hoverClass: "listItem-Hover",
+      tolerance: 'pointer',
+      greedy: true,
+
+      over: function(e) {
+        clearTimeout(hoveringOver)
+        hoveringOver = setTimeout(function() {
+          Directory_Call(e.target.getAttribute("nano-id"));
+        }, 1500)
+      },
+      out : function() {
+        clearTimeout(hoveringOver)
+      },
+      drop: function(e, droppedItem) {
+        clearTimeout(hoveringOver)
+        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "ToType": "Folder" });
+        droppedItem.draggable[0].remove();
+      },
+    })
+
+    $(".ListContentContainer").droppable({
+      accept: "tr[nano-id]",
+      hoverClass: "listSpan-Hover",
+      tolerance: 'pointer',
+      drop: function(e, droppedItem) {
+        if (!e.target.contains(droppedItem.draggable[0])) {
+
+          if (e.target.hasAttribute('home-span')) { var dirTo = e.target.getAttribute('home-span'); dirToType = "Span"; }
+          else { var dirTo = NanoID; dirToType = "Folder" }
+
+          FolderCall = false;
+          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoID, "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": dirTo, "ToType": dirToType });
+          droppedItem.draggable[0].remove();
+          $(".listItem-Placeholder")[0].remove();
+        }
+      },
+    })
+
+    $(".dirBtn").droppable({
+      accept: "tr[nano-id]",
+      hoverClass: "dirBtn-Hover",
+      tolerance: 'pointer',
+      drop: function(e, droppedItem) {
+        if (e.target.getAttribute('nano-id') != NanoID) {
+
+          if (e.target.getAttribute('nano-id') == "Homepage") { var dirTo = "General"; dirToType = "Span"; }
+          else { var dirTo = e.target.getAttribute('nano-id'); dirToType = "Folder" }
+          
+          FolderCall = false;
+          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": dirTo, "ToType": dirToType });
+          droppedItem.draggable[0].remove();
+          $(".listItem-Placeholder")[0].remove();
+        }
+      }
+    })
+  }
+}
+
+function Route(Nano_Path, Text_Path) {
+  
+  if (FolderCall == true) {
+    if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Nano == Nano_Path) { return; }
+    Directory_Route.push({"Nano": Nano_Path, "Text": Text_Path})
+    if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
+      Directory_Tree = Directory_Tree.slice(0, Tree_Number + 1);
+    }
+    if (!Directory_Tree[Tree_Number]) { Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
+    Directory_Tree[Tree_Number].Route = Directory_Route;
+    Tree_Steps++;
+  }
+
+  FolderCall = true;
+
+  $("#directoryLocation")[0].innerHTML = "<div class='dirBtn' nano-id='Homepage' title='Homepage'>Homepage</div>";
+  for (i=1; i<Tree_Steps; i++) {
+    $("#directoryLocation")[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-id='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
+  }
+  $(".dirBtn").last()[0].classList.add('currentDirBtn');
+
+
+  $(".dirBtn").on("click", function(e) {
+    let NanoID = e.target.getAttribute("nano-id");
+    let Route_Obj = Directory_Route.find(o => o.Nano === NanoID); // Find Object with Nano=NanoID in Directory_Route
+    Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
+    
+    if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
+    {Tree_Number++;   Tree_Steps = Directory_Route.length;   Directory_Tree.push({"Start":Tree_Steps, "Route": Directory_Route});}
+
+    Directory_Call(NanoID, false);
+  })
+
+
+  if (Directory_Tree[Tree_Number].Route[Tree_Steps] || Directory_Tree[Tree_Number + 1])
+  {$("#directoryControlForward")[0].classList.remove('notActive')} else {$("#directoryControlForward")[0].classList.add('notActive');}
+
+  if (Directory_Route.length > 1 || Directory_Tree[Tree_Number - 1])
+  {$("#directoryControlBack")[0].classList.remove('notActive')} else { $("#directoryControlBack")[0].classList.add('notActive');}
+
+  // if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Nano": "Homepage", "Text": "Homepage"}]))
+  // {$("#returnToHomepage")[0].classList.remove('notActive')} else { $("#returnToHomepage")[0].classList.add('notActive');}
 }
 
 
-function renameItem(e) {
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function refreshDirectory() {
+  Directory_Call(NanoID, false);
+}
+
+function collapseSpan(span, expand=false) {
+  span = span ? span.parentNode.parentNode.parentNode : RCElement;
+  let rows = span.querySelectorAll('tr');
+
+  for (let i=0; i<rows.length; i++) {
+    if (i === 0) {
+      expand = rows[0].hasAttribute('collapsed') ? true : false;
+      rows[i].children[2].innerText = (expand == true ? "Type" : "");
+      rows[i].children[3].innerText = (expand == true ? "Modified" : "");
+      rows[i].children[4].innerHTML = (expand == true ? "Size" : `<button class='expandBtn' onclick='collapseSpan(this, true)'>Expand</button>`);
+      expand == true ? rows[0].removeAttribute('collapsed') : rows[i].setAttribute('collapsed', true)
+    } else {
+      rows[i].style.cssText = (expand == true ? "visibility: visible; display: table-row;" : "visibility: collapse; display: none;")
+    }
+  }
+
+}
+
+function createLocation() {
+  return  NanoName == "Homepage" ? `value='Uploads'><p>Uploads</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>` : `value='${NanoID}'><p>Current</p>`;
+  function spanList() { let HTML_Spans = ""; for (i=0; i<Directory_Content.length; i++) { HTML_Spans += `<a>${Directory_Content[i].Parent}</a>` }; return HTML_Spans; }
+}
+
+function renameItem(e) { // Features in Right-Click
   if (e && e.target.getAttribute) { 
     var targetID = ItemNanoID; var nameInput = e.target;
     e.target.style.background = 'rgba(0,0,0,0.1)';
@@ -192,175 +351,4 @@ function renameItem(e) {
       }
     });
   }, 20)
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-uploadStatus = false;
-var countdown;
-
-document.getElementById("uploadStartStopButton").addEventListener("click", function(e) {
-  if (e.target.innerText == "Start Upload") {
-    if (uploadStatus && totalSize < 104857600) {
-      document.getElementById("uploadStartStopButton").innerText = "Uploading...";
-      $("#uploadClearItems")[0].style.display = "none";
-      $("#fileBeingUploaded")[0].style.display = "block";
-      for (var i=0; i<ToBeUploaded.length; i++) {
-        $("#fileBeingUploaded")[0].innerText = ToBeUploaded[i][2].name;
-
-        let ItemInfo = {"Parent":NanoID, "Path":ToBeUploaded[i][0], "ItemPath":ToBeUploaded[i][1], "ParentText": uploadDirectory, "Name":ToBeUploaded[i][2].name, "isFi":ToBeUploaded[i][2].isFile == false ? false : true, "Type": ToBeUploaded[i][2].type, "Size": ToBeUploaded[i][2].size, "Time": {"ModiT": ToBeUploaded[i][2].lastModified}, "Number":ToBeUploaded[i][3]}
-        ItemData = ToBeUploaded[i][2];
-
-        socket.emit('fileUpload', {ItemInfo, ItemData, totalItems});
-        clientStatus("CS9", "Ok", 400);
-      }
-    } else {
-      if (totalSize > 104857600) {
-        document.getElementById("uploadStartStopButton").innerText = "Over 100 MB";
-      }
-    }
-  }
-});
-
-function uploadCountdown() {
-  countdown = setTimeout(() => {
-    document.getElementById("uploadStartStopButton").style.cursor = "pointer";
-    document.getElementById("uploadStartStopButton").innerText = "Start Upload";
-    $("#uploadClearItems")[0].style.cursor = "pointer";
-    uploadStatus = true;
-  }, 500)
-}
-
-document.getElementById("uploadClearItems").addEventListener("click", function(){ 
-  ToBeUploaded = [];
-  uploadStatus = false;
-  $(".uploadNumber")[0].innerText = "Max - 100 MB";
-  $("#uploadStartStopButton")[0].innerText = "Choose Items";
-  $("#UpDownOverlayItems")[0].innerText = "";
-});
-
-function cancelUploadDownloadItems() {
-  clientStatus("CS9", "False", 600);
-  ToBeUploaded = [];
-  uploadStatus = false;
-  $(".uploadNumber")[0].innerText = "Max - 100 MB";
-  $("#uploadStartStopButton")[0].innerText = "Upload";
-  $("#uploadStartStopButton")[0].title = "Drag and Drop or Select Items to Upload";
-  $("#uploadClearItems")[0].style.cursor = "not-allowed";
-  if ( $("#UpDownOverlayItems")[0] ) {
-    $("#UpDownOverlayItems")[0].innerText = "";
-  }
-  
-  currentUpDownOverlay = false;
-  downloadSelection = false;
-  
-  $(".UpDownOverlayContainer").remove();
-  $(".fileInformationContent")[0].style.height = "";
-}
-
-
-$('div[upload="true"]').on("click", function(){displayUploadDownloadOverlay("Upload")});
-
-var fileUpload = $("#fileUploadBtn, #folderUploadBtn");
-[].forEach.call(fileUpload, function(e) {
-  e.onchange = function(e) {
-    ToBeUploaded = []; itemNumber = 0; totalSize = 0;
-    uploadCountdown();
-    $("#UpDownOverlayItems")[0].innerText = "";
-    Array.from(this.files).forEach(function(file) {
-      $("#UpDownOverlayItems")[0].innerText += file.name+"\n";
-      totalSize += file.size;
-      uploadFileDir(file, "");
-    })
-    totalItems = this.files.length;
-    $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
-    // $("#uploadItemCount")[0].innerText = totalItems + " Items";
-    // $("#uploadSizeCount")[0].innerText = (totalSize / 1048576).toFixed(2) + " MB";
-  }
-})
-
-// DROP AREA  // DROP AREA  // DROP AREA  // DROP AREA  // DROP AREA  
-let dropArea = document.getElementById("databaseBackgroundMain");
-
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, preventDefaults, false)   
-  document.body.addEventListener(eventName, preventDefaults, false);
-});
-function preventDefaults(e) {e.preventDefault(); e.stopPropagation();}
-
-// ['dragenter', 'dragover'].forEach(eventName => {
-//   dropArea.addEventListener(eventName, highlight, false)
-// })
-
-['dragenter', "dragover"].forEach(eventName => {
-  dropArea.addEventListener(eventName, highlight, false)
-})
-function highlight(e) { if (e.dataTransfer.types[0] == "Files") {dropArea.classList.add('highlight')} }
-
-;['dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, unhighlight, false)
-})
-function unhighlight(e) {dropArea.classList.remove('highlight')}
-
-
-
-dropArea.addEventListener("drop", function(e) {
-  if (!e.dataTransfer.files.length) { return; }
-  if (!SideBarOpen || $(".fileInformation")[0].style.width < 1) {
-    displaySideBar(false);
-  }
-  displayUploadDownloadOverlay("Upload");
-  $("#UpDownOverlayItems")[0].innerText = "";
-  document.getElementById("uploadStartStopButton").innerText = "Loading Items";
-  ToBeUploaded = []; itemNumber = 0; totalSize = 0;
-  totalItems = e.dataTransfer.items.length;
-  $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
-  uploadCountdown();
-  dropped = e.dataTransfer.items;
-
-  for (var i=0; i<dropped.length; i++) {
-    entry = e.dataTransfer.items[i].webkitGetAsEntry();
-    traverseFileTree(entry)
-    clientStatus("CS9", "Wait", 200);
-  }
-});
-
-function traverseFileTree(path) {
-	if (path.isFile) {
-  	path.file(function(file) {
-      uploadFileDir(file, path)
-    	totalSize += file.size;
-      $("#UpDownOverlayItems")[0].innerText += file.name+" - "+file.size+"\n";
-      $(".uploadNumber")[0].innerText = totalItems + " Items - " + (totalSize / 1048576).toFixed(2) + " MB";
-    });
-  }
-  else if (path.isDirectory) {
-    uploadFileDir(path);
-    $("#UpDownOverlayItems")[0].innerText += path.name+"\n";
-    clearTimeout(countdown); uploadCountdown();
-    var dirReader = path.createReader();
-    dirReader.readEntries(function(entries) {
-      for (var i=0; i<entries.length; i++) {
-        totalItems++;
-        // $(".uploadNumber")[0].innerText = totalItems + " Items";
-        traverseFileTree(entries[i], path);
-      }
-    });
-  }
-}
-
-function uploadFileDir(file, dir) {
-  itemNumber++;
-  documentInformation = [
-    ItemDirectory = directoryPath,
-    ItemPath = file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
-    ItemData = file,
-    ItemNumber = itemNumber,
-  ]
-  ToBeUploaded.push(documentInformation);
 }

@@ -38,15 +38,16 @@ $(".NHBLC").on("click", function() {
 function readSettings(calledSettings) {
   UserSettings = calledSettings;
 
-  let keys = Object.keys(UserSettings);
-  for (key in keys) {
-    let objID = settingsMap[keys[key]]
-    if ( typeof UserSettings[keys[key]] == "number" ) {
-      $("#"+ objID[ UserSettings[keys[key]] ] +"")[0].classList.add("SW_Selected");
-    } else if ( $("#"+objID+"")[0] ) {
-      $("#"+objID+"")[0].value = UserSettings[keys[key]];
-    }
-  }
+  // let keys = Object.keys(UserSettings);
+  // for (key in keys) {
+  //   let objID = settingsMap[keys[key]]
+  //   if ( typeof UserSettings[keys[key]] == "number" ) {
+  //     $("#"+ objID[ UserSettings[keys[key]] ])[0].classList.add("SW_Selected");
+  //   } else if ( $("#"+objID)[0] ) {
+  //     if (objID == "SW_LastAc") { UserSettings[keys[key]] = DateAndTimeFormater(UserSettings[keys[key]]) }
+  //     $("#"+objID)[0].value = UserSettings[keys[key]];
+  //   }
+  // }
   handleSettings();
 }
 
@@ -101,6 +102,8 @@ function changeSetting(setting, newVal) {
   if (setting.match(/Date|Theme|ViewT/g)) {
     newVal = [setting, UserSettings[setting] == 0 ? 1 : 0]
     UserSettings[setting] = newVal[1];
+
+    localStorage.setItem('user-settings', JSON.stringify(UserSettings))
     socket.emit('CallSettings', "Write", newVal);
   }
   handleSettings();
@@ -117,24 +120,25 @@ function handleSettings() {
     else if (key == "Theme") {
       UserSettings[key] == 0 ? document.body.classList.add('dark-theme') : document.body.classList.remove('dark-theme');
     }
-    else if (key == "ViewT" && typeof directoryPath != 'undefined') {
+    else if (key == "ViewT" && typeof NanoName != 'undefined') {
       if (UserSettings.ViewT == 0 && typeof NanoID != 'undefined') {
-        viewContentAsBlock(directoryPath);
+        viewContentAsBlock(NanoName);
         clientStatus("CS6", "Off");
       } else if (UserSettings.ViewT == 1 && typeof NanoID != 'undefined') {
-        viewContentAsList(directoryPath);
+        viewContentAsList(NanoName);
         clientStatus("CS6", "True");
       }
     }
     else if (key == "HighL") { document.documentElement.style.setProperty('--highlight-color', UserSettings[key]) }
     else if (key == "BGImg") {
-      if (UserSettings[key] && $("#databaseBackgroundMain")[0]) {
+      if (UserSettings[key] && $(".PageContainer")[0]) {
         let BG_url = UserSettings[key].split('/').length > 2 ? "url("+UserSettings[key]+")" : "url(//drive.nanode.one/storage/"+(UserSettings[key]).replace(" ", "")+")"
-        $("#databaseBackgroundMain")[0].style.backgroundImage = BG_url;
-      } else { $("#databaseBackgroundMain")[0].style.backgroundImage = ""; }
+        $(".PageContainer")[0].style.backgroundImage = BG_url;
+      } else if ($(".PageContainer")[0]) { $(".PageContainer")[0].style.backgroundImage = ""; }
     }
   }
   displayDetails() == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
+  return true;
 }
 
 
@@ -144,6 +148,7 @@ const displayDetails = () => {
 
 /////////////////////////////////////////////
 /////////////////////////////////////////////
+
 shortcutKeys = {
   "Ctrl+A": "All",
   "Ctrl+N": "New",
@@ -155,6 +160,20 @@ shortcutKeys = {
 }
 
 
+function ItemsPath(Parent, Name, path="") {
+  if (NanoName == "Homepage") {
+    return Parent+" > "+Name;
+  } else {
+    for (let i=0; i<Directory_Route.length; i++) {
+      path += Directory_Route[i].Text+" > "
+    }
+    path += Name;
+    return path;
+  }
+}
+function DateAndTimeFormater(date) {
+  return new Date(date) == "Invalid Date" ? date : new Date(date).toLocaleString();
+}
 function dateNow() {
   return date = new Date().toISOString().split('T')[0];
 }
@@ -177,7 +196,8 @@ function timeFormater(time) {
 function timeFormaterReverse(time) {
   return (parseInt(time.split(':')[0] * 60) + parseInt(time.split(':')[1]))
 }
-function RGBtoHEX(rgb){
+function RGBtoHEX(rgb) {
+  if (!rgb) {return '';}
   let RGBColor = rgb.replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
   return  RGBColor.length >= 2 ? ("#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2)) : (RGBColor);
 }
@@ -191,12 +211,12 @@ function convertSize(InputSize) {
   return InputSize;
 }
 function ItemImage(type, OID, Block) {
-  if (!type.isFi)           return "/assets/FileIcons/Folder.svg";
+  if (!type.isFi)           return "/assets/file_icons/folder.svg";
   else if (type.isImg)      return Block ? "/storage/"+OID+"?h=90&w=120" : "/storage/"+OID+"?h=32&w=32";
 
   let file_type = ItemChecker(type)
-  if (file_type == "unknown")     return "/assets/FileIcons/File.svg";
-  else                            return "/assets/FileIcons/"+file_type+"File.svg";
+  if (file_type == "unknown")     return "/assets/file_icons/file.svg";
+  else                            return "/assets/file_icons/"+file_type+".svg";
 }
 const ItemChecker = (item_Type) => {
   if (!item_Type.isFi) { return "folder" }
@@ -212,6 +232,9 @@ const ItemChecker = (item_Type) => {
 }
 const capFirstLetter = (string) => {
   return typeof string !== 'string' ? '' : string.charAt(0).toUpperCase() + string.slice(1)
+}
+const textMultiple = (num, string) => {
+  return num === 1 ? num+" "+string : num+" "+string+'s';
 }
 
 
