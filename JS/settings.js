@@ -161,7 +161,7 @@ shortcutKeys = {
 
 
 function ItemsPath(Parent, Name, path="") {
-  if (NanoName == "Homepage") {
+  if (NanoName == "homepage") {
     return Parent+" > "+Name;
   } else {
     for (let i=0; i<Directory_Route.length; i++) {
@@ -178,6 +178,7 @@ function dateNow() {
   return date = new Date().toISOString().split('T')[0];
 }
 function dateFormater(date) {
+  date = date.stamp || date;
   if (date == null || !date.length) { return "-"; }
   var d = new Date(date),
       month = '' + (d.getMonth() + 1),
@@ -211,23 +212,20 @@ function convertSize(InputSize) {
   return InputSize;
 }
 function ItemImage(type, OID, Block) {
-  if (!type.isFi)           return "/assets/file_icons/folder.svg";
-  else if (type.isImg)      return Block ? "/storage/"+OID+"?h=90&w=120" : "/storage/"+OID+"?h=32&w=32";
+  if (type == "FOLDER")               return "/assets/file_icons/folder.svg";
+  else if (type.includes('image'))    return Block ? "/storage/"+OID+"?h=90&w=120" : "/storage/"+OID+"?h=32&w=32";
 
   let file_type = ItemChecker(type)
   if (file_type == "unknown")     return "/assets/file_icons/file.svg";
   else                            return "/assets/file_icons/"+file_type+".svg";
 }
 const ItemChecker = (item_Type) => {
-  if (!item_Type.isFi) { return "folder" }
-  if (item_Type.isImg) { return "image" }
-  if (item_Type.mimeT) {
-    if (item_Type.mimeT.includes("video")) { return "video" }
-    if (item_Type.mimeT.includes("audio")) { return "audio" }
-    if (item_Type.mimeT.includes("text")) { return "text" }
-    return "file";
-  }
-  if (item_Type.End == "txt") { return "text" }
+  item_Type = item_Type.mime || item_Type;
+  if (item_Type == "FOLDER") { return "folder" }
+  if (item_Type.includes("image")) { return "image" }
+  if (item_Type.includes("video")) { return "video" }
+  if (item_Type.includes("audio")) { return "audio" }
+  if (item_Type.includes("text")) { return "text" }
   return "unknown";
 }
 const capFirstLetter = (string) => {

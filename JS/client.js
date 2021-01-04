@@ -1,9 +1,10 @@
-NanoName = "Homepage";
+NanoName = "home";
 Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
 Directory_Route = []; // The Current Route, is whats used for the dir btns. Doesnt Store Forward
 Tree_Number = 0; // Current Tree Index
 Tree_Steps = 0; // Current Index in Tree
 FolderCall = true; // If Route Was Called by Clicking on a Folder
+Section='main';
 
 Directory_Content = '';
 NanoSelected = "";
@@ -79,20 +80,22 @@ Settings_Call = async() => {
   }
 }
 
-Directory_Call = async(Folder, RefreshPath=true, SkipCall, Folder_Response) => {
+Directory_Call = async(Folder=NanoName, RefreshPath=true, SkipCall, Folder_Response) => {
   FolderCall = RefreshPath;
 
   if (!SkipCall) {
     clientStatus("CS4", "Wait");
-    let Folder_Request = await fetch('https://drive.nanode.one/folder/'+Folder);
+    let Folder_Request = await fetch(`https://drive.nanode.one/folder/${Folder}?s=${Section}`);
     Folder_Response = await Folder_Request.json();
     clientStatus("CS4", "Off"); clientStatus("CS7", "Wait", 800);
   }
 
+  console.log(Folder_Response);
+  
   if (Folder_Response.Locked) { RightBar_Security_Inputs(Folder_Response.Locked) }
   else if (Folder_Response.Parent) {
-    NanoName = Folder_Response.Parent.NanoID == "Homepage" ? "Homepage" : Folder_Response.Parent.Name;
-    NanoID = Folder_Response.Parent.NanoID;
+    NanoName = Folder_Response.Parent.id == "homepage" ? "homepage" : Folder_Response.Parent.Name;
+    NanoID = Folder_Response.Parent.id;
 
     Directory_Content = Folder_Response.Contents;
 
@@ -100,7 +103,7 @@ Directory_Call = async(Folder, RefreshPath=true, SkipCall, Folder_Response) => {
 
     UserSettings.ViewT == 0 ? viewContentAsBlock(NanoID) : viewContentAsList(NanoID);
 
-    uploadDirectory = NanoName == "Homepage" ? "Uploads" : NanoName;
+    uploadDirectory = NanoName == "homepage" ? "_GENERAL_" : NanoName;
 
     setupFileMove();
   }

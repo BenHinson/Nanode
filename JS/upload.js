@@ -131,7 +131,7 @@ Upload_Actions = function() {
       "path": NanoName,
       "relative_path": file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
       "parent": NanoID,
-      "span": NanoID == "Homepage" ? uploadDirectory : '',
+      "span": NanoID == "homepage" ? uploadDirectory : '',
       "name": file.name,
       "isFi": file.isFile == false ? false : true,
       "type": file.type,

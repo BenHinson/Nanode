@@ -202,7 +202,7 @@ function setupFileMove(Caller) {
       },
       drop: function(e, droppedItem) {
         clearTimeout(hoveringOver)
-        socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "ToType": "Folder" });
+        socket.emit('ItemEdit', { "action": "MOVE", "section": Section, "ID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id') });
         droppedItem.draggable[0].remove();
       },
     })
@@ -213,12 +213,8 @@ function setupFileMove(Caller) {
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
         if (!e.target.contains(droppedItem.draggable[0])) {
-
-          if (e.target.hasAttribute('home-span')) { var dirTo = e.target.getAttribute('home-span'); dirToType = "Span"; }
-          else { var dirTo = NanoID; dirToType = "Folder" }
-
           FolderCall = false;
-          socket.emit('ItemEdit', {"Action": "Move", "Path": NanoID, "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": dirTo, "ToType": dirToType });
+          socket.emit('ItemEdit', { "action": "MOVE", "section": Section, "ID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "Path": NanoID });
           droppedItem.draggable[0].remove();
           $(".listItem-Placeholder")[0].remove();
         }
@@ -232,7 +228,7 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         if (e.target.getAttribute('nano-id') != NanoID) {
 
-          if (e.target.getAttribute('nano-id') == "Homepage") { var dirTo = "General"; dirToType = "Span"; }
+          if (e.target.getAttribute('nano-id') == "homepage") { var dirTo = "General"; dirToType = "Span"; }
           else { var dirTo = e.target.getAttribute('nano-id'); dirToType = "Folder" }
           
           FolderCall = false;
@@ -260,7 +256,7 @@ function Route(Nano_Path, Text_Path) {
 
   FolderCall = true;
 
-  $("#directoryLocation")[0].innerHTML = "<div class='dirBtn' nano-id='Homepage' title='Homepage'>Homepage</div>";
+  $("#directoryLocation")[0].innerHTML = "<div class='dirBtn' nano-id='homepage' title='homepage'>homepage</div>";
   for (i=1; i<Tree_Steps; i++) {
     $("#directoryLocation")[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-id='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
   }
@@ -285,8 +281,8 @@ function Route(Nano_Path, Text_Path) {
   if (Directory_Route.length > 1 || Directory_Tree[Tree_Number - 1])
   {$("#directoryControlBack")[0].classList.remove('notActive')} else { $("#directoryControlBack")[0].classList.add('notActive');}
 
-  // if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Nano": "Homepage", "Text": "Homepage"}]))
-  // {$("#returnToHomepage")[0].classList.remove('notActive')} else { $("#returnToHomepage")[0].classList.add('notActive');}
+  // if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Nano": "homepage", "Text": "homepage"}]))
+  // {$("#returnTohomepage")[0].classList.remove('notActive')} else { $("#returnTohomepage")[0].classList.add('notActive');}
 }
 
 
@@ -317,7 +313,7 @@ function collapseSpan(span, expand=false) {
 }
 
 function createLocation() {
-  return  NanoName == "Homepage" ? `value='Uploads'><p>Uploads</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>` : `value='${NanoID}'><p>Current</p>`;
+  return  NanoName == "homepage" ? `value='Uploads'><p>Uploads</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>` : `value='${NanoID}'><p>Current</p>`;
   function spanList() { let HTML_Spans = ""; for (i=0; i<Directory_Content.length; i++) { HTML_Spans += `<a>${Directory_Content[i].Parent}</a>` }; return HTML_Spans; }
 }
 

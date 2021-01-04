@@ -35,19 +35,19 @@ $(".PageList > div > span").on("click", function(e) {
     $("[drvPage=User]")[0].classList.add('SelectedPage');
 
   } else if (P2O == "User") {
-    Homepage();
+    homepage();
   }
 })
 
 
-function Homepage() {
-  if (JSON.stringify(Directory_Tree[Tree_Number]) !== JSON.stringify({"Start": 1, "Route": [{"Nano": "Homepage", "Text": "Homepage"}]})) {
-    Directory_Route = [{"Nano": "Homepage", "Text": "Homepage"}]
+function homepage() {
+  if (JSON.stringify(Directory_Tree[Tree_Number]) !== JSON.stringify({"Start": 1, "Route": [{"Nano": "homepage", "Text": "homepage"}]})) {
+    Directory_Route = [{"Nano": "homepage", "Text": "homepage"}]
     Directory_Tree.push({"Start": 1, "Route": Directory_Route});
 
     Tree_Number++;
     Tree_Steps = 1;
-    Directory_Call("Homepage", false)
+    Directory_Call("homepage", false)
     clientStatus("CS2", "True", 400); clientStatus("CS4", "Wait", 500);
   } else { return; }
 }

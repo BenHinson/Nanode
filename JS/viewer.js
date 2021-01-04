@@ -47,23 +47,24 @@ async function ViewItem(Type, NanoID) {
 function viewContentAsBlock(NanoID) {
   fileContainer.innerHTML = '';
 
-  for (i=0; i<Directory_Content.length; i++) {
+  let SpanCount = 0;
+  for (const [span, data] of Object.entries(Directory_Content))  {
 
     fileContainer.innerHTML += `
-      <div class='ContentContainer' ${NanoID == "Homepage" ? `rc='File_Container'` : ``}>
-        <a ${NanoID == "Homepage" ? `contenteditable='true' onclick='renameSpan(this)'>${Directory_Content[i].Parent}` : `>${NanoName}` }</a>
+      <div class='ContentContainer' ${NanoID == "homepage" ? `rc='File_Container'` : ``}>
+        <a ${NanoID == "homepage" ? `contenteditable='true' onclick='renameSpan(this)'>${data.name}` : `>${NanoName}` }</a>
       </div>
     `
 
-    let Container = $(".ContentContainer")[i];
+    let Container = $(".ContentContainer")[SpanCount];
 
-    for (const [object, item] of Object.entries(Directory_Content[i].Contents)) {
-      let parent = Directory_Content[i].Parent ? Directory_Content[i].Parent : "";
+    for (const [object, item] of Object.entries(data.contents)) {
+      let parent = capFirstLetter(data.name) || "";
 
       Container.innerHTML += `
-        <div class='Item' directory='${ItemsPath(parent, item.Name)}' type='${ItemChecker(item.Type)}' nano-id='${item.OID}' rc='${!item.Type.isFi ? "Nano_Folder" : "Nano_File"}' rcOSP='DIV,IMG' title='${ItemsPath(parent, item.Name)}' ${item.Tags.Color ? "style='border-bottom: 2px solid "+item.Tags.Color+"'" : ""}>
-          <h4>${capFirstLetter(item.Name)}</h4>
-          <img loading='lazy' height='90' width='${!item.Type.isFi ? 90 : 120}' src='${ItemImage(item.Type, item.OID, "Block")}'></img>
+        <div class='Item' directory='${ItemsPath(parent, item.name)}' type='${ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='DIV,IMG' title='${ItemsPath(parent, item.name)}' ${item.color ? "style='border-bottom: 2px solid "+item.color+"'" : ""}>
+          <h4>${capFirstLetter(item.name)}</h4>
+          <img loading='lazy' height='90' width='${!item.mime == "FOLDER" ? 90 : 120}' src='${ItemImage(item.mime, object, "Block")}'></img>
         </div>
       `
     }
@@ -71,9 +72,10 @@ function viewContentAsBlock(NanoID) {
     $($("div[type='folder']", Container).get().reverse()).each(function(i, folder) {
       $(folder).insertAfter( Container.children[0]);
     })
+    SpanCount++;
   }
 
-  if (NanoID == "Homepage") {
+  if (NanoID == "homepage") {
     fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
   }
 
@@ -84,30 +86,31 @@ function viewContentAsBlock(NanoID) {
 function viewContentAsList(NanoID) {
   fileContainer.innerHTML = '';
 
-  for (i=0; i<Directory_Content.length; i++) {
+  let SpanCount = 0;
+  for (const [span, data] of Object.entries(Directory_Content)) {
 
     fileContainer.innerHTML += `
-    <div class='ListContentContainer' ${NanoID == "Homepage" ? `Home-Span='${Directory_Content[i].Parent}'` : "" }>
-      <table class='ListContentTable' ${NanoID == "Homepage" ? `rc='Homepage_Span'` : ``}>
+    <div class='ListContentContainer' nano-id='${span}' ${NanoID == "homepage" ? `Home-Span='${data.name}'` : "" }>
+      <table class='ListContentTable' ${NanoID == "homepage" ? `rc='Homepage_Span'` : ``}>
           <tbody>
-            <tr ${NanoID == "Homepage" ? `rcOSP='TH'` : ``} > <th><input ${NanoID == "Homepage" ? `spanName value='${Directory_Content[i].Parent}'` : `spanName= disabled value='${NanoName}'` }></input></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
+            <tr ${NanoID == "homepage" ? `rcOSP='TH'` : ``} > <th><input ${NanoID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NanoName}'` }></input></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
           </tbody>
         </table>
       </div>
     `;
 
-    let Table = fileContainer.querySelectorAll('tbody')[i];
+    let Table = fileContainer.querySelectorAll('tbody')[SpanCount];
 
-    for (const [object, item] of Object.entries(Directory_Content[i].Contents)) {
-      parent = Directory_Content[i].Parent ? Directory_Content[i].Parent : "";
+    for (const [object, item] of Object.entries(data.contents)) {
+      let parent = capFirstLetter(data.name) || "";
 
       Table.innerHTML += `
-        <tr directory='${ItemsPath(parent, item.Name)}' type='${ItemChecker(item.Type)}' nano-id='${item.OID}' rc='${!item.Type.isFi ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${ItemsPath(parent, item.Name)}' ${item.Tags.Color ? "style='box-shadow: "+item.Tags.Color+" -3px 0' " : ""}>
-          <td><img loading='lazy' height='32' width='32' src='${ItemImage(item.Type, item.OID)}'></img></td>
-          <td>${capFirstLetter(item.Name)}</td>
-          <td>${capFirstLetter(ItemChecker(item.Type))}</td>
-          <td>${dateFormater(item.ModiT)}</td>
-          <td>${item.Size ? convertSize(item.Size) : "-"}</td>
+        <tr directory='${ItemsPath(parent, item.name)}' type='${ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
+          <td><img loading='lazy' height='32' width='32' src='${ItemImage(item.mime, object)}'></img></td>
+          <td>${capFirstLetter(item.name)}</td>
+          <td>${capFirstLetter(ItemChecker(item.mime))}</td>
+          <td>${dateFormater(item.time.modified || item.time.created)}</td>
+          <td>${item.size > 1 ? convertSize(item.size) : "-"}</td>
         </tr>
       `
     }
@@ -115,20 +118,20 @@ function viewContentAsList(NanoID) {
     $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
       $(folder).insertAfter( Table.children[0]);
     })
+    SpanCount++;
   }
 
-  if (NanoID == "Homepage") {
+  if (NanoID == "homepage") {
     fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
-        socket.emit('ItemEdit', {"Action": "Edit", "Item": "Span", "ID": e.target.defaultValue, EditData: {"Name": e.target.value} })
+        socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
       })
   })
   }
   
   ItemClickListener(UserSettings.ViewT);
   clientStatus("CS7", "Ok", 400);
-
 }
 
 /////////////////////////   RIGHT BAR   //////////////////////////////
@@ -415,7 +418,7 @@ function PopUp_New_Folder() {
     clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
 
     FolderCall = false;
-    socket.emit('ItemCreate', {Directory: NanoID, Type: "Folder", Name: $(".Popup_Input_Name")[0].value, Options: Options, Span: (NanoID == "Homepage" ? $(".Popup_Location p")[0].innerText : "NULL"), Path: (NanoID == "Homepage" ? NanoName : "NULL") });
+    socket.emit('ItemCreate', {Directory: NanoID, Type: "Folder", Name: $(".Popup_Input_Name")[0].value, Options: Options, Span: (NanoID == "homepage" ? $(".Popup_Location p")[0].innerText : "NULL"), Path: (NanoID == "homepage" ? NanoName : "NULL") });
 
     BlockOut.remove();
   })
