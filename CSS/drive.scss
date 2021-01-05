@@ -47,7 +47,7 @@ $colors: (
   // #00c2ff
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Roboto:wght@300');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300');
 
 
 ////////////////////////////////////////////////////
@@ -59,8 +59,8 @@ $colors: (
   margin: 0;
   box-sizing: border-box;
   outline: none;
-  font-family: 'Roboto', 'Open Sans', 'Segoe UI', 'monospace';
-  letter-spacing: 0.5px;
+  font-family: 'Roboto', 'Segoe UI', 'monospace';
+  letter-spacing: 0.3px;
 }
 html {
   overflow: hidden;
@@ -119,7 +119,7 @@ body {
     width: 150px;
     top: 4px;
     right: 70px;
-    padding: 2px 8px;
+    padding: 0px 8px;
     border-radius: 20px;
     background: #f4f9fd;
     user-select: none;
@@ -133,7 +133,7 @@ body {
       height: 4px;
       width: 4px;
       border-radius: 2px;
-      margin: 0px 0 5px 5px;
+      margin: 0px 0 3px 5px;
       box-shadow: 0px 0px 6px 1px;
     }
 
@@ -144,7 +144,7 @@ body {
       right: 0px;
       text-align: center;
       color: #f1f1f1;
-      line-height: 16px;
+      line-height: 17px;
       font-variant: all-petite-caps;
       border-radius: 10px;
       background: linear-gradient(40deg, #ba3472, #b21c2a);
@@ -184,8 +184,6 @@ body {
       background: url('/assets/main/nanode.svg');
       background-size: contain;
       background-repeat: no-repeat;
-      filter: brightness(0);
-      .dark-theme & { filter: brightness(1); }
     }
 
     span {
@@ -331,7 +329,7 @@ body {
     .dirBtn {
       height: 30px;
       max-width: 150px;
-      padding: 0px 8px 0px 8px;
+      padding: 3px 8px 0px 8px;
       border-radius: 3px;
       opacity: 0.6;
       overflow: hidden;
@@ -624,7 +622,17 @@ body {
         & th:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; .dark-theme & {opacity:0.6;} }
         & td:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; text-align: center; font-size: 15px; .dark-theme & {opacity:0.8;} }
       
-        & td:nth-child(1) {width: 50px; padding: 4px 0 0 4px;}
+        & td:nth-child(1) { width: 50px; padding: 4px 0 0 4px;}
+        & td:nth-child(2) input {
+          height: 30px;
+          width: 100%;
+          font-size: 14px;
+          border: none;
+          color: inherit;
+          background: transparent;
+          &:focus { border-bottom: 1px solid; }
+          &:disabled { cursor: pointer; }
+        }
       }
 
       .expandBtn {
@@ -731,10 +739,13 @@ body {
     div {
       display: inline-grid;
       width: 100px;
-      padding: 3px;
+      padding: 1px;
+      font-size: 18px;
+      font-variant: all-petite-caps;
       border-radius: 5px;
       cursor: pointer;
       user-select: none;
+      &:hover {transform: translateY(-1px);}
     }
   }
 
@@ -1212,21 +1223,19 @@ body {
   min-width: 200px;
   box-shadow: 0 0 3px black;
   padding: 2px 20px 4px 40px;
-  font-size: 14px;
-  font-weight: 100;
   font-family: inherit;
   z-index: 990;
   color: #292b2f;
   background: #f1f1f1;
   .dark-theme & { background: #1e1e22; color: #f1f1f1; }
 
-  & h5 {
+  > h5 {
     position: absolute;
-    font-size: 12px;
+    bottom: 10px;
+    font-size: 14px;
     font-weight: 100;
-    opacity: 0.8;
-    left: 40px;
-    bottom: 3px;
+    white-space: nowrap;
+    padding-right: 10px;
   }
 
   & img {
@@ -1276,10 +1285,10 @@ body {
       position: absolute;
       height: 34px;
       margin: 8px;
-      padding: 5px 14px;
+      padding: 7px 14px;
       border-radius: 4px;
       color: map-get($colors, text_dark_1);
-      font-weight: 600;
+      font-weight: 400;
       background: linear-gradient(40deg,#46a14d,#098d62);
       cursor: pointer;
       user-select: none;
@@ -1323,10 +1332,11 @@ body {
       cursor: pointer;
       background: map-get($colors, background_light_3);
       .dark-theme & { background: map-get($colors, border_dark); }
+      &:hover {transform: translateY(-2px);}
     }
     p {
       width: 70px;
-      margin: 4px 0;
+      margin: 5px 0;
       font-size: 15px;
       text-align: center;
     }

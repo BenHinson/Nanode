@@ -107,13 +107,14 @@ function viewContentAsList(NanoID) {
       Table.innerHTML += `
         <tr directory='${ItemsPath(parent, item.name)}' type='${ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
           <td><img loading='lazy' height='32' width='32' src='${ItemImage(item.mime, object)}'></img></td>
-          <td>${capFirstLetter(item.name)}</td>
+          <td><input rcPar='2' value='${capFirstLetter(item.name)}' disabled></input></td>
           <td>${capFirstLetter(ItemChecker(item.mime))}</td>
           <td>${dateFormater(item.time.modified || item.time.created)}</td>
           <td>${item.size > 1 ? convertSize(item.size) : "-"}</td>
         </tr>
       `
     }
+    // <td>${capFirstLetter(item.name)}</td>
 
     $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
       $(folder).insertAfter( Table.children[0]);
@@ -147,33 +148,34 @@ async function callItemInformation(selected) {
   ItemInfo.innerHTML = "<svg class='Loading_SVG medium' style='position:absolute;top: calc(50% - 18px); left: calc(50% - 18px);' title='Loading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'> <circle cx='50' cy='50' r='45'></circle> </svg>";
 
   const Request = await fetch('https://drive.nanode.one/user/files/'+SelectedID);
-  const RequestInfo = await Request.json();
+  let RequestInfo = await Request.json();
+  RequestInfo = RequestInfo[SelectedID];
   clientStatus("CS3", "True", 600);
 
-  // console.log(RequestInfo)
+  // console.log(RequestInfo);
   ItemInfo.innerHTML = `
-    <input class='ItemInfo_Name' contenteditable='true' value='${RequestInfo.Name.Cur}'>
-    <p class='ItemInfo_UUID' title='This Items Unique Identifier'>${RequestInfo.UUID}</p>
+    <input class='ItemInfo_Name' contenteditable='true' value='${RequestInfo.name}'>
+    <p class='ItemInfo_UUID' title='This Items Unique Identifier'>${RequestInfo.id}</p>
 
-    ${RequestInfo.Type.isImg ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.UUID+"?h=128&w=null'></img>" : ""}
+    ${RequestInfo.type.mime.includes('image') ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.id+"?h=128&w=null'></img>" : ""}
 
     <input class='ItemInfo_Directory' value='${NanoPath}' title='${NanoPath}' readonly=true>
 
     <span style='margin: 8px 0 0 0;'>
-      <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.Type.isFi ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
-      <button class='ItemInfo_Download' title='Download This File'><i class='fas fa-cloud-download-alt'></i>Download</button>
+      <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.type.file ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
+      <button class='ItemInfo_Download' title='Download This ${RequestInfo.type.file ? "File" : "Folder"}'><i class='fas fa-cloud-download-alt'></i>Download</button>
     </span>
 
     <table>
       <tbody>
-        <tr><td>Size</td><td title='${RequestInfo.Size} bytes'>${convertSize(RequestInfo.Size)}</td></tr>
-        <tr><td>Type</td><td title=${RequestInfo.Type.mimeT ? RequestInfo.Type.mimeT : ""}>${RequestInfo.Type.isFi ? (RequestInfo.Type.isImg ? "Image" : "File"): "Folder"}</td></tr>
-        <tr><td>Secured</td><td>${SecureKey[RequestInfo.Security]}</td></tr>
+        <tr><td>Size</td><td title='${RequestInfo.size} bytes'>${convertSize(RequestInfo.size)}</td></tr>
+        <tr><td>Type</td><td title=${RequestInfo.type.mime}>${RequestInfo.type.file ? (capFirstLetter(RequestInfo.type.mime.split('/')[0])) : "Folder"}</td></tr>
+        <tr><td>Secured</td><td>${SecureKey[RequestInfo.security]}</td></tr>
       </tbody>
     </table>
 
     <sub>DESCRIPTION</sub>
-    <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.Description ? RequestInfo.Description : ""}</textarea>
+    <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.description || ""}</textarea>
 
     <sub>SHARE - with another Nanode account</sub>
     <span> <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
@@ -188,12 +190,12 @@ async function callItemInformation(selected) {
   // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Link_Btn'></i> 
 
   const ItemInfoTable = $(ItemInfo).find('tbody')[0];
-  for (let key in RequestInfo.Time) {
-    if (RequestInfo.Time[key].length && key.match(/CreaT|ModiT|OpenT|RecovT/g)) {
-      ItemInfoTable.innerHTML += `<tr><td>${TimeKey[key]}</td><td title=${RequestInfo.Time[key]}>${dateFormater(RequestInfo.Time[key])}</td></tr>`
+  for (let key in RequestInfo.time) {
+    if (RequestInfo.time[key].length && key.match(/created|modified|deleted|recovered/g)) {
+      ItemInfoTable.innerHTML += `<tr><td>${TimeKey[key]}</td><td title=${RequestInfo.time[key]}>${dateFormater(RequestInfo.time[key])}</td></tr>`
     }
   }
-  ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${RequestInfo.Tags.Color ? "value="+RGBtoHEX(RequestInfo.Tags.Color) : ""}></td></tr>`
+  ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${"value="+RGBtoHEX(RequestInfo.color) || ""}></td></tr>`
 
   ItemInfoListeners(RequestInfo);
 }
@@ -201,38 +203,38 @@ function ItemInfoListeners(ItemRequest) {
 
   $(".ItemInfo_Name").on("change", function(e) {
     FolderCall = false;
-    socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": ItemRequest.UUID, "Path": NanoID, "EditData":{"Name": {"Cur": e.target.value}}  })
+    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "Path": NanoID, "EditData": {"name": e.target.value}  })
   })
 
   $(".ItemInfo_Tab").on("click", function(e) {
-    if (ItemRequest.Type.isFi) {
+    if (ItemRequest.type.file) {
       let nt_btn = document.createElement('a');
-      nt_btn.href = `/storage/${ItemRequest.Contents}`;
+      nt_btn.href = `/storage/${ItemRequest.contents}`;
       nt_btn.target = '_blank';
       nt_btn.click();
     }
   })
 
   $(".ItemInfo_Download").on("click", function(e) {
-    if (ItemRequest.Type.isFi) {
+    if (ItemRequest.type.file) {
       let dl_btn = document.createElement('a')
-      dl_btn.download = ItemRequest.Name.Cur;
-      dl_btn.href = '/storage/'+ItemRequest.UUID;
+      dl_btn.download = ItemRequest.name;
+      dl_btn.href = '/storage/'+ItemRequest.id;
       dl_btn.target = '_blank';
       dl_btn.click();
     } else {
       e.target.innerText = "Zipping..."; $(".ItemInfo_Download").off();
-      socket.emit('downloadItems', "SELF", [ItemRequest.UUID] )
+      socket.emit('downloadItems', "SELF", [ItemRequest.id] )
       socket.on('DownloadURLID', function(url) { window.open("https://link.Nanode.one/download/"+url); e.target.innerText = "Downloaded" })
     }
   })
 
   $(".ItemInfo_Color").on("change", function(e) {
-    socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": ItemRequest.UUID, "EditData":{"Tags": {"Color": e.target.value}} })
+    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value} })
   })
 
   $(".ItemInfo_Description").on("change", function(e) {
-    socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": ItemRequest.UUID, "EditData":{"Description": e.target.value}})
+    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"description": e.target.value}})
   })
 
 
@@ -247,12 +249,12 @@ function ItemInfoListeners(ItemRequest) {
   // Link
   // Write the link ID to the object. On read of the object data. If link / shared, add: block links, and fill in Link to the link. Options still work, allowing change.
   $(".ItemInfo_Link_Input").on("click", function(e) {
-    if (!e.target.value) { socket.emit('Share', ({Action: "Link", objectID: ItemRequest.UUID})); }
+    if (!e.target.value) { socket.emit('Share', ({Action: "Link", objectID: ItemRequest.id})); }
   })
 
   // Download Link
   $(".ItemInfo_Download_Input").on("click", function(e) {
-    if (!e.target.value) { socket.emit('downloadItems', "SHARE", [ItemRequest.UUID]); }
+    if (!e.target.value) { socket.emit('downloadItems', "SHARE", [ItemRequest.id]); }
   })
 }
 
@@ -328,18 +330,19 @@ function PopUp_Accept_Cancel(Action, Title, Accept, Decline, Text) {
   $(".Popup_Reject")[0].addEventListener("click", function() { BlockOut.remove(); });
   $(".Popup_Accept")[0].addEventListener("click", function() {
     if (Action == "Delete") {
-      if (!RCElement.hasAttribute('nano-id') && RCElement.getAttribute('rc').includes('Span')) {
-        let TestSpanName = RCElement.childNodes[0].innerText;
-        for (i=0; i<Directory_Content.length; i++) {
-          if (Directory_Content[i].Parent.includes(TestSpanName)) {
-            let SpanName = TestSpanName;
-            socket.emit('ItemEdit', {"Action": "Delete", "Item": "Span", "ID": SpanName})
-          }
-        }
-      } else if (RCElement.hasAttribute('nano-id')) {
-        FolderCall = false;
-        socket.emit('ItemEdit', {"Action": "Delete", "Item": "FileFolder", "Path": NanoID, "ID": RCElement.getAttribute('nano-id')})
-      }
+      console.log("Review this: {viewer.js > ~332}")
+      // if (!RCElement.hasAttribute('nano-id') && RCElement.getAttribute('rc').includes('Span')) {
+      //   let TestSpanName = RCElement.childNodes[0].innerText;
+      //   for (i=0; i<Directory_Content.length; i++) {
+      //     if (Directory_Content[i].Parent.includes(TestSpanName)) {
+      //       let SpanName = TestSpanName;
+      //       socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": SpanName, "To": "bin"})
+      //     }
+      //   }
+      // } else if (RCElement.hasAttribute('nano-id')) {
+      //   FolderCall = false;
+      //   socket.emit('ItemEdit', {"action": "MOVE", "Item": "FileFolder", "Path": NanoID, "ID": RCElement.getAttribute('nano-id')})
+      // }
     }
 
     BlockOut.remove();
@@ -366,7 +369,7 @@ function PopUp_New_Span() {
     if (!$(".Popup_Input_Name")[0].value) { $(".Popup_Input_Name")[0].style.borderColor = "crimson"; return; }
 
     FolderCall = false;
-    socket.emit('ItemCreate', {Directory: NanoID, Type: "Span", Name: $(".Popup_Input_Name")[0].value});
+    socket.emit('ItemCreate', {"section": Section, "type": "Span", "name": $(".Popup_Input_Name")[0].value, Path: NanoID});
 
     clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
     BlockOut.remove();
@@ -402,7 +405,9 @@ function PopUp_New_Folder() {
     </div>
   `
 
-  $(".Popup_Dropdown_Content a").on("click", function(e) { $(".Popup_Location")[0].value = e.target.innerText; $(".Popup_Location p")[0].innerText = e.target.innerText; })
+  $(".Popup_Dropdown_Content a").on("click", function(e) { 
+    $(".Popup_Location")[0].setAttribute('value', e.target.getAttribute('value'));
+    $(".Popup_Location p")[0].innerText = e.target.innerText; });
   document.querySelector(".Popup_Option_Colour").addEventListener("click", function(e) { ColorPicker("ISC", function(chosenColor) { e.target.value = chosenColor; e.target.style.background = chosenColor; }) })
   document.querySelector(".Popup_Reject").addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); })
   document.querySelector(".Popup_Accept").addEventListener("click", function() {
@@ -410,15 +415,15 @@ function PopUp_New_Folder() {
     if (!$(".Popup_Input_Name")[0].value) { $(".Popup_Input_Name")[0].style.borderColor = "crimson"; return; }
 
     let Options = {
-      Description: $(".Popup_Option_Desc")[0].value,
-      Colour: RGBtoHEX($(".Popup_Option_Colour")[0].value),
-      Pass: $(".Popup_Option_Pass")[0].value,
-      Pin: $(".Popup_Option_Pin")[0].value
+      "description": $(".Popup_Option_Desc")[0].value,
+      "color": RGBtoHEX($(".Popup_Option_Colour")[0].value),
+      "pass": $(".Popup_Option_Pass")[0].value,
+      "pin": $(".Popup_Option_Pin")[0].value
     }
     clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
 
     FolderCall = false;
-    socket.emit('ItemCreate', {Directory: NanoID, Type: "Folder", Name: $(".Popup_Input_Name")[0].value, Options: Options, Span: (NanoID == "homepage" ? $(".Popup_Location p")[0].innerText : "NULL"), Path: (NanoID == "homepage" ? NanoName : "NULL") });
+    socket.emit('ItemCreate', {"parent": (NanoID=="homepage" ? $(".Popup_Location")[0].getAttribute('value') : NanoID), "section": Section, "type": "Folder", "name": $(".Popup_Input_Name")[0].value, "options": Options, Path: NanoID });
 
     BlockOut.remove();
   })
@@ -516,7 +521,7 @@ function ColorPicker(calledBy, callback) {
     $(".colorContainer")[0].remove();
 
     if (typeof RCElement !== 'undefined' && calledBy == "RC") {
-      socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "Path": NanoID, "ID": RCElement.getAttribute('nano-id'), "EditData":{"Tags": {"Color": ColorPicked}} })
+      socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": RCElement.getAttribute('nano-id'), "EditData": {"color": ColorPicked}, "Path": NanoID })
       return;
     }
     callback(ColorPicked);

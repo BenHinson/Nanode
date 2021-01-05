@@ -59,6 +59,7 @@ function ItemClickListener(View) {
   let Items = (View == 0 ? document.querySelectorAll('div[nano-id]') : document.querySelectorAll('tr[nano-id]'))
   $(Items).on("click", function(selected) {
 
+    if (selected.currentTarget.hasAttribute('focus')) { return; }
     selected = selected.currentTarget;
 
     if (keyMap[16] == true || keyMap[17] == true) {
@@ -125,7 +126,7 @@ function setupFileMove(Caller) {
         toChange = $(this);
         firstItem = $('<div></div>').prependTo(this);
         $('.codexItemFolder').detach().each(function() {
-            var target = $(this).data('pos');
+            let target = $(this).data('pos');
             $(this).insertAfter($('div', toChange).eq(target));
         });
         firstItem.remove();
@@ -165,7 +166,7 @@ function setupFileMove(Caller) {
   }
 
   else if (UserSettings.ViewT == 1) {
-    var hoveringOver;
+    let hoveringOver;
 
     $("tr[nano-id]").draggable({
       appendTo: '.PageContainer',
@@ -181,7 +182,7 @@ function setupFileMove(Caller) {
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+" ></img>"+e.currentTarget.childNodes[3].innerText+"<h5>"+e.currentTarget.getAttribute('directory')+"</h5></div>" );
+        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+"></img><h5>"+e.currentTarget.childNodes[3].innerText+"</h5></div>" );
       },
     }).disableSelection();
 
@@ -214,7 +215,7 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         if (!e.target.contains(droppedItem.draggable[0])) {
           FolderCall = false;
-          socket.emit('ItemEdit', { "action": "MOVE", "section": Section, "ID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "Path": NanoID });
+          socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "Path": NanoID});
           droppedItem.draggable[0].remove();
           $(".listItem-Placeholder")[0].remove();
         }
@@ -227,12 +228,8 @@ function setupFileMove(Caller) {
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
         if (e.target.getAttribute('nano-id') != NanoID) {
-
-          if (e.target.getAttribute('nano-id') == "homepage") { var dirTo = "General"; dirToType = "Span"; }
-          else { var dirTo = e.target.getAttribute('nano-id'); dirToType = "Folder" }
-          
           FolderCall = false;
-          socket.emit('ItemEdit', {"Action": "Move", "OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": dirTo, "ToType": dirToType });
+          socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id'), "Path": NanoID});
           droppedItem.draggable[0].remove();
           $(".listItem-Placeholder")[0].remove();
         }
@@ -313,38 +310,31 @@ function collapseSpan(span, expand=false) {
 }
 
 function createLocation() {
-  return  NanoName == "homepage" ? `value='Uploads'><p>Uploads</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>` : `value='${NanoID}'><p>Current</p>`;
-  function spanList() { let HTML_Spans = ""; for (i=0; i<Directory_Content.length; i++) { HTML_Spans += `<a>${Directory_Content[i].Parent}</a>` }; return HTML_Spans; }
+  return  NanoName == "homepage" 
+    ? `value='_GENERAL_'><p>General</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>`
+    : `value='${NanoID}'><p>Current</p>`;
+  function spanList() { let HTML_Spans = ""; for (let [id,data] of Object.entries(Directory_Content)) { HTML_Spans += `<a value='${id}'>${data.name}</a>` }; return HTML_Spans; }
 }
 
-function renameItem(e) { // Features in Right-Click
-  if (e && e.target.getAttribute) { 
-    var targetID = ItemNanoID; var nameInput = e.target;
-    e.target.style.background = 'rgba(0,0,0,0.1)';
-  } else if (RCElement) { 
-    var targetID = RCElement.getAttribute('nano-id');
-    var nameInput = UserSettings.ViewT == 0 ? RCElement.children[0] : RCElement.children[1];
-    UserSettings.ViewT == 0 ? nameInput.classList.add("FolderNameEdit") : nameInput.style.cssText = "font-size: 16px; border-bottom: 1px solid #666;";
-    nameInput.setAttribute('contenteditable', "true");
-    nameInput.parentNode.classList.add("noHover", "noOpen");
-  }
-  currentItemName = nameInput.innerText;
+function renameItem(e) {
+  let focusedElement = RCElement;
 
-  $(nameInput).keypress(function(e){ if (e.keyCode == 13) { e.preventDefault(); } })
+  let renameItemsID = focusedElement.getAttribute('nano-id');
+  
+  let targetInput = $(focusedElement).find('input')[0];
+  focusedElement.setAttribute('focus', "true")
+  targetInput.removeAttribute('disabled');
+  targetInput.focus();
+  targetInput.select();
 
-  setTimeout(function() {
-    $(document).on("click", function(element) {
-      if (element.target != nameInput) {
-        $(document).off("click");
-        nameInput.style.cssText = '';
-        if (typeof RCElement !== 'undefined' && RCElement) { if (nameInput.tagName != 'H3') {nameInput.removeAttribute('contenteditable');} nameInput.classList.remove("FolderNameEdit"); nameInput.parentNode.classList.remove("noHover", "noOpen");}
-        if (nameInput.innerText != currentItemName && nameInput.innerText.length > 1) {
-          let EditData = {"Name": {"Cur": nameInput.innerText}}
-          socket.emit('ItemEdit', {"Action": "Edit", "Item": "FileFolder", "ID": targetID, "Path": NanoID, EditData})
-        } else {
-          nameInput.innerText = currentItemName;
-        }
-      }
-    });
-  }, 20)
+  targetInput.addEventListener('change', function(e) {
+    focusedElement.removeAttribute('focus');
+    targetInput.setAttribute('disabled', 'false');
+    console.log( {"action": "DATA", "section": Section, "ID": renameItemsID, "EditData": {"name": targetInput.value}, "Path": NanoID} )
+    // socket.emit('ItemEdit', )
+  })
+  document.addEventListener('click', function() {
+    focusedElement.removeAttribute('focus');
+    targetInput.setAttribute('disabled', 'false');
+  })
 }

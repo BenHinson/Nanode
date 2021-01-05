@@ -61,6 +61,8 @@ document.addEventListener("contextmenu", function(e) {
   e.preventDefault();
   RCElement = '';
 
+  if (e.target.hasAttribute('rcPar')) { RCElement = e.path[ e.target.getAttribute('rcPar') ] }
+
   if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) {
     RCElement = e.target.offsetParent;
   }

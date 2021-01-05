@@ -90,11 +90,11 @@ Directory_Call = async(Folder=NanoName, RefreshPath=true, SkipCall, Folder_Respo
     clientStatus("CS4", "Off"); clientStatus("CS7", "Wait", 800);
   }
 
-  console.log(Folder_Response);
+  // console.log(Folder_Response);
   
   if (Folder_Response.Locked) { RightBar_Security_Inputs(Folder_Response.Locked) }
   else if (Folder_Response.Parent) {
-    NanoName = Folder_Response.Parent.id == "homepage" ? "homepage" : Folder_Response.Parent.Name;
+    NanoName = Folder_Response.Parent.id == "homepage" ? "homepage" : Folder_Response.Parent.name;
     NanoID = Folder_Response.Parent.id;
 
     Directory_Content = Folder_Response.Contents;
@@ -108,3 +108,18 @@ Directory_Call = async(Folder=NanoName, RefreshPath=true, SkipCall, Folder_Respo
     setupFileMove();
   }
 }
+
+
+
+// NEXT to test:
+  // Right Clicks : Rename, Delete.
+  // View Details > : Change name, description, colour, link, download, download link.
+  // Security Inputs and Security Checks (Server)
+  // Fetch storage size.
+
+  // Upload.
+    // Test images. Do they fetch correctly. is it efficient.
+    // Do svg's work, or are they cropped somehow?
+    // Download Folder & Contents. Download Page too!
+    // Open file in new Tab
+    // 
