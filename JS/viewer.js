@@ -1,7 +1,6 @@
 DownloadItems = [];
 dirPathPass = false;
 
-const TimeKey = {"CreaT":"Created", "OpenT":"Opened", "ModiT": "Modified", "CreaW": "Created By", "ModiW": "Modified By", "OpenW": "Opened By", "DeleT": "Deleted", "RecovT": "Recovered"}
 const SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
 const sec_icons = {"Password": "far fa-keyboard", "Pin": "fas fa-th", "Time": "far fa-clock"}
 const sec_values = {
@@ -154,68 +153,72 @@ async function callItemInformation(selected) {
 
   // console.log(RequestInfo);
   ItemInfo.innerHTML = `
-    <input class='ItemInfo_Name' contenteditable='true' value='${RequestInfo.name}'>
-    <p class='ItemInfo_UUID' title='This Items Unique Identifier'>${RequestInfo.id}</p>
+    <section class='IIData'>
+      <input class='ItemInfo_Name' contenteditable='true' value='${RequestInfo.name}'>
+      <p class='ItemInfo_UUID' title='This Items Unique Identifier'>${RequestInfo.id}</p>
 
-    ${RequestInfo.type.mime.includes('image') ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.id+"?h=128&w=null'></img>" : ""}
+      ${RequestInfo.type.mime.includes('image') ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.id+"?h=128&w=null'></img>" : ""}
 
-    <input class='ItemInfo_Directory' value='${NanoPath}' title='${NanoPath}' readonly=true>
+      <input class='ItemInfo_Directory' value='${NanoPath}' title='${NanoPath}' readonly=true>
 
-    <span style='margin: 8px 0 0 0;'>
-      <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.type.file ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
-      <button class='ItemInfo_Download' title='Download This ${RequestInfo.type.file ? "File" : "Folder"}'><i class='fas fa-cloud-download-alt'></i>Download</button>
-    </span>
+      <span style='margin: 8px 0 0 0;'>
+        <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.type.file ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
+        <button class='ItemInfo_Download' title='Download This ${RequestInfo.type.file ? "File" : "Folder"}'><i class='fas fa-cloud-download-alt'></i>Download</button>
+      </span>
 
-    <table>
-      <tbody>
-        <tr><td>Size</td><td title='${RequestInfo.size} bytes'>${convertSize(RequestInfo.size)}</td></tr>
-        <tr><td>Type</td><td title=${RequestInfo.type.mime}>${RequestInfo.type.file ? (capFirstLetter(RequestInfo.type.mime.split('/')[0])) : "Folder"}</td></tr>
-        <tr><td>Secured</td><td>${SecureKey[RequestInfo.security]}</td></tr>
-      </tbody>
-    </table>
+      <table>
+        <tbody>
+          <tr><td>Size</td><td title='${RequestInfo.size} bytes'>${convertSize(RequestInfo.size)}</td></tr>
+          <tr><td>Type</td><td title=${RequestInfo.type.mime}>${RequestInfo.type.file ? (capFirstLetter(RequestInfo.type.mime.split('/')[0])) : "Folder"}</td></tr>
+          <tr><td>Secured</td><td>${SecureKey[RequestInfo.security]}</td></tr>
+        </tbody>
+      </table>
 
-    <sub>DESCRIPTION</sub>
-    <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.description || ""}</textarea>
+      <sub>DESCRIPTION</sub>
+      <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.description || ""}</textarea>
+    </section>
 
-    <sub>SHARE - with another Nanode account</sub>
-    <span> <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
+    <section class='IIShare'>
+      <sub>SHARE - with another Nanode account</sub>
+      <span> <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
 
-    <sub>LINK - view only</sub>
-    <span> <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer;'></span>
+      <sub>LINK - view only</sub>
+      <span> <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer;' value='${RequestInfo.share ? 'https://link.nanode.one/'+ RequestInfo.share.link.url : ''}'></span>
 
-    <sub>DOWNLOAD LINK</sub>
-    <span> <input class='ItemInfo_Download_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer'> </span>
+      <sub>DOWNLOAD LINK</sub>
+      <span> <input class='ItemInfo_Download_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer'> </span>
+    </section>
   `
+
+  document.querySelector('.ItemInfo_Name').title = RequestInfo.previous ? 'Previous : '+RequestInfo.previous.toString().replace(',', ', ') : 'No Previous Names';
   // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Share_Btn'></i>
   // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Link_Btn'></i> 
 
   const ItemInfoTable = $(ItemInfo).find('tbody')[0];
   for (let key in RequestInfo.time) {
-    if (RequestInfo.time[key].length && key.match(/created|modified|deleted|recovered/g)) {
-      ItemInfoTable.innerHTML += `<tr><td>${TimeKey[key]}</td><td title=${RequestInfo.time[key]}>${dateFormater(RequestInfo.time[key])}</td></tr>`
-    }
+    ItemInfoTable.innerHTML += `<tr><td>${capFirstLetter(key)}</td><td title=${new Date(RequestInfo.time[key].stamp).toGMTString()}>${dateFormater(RequestInfo.time[key].stamp)}</td></tr>`
   }
-  ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${"value="+RGBtoHEX(RequestInfo.color) || ""}></td></tr>`
+  ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${RequestInfo.color ? "value="+RGBtoHEX(RequestInfo.color) : ""}></td></tr>`
 
   ItemInfoListeners(RequestInfo);
 }
 function ItemInfoListeners(ItemRequest) {
 
-  $(".ItemInfo_Name").on("change", function(e) {
+  document.querySelector('.ItemInfo_Name').addEventListener('change', function(e) {
     FolderCall = false;
-    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "Path": NanoID, "EditData": {"name": e.target.value}  })
+    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"name": e.target.value}, "Path": NanoID} )
   })
 
-  $(".ItemInfo_Tab").on("click", function(e) {
+  document.querySelector('.ItemInfo_Tab').addEventListener('click', function() {
     if (ItemRequest.type.file) {
       let nt_btn = document.createElement('a');
-      nt_btn.href = `/storage/${ItemRequest.contents}`;
+      nt_btn.href = `/storage/${ItemRequest.id}`;
       nt_btn.target = '_blank';
       nt_btn.click();
     }
   })
 
-  $(".ItemInfo_Download").on("click", function(e) {
+ $('.ItemInfo_Download').on('click', function() {
     if (ItemRequest.type.file) {
       let dl_btn = document.createElement('a')
       dl_btn.download = ItemRequest.name;
@@ -224,37 +227,37 @@ function ItemInfoListeners(ItemRequest) {
       dl_btn.click();
     } else {
       e.target.innerText = "Zipping..."; $(".ItemInfo_Download").off();
-      socket.emit('downloadItems', "SELF", [ItemRequest.id] )
+      console.log( "DOWNLOAD HERE" ); return;
+      // socket.emit('downloadItems', "SELF", [ItemRequest.id] )
       socket.on('DownloadURLID', function(url) { window.open("https://link.Nanode.one/download/"+url); e.target.innerText = "Downloaded" })
     }
   })
 
-  $(".ItemInfo_Color").on("change", function(e) {
-    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value} })
+  document.querySelector('.ItemInfo_Color').addEventListener('change', function(e) {
+    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value}, "Path": NanoID })
   })
 
-  $(".ItemInfo_Description").on("change", function(e) {
+  document.querySelector('.ItemInfo_Description').addEventListener('change', function(e) {
     socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"description": e.target.value}})
   })
 
 
 
 
-  // Share
-  $(".ItemInfo_Share_Input").on("click", function(e) {
+  $(".ItemInfo_Share_Input").on("click", function(e) {  // Share
     console.log("Call server for account with that username / email and return their profile image and display below the input.")
     // to add after: $(".parent > h2:nth-child(1)").after("<h6>html text to add</h6>");
   })
 
-  // Link
-  // Write the link ID to the object. On read of the object data. If link / shared, add: block links, and fill in Link to the link. Options still work, allowing change.
-  $(".ItemInfo_Link_Input").on("click", function(e) {
-    if (!e.target.value) { socket.emit('Share', ({Action: "Link", objectID: ItemRequest.id})); }
+  document.querySelector('.ItemInfo_Link_Input').addEventListener('click', function(e) { // Link
+    if (!e.target.value) { socket.emit('Share', ({"Action": "Link", "section": Section, "objectID": ItemRequest.id})); }
+    else { e.target.select(); document.execCommand('copy'); }
   })
 
-  // Download Link
-  $(".ItemInfo_Download_Input").on("click", function(e) {
+  document.querySelector('.ItemInfo_Download_Input').addEventListener('click', function(e) {  // Download Link
+    console.log("Out of Service, needs rework / rewrite :) ..."); return;
     if (!e.target.value) { socket.emit('downloadItems', "SHARE", [ItemRequest.id]); }
+    else { e.target.select(); document.execCommand('copy'); }
   })
 }
 
@@ -557,4 +560,10 @@ function dragElement(element) {
     document.onmouseup = null;
     document.onmousemove = null;
   }
+}
+
+function SetStorage(plan) {
+  let StorageElem = document.querySelector('.Storage');
+  StorageElem.querySelector('p').innerText = `${convertSize(plan.used)} / ${convertSize(plan.max).replace('.00', '')}`;
+  StorageElem.querySelector('progress').value = parseFloat(((plan.used / plan.max) * 100).toFixed(2));
 }

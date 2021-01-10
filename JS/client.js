@@ -67,14 +67,19 @@ function Socket_Reconnect(status) {
 }
 
 Settings_Call = async() => {
-  if (JSON.parse(localStorage.getItem('user-settings'))) {
-    return readSettings( JSON.parse(localStorage.getItem('user-settings')) );
+  let curSet = JSON.parse(localStorage.getItem('user-settings'));
+  if (curSet && (new Date().getTime() - new Date(curSet.LastAc).getTime()) < 20*60*1000) {
+    SetStorage( JSON.parse(localStorage.getItem('user-plan')) );
+    return readSettings( curSet );
   } else {
     let Settings_Request = await fetch('https://drive.nanode.one/settings');
     let Settings_Response = await Settings_Request.json();
     if (Settings_Response.Error) { noSettings(); return false; }
     else {
+      Settings_Response.Settings.LastAc = new Date().toISOString();
+      localStorage.setItem('user-plan', JSON.stringify(Settings_Response.Plan))
       localStorage.setItem('user-settings', JSON.stringify(Settings_Response.Settings))
+      SetStorage( Settings_Response.Plan );
       return readSettings(Settings_Response.Settings);
     }
   }
@@ -110,16 +115,14 @@ Directory_Call = async(Folder=NanoName, RefreshPath=true, SkipCall, Folder_Respo
 }
 
 
-
 // NEXT to test:
-  // Right Clicks : Rename, Delete.
-  // View Details > : Change name, description, colour, link, download, download link.
+  // Right Clicks : Delete.
+  // View Details : download, download link.
   // Security Inputs and Security Checks (Server)
-  // Fetch storage size.
 
   // Upload.
-    // Test images. Do they fetch correctly. is it efficient.
-    // Do svg's work, or are they cropped somehow?
-    // Download Folder & Contents. Download Page too!
-    // Open file in new Tab
-    // 
+    // Download Folder & Contents. Check the Download Page too!
+
+  // Check Block View. Alots changed and block view will need editing. (Right click rename notably.)
+
+  // Search Implementation - Remeber to check the previous names settings too for items.

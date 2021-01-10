@@ -182,7 +182,7 @@ function setupFileMove(Caller) {
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+"></img><h5>"+e.currentTarget.childNodes[3].innerText+"</h5></div>" );
+        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+"></img><h5>"+$(e.currentTarget).find('input')[0].value+"</h5></div>" );
       },
     }).disableSelection();
 
@@ -327,14 +327,20 @@ function renameItem(e) {
   targetInput.focus();
   targetInput.select();
 
-  targetInput.addEventListener('change', function(e) {
+  targetInput.addEventListener('change', function() {
+    ReturnItemState();
+    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": renameItemsID, "EditData": {"name": targetInput.value}, "Path": NanoID} )
+  });
+
+  setTimeout(function() {
+    $(document).on('click', function(e) {
+      if (e.target != targetInput) { ReturnItemState(); }
+    })
+  }, 50);
+
+  ReturnItemState = function() {
+    $(document).off();
     focusedElement.removeAttribute('focus');
     targetInput.setAttribute('disabled', 'false');
-    console.log( {"action": "DATA", "section": Section, "ID": renameItemsID, "EditData": {"name": targetInput.value}, "Path": NanoID} )
-    // socket.emit('ItemEdit', )
-  })
-  document.addEventListener('click', function() {
-    focusedElement.removeAttribute('focus');
-    targetInput.setAttribute('disabled', 'false');
-  })
+  }
 }

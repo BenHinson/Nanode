@@ -167,6 +167,7 @@ body {
   overflow: hidden;
   background-color: #fff;
   border-right: 1px solid #e6e8eb;
+  cursor: auto;
 }
 
 .dark-theme .PageList {
@@ -190,6 +191,13 @@ body {
   background: url("/assets/main/nanode.svg");
   background-size: contain;
   background-repeat: no-repeat;
+  -webkit-filter: brightness(0);
+          filter: brightness(0);
+}
+
+.dark-theme .PageList div a {
+  -webkit-filter: none;
+          filter: none;
 }
 
 .PageList div span {
@@ -231,7 +239,7 @@ body {
 .PageList div .SelectedPage {
   opacity: 1;
   color: #121213;
-  background: #d4d4d5;
+  background: #f1f2f2;
 }
 
 .dark-theme .PageList div .SelectedPage {
@@ -306,8 +314,8 @@ body {
   transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
   background-size: cover;
   background-color: #fff;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: 100%;
+  cursor: auto;
 }
 
 .dark-theme .PageContainer {
@@ -325,11 +333,8 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  position: absolute;
-  top: 28px;
-  height: 32px;
-  width: calc(100% - 124px);
-  left: 100px;
+  height: 68px;
+  padding: 22px 24px 14px 24px;
 }
 
 .PageHeader #directoryLocation {
@@ -415,6 +420,10 @@ body {
   transition: width 300ms;
 }
 
+.PageHeader .search:focus {
+  width: 300px;
+}
+
 .dark-theme .PageHeader .search {
   color: #fafafa;
   border: 1px solid #3f4755;
@@ -436,8 +445,7 @@ body {
   opacity: 1;
 }
 
-.PageControls {
-  position: absolute;
+.PageHeader .PageControls {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -445,21 +453,19 @@ body {
       -ms-flex-pack: justify;
           justify-content: space-between;
   width: 80px;
-  top: 24px;
-  left: 10px;
   z-index: 1;
   color: #151616;
 }
 
-.dark-theme .PageControls {
+.dark-theme .PageHeader .PageControls {
   color: #e0e3e4;
 }
 
-.PageControls span {
+.PageHeader .PageControls span {
   display: inline;
   width: 40px;
   height: 40px;
-  padding: 4px;
+  padding: 7px;
   font-size: 22px;
   z-index: 1;
   text-align: center;
@@ -467,41 +473,39 @@ body {
   cursor: pointer;
 }
 
-.dark-theme .PageControls span {
+.dark-theme .PageHeader .PageControls span {
   color: #ddd;
 }
 
-.PageControls span.notActive {
+.PageHeader .PageControls span.notActive {
   color: #7e7e7e;
   cursor: default;
 }
 
-.PageControls span:hover:not(.notActive) {
+.PageHeader .PageControls span:hover:not(.notActive) {
   color: #f0f0f0;
   text-shadow: 0px 0px 3px white;
 }
 
-.PageControls span.SelectedPage {
+.PageHeader .PageControls span.SelectedPage {
   -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
           box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
   opacity: 0.7;
 }
 
 .Page {
-  height: inherit;
+  height: calc(100% - 68px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .Page .fileContainer {
   display: -ms-grid;
   display: grid;
   grid-gap: 30px;
-  position: absolute;
-  width: 100%;
-  top: 80px;
-  padding: 0 24px;
+  padding: 0 24px 24px 24px;
   -webkit-transition: width 600ms;
   transition: width 600ms;
-  overflow-x: hidden;
 }
 
 .Page .fileContainer::-webkit-scrollbar {
@@ -609,7 +613,6 @@ body {
 }
 
 .Page .fileContainer .ListContentContainer {
-  width: 100%;
   margin: 4px 0;
   border-radius: 5px;
   -webkit-transition: -webkit-box-shadow 300ms;
@@ -810,8 +813,7 @@ body {
 
 .Page .fileContainer .NewSpan {
   height: 40px;
-  width: 100%;
-  margin: 0 0 100px 0;
+  margin: 0 0 60px 0;
   padding: 8px;
   border-radius: 5px;
   text-align: center;
@@ -846,6 +848,7 @@ body {
   transition: right 600ms;
   border-left: 1px solid #e6e8eb;
   background: #fff;
+  cursor: auto;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -937,7 +940,6 @@ body {
   height: auto;
   width: 100%;
   margin-top: 10px;
-  padding: 0 10px 5px 10px;
   border-radius: 0px;
   font-size: 15px;
   white-space: normal;
@@ -950,25 +952,47 @@ body {
   border-color: #3f4755;
 }
 
-.PageInformation .ItemInformation .ItemInfo_Name {
+.PageInformation .ItemInformation > section {
+  position: relative;
+  padding: 5px 10px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  -webkit-box-shadow: 0px 2px 2px #d6dbdb;
+          box-shadow: 0px 2px 2px #d6dbdb;
+}
+
+.dark-theme .PageInformation .ItemInformation > section {
+  -webkit-box-shadow: 0px 2px 2px #0f1515;
+          box-shadow: 0px 2px 2px #0f1515;
+}
+
+.PageInformation .ItemInformation .IIData {
+  background: #f1f2f2;
+  z-index: 2;
+}
+
+.dark-theme .PageInformation .ItemInformation .IIData {
+  background: #1a1f26;
+}
+
+.PageInformation .ItemInformation .IIData .ItemInfo_Name {
+  width: 100%;
   font-size: 18px;
-  font-weight: 400;
-  padding: 5px;
+  padding: 8px 2px;
   background: transparent;
   border: none;
 }
 
-.dark-theme .PageInformation .ItemInformation .ItemInfo_Name {
+.dark-theme .PageInformation .ItemInformation .IIData .ItemInfo_Name {
   color: var(--highlight-color);
 }
 
-.PageInformation .ItemInformation .ItemInfo_Name:focus {
-  border: 1px solid #666;
-  border-radius: 3px;
+.PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
+  background: #343743;
 }
 
-.PageInformation .ItemInformation .ItemInfo_UUID {
-  padding: 5px 0px;
+.PageInformation .ItemInformation .IIData .ItemInfo_UUID {
+  padding: 6px 0px;
   text-align: center;
   font-size: 11px;
   letter-spacing: 0.3px;
@@ -976,7 +1000,7 @@ body {
   border-bottom: 1px solid #393c44;
 }
 
-.PageInformation .ItemInformation img {
+.PageInformation .ItemInformation .IIData img {
   position: relative;
   -o-object-fit: cover;
      object-fit: cover;
@@ -990,10 +1014,10 @@ body {
   margin: 8px 0;
 }
 
-.PageInformation .ItemInformation .ItemInfo_Directory {
+.PageInformation .ItemInformation .IIData .ItemInfo_Directory {
   width: 100%;
   margin-top: -1px;
-  padding: 8px 4px;
+  padding: 12px 4px;
   border: none;
   background: transparent;
   border-top: 1px solid #393c44;
@@ -1001,20 +1025,19 @@ body {
   color: inherit;
 }
 
-.PageInformation .ItemInformation button {
+.PageInformation .ItemInformation .IIData button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
-  width: 100px;
-  padding: 8px 4px;
+  width: calc(50% - 10px);
+  padding: 8px 5px;
   border-radius: 3px;
   border: none;
   color: inherit;
-  opacity: 0.8;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   cursor: pointer;
   -webkit-transition: -webkit-box-shadow 300ms ease;
   transition: -webkit-box-shadow 300ms ease;
@@ -1022,78 +1045,88 @@ body {
   transition: box-shadow 300ms ease, -webkit-box-shadow 300ms ease;
 }
 
-.PageInformation .ItemInformation button > i {
+.PageInformation .ItemInformation .IIData button > i {
   color: var(--highlight-color);
   font-size: 15px;
   padding: 1px 4px;
 }
 
-.PageInformation .ItemInformation button:hover {
+.PageInformation .ItemInformation .IIData button:hover {
   -webkit-box-shadow: 0 0 6px var(--highlight-color);
           box-shadow: 0 0 6px var(--highlight-color);
 }
 
-.dark-theme .PageInformation .ItemInformation button {
+.dark-theme .PageInformation .ItemInformation .IIData button {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.PageInformation .ItemInformation table {
+.PageInformation .ItemInformation .IIData table {
   width: 100%;
-  margin: 8px 0;
-  font-size: 13px;
-  border-collapse: collapse;
-  table-layout: fixed;
-  border-top: 1px solid #393c44;
+  margin: 16px 0;
 }
 
-.PageInformation .ItemInformation table td {
+.PageInformation .ItemInformation .IIData table td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  height: 26px;
+  height: 28px;
 }
 
-.PageInformation .ItemInformation table td > input {
+.PageInformation .ItemInformation .IIData table td > input {
   height: 20px;
   width: 50px;
   border: none;
   background: transparent;
 }
 
-.PageInformation .ItemInformation table td:nth-child(1) {
+.PageInformation .ItemInformation .IIData table td:nth-child(1) {
   padding: 0 0 2px 15px;
   font-size: 12px;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-.PageInformation .ItemInformation table td:nth-child(2) {
+.PageInformation .ItemInformation .IIData table td:nth-child(2) {
   text-align: right;
   padding-right: 15px;
-  font-family: inherit, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
 }
 
-.PageInformation .ItemInformation sub {
-  opacity: 0.6;
-  padding: 0 5px;
-  font-size: 11px;
-}
-
-.PageInformation .ItemInformation textarea {
+.PageInformation .ItemInformation .IIData textarea {
   height: 50px;
   width: 100%;
   margin: 6px 0;
-  padding: 2px 5px;
+  padding: 3px 5px;
   resize: vertical;
   font-size: 13px;
+  border: none;
   color: inherit;
-  border: 1px solid #828489;
   background: transparent;
+  background: rgba(0, 0, 0, 0.05);
 }
 
-.dark-theme .PageInformation .ItemInformation textarea {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: #393c44;
+.dark-theme .PageInformation .ItemInformation .IIData textarea {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.PageInformation .ItemInformation .IIShare {
+  background: #f8f8f8;
+  -webkit-transform: translateY(-16px);
+          transform: translateY(-16px);
+  padding: 18px 10px 12px 10px;
+}
+
+.dark-theme .PageInformation .ItemInformation .IIShare {
+  background: #13181e;
+}
+
+.PageInformation .ItemInformation .IIShare > span > input {
+  height: 34px;
+}
+
+.PageInformation .ItemInformation sub {
+  opacity: 0.8;
+  padding: 0 1px;
+  font-size: 11px;
 }
 
 .PageInformation .ItemInformation span {
@@ -1109,7 +1142,7 @@ body {
 }
 
 .PageInformation .ItemInformation span > input {
-  height: 32px;
+  height: 38px;
   width: 100%;
   padding: 3px 4px 6px 8px;
   color: inherit;
@@ -1593,18 +1626,20 @@ body {
 .listItem-Placeholder {
   height: 38px;
   min-width: 200px;
-  -webkit-box-shadow: 0 0 3px black;
-          box-shadow: 0 0 3px black;
+  -webkit-box-shadow: 0 1px 3px 0px #a0a0a6;
+          box-shadow: 0 1px 3px 0px #a0a0a6;
   padding: 2px 20px 4px 40px;
   font-family: inherit;
   z-index: 990;
   color: #292b2f;
-  background: #f1f1f1;
+  background: #eff3f5;
 }
 
 .dark-theme .listItem-Placeholder {
-  background: #1e1e22;
   color: #f1f1f1;
+  -webkit-box-shadow: 0 1px 3px 0px #121214;
+          box-shadow: 0 1px 3px 0px #121214;
+  background: #20262f;
 }
 
 .listItem-Placeholder > h5 {
@@ -1733,7 +1768,7 @@ body {
   font-weight: 400;
   color: inherit;
   cursor: pointer;
-  background: #d4d4d5;
+  background: #f1f2f2;
 }
 
 .dark-theme .Upload_Container .UC_Bottom button {
@@ -1746,7 +1781,6 @@ body {
 }
 
 .Upload_Container .UC_Bottom p {
-  width: 70px;
   margin: 5px 0;
   font-size: 15px;
   text-align: center;
@@ -1818,7 +1852,7 @@ body {
 }
 
 .Upload_Container .UC_Queue_Viewer::-webkit-scrollbar-track {
-  background: #d4d4d5;
+  background: #f1f2f2;
 }
 
 .dark-theme .Upload_Container .UC_Queue_Viewer::-webkit-scrollbar-track {
@@ -1863,7 +1897,7 @@ body {
 }
 
 .Upload_Container .UC_Queue_Viewer table tr.active_upload {
-  background: #d4d4d5;
+  background: #f1f2f2;
 }
 
 .dark-theme .Upload_Container .UC_Queue_Viewer table tr.active_upload {
@@ -1893,7 +1927,7 @@ body {
 }
 
 .Upload_Container .UC_Queue_Viewer table tr:nth-child(n+2) {
-  border-top: 1px solid #d4d4d5;
+  border-top: 1px solid #f1f2f2;
 }
 
 .dark-theme .Upload_Container .UC_Queue_Viewer table tr:nth-child(n+2) {
@@ -1919,15 +1953,15 @@ body {
   width: 180px;
   border-radius: 4px;
   padding: 6px 0px;
-  -webkit-box-shadow: 0px 0px 10px 4px rgba(180, 180, 180, 0.7);
-          box-shadow: 0px 0px 10px 4px rgba(180, 180, 180, 0.7);
-  background: #e0e0e0;
+  -webkit-box-shadow: 1px 1px 4px 0px #b4b4ba;
+          box-shadow: 1px 1px 4px 0px #b4b4ba;
+  background: #eff3f5;
 }
 
 .dark-theme .RightClickContainer {
-  -webkit-box-shadow: 0px 0px 10px 4px rgba(20, 20, 20, 0.7);
-          box-shadow: 0px 0px 10px 4px rgba(20, 20, 20, 0.7);
-  background: #23262a;
+  -webkit-box-shadow: 1px 1px 4px 0px #141416;
+          box-shadow: 1px 1px 4px 0px #141416;
+  background: #20262f;
   color: #ddd;
 }
 
@@ -1953,12 +1987,11 @@ body {
 }
 
 .RightClickContainer :not(.nano_SPLIT):hover {
-  background: #d3d3d3;
+  background: #c8dce6;
 }
 
 .dark-theme .RightClickContainer :not(.nano_SPLIT):hover {
-  background: #6b779f;
-  background: rgba(0, 0, 0, 0.6);
+  background: #465f78;
 }
 
 .colorContainer {
@@ -1974,16 +2007,18 @@ body {
   padding: 6px;
   border-radius: 5px;
   color: #484848;
-  -webkit-box-shadow: 0px 0px 8px 2px #00000040;
-          box-shadow: 0px 0px 8px 2px #00000040;
-  background: #eee;
+  -webkit-box-shadow: 1px 1px 3px 0px #a0a0a6;
+          box-shadow: 1px 1px 3px 0px #a0a0a6;
+  background: #eff3f5;
   z-index: 999;
   cursor: all-scroll;
 }
 
 .dark-theme .colorContainer {
   color: white;
-  background: #23262a;
+  -webkit-box-shadow: 1px 1px 3px 0px #141416;
+          box-shadow: 1px 1px 3px 0px #141416;
+  background: #20262f;
 }
 
 .colorContainer #closeColorPicker {
@@ -2165,6 +2200,8 @@ body {
     height: 30px;
     width: 30px;
     margin: 25px 0 10px 25px;
+    -webkit-filter: none;
+            filter: none;
     background: url("/assets/logo/Nanode_Light.svg");
   }
   .dark-theme .PageList > div > a {
@@ -2217,9 +2254,6 @@ body {
   }
   .PageHeader {
     top: 32px;
-  }
-  .PageControls {
-    top: 28px;
   }
   .ListContentTable th:nth-child(5) {
     display: none !important;

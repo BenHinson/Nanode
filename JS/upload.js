@@ -124,18 +124,18 @@ Upload_Actions = function() {
     } else {
       Upload_Values[0].style.color = 'crimson';
     }
+    console.log(Upload_Queue);
   }
 
   Item_Meta = function(file, dir='') {
     return {
-      "path": NanoName,
+      "section": Section,
       "relative_path": file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
-      "parent": NanoID,
-      "span": NanoID == "homepage" ? uploadDirectory : '',
+      "parent": NanoID == "homepage" ? uploadDirectory : NanoID,
       "name": file.name,
-      "isFi": file.isFile == false ? false : true,
       "type": file.type,
       "size": file.size,
+      "isFi": file.isFile == false ? false : true,
       "modified": file.lastModified,
 
       "id": ((Math.random() * 1000000).toFixed()+'-'+file.size+'-'+(file.webkitRelativePath||file.relativePath||file.fileName||file.name).replace(/[^0-9a-zA-Z_-]/img, ''))
@@ -220,7 +220,7 @@ Upload = async () => {
       'chunk_info': {"index": Upload.Num, "total_chunks": Info.total_chunks, "total_size": Info.total_size}
     }
 
-    Visual_Items[Meta.id].Status = "Uploading"
+    Visual_Items[Meta.id].Status = "Uploading";
 
     Read_Chunk(Upload.Data, async(e) => {
       Form.file = Array.from(new Uint8Array(e.target.result)); // Fastest and Easiest to Convert on the Server
