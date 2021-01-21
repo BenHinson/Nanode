@@ -124,7 +124,6 @@ Upload_Actions = function() {
     } else {
       Upload_Values[0].style.color = 'crimson';
     }
-    console.log(Upload_Queue);
   }
 
   Item_Meta = function(file, dir='') {
@@ -150,8 +149,8 @@ Upload_Actions = function() {
       }
 
       Upload_Visuals.Status("Start", "Start Upload");
-      Upload_Values[0].innerText = textMultiple(Upload_Item_Count, "Item");
-      Upload_Values[1].innerText = convertSize(Upload_Size);
+      Upload_Values[0].innerText = N_TextMultiple(Upload_Item_Count, "Item");
+      Upload_Values[1].innerText = N_ConvertSize(Upload_Size);
     }
   }
 
@@ -281,7 +280,7 @@ Upload_Visuals = async() => {
     Queue();
 
     let upload_time = parseInt(File.Data.size / (512*1024)) // In Seconds (Assuming 0.5MB / sec = ~4Mb/s upload)
-    Progress_Div.querySelector('p').innerText = upload_time < 60 ? (upload_time+1)+"s" : textMultiple( (parseInt(upload_time / 60)+1), "min" );
+    Progress_Div.querySelector('p').innerText = upload_time < 60 ? (upload_time+1)+"s" : N_TextMultiple( (parseInt(upload_time / 60)+1), "min" );
   },
 
   Progress = function(total_chunks, chunk_num, total_size, id) {
@@ -290,7 +289,7 @@ Upload_Visuals = async() => {
     Progress_Div.querySelector('progress').value = item_percentage;
 
     let time_till_upload = total_chunks == 1 ? 0 : parseInt((total_size - completed_Size) / Chunk_Size) * ((Date.now() - Time_Difference) / 1000)
-    Progress_Div.querySelector('p').innerText = time_till_upload < 60 ? (time_till_upload+1)+"s" : textMultiple( (parseInt(time_till_upload / 60)+1), "min") 
+    Progress_Div.querySelector('p').innerText = time_till_upload < 60 ? (time_till_upload+1)+"s" : N_TextMultiple( (parseInt(time_till_upload / 60)+1), "min") 
 
     if (UC_Queue_Viewer.classList.contains('UC_Showing')) {
       UC_Queue_Viewer_Table.querySelectorAll("tr[upload_id='"+id+"'] td")[2].innerHTML = Visual_Items[id] ? Status_Icon(Visual_Items[id].Status) : Status_Icon("Complete");
@@ -310,7 +309,7 @@ Upload_Visuals = async() => {
 
     for (const [id, info] of Object.entries(Visual_Items)) {
       UC_Queue_Viewer_Table.innerHTML += `
-        <tr upload_id='${id}' class='${info['Status'] == "Uploading" ? 'active_upload' : ''}'> <td>${info['Meta'].name}</td> <td>${convertSize(info['Meta'].size)}</td> <td>${Status_Icon(Upload_Status == 'Paused' || info['Status'])}</td> </tr>
+        <tr upload_id='${id}' class='${info['Status'] == "Uploading" ? 'active_upload' : ''}'> <td>${info['Meta'].name}</td> <td>${N_ConvertSize(info['Meta'].size)}</td> <td>${Status_Icon(Upload_Status == 'Paused' || info['Status'])}</td> </tr>
       `
     }
   }

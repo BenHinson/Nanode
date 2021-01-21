@@ -106,7 +106,7 @@ function loadCodexPage() {
 
           totalItems = this.files.length;
           $("#CUCount")[0].innerText = "Items ⌥ "+totalItems;
-          $("#CUSize")[0].innerText = convertSize(totalSize)+" ⌥ Size";
+          $("#CUSize")[0].innerText = N_ConvertSize(totalSize)+" ⌥ Size";
         }
       })
     })
@@ -190,13 +190,13 @@ function readCodex(codexContents) {
       if (CodexWanted == "Text") {
         codexItem.classList.add('codexItemText')
         let Content = content[item].F100C !== undefined ? content[item].F100C : "-";
-        codexItem.innerHTML = " <h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4>  <div class='codexData'>  <h5>"+Type+"</h5>  <h5>"+convertSize(content[item].Size)+"</h5>  <h5>"+dateFormater(content[item].Time)+"</h5> </div>  <span>"+Content+"</span>"
+        codexItem.innerHTML = " <h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4>  <div class='codexData'>  <h5>"+Type+"</h5>  <h5>"+N_ConvertSize(content[item].Size)+"</h5>  <h5>"+N_DateFormater(content[item].Time)+"</h5> </div>  <span>"+Content+"</span>"
       } else if (CodexWanted == "Video") {
         codexItem.classList.add("codexItemVideo");
-        codexItem.innerHTML = "<h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4> <div class='codexData codexVideoData'><h5>"+Type+"</h5> <h5>"+convertSize(content[item].Size)+"</h5>  <h5>"+content[item].Time+"</h5></div>"
+        codexItem.innerHTML = "<h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4> <div class='codexData codexVideoData'><h5>"+Type+"</h5> <h5>"+N_ConvertSize(content[item].Size)+"</h5>  <h5>"+content[item].Time+"</h5></div>"
       } else if (CodexWanted == "Audio") {
         codexItem.classList.add("codexItemAudio");
-        codexItem.innerHTML = "<h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4> <div class='codexData codexAudioData'><h5>"+timeFormater(content[item].Duration)+"</h5><h5>"+Type+"</h5> <h5>"+convertSize(content[item].Size)+"</h5>  <h5>"+content[item].Time+"</h5></div>";
+        codexItem.innerHTML = "<h4 title='"+content[item].Name+"'>"+content[item].Name+"</h4> <div class='codexData codexAudioData'><h5>"+N_TimeFormater(content[item].Duration)+"</h5><h5>"+Type+"</h5> <h5>"+N_ConvertSize(content[item].Size)+"</h5>  <h5>"+content[item].Time+"</h5></div>";
         audioOrder.push(content[item].UUID)
       }
       $(".codexWrapper")[0].appendChild(codexItem)
@@ -309,9 +309,9 @@ function playAudio() {
   let audioPlaying = audioOrder[audioNumber];
   $(".selectedCodexItem")[0].classList.remove("selectedCodexItem");
   $("div[nano-id = "+audioOrder[audioNumber]+"]")[0].classList.add("selectedCodexItem");
-  audioDuration = timeFormaterReverse($(".selectedCodexItem")[0].children[1].childNodes[0].innerText);
+  audioDuration = N_TimeFormaterReverse($(".selectedCodexItem")[0].children[1].childNodes[0].innerText);
   $("#CAP_Text")[0].innerText = $(".selectedCodexItem")[0].children[0].title;
-  $(".CAP_Dur_Time")[0].innerText = timeFormater(audioDuration);
+  $(".CAP_Dur_Time")[0].innerText = N_TimeFormater(audioDuration);
   audio.src = "//drive.nanode.one/storage/"+audioPlaying+"?cdx=3"; 
   audio.play();
 }
@@ -355,7 +355,7 @@ function CodexAudioListeners() {
   })
   audio.addEventListener('timeupdate', function() {
     $("#playerSlider")[0].value = (audio.currentTime / audioDuration) * 100;
-    $(".CAP_Cur_Time")[0].innerText = timeFormater(audio.currentTime);
+    $(".CAP_Cur_Time")[0].innerText = N_TimeFormater(audio.currentTime);
   })
 
   // var volumeSlider = element('volumeSlider') /////////////////////
@@ -418,9 +418,9 @@ function readBin(binContent) {
   let binSize = 0;
   binContent.forEach(function(Item, index) {
     binSize += Item[4];
-    $(".binWrapper").prepend("<div nano-id="+Item[0]+"> <h6 class='binActBtns' act='Rescue'>Rescue</h6> <h3>"+(typeof Item[1] == "object" ? Item[1].Cur : Item[1])+"</h3> <h4>Deleted: "+dateFormater(Item[3])+"</h4> <h4>"+Item[2].mimeT+"</h4> <h4>"+convertSize(Item[4])+"</h4> <h5 class='binActBtns' act='Delete'>Delete</h5> </div>")
+    $(".binWrapper").prepend("<div nano-id="+Item[0]+"> <h6 class='binActBtns' act='Rescue'>Rescue</h6> <h3>"+(typeof Item[1] == "object" ? Item[1].Cur : Item[1])+"</h3> <h4>Deleted: "+N_DateFormater(Item[3])+"</h4> <h4>"+Item[2].mimeT+"</h4> <h4>"+N_ConvertSize(Item[4])+"</h4> <h5 class='binActBtns' act='Delete'>Delete</h5> </div>")
   })
-  $(".BinDetails")[0].innerHTML = "Total ⌥ "+binContent.length+" Items @ "+convertSize(binSize);
+  $(".BinDetails")[0].innerHTML = "Total ⌥ "+binContent.length+" Items @ "+N_ConvertSize(binSize);
 
   $(".binActBtns").on("click", function(e) {
     let emitAction = e.currentTarget.getAttribute('act');

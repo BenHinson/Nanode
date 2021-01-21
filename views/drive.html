@@ -16,7 +16,8 @@
   <body class="dark-theme">
 
     <div class="Frame">
-      <button id="colorTheme" onclick="changeTheme()" title="Change Theme"><i class="fas fa-adjust controlsFade"></i></button>
+      <button id="colorTheme" onclick="changeTheme()" title="Change Theme"><i></i></button>
+
       <div class="clientStatus">
         <div id='Recon_Btn' style="display: none;">Reconnect</div>
         <div id="CS0"></div>  <div id="CS1"></div>  <div id="CS2"></div>  <div id="CS3"></div>  <div id="CS4"></div>  <div id="CS5"></div>  <div id="CS6"></div>  <div id="CS7"></div>  <div id="CS8"></div>  <div id="CS9"></div>
@@ -66,7 +67,9 @@
 
     <div class='PageInformation'>
       <div class='New' title="New Folder or Upload Files"><i class='fas fa-plus'></i>New</div>
-      <i class='toggleDetailsBtn fas fa-info-circle' title='Toggle Details'></i>
+      <div class='Switch SW_View' style='top: 14px;right: 10px;'>
+        <div class='Slider SL_View'></div> <div><i class="fas fa-bars"></i></div> <div><i class="fas fa-th-large"></i></div>
+      </div>
       <div class='ItemInformation'></div>
     </div>
 
@@ -110,10 +113,11 @@
 <script text="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script text="text/javascript" src="/JS/client.js"></script>
+<script text="text/javascript" src="/JS/tools.js"></script>
 <script text="text/javascript" src="/JS/settings.js"></script>
 <script text="text/javascript" src="/JS/listeners.js"></script>
 <script text="text/javascript" src="/JS/viewer.js"></script>
 <script text="text/javascript" src="/JS/pages.js"></script>
 <script text="text/javascript" src="/JS/rightClick.js"></script>
-<script text="text/javascript" src="/JS/theme.js"></script>
 <script text="text/javascript" src="/JS/upload.js"></script>
+<script text="text/javascript" src="/JS/button&keys.js"></script>

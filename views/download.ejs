@@ -16,6 +16,7 @@
         <h4><%= ejs_name %>.zip</h4>
         <h5><%= ejs_size %></h5>
         <h5><%= ejs_items %></h5>
+        <h5><%= ejs_count + (ejs_count == 1 ? " Download" : " Downloads") %></h5>
 
         <span>
           <button id='previewBtn' style='opacity: <%= ejs_preview ? 1 : 0.6 %>; cursor: <%= ejs_preview ? "pointer" : "not-allowed" %>;'> <% ejs_preview ? "" : "No" %> Preview</button>

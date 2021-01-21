@@ -24,19 +24,16 @@ $("#directoryControlBack").on("click", function(e) {
   Directory_Call(Directory_Route[Tree_Steps - 1].Nano, false)
 })
 
-$(".toggleDetailsBtn").on("click", function() {
-  let currDetails = displayDetails();
-  currDetails = !currDetails;
-  localStorage.setItem('displayDetails', currDetails);
-  currDetails == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
-})
-
 $(".New").on("click", function() {
   if (document.getElementsByClassName('NewOptions')[0]) { document.getElementsByClassName('NewOptions')[0].remove(); return; }
   $(".ItemInformation").before( `<span class='NewOptions'> <div id='uploadBtn' style='background:linear-gradient(40deg, #2993d8, #203ed3)'><i class='fas fa-cloud-upload-alt'></i>Upload</div> <div id='folderBtn' style='background:linear-gradient(40deg, #ddaa1f, #b35632)'><i class='fas fa-folder-plus'></i>Folder</div> </span>` )
 
   document.getElementById('uploadBtn').addEventListener("click", function() { PopUp_Upload() });
   document.getElementById('folderBtn').addEventListener("click", function() { PopUp_New_Folder() });
+})
+
+$(".Switch.SW_View").on("click", function() {
+ ChangeView();
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,51 +53,61 @@ function clientStatus(Light, Status, Time) {
 }
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? document.querySelectorAll('div[nano-id]') : document.querySelectorAll('tr[nano-id]'))
-  $(Items).on("click", function(selected) {
+  let Items = (View == 0 ? document.querySelectorAll('div[nano-id]:not([home-span]):not([Sub-Span])') : document.querySelectorAll('tr[nano-id]'));
 
+  $(Items).on("click", function(selected) {
+    console.log(63);
     if (selected.currentTarget.hasAttribute('focus')) { return; }
     selected = selected.currentTarget;
 
-    if (keyMap[16] == true || keyMap[17] == true) {
-      if (selected.hasAttribute('selected')) {
-        selected.removeAttribute('selected')
-        selected.style.background = "";
-      } else {
-        selected.setAttribute('selected', true)
-        selected.style.background = "rgba(118,128,138,0.5)";
-      }
-      return;
-    }
+    if (keyMap["Shift"] == true || keyMap["Control"] == true) { SelectItem(selected); return; }
 
     if (!selected.classList.contains('noOpen')) {
-      if (!selected.hasAttribute('selected') && displayDetails()) {
-        if ($("tr[selected='true']").length >= 1) {
-          $("tr[selected='true']").each(function(index, item) {
-            item.style.background = '';
-            item.removeAttribute('selected');
-          })
-        }
-        selected.setAttribute('selected', true)
-        selected.style.background = "rgba(118,128,138,0.5)";
-        callItemInformation(selected);
-        clientStatus("CS5", "User");
-      } else {
-        ItemActions(selected);
-        clientStatus("CS5", "Ok", 500);
-      }
+      ItemActions(selected);
+      clientStatus("CS5", "Ok", 500);
     }
-
   })
+}
+
+function SelectItem(item, force) {
+  if (!item) {return;}
+  $(document.body).off("click");
+
+
+  if (item.hasAttribute('selected') && !force) { // Remove from Selected
+    item.removeAttribute('selected');
+    item.classList.remove('ItemSelected');
+    NanoSelected = NanoSelected.filter(id => id !== item.getAttribute('nano-id'));
+  } else if (item.hasAttribute('nano-id')) { // Add to Selected
+    item.setAttribute('selected', true);
+    item.classList.add('ItemSelected');
+    NanoSelected.includes(item.getAttribute('nano-id')) ? '' : NanoSelected.push(item.getAttribute('nano-id'));
+  }
+
+  if (NanoSelected.length) { // Add Listener to Document for Off-Clicks
+    setTimeout(function() {
+      $(document.body).on("click",function(e) {
+        if (!$(e.target).parents('.fileContainer').length && !$(e.target).parents('.RightClickContainer').length) {
+          NanoSelected = [];
+          $('[selected=true]').each((index, item) => {
+            $(item).removeAttr('selected');
+            $(item).removeClass('ItemSelected');
+          })
+          $(document.body).off("click");
+        }
+      });
+    }, 20)
+  }
 }
 
 function ItemActions(selected) {
   if (!selected && RCElement) { selected = RCElement }
-  NanoSelected = selected.getAttribute("nano-id");
-  type = selected.getAttribute("type");
+
+  let clicked = selected.getAttribute("nano-id");
+  let type = selected.getAttribute("type");
 
   if (type == "folder") { Directory_Call(selected.getAttribute('nano-id')); }
-  else if (type.match(/image|text|video/g)) { ViewItem(type, NanoSelected) }
+  else if (type.match(/image|text|video/g)) { ViewItem(type, clicked) }
 }
 
 function setupFileMove(Caller) {
@@ -193,12 +200,14 @@ function setupFileMove(Caller) {
       greedy: true,
 
       over: function(e) {
+        e.target.classList.add('listItem-Hover');
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
           Directory_Call(e.target.getAttribute("nano-id"));
-        }, 1500)
+        }, 2000)
       },
-      out : function() {
+      out : function(e) {
+        e.target.classList.remove('listItem-Hover');
         clearTimeout(hoveringOver)
       },
       drop: function(e, droppedItem) {
@@ -238,17 +247,18 @@ function setupFileMove(Caller) {
   }
 }
 
-function Route(Nano_Path, Text_Path) {
-  
+function Route(Nano_Path, Text_Path) {  
   if (FolderCall == true) {
-    if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Nano == Nano_Path) { return; }
-    Directory_Route.push({"Nano": Nano_Path, "Text": Text_Path})
-    if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
-      Directory_Tree = Directory_Tree.slice(0, Tree_Number + 1);
+    if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Nano == Nano_Path) { // This was a return statement, but that breaks going forward into a locked folder.
+    } else {
+      Directory_Route.push({"Nano": Nano_Path, "Text": Text_Path})
+      if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
+        Directory_Tree = Directory_Tree.slice(0, Tree_Number + 1);
+      }
+      if (!Directory_Tree[Tree_Number]) { Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
+      Directory_Tree[Tree_Number].Route = Directory_Route;
+      Tree_Steps++;
     }
-    if (!Directory_Tree[Tree_Number]) { Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
-    Directory_Tree[Tree_Number].Route = Directory_Route;
-    Tree_Steps++;
   }
 
   FolderCall = true;
@@ -286,27 +296,44 @@ function Route(Nano_Path, Text_Path) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+function ChangeView() {
+  let ListView = Boolean(UserSettings.ViewT); // 0=false, 1+ = true
+  UserSettings.ViewT = ListView ? 0 : 1; // Inverts ViewT
+  document.querySelector('.Slider.SL_View').style.transform = `translateX(${ListView ? 28 : 0}px)`;
+  Directory_Call(NanoID, false);
+}
 
 function refreshDirectory() {
   Directory_Call(NanoID, false);
 }
 
 function collapseSpan(span, expand=false) {
-  span = span ? span.parentNode.parentNode.parentNode : RCElement;
-  let rows = span.querySelectorAll('tr');
+  span = span ? (UserSettings.ViewT == 0 ? span.parentNode : span.parentNode.parentNode.parentNode) : RCElement;
+  if (UserSettings.ViewT == 0) {
+    expand = span.hasAttribute('collapsed') ? true : false;
+    expand == true ? span.removeAttribute('collapsed') : span.setAttribute('collapsed', true)
+    expand ? span.querySelector('button').remove() : span.innerHTML += `<button class='ExpandSpan VT_Block' onclick='collapseSpan(this, true)'>Expand</button>`
 
-  for (let i=0; i<rows.length; i++) {
-    if (i === 0) {
-      expand = rows[0].hasAttribute('collapsed') ? true : false;
-      rows[i].children[2].innerText = (expand == true ? "Type" : "");
-      rows[i].children[3].innerText = (expand == true ? "Modified" : "");
-      rows[i].children[4].innerHTML = (expand == true ? "Size" : `<button class='expandBtn' onclick='collapseSpan(this, true)'>Expand</button>`);
-      expand == true ? rows[0].removeAttribute('collapsed') : rows[i].setAttribute('collapsed', true)
-    } else {
-      rows[i].style.cssText = (expand == true ? "visibility: visible; display: table-row;" : "visibility: collapse; display: none;")
+    let blocks = span.querySelectorAll('div');
+    for (let i=0; i<blocks.length; i++) {
+      blocks[i].style.cssText = (expand == true ? '' : 'visibility: collapse; display: none;');
+    }
+
+  } else {
+    let rows = span.querySelectorAll('tr');
+  
+    for (let i=0; i<rows.length; i++) {
+      if (i === 0) {
+        expand = rows[0].hasAttribute('collapsed') ? true : false;
+        rows[i].children[2].innerText = (expand == true ? "Type" : "");
+        rows[i].children[3].innerText = (expand == true ? "Modified" : "");
+        rows[i].children[4].innerHTML = (expand == true ? "Size" : `<button class='ExpandSpan' onclick='collapseSpan(this, true)'>Expand</button>`);
+        expand == true ? rows[0].removeAttribute('collapsed') : rows[i].setAttribute('collapsed', true)
+      } else {
+        rows[i].style.cssText = (expand == true ? "visibility: visible; display: table-row;" : "visibility: collapse; display: none;")
+      }
     }
   }
-
 }
 
 function createLocation() {
@@ -321,11 +348,16 @@ function renameItem(e) {
 
   let renameItemsID = focusedElement.getAttribute('nano-id');
   
-  let targetInput = $(focusedElement).find('input')[0];
+  let targetInput = $(focusedElement).find('input')[0] || $(focusedElement).find('textarea')[0];
   focusedElement.setAttribute('focus', "true")
   targetInput.removeAttribute('disabled');
+  targetInput.style = '';
   targetInput.focus();
   targetInput.select();
+
+  targetInput.addEventListener('input', function(e) {
+    this.value = this.value.replace(/\n/g,'')
+  });
 
   targetInput.addEventListener('change', function() {
     ReturnItemState();
@@ -342,5 +374,6 @@ function renameItem(e) {
     $(document).off();
     focusedElement.removeAttribute('focus');
     targetInput.setAttribute('disabled', 'false');
+    targetInput.style = 'pointer-events:none;'
   }
 }

@@ -2,10 +2,10 @@
 
 RightClickObjectMenu = {
   "File_Container" : {
-    "New Folder": [{"Command": "displayCentralActionMain", 'Var1':'New Folder', 'Var2':'Create'}],
+    "New Folder": [{"Command": "PopUp_New_Folder"}],
     "Refresh": [{"Command": "refreshDirectory"}],
     "Nano_SPLIT_1": "",
-    "RC_VAR_Switch_View": [{"Command": 'changeSetting', 'Var1': 'ViewT'}], 
+    "RC_VAR_Switch_View": [{"Command": 'ChangeView'}], 
     "RC_VAR_Change_Theme": [{"Command":'changeSetting', 'Var1': 'Theme'}],
     "Nano_SPLIT_2": "", 
     "Upload": [{"Command": "PopUp_Upload", 'Var1':'Upload'}],
@@ -13,7 +13,7 @@ RightClickObjectMenu = {
   "Homepage_Span" : {
     "RC_VAR_Collapse": [{"Command": "collapseSpan"}],
     "Nano_SPLIT_1": "", 
-    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin.<br>Folders, Spans and their content <u>cannot</u> be reclaimed."}]
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Spans and their content <u>cannot</u> be reclaimed."}]
   },
   "Nano_Folder" : {
     "Open": [{"Command": "ItemActions"}],
@@ -25,7 +25,7 @@ RightClickObjectMenu = {
     "Nano_SPLIT_2": "",
     "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
-    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin<br>Folders and Spans <u>cannot</u> be reclaimed"}],
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Folders and their contents to the Bin, where they can be reclaimed."}],
     "Nano_SPLIT_3": "",
     "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
   },
@@ -40,7 +40,7 @@ RightClickObjectMenu = {
     "Nano_SPLIT_2": "",
     "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
-    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Deletion of Individual Files will be sent to the Bin<br>Folders and Spans <u>cannot</u> be reclaimed"}],
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Files to the Bin, where they can be reclaimed."}],
     "Nano_SPLIT_3": "",
     "Share": "",
     "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
@@ -62,10 +62,10 @@ document.addEventListener("contextmenu", function(e) {
   RCElement = '';
 
   if (e.target.hasAttribute('rcPar')) { RCElement = e.path[ e.target.getAttribute('rcPar') ] }
+  if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { RCElement = e.target.offsetParent; }
+  if (e.target.hasAttribute('rc') && e.target.getAttribute('rc').match(/Nano_Folder|Nano_File/)) { RCElement = e.target; };
 
-  if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) {
-    RCElement = e.target.offsetParent;
-  }
+  SelectItem(RCElement, "FORCE");
 
   if (e.target.hasAttribute("rc") || RCElement) {    
     if (!RCElement) { RCElement = e.target }
@@ -115,6 +115,6 @@ function startFocusOut() {
 }
 
 
-function RC_VAR_Collapse(Option, e) { return (e.target.parentNode.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+function RC_VAR_Collapse(Option, e) { return (e.target.parentNode.hasAttribute('collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
 function RC_VAR_Switch_View(Option, e) { return UserSettings.ViewT == 0 ? "List View" : "Block View"; }
 function RC_VAR_Change_Theme(Option, e) { return UserSettings.Theme == 0 ? "Light Theme" : "Dark Theme"; }

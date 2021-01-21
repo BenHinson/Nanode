@@ -1,17 +1,13 @@
 > Planned Development <
 
 Main:
-  Server Major Rework on Storage Engine
   Improve Mobile View
-  legacy.js	-	code that needs re-witing
   Turning 'Pages' into html docs to render in centre
-  Storage progress bar design.
   Update the Dev Portal
 
 New:
   Search
   Key Shortcuts. Key up & down, left & right to navigate
-  De-select items
   Recents
   Accounts Page + Log Storage Usage
 
@@ -19,23 +15,33 @@ Reworks:
   Main Folders Rework
 
 Bugs:
-  Call info function... it doesnt always either send / recieve or show the data. (often after refresh?)
   rightclick view change removes listeners of the contents
-  update colours of the right click
   no home-span tag for block view? does it work...?
-  re-name span, convert to input and just read on change? much simpler. dont hvae input for non homepage
-  the server, after a days usage gets upto high cpu. 20% or so.
 
 Groups:
   List page that shows all links to 'download', 'view' or 'share' that the user has created. 'Shows size and names of contents' removal deleted item.
   centralActionMain NEEEDS a rework.
   Share on Item Information uses Icon  'location-arrow'  to send it.
 
+Remove (Page information toggle what is that ? pageDetails button).. Just leave at right-click to view details
+On drag-drop upload change .highlight to being a box showing thats whats happening.
+
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
 
+////////////// JANUARY //////////////////
+Continued implementation of new API's and Storage Engine.
+Account Storage - Allocated & Used
+Updated colours of the right click
+Download Update to work with new engine and Additional Features
+Updated Selection and De-selection of items, allowing for multi-in-one actions.
+Multiple Delete, Download
+List Item and Span Rename tweaks.
+Colour Palette for Dark & Light Theme
+Design Alterations and Work towards a design standard.
+Custom Tools Rework
 
 
 ////////////// DECEMBER //////////////////
@@ -47,6 +53,7 @@ Changes to Security to improve performance and reliability
 Further Rewrites to Various Code
 Fixed 
 Removal of Old / Legacy Code
+Entire Rewrite of Storage Engine and API's. 
 
 
 ////////////// NOVEMBER //////////////////

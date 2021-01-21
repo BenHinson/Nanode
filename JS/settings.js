@@ -1,3 +1,18 @@
+changeTheme = function() {
+  let darkThemeEnabled = document.body.classList.toggle('dark-theme');
+  localStorage.setItem('dark-theme-enabled', darkThemeEnabled);
+  document.querySelector('#colorTheme i').classList = darkThemeEnabled ? 'fas fa-moon' : 'fas fa-sun';
+}
+if (JSON.parse(localStorage.getItem('dark-theme-enabled'))) {
+  document.body.classList.add('dark-theme');
+  document.querySelector('#colorTheme i').classList = 'fas fa-moon';
+} else if (!localStorage.getItem('dark-theme-enabled') == false) { // Set Starting Theme to Dark-Mode
+  localStorage.setItem('dark-theme-enabled', false);
+  changeTheme();
+}
+
+// ======================
+
 settingsOpen = true;
 NotLogged = false;
 
@@ -44,7 +59,7 @@ function readSettings(calledSettings) {
   //   if ( typeof UserSettings[keys[key]] == "number" ) {
   //     $("#"+ objID[ UserSettings[keys[key]] ])[0].classList.add("SW_Selected");
   //   } else if ( $("#"+objID)[0] ) {
-  //     if (objID == "SW_LastAc") { UserSettings[keys[key]] = DateAndTimeFormater(UserSettings[keys[key]]) }
+  //     if (objID == "SW_LastAc") { UserSettings[keys[key]] = N_DateAndTimeFormater(UserSettings[keys[key]]) }
   //     $("#"+objID)[0].value = UserSettings[keys[key]];
   //   }
   // }
@@ -121,6 +136,7 @@ function handleSettings() {
       UserSettings[key] == 0 ? document.body.classList.add('dark-theme') : document.body.classList.remove('dark-theme');
     }
     else if (key == "ViewT" && typeof NanoName != 'undefined') {
+      document.querySelector('.Slider.SL_View').style.transform = `translateX(${UserSettings.ViewT == 0 ? 28 : 0}px)`;
       if (UserSettings.ViewT == 0 && typeof NanoID != 'undefined') {
         viewContentAsBlock(NanoName);
         clientStatus("CS6", "Off");
@@ -137,13 +153,7 @@ function handleSettings() {
       } else if ($(".PageContainer")[0]) { $(".PageContainer")[0].style.backgroundImage = ""; }
     }
   }
-  displayDetails() == true ? $(".toggleDetailsBtn").css({"text-align": "left", "color":UserSettings["HighL"]}) : $(".toggleDetailsBtn").css({"text-align": "right", "color":"#5b5b5f"});
   return true;
-}
-
-
-const displayDetails = () => { 
-  return (JSON.parse(localStorage.getItem('displayDetails'))) ? true : false 
 }
 
 /////////////////////////////////////////////
@@ -157,86 +167,4 @@ shortcutKeys = {
   "Arrow_Down": "Move Down an Item",
   "Arrow_Left": "Back a directory",
   "Arrow_Right": "Forward a directory",
-}
-
-
-function ItemsPath(Parent, Name, path="") {
-  if (NanoName == "homepage") {
-    return Parent+" > "+Name;
-  } else {
-    for (let i=0; i<Directory_Route.length; i++) {
-      path += Directory_Route[i].Text+" > "
-    }
-    path += Name;
-    return path;
-  }
-}
-function DateAndTimeFormater(date) {
-  return new Date(date) == "Invalid Date" ? date : new Date(date).toLocaleString();
-}
-function dateNow() {
-  return date = new Date().toISOString().split('T')[0];
-}
-function dateFormater(date) {
-  date = date.stamp || date;
-  if (date == null || !date.length) { return "-"; }
-  var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2)  day = '0' + day;
-
-  return dateFormat == 0 ? [day, month, year].join('/') : [month, day, year].join('/');
-}
-function timeFormater(time) {
-  let Minutes = Math.floor(time / 60) < 10 ?  "0" + Math.floor(time / 60) : Math.floor(time / 60);
-  let Seconds = Math.floor(time - (Minutes * 60)) < 10 ? "0" + Math.floor(time - (Minutes * 60)) : Math.floor(time - (Minutes * 60));
-  return Minutes+":"+Seconds;
-}
-function timeFormaterReverse(time) {
-  return (parseInt(time.split(':')[0] * 60) + parseInt(time.split(':')[1]))
-}
-function RGBtoHEX(rgb) {
-  if (!rgb) {return '';}
-  let RGBColor = rgb.replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
-  return  RGBColor.length >= 2 ? ("#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2)) : (RGBColor);
-}
-function convertSize(InputSize) {
-  if (!InputSize) { return '-' }
-  let fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  for (let i=0; i<fileSizes.length; i++) {
-    if (InputSize <= 1024) { return InputSize+" "+fileSizes[i] }
-    else { InputSize = parseFloat(InputSize / 1024).toFixed(2) }
-  }
-  return InputSize;
-}
-function ItemImage(type, OID, Block) {
-  if (type == "FOLDER")               return "/assets/file_icons/folder.svg";
-  else if (type.includes('image'))    return Block ? "/storage/"+OID+"?h=90&w=120" : "/storage/"+OID+"?h=32&w=32";
-
-  let file_type = ItemChecker(type)
-  if (file_type == "unknown")     return "/assets/file_icons/file.svg";
-  else                            return "/assets/file_icons/"+file_type+".svg";
-}
-const ItemChecker = (item_Type) => {
-  item_Type = item_Type.mime || item_Type;
-  if (item_Type == "FOLDER") { return "folder" }
-  if (item_Type.includes("image")) { return "image" }
-  if (item_Type.includes("video")) { return "video" }
-  if (item_Type.includes("audio")) { return "audio" }
-  if (item_Type.includes("text")) { return "text" }
-  return "unknown";
-}
-const capFirstLetter = (string) => {
-  return typeof string !== 'string' ? '' : string.charAt(0).toUpperCase() + string.slice(1)
-}
-const textMultiple = (num, string) => {
-  return num === 1 ? num+" "+string : num+" "+string+'s';
-}
-
-
-var keyMap = {};
-onkeydown = onkeyup = function(e) {
-  keyMap[e.keyCode] = e.type == 'keydown';
 }

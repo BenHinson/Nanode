@@ -7,7 +7,7 @@ FolderCall = true; // If Route Was Called by Clicking on a Folder
 Section='main';
 
 Directory_Content = '';
-NanoSelected = "";
+NanoSelected = [];
 UserSettings = {};
 
 
@@ -97,32 +97,42 @@ Directory_Call = async(Folder=NanoName, RefreshPath=true, SkipCall, Folder_Respo
 
   // console.log(Folder_Response);
   
-  if (Folder_Response.Locked) { RightBar_Security_Inputs(Folder_Response.Locked) }
+  if (Folder_Response.Auth) { RightBar_Security_Inputs(Folder_Response);}
   else if (Folder_Response.Parent) {
     NanoName = Folder_Response.Parent.id == "homepage" ? "homepage" : Folder_Response.Parent.name;
     NanoID = Folder_Response.Parent.id;
-
+    NanoSelected = [];
     Directory_Content = Folder_Response.Contents;
 
     Route(NanoID, NanoName);
-
     UserSettings.ViewT == 0 ? viewContentAsBlock(NanoID) : viewContentAsList(NanoID);
-
     uploadDirectory = NanoName == "homepage" ? "_GENERAL_" : NanoName;
-
     setupFileMove();
   }
 }
 
 
 // NEXT to test:
-  // Right Clicks : Delete.
-  // View Details : download, download link.
-  // Security Inputs and Security Checks (Server)
 
-  // Upload.
-    // Download Folder & Contents. Check the Download Page too!
+  // Drag and Drop upload design.
+  // Development Page. And Homepage Improvements. Use the new designs I drew up.
 
-  // Check Block View. Alots changed and block view will need editing. (Right click rename notably.)
 
-  // Search Implementation - Remeber to check the previous names settings too for items.
+  // File Move for Block.
+
+  // The Multiple Update:
+      // Selection Box - Shows Selection Data at the bottom. Narrow Bar like VSCode blue bar.
+      // Multi-Move
+
+  // The Right-Click Update:
+      // Security. Including removal.
+      // Copy To
+      // Move To
+      // Create Shortcut
+      // Share
+
+  // Settings Review, JS, Functions and Page Revision.
+
+  // Icons for Different File types.
+
+  // Search Implementation - Remember to check the previous names settings too for items.
