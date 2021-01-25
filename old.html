@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang='en-GB'>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Secure File Storage">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nanode</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/Nanode_Fade.svg" alt='Nanode'/>
+    <link rel="stylesheet" href="/CSS/Master/master.css">
+  </head>
+  <body class="dark-theme" style="background: #121214;">
+
+    <section class="HomeSection Sec1">
+      <img class="NanodeLogo" src="//nanode.one/assets/main/Nanode.svg" alt='Nanode'>
+      <img class="NanodeFade" src="" alt='_'>
+      <p class="NanodeVersion">Digital Storage<br><br>Alpha 3.2</p>
+      <div class="NanoHome NHT"></div><div class="NanoHome NHB"></div>
+      <!-- <div class="NanoHome NHL"></div> <div class="NanoHome NHR"></div> -->
+      <a class="NanoHome NHC NHTLC" href="https://drive.nanode.one"><svg></svg><h3>STORAGE</h3><img src="//nanode.one/assets/main/Drive.svg" alt='Drive'></a>
+      <a class="NanoHome NHC NHTRC" href="https://account.nanode.one"><svg></svg><h3>ACCOUNT</h3><img src="//nanode.one/assets/main/User.svg" alt='User'></a>
+      <a class="NanoHome NHC NHBLC"><svg></svg><h3>SETTINGS</h3><img src="//nanode.one/assets/main/Set.svg" alt='Settings'></a>
+      <a class="NanoHome NHC NHBRC" href="https://dev.nanode.one"><svg></svg><h3>DEVELOPMENT</h3><img src="//nanode.one/assets/main/Dev.svg" alt='Dev'></a>
+    </section>
+
+    <section class="HomeSection Sec2">
+      <img class="NanoPCB" src="//nanode.one/assets/main/PCB.svg" alt='PCB'>
+
+      <div class="PCBText">
+        <div class="PCBInfo PCBIEncrypt">
+          <h2>Encryption</h2>
+          <h5>AES-256 Bit Encryption Secures your Data while on our Servers.</h5>
+          <p><br>AES-256 bit converts this set of text to what you see below, using a randomly generated key.<br><br>EGyccZrnbYK2BoJTqXy4xw3/bPhyXKn2kyYw6K04BiKGpS+2MpxOvbmqFtRDS0qmw0w4AcgnxNTv+dHCFeAmv1WBy9iakffpkbItPnKCHwJ7Kdw9wxE7KQzj+Vf0Ek0Z</p> 
+        </div>
+
+        <div class="PCBInfo PCBISecurity">
+          <h2>Security</h2>
+          <h5>Choose from an array of different security options avaliable for each file</h5>
+          <p><br>Passwords, Pins, Specific Time, Speicific IP, Specific Device, Limited Group, Email Confirmation<br><br>Access to your account, shouldn't mean access to your files.</p>
+        </div>
+
+        <div class="PCBInfo PCBIAccess">
+          <h2>Access</h2>
+          <h5>Connect to your Drive instantly and effortlessly from anywhere</h5>
+          <p><br>Cloudflare offers a world-wide content delivery network for your files to be distributed through.<br><br>The varity of different and specific orientated features within Nanode provide simple and organized storage.</p>
+        </div>
+
+        <div class="PCBInfo PCBIShare">
+          <h2>Share</h2>
+          <h5>Share your files publically via a link, privately to groups and friends, or lock them away from prying eyes</h5>
+          <p><br>Public URL, Link-Only URL, Group Storage, Friend Specific Storage. Apply limits, remove access, work together.</p>
+        </div>
+
+        <div class="PCBInfo PCBIScale">
+          <h2>Scale</h2>
+          <h5>Use as much storage as you need, with your allocation increasing when you need it.</h5>
+          <p><br>An initial allocation of 1GB is given to each user, expanding to 2GB, 5GB, 10GB, 20GB, 50GB and more as your storage is filled.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="HomeSection Sec3">
+      <img class="NanoFlow" src="assets/main/Flow_C.svg" alt='Flow Diagram'>
+      <img class="NanoFlowText" src="assets/main/Flow_Text.svg" alt='Flow Description'>
+    </section>
+
+    <section class="HomeSection Sec4">
+      <div class="MapContainer">
+        <div class="Map3d">
+          <div class="MapFace MapFace--Bottom"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <div class="settingsContainer">
+      <h2>Settings</h2>
+      <div class="settingsWrapper">
+        <h4>Account</h4>
+          <span><a href="//account.nanode.one">View Account Settings</a></span>
+          <span><h5>Lock all Links</h5>
+            <input class="SWBtnOne" id="SW_LockLinks" type="button" value="Lock"></input></span>
+          <span><label for='LastAc'>Last Accessed</label>
+            <input name='LastAc' id="SW_LastAc" type="text" placeholder="No Logged Time"></input></span>
+        <h4>Directory</h4>
+          <span><label for='Dir'>Starting Directory</label>
+            <input name='Dir' id="SW_Dir" type="text"></span>
+          <span><label for='Bin'>Bin Size</label>
+            <input name='Bin' id="SW_Bin" type="number"></span>
+          <span><h5>Locked Folders</h5>
+            <input class="SWBtnThree" id="SW_LockF_Pad" type="button" value="Padlock"><input class="SWBtnThree" id="SW_LockF_Bor" type="button" value="Border"><input class="SWBtnThree" id="SW_LockF_Non" type="button" value="None"></span>
+        <h4>Style</h4>
+          <span><h5>Date Format</h5>
+            <input class="SWBtnTwo" id="SW_Date_ddmmyy" type="button" value="dd/mm/yy"><input class="SWBtnTwo" id="SW_Date_mmddyy" type="button" value="mm/dd/yy"></span>
+          <span><label for='TimeZ'>Time Zone ± GMT</label>  
+            <input name='TimeZ' id="SW_TimeZ" type="number"></span>
+          <span><h5>Theme</h5>
+            <input class="SWBtnTwo" id="SW_Theme_Dark" type="button" value="Dark"><input class="SWBtnTwo" id="SW_Theme_Light" type="button" value="Light"></span>
+          <span><h5>View Type</h5>
+            <input class="SWBtnTwo" id="SW_ViewT_Block" type="button" value="Block"><input class="SWBtnTwo" id="SW_ViewT_List" type="button" value="List"></span>
+          <span><label for='HighL'>Highlight Colour</label>
+            <input name='HighL' id="SW_HighL" type="color"></span>
+          <span><label for='BGImg'>Background Image</label>
+            <input name='BGImg' id="SW_BGImg" type="url" placeholder="URL or Item ID"></span>
+      </div>
+    </div>
+
+  </body>
+</html>
+
+<!-- <script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script> -->
+<script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- <script text="text/javascript" src="../JS/settings.js"></script> -->
+
+<script>
+  $(".NanodeFade")[0].src = "//nanode.one/assets/main/Fade"+(Math.floor(Math.random() * Math.floor(4))) + ( ( ( window.innerWidth <= 700 ) && ( window.innerHeight <= 1000 ) ) ? ".png" : ".svg" )
+
+  // for (i = 0; i < 50; i++) {
+  //   x = (Math.random() * Math.floor(400)).toFixed(5);
+  //   y = (Math.random() * Math.floor(400)).toFixed(5);
+  //   z = (Math.random() * Math.floor(200)).toFixed(5) * ((Math.random()*2).toFixed() == 2 ? 1 : -1);
+  //   $(".Map3d")[0].innerHTML += "<div class='point' style='transform:translate3d("+x+"px,"+y+"px,"+z+"px);'></div>";
+  // }
+
+$(".NHC")
+  .mouseenter(function(e) {
+    $(".NanodeFade")[0].style.filter = window.getComputedStyle(e.target).getPropertyValue('filter');
+
+    if (e.target.childNodes[1]) {
+      target = e.currentTarget.childNodes[1];
+      OGWord = e.currentTarget.childNodes[1].innerText;
+      word = OGWord.split('');
+      stopRandom = false;
+      if (OGWord.match(/STORAGE|ACCOUNT|SETTINGS|DEVELOPMENT/)) {
+        option = Math.floor(Math.random() * Math.floor(3))
+        if (option == 0) {
+          createdWord = [];
+          index = 0;
+          word.forEach(function() {
+            (function letterLoop() {
+              setTimeout(function() {
+              if (stopRandom || createdWord.length == OGWord.length) {return;}
+                newLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * Math.floor(26))];
+                e.target.childNodes[1].innerText = createdWord.join('')+newLetter;
+                if (word[index] !== newLetter) {letterLoop();}
+                else {index++; createdWord.push(newLetter);}
+              }, 50)
+            })()
+          })
+        }
+        else if (option == 1) {
+          FixedLetters = [];
+          (function wordLoop(iterations) {
+            setTimeout(function() {
+              if (stopRandom) { return; }
+              else if (FixedLetters.length !== word.length - 1) {
+                wordIndex = Math.floor(Math.random() * Math.floor(word.length))
+                if (!FixedLetters.includes(wordIndex)) {
+                  toOriginal = Math.floor(Math.random() * Math.floor(word.length))
+                  if (toOriginal == 0) {
+                    word[wordIndex] = OGWord[wordIndex]
+                    FixedLetters.push(wordIndex);
+                  } else {
+                    word[wordIndex] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * Math.floor(26))];
+                    e.target.childNodes[1].innerText = word.join('');
+                  }
+                }
+                if (--iterations) { wordLoop(iterations) } else { e.target.childNodes[1].innerText = OGWord; }
+              } else { e.target.childNodes[1].innerText = OGWord; }
+            }, 15)  // Time Between Change
+          }) (500)  // How many Changes
+        }
+        else if (option == 2) {
+          createdWord = [];
+          letterLoop(0)
+          function letterLoop(index) {
+            setTimeout(function() {
+              if (stopRandom || createdWord.length == OGWord.length) {return}
+              newLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * Math.floor(26))];
+              e.target.childNodes[1].innerText = createdWord.join('')+newLetter;
+              if (word[index] !== newLetter) {letterLoop(index);}
+              else {index++; createdWord.push(newLetter); letterLoop(index);}
+            }, 20)
+          }
+        }
+      }
+    }
+  })
+  .mouseleave(function() {
+    stopRandom = true;
+    if (!target) { return; }
+    target.innerText = OGWord;
+    $(".NanodeFade")[0].style.filter = "";
+  });
+
+</script>
