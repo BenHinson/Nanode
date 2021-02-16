@@ -24,11 +24,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Nanode Screenshot](/assets/covers/overview.png)
-
 On a mission to change how files are stored, accessed and organised, Nanode has the goal of offering all the features you may want to help save you time, money and memories.
 
-What started as a simple python text editor, to an [electron](https://www.electronjs.org/) desktop application ([Alpharium](https://github.com/BenHinson/Alpharium)), a [socket io](https://socket.io/) file streamer and finally a modern cloud storage service, Nanode has had a unique journey.
+![Nanode Screenshot](/assets/covers/overview.png)
+
+What started as a simple python text editor, to an [electron](https://www.electronjs.org/) desktop application ([Alpharium](https://github.com/BenHinson/Alpharium)), a [socket io](https://socket.io/) file streamer and finally a modern cloud storage service, Nanode has had a unique journey. [View the design history](https://dev.nanode.one/design)
 
 ### Built With
 
