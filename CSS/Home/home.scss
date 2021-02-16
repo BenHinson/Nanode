@@ -16,6 +16,8 @@ $colors: (
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 
+// background: linear-gradient(90deg ,#272729,#343536,#272729); // Reddit Grey fade animation for loading
+
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -103,6 +105,7 @@ section {
       font-family: 'inter';
       color: inherit;
       text-align: center;
+      &::selection { background: #74afe2; }
     }
     .IMG_Logo {
       position: relative;
@@ -150,9 +153,23 @@ section {
       letter-spacing: 0.6px;
       line-height: 18px;
 
-      &.MV_Account { background: map-get($colors, PD_4); }
-      &.MV_Drive { background: linear-gradient(45deg, #a9d2fb, #74afe2, #31648b);}
-      &:hover { background: map-get($colors, PD_8); color: map-get($colors, PD_0); }
+      &.MV_Account { background: map-get($colors, PD_4);
+        &:hover { background: map-get($colors, PD_8); color: map-get($colors, PD_0); }
+      }
+      &.MV_Drive { 
+        background: linear-gradient(45deg, #a9d2fb, #74afe2, #31648b);
+        // background: linear-gradient(90deg ,#272729,#343536,#272729);
+        &:hover {
+          animation: gradient 3s ease infinite;
+          background-size: 200%;
+          @keyframes gradient {
+            0% { background-position: 0%; }
+            50% { background-position: 100%; }
+            100% { background-position: 0%; }
+          }
+        }
+
+      }
     }
   }
 
@@ -174,6 +191,7 @@ section {
   flex-wrap: wrap;
   justify-content: space-around;
   align-content: space-around;
+  height: 120vh;
   background: map-get($colors, PD_2);;
   color: map-get($colors, PD_8);
 

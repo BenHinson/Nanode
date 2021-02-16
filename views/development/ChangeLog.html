@@ -1,61 +1,185 @@
 <div class="ContentWrapper">
   <h1>Change Log</h1>
-  
-  <h2>September 2020</h2>
-    <h4>General</h4>
+
+  <section>
+    <h2>January 2021</h2>
+    <h4>API</h4>
+    <span>Continued re-write of client-side API calls and handling.</span>
     <ul>
-      <li><u>Performance and Cleanup</u> - Server and Client Side cleanup and code reductions. Minified CSS/HTML/JS Files to improve load times. Multiple functions converted to asynchronous. Removal of unused classes and instances of identical ID/Class on elements.</li>
-      <li><u>Startup</u> - Added 'General' span underneath Master Folders. This span <h5>cannot be renamed</h5>.</li>
-      <li><u>Bug Fixed</u> - where the initial creation of the master folders would be run on each login, changing pointers to new empty folders. (didnt remove old ones from user-file)</li>
+      <li>User storage now fetch's the users usage and maximum.</li>
+      <li>Download page update, to work with new API and addition of a download counter.</li>
     </ul>
 
-    <h4>Panels</h4>
-    <span>Further work on the left-bar panels, including a standardized design and layout, with animated hot-switching between.</span>
-    <div>Panels: <h6>Settings, Bin and Codex are almost fully complete.</h6></div>
+    <h4>User-Interface</h4>
     <ul>
-      <li>Settings - Still to be Added: (Bin Count, Timezones, Locked Icons, Last Accessed, Starting Directory, Lock all Links) All others functional.</li>
-      <li>Bin - Functional, can view deleted <h6>single</h6> files and either permanantly delete or retrieve them. Still no limit on size or items.</li>
-      <li>Codex - Added audio player for uploaded audio files using a much simpler, efficient system than Alpharium via streams from file urls. Only volume left.</li>
-      <li>Codex - Added Folders and Sub-directories to help sort and order files in the codex. Can view all sub-items in folders. Works using recursion.</li>
+      <li>Creation of a light & dark theme colour-palette.</li>
+      <span><h6>Dark</h6> - https://coolors.co/080a0e-0e0f11-141517-191b1e-282c32-565b61-83898f-cacccf-f5f6f7</span>
+      <span><h6>Light</h6> - https://coolors.co/080a0e-191b1e-cacccf-e1e2e4-e8e9eb-eeeff1-f5f5f7-fbfbfd-fefefe</span>
+
+      <li>Combined 'Frame', Nav controls, Location, Search into one main top-bar.</li>
+      <li>Added back list / block view button, with a new animated slider.</li>
+      <li>Changed the icon of light / dark theme button to now relate to the current theme.</li>
+      <li>Spaced out item information to make it easier to read.</li>
+      <li>Updated colors of right-click, upload, color picker and pop-ups.</li>
     </ul>
 
-    <h4>Development Portal</h4>
-    <span>Development Portal Added, with pages currently being completed and a standardized layout finalized.</span>
+    <h4>Misc</h4>
+    <ul>
+      <li>Updated Selection and De-selection of items, allowing for an action to affect all selected. (Currently - Deleted & Download)</li>
+      <li>Selected items can be de-selected by clicking anywhere on the page.</li>
+      <li>List items, block items and spans have had 'rename' imrpovements.</li>
+      <li>Custom tools have been renamed to start with 'N_', with unused funtions being removed.</li>
+    </ul>
+
+  </section>
+
+  <section>
+    <h2>December 2020</h2>
+    <h4>Server Rewrite. Introduction of Node - Nano - Space</h4>
+    <span>To move inline with user-account storage, authentication and links, users file-data was migrated from JSON files to a MongoDB document, allowing for faster reads, better RAM usage and the ability to use their inbuild tools for queries and editing.</span>
+    <span>This months updates, due to the change to MongoDB reworked ALL API calls, this will help massively for the implementation of new features.</span>
+    <span>Altered the code referring to security checks to improve performance and reliability.</span>
+    <span>Along with just changing the location of where user-data is stored, <h3>I am now referring to 'file meta-data' to a 'Node' and its corresponding file as a 'Nano'</h3></span>
+
+    <h4>The structure of a users Space</h4>
+    <span>The users Space is broken down into different 'sections', main/codex/blocks/bin. Nodes (The relating data to a file) can be moved across sections, but cannot reference a Node in another section. The users Space also stores; Recently accessed files, homepage views and a copy of the users storage the allocation.</span>
+    <ul>
+      <li><h5>Size</h5> - Total, bin, max. Stores the total allocated space, as well as what a breakdown of each file-types usage.</li>
+      <li><h5>Recent</h5> - Not yet used, but saves and array of Node ID's for the most recently accessed folders / files in a set section.</li>
+      <li><h5>home</h5> - The Nodes in which to read first when accessing a section. Main for example has an array of the users spans and their corresponding Node ID.</li>
+      <li><h5>main</h5> - Main, Codex, Blocks and Bin all have their own tree, to distinguish for searching. These sections store the Nodes within.</li>
+    </ul>
+
+    <h4>A Node</h4>
+    <span>The node is the meta-data referring to an item, (file, folder, block, ...).</span>
+    <span>The Node points to other Nodes, eg: Parent, Files within (if folder), Nano (if file) and its owner.</span>
+    <img src="/assets/dev/node.svg" alt="Node Code">
+
+    <h4>Folder Contents</h4>
+    <span>If the Node is a folder that contains a file, contents will contain the following 'Short-Node'. Storing a Short-Node, allows for only one request for MongoDB to handle, being to return the Node relating to the folder's ID. The information within a 'Short-Node' is enough to provide the user-interface.</span>
+    <img src="/assets/dev/short_node.svg" alt="Short-Node Code">
+
+
+
+    <h4>Small Tweeks</h4>
+    <ul>
+      <li>Finishing touches to the upload system in November, removing any bugs noticed.</li>
+      <li>A handful of design changes</li>
+      <li>Improved mobile view</li>
+      <li>Image, video and Text API updates to move away from SocketIO, as well as loading icons.</li>
+      <li>Removal or rewrite of legacy and rushed code, renaming of various variables and functions.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>November 2020</h2>
+    <h4>Nord</h4>
+    <span>Account authentication API has been developed, using a custom version of the JWT protocol. Nord grants 20 minute access to an account before checking with the database that the token has not been tampered, account access is still granted and the device is still the same.</span>
+
+    <h4>Moving away from <a href="https://socket.io/">SocketIO</a></h4>
+    <span>SocketIO has drastically made the development of Nanode easier, though to move inline with industry standards, web-sockets are being replaced by standard fetch/push to urls.</span>
+    <span>Folder call, Item information and actions are being migrated.</span>
+    <span>Due to SocketIO still being in use, a try/reconnect button has been added to assist users if the socket dies.</span>
+
+    <h4>Yet another design overhall.</h4>
+    <span>Continuing on from october, designs of main features and the layout have been changed in the quest to find the perfect colours, minimalism and fonts.</span>
+
+    <h4>Upload Overhall</h4>
+    <span>In line with moving away from SocketIO. Upload has been reworked.</span>
+    <span>Simply replacing the API was not enough, as limitations of sizes started to play a part. Limiting at 5MB.</span>
+    <span>Although the 5MB could be increased, now sitting at 50MB per call, the idea of uploading large files revealed more issues.</span>
+    <span>To combat broken connections, and to provide users with information about their upload, I settled on chunking files into 2MB pieces, uploading a piece, logging it to the user, and writing the chunk. The server then responds the status, successfull, or not and requests the next chunk. The time between send and recieve is logged and allows the client-end to estimate the upload time, as well as percentage. Once all chunks are uploaded, the completed file is moved into the mass storage, the files metadata is created and the next file is requested.</span>
+  </section>
+
+  <section>
+    <h2>October 2020</h2>
+    <span>Item information total rework, moving to a new API: drive.nanode.one/user / x / x / x and opening side-bar</span>
+    <span>More precise logging of activity times when an item is uploaded or accessed.</span>
+    <span>Server change of the returned clipped image, accepting null. <code>storage/ <i>objectID</i> ?h=128&w=null</code></span>
+    <span>More helpful functions to the client side: RGBtoHEX / Date&Time converter / capFirstLetter / ItemImage / ItemChecker</span>
+    <span>Rework and condense of the file display system. No longer two different functions for homepage and non homepage.</span>
+    <span>Download Rework 2, improving and reducing code. No longer calls user-file</span>
+    <span>Easier methods to read and write account information on the server, reducing development time for account information related features.</span>
+    <span>Generating a share link has been developed alongside Item Information, storing the URL, owner, nanoID, fileName and mimetype</span>
+
+    <h4>Directory Path Rework</h4>
+    <ul>
+      <li>Rework to the directory path system with a new design and features.</li>
+      <li>Added Forward / Backward / Home and Navigation buttons</li>
+    </ul>
 
     <h4>Drag and Drop</h4>
-    <span>The movement of files and folders is being worked on, with most server-side systems in place and functional. This is being done using, <a href="//javatpoint.com/jquery-ui-sortable">jQueryUI Sortable</a> </span>
-    <span>Current implementation is only on codex for moving files into and back out-of folders. (No folder movement or order change)</span>
-    <span>No current mobile drag and drop at the moment, and it won't be looked into until after the desktop version is finalized and implemented.</span>
-
-
-  <h2>August 2020</h2>
-    <h4>Alpharium to Nanode</h4>
-    <span>Conversion of Alpharium to Nanode, with new assets, new domain and new back-end file layout being completed. With this change comes the foundation for new features and additional support for existing features.</span>
-    <span>A new 'PCB' styled section has been added to highlight basic features, as well as a coloured flow-chart and labelling to display how an action is carried out.</span>
-    <span>This re-design also moves away from using pre-designed public SVG's and icons, towards custom ones for improve continuity and design style. Until all icons are changed, shout-out to <a href="//fontawesome.com">Font Awesome</a>, <a href="//icons8.com">Icons 8</a> and <a href="//material.io">Material IO</a> for usage of their icons.</span>
-
-    <h4>Download</h4>
-    <span>You can not download files and folders!</span>
-    <span><code>Right-Click > Download</code> to add a file / folder to the download list one at a time or:</span>
-    <span><code>With Details On, Left Click to Select an Item, Hold SHIFT, and click on other items to select multiple, then Right-Click > Download</code> This will add all files Selected to the download list.</span>
-    <span>Click download to start the download of the files. <h3>Note: Duplicates of a file are not downloaded.</h3> These files will be downloaded as a Zip. To Un-Zip the file and retreive your items:</span> <code>Find the File Location, Right-Click > Extract Here. This creates folder: 'Download'. Open to view your downloaded items.</code>
-    <span>To read more about how the Download process works, Explore <h5>Development Portal > Calls > Read > Downloads</h5></span>
-
-    <h4>Additional Drive Pages - Panels</h4>
-    <span>This update added the addition of differing Pages. <h3>Note: Being a Major Features, these pages are undergoing development at different stages.</h3></span>
-    <span>Pages: Contacts, Panels, Codex, Bin and Settings. Have been added, along with the selector to access them. These pages heavily link into the future of Nanode and what our goal is.</span>
     <ul>
-      <li>Contacts - <h5>Featuring Groups and Private Chats, Contacts will be a File Sharing and Basic Messaging Page for the communication between users.</h5></li>
-      <li>Panels - <h5>A Grid of Large Blocks will act as major 'hubs' for related content. Websites, Videos, Folders, Lists, all with custom easy-to-see designs.</h5></li>
-      <li>Codex - <h5>This Page features 3 main headlines: Notes - Videos - Music. This is a list-style file-system to write, view, listen and upload content of a specific type.</h5></li>
-      <li>Bin - <h5>Didn't mean to delete that file? Visit the bin to view and retrieve your last 10 deleted files without a worry.</h5></li>
-      <li>Settings - <h5>Make Nanode your own, change styles, colours, limits, security, backgrounds and more...</h5></li>
+      <li>Drag Files and Folders into and out of directories, between spans.</li>
+      <li>Navigate into folders by holding another item over it for 2 seconds. <h6>List View Only</h6></li>
+      <li>Drag and drop only activates for files & folders, no longer causing an upload error on text selection.</li>
     </ul>
 
-    <h2>July 2020</h2>
-    <h4>Bin</h4>
-    <span>Addition of back-end support for numerous systems, including a bin for deleted files. Full support for the bin, including its interface and functions will be added in August. The bin addition and general clean-up of the read / write code has allowed for faster, more secure and less buggy general systems.</span>
+    <h4>Mobile</h4>
+    <span>Rework of the mobile navigatio bar to allow access to the left bar.</span>
 
-    <h3>Logs Before This Point are to be Added Later</h3>
+  </section>
+  
+  <section>
+    <h2>September 2020</h2>
+      <h4>General</h4>
+      <ul>
+        <li><u>Performance and Cleanup</u> - Server and Client Side cleanup and code reductions. Minified CSS/HTML/JS Files to improve load times. Multiple functions converted to asynchronous. Removal of unused classes and instances of identical ID/Class on elements.</li>
+        <li><u>Startup</u> - Added 'General' span underneath Master Folders. This span <h5>cannot be renamed</h5>.</li>
+        <li><u>Bug Fixed</u> - where the initial creation of the master folders would be run on each login, changing pointers to new empty folders. (didnt remove old ones from user-file)</li>
+      </ul>
+
+      <h4>Panels</h4>
+      <span>Further work on the left-bar panels, including a standardized design and layout, with animated hot-switching between.</span>
+      <div>Panels: <h6>Settings, Bin and Codex are almost fully complete.</h6></div>
+      <ul>
+        <li>Settings - Still to be Added: (Bin Count, Timezones, Locked Icons, Last Accessed, Starting Directory, Lock all Links) All others functional.</li>
+        <li>Bin - Functional, can view deleted <h6>single</h6> files and either permanantly delete or retrieve them. Still no limit on size or items.</li>
+        <li>Codex - Added audio player for uploaded audio files using a much simpler, efficient system than Alpharium via streams from file urls. Only volume left.</li>
+        <li>Codex - Added Folders and Sub-directories to help sort and order files in the codex. Can view all sub-items in folders. Works using recursion.</li>
+      </ul>
+
+      <h4>Development Portal</h4>
+      <span>Development Portal Added, with pages currently being completed and a standardized layout finalized.</span>
+
+      <h4>Drag and Drop</h4>
+      <span>The movement of files and folders is being worked on, with most server-side systems in place and functional. This is being done using, <a href="//javatpoint.com/jquery-ui-sortable">jQueryUI Sortable</a> </span>
+      <span>Current implementation is only on codex for moving files into and back out-of folders. (No folder movement or order change)</span>
+      <span>No current mobile drag and drop at the moment, and it won't be looked into until after the desktop version is finalized and implemented.</span>
+  </section>
+
+  <section>
+      <h2>August 2020</h2>
+        <h4>Alpharium to Nanode</h4>
+        <span>Conversion of Alpharium to Nanode, with new assets, new domain and new back-end file layout being completed. With this change comes the foundation for new features and additional support for existing features.</span>
+        <span>A new 'PCB' styled section has been added to highlight basic features, as well as a coloured flow-chart and labelling to display how an action is carried out.</span>
+        <span>This re-design also moves away from using pre-designed public SVG's and icons, towards custom ones for improve continuity and design style. Until all icons are changed, shout-out to <a href="//fontawesome.com">Font Awesome</a>, <a href="//icons8.com">Icons 8</a> and <a href="//material.io">Material IO</a> for usage of their icons.</span>
+
+        <h4>Download</h4>
+        <span>You can not download files and folders!</span>
+        <span><code>Right-Click > Download</code> to add a file / folder to the download list one at a time or:</span>
+        <span><code>With Details On, Left Click to Select an Item, Hold SHIFT, and click on other items to select multiple, then Right-Click > Download</code> This will add all files Selected to the download list.</span>
+        <span>Click download to start the download of the files. <h3>Note: Duplicates of a file are not downloaded.</h3> These files will be downloaded as a Zip. To Un-Zip the file and retreive your items:</span> <code>Find the File Location, Right-Click > Extract Here. This creates folder: 'Download'. Open to view your downloaded items.</code>
+        <span>To read more about how the Download process works, Explore <h5>Development Portal > Calls > Read > Downloads</h5></span>
+
+        <h4>Additional Drive Pages - Panels</h4>
+        <span>This update added the addition of differing Pages. <h3>Note: Being a Major Features, these pages are undergoing development at different stages.</h3></span>
+        <span>Pages: Contacts, Panels, Codex, Bin and Settings. Have been added, along with the selector to access them. These pages heavily link into the future of Nanode and what our goal is.</span>
+        <ul>
+          <li><h5>Contacts</h5> - Featuring Groups and Private Chats, Contacts will be a File Sharing and Basic Messaging Page for the communication between users.</li>
+          <li><h5>Panels</h5> - A Grid of Large Blocks will act as major 'hubs' for related content. Websites, Videos, Folders, Lists, all with custom easy-to-see designs.</li>
+          <li><h5>Codex</h5> - This Page features 3 main headlines: Notes - Videos - Music. This is a list-style file-system to write, view, listen and upload content of a specific type.</li>
+          <li><h5>Bin</h5> - Didn't mean to delete that file? Visit the bin to view and retrieve your last 10 deleted files without a worry.</li>
+          <li><h5>Settings</h5> - Make Nanode your own, change styles, colours, limits, security, backgrounds and more...</li>
+        </ul>
+  </section>
+
+  <section>
+      <h2>July 2020</h2>
+      <h4>Bin</h4>
+      <span>Addition of back-end support for numerous systems, including a bin for deleted files. Full support for the bin, including its interface and functions will be added in August. The bin addition and general clean-up of the read / write code has allowed for faster, more secure and less buggy general systems.</span>
+  </section>
+
+  <h3>Logs Before This Point are to be Added Later</h3>
 
 </div>

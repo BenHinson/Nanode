@@ -124,6 +124,14 @@ section img {
   text-align: center;
 }
 
+.S_1 .Central > *::-moz-selection {
+  background: #74afe2;
+}
+
+.S_1 .Central > *::selection {
+  background: #74afe2;
+}
+
 .S_1 .Central .IMG_Logo {
   position: relative;
   width: 70px;
@@ -185,13 +193,43 @@ section img {
   background: #282c32;
 }
 
+.S_1 .MainNav button.MV_Account:hover {
+  background: #f5f6f7;
+  color: #080a0e;
+}
+
 .S_1 .MainNav button.MV_Drive {
   background: linear-gradient(45deg, #a9d2fb, #74afe2, #31648b);
 }
 
-.S_1 .MainNav button:hover {
-  background: #f5f6f7;
-  color: #080a0e;
+.S_1 .MainNav button.MV_Drive:hover {
+  -webkit-animation: gradient 3s ease infinite;
+          animation: gradient 3s ease infinite;
+  background-size: 200%;
+}
+
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
 }
 
 .S_1 .Build {
@@ -216,6 +254,7 @@ section img {
       justify-content: space-around;
   -ms-flex-line-pack: distribute;
       align-content: space-around;
+  height: 120vh;
   background: #141517;
   color: #f5f6f7;
 }

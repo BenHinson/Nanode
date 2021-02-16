@@ -1,0 +1,589 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+:root {
+  --highlight-color:  #18ec58;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  outline: none;
+  font-family: 'Segoe UI';
+}
+
+html {
+  height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  height: 100%;
+  background: #0e0f11;
+}
+
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0e0f11;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #282c32;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(40deg, #a9d2fb, #74afe2, #31648b);
+}
+
+.loginBackground {
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: #121214;
+  background-image: url(https://drive.nanode.one/assets/home/Lines.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.mainLoginContainer {
+  height: 380px;
+  width: 500px;
+  border-radius: 5px;
+  text-align: center;
+  color: #fff;
+  background-color: #141517;
+  -webkit-box-shadow: 4px 4px 20px -2px #0e0f11;
+          box-shadow: 4px 4px 20px -2px #0e0f11;
+}
+
+.mainLoginContainer .MainTitle {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 30px;
+  color: #f5f6f7;
+  margin-top: 1rem;
+}
+
+.mainLoginContainer .SecondaryTitle {
+  color: #cacccf;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0.5rem;
+}
+
+.mainLoginContainer span {
+  margin-right: 3px;
+  font-size: 13px;
+  font-weight: 100;
+  opacity: 0.5;
+}
+
+.mainLoginContainer button {
+  display: inline-block;
+  border: none;
+  color: #99ccff;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mainLoginContainer button:hover {
+  text-decoration: underline;
+}
+
+.mainLoginContainer form {
+  width: 90%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin: 0.25rem 5%;
+  font-size: 12px;
+  color: #fff;
+}
+
+.mainLoginContainer form .InputTitle {
+  color: #c5c5c5;
+  margin: 6px 0;
+  font-size: 16px;
+  text-align: left;
+}
+
+.mainLoginContainer form .InputTitle p {
+  display: inline-block;
+  font-size: 12px;
+  padding: 0 1rem;
+  color: #d60000;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+.mainLoginContainer form .InputTitle i {
+  font-size: 12px;
+  color: #f04747;
+}
+
+.mainLoginContainer form .TextInput {
+  height: 44px;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  font-size: 15px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  -webkit-transition: border-color 200ms ease-in-out;
+  transition: border-color 200ms ease-in-out;
+  border-bottom: 1px solid #99ccff;
+  border-radius: 3px;
+}
+
+.mainLoginContainer form .TextInput::-webkit-input-placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.mainLoginContainer form .TextInput:-ms-input-placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.mainLoginContainer form .TextInput::-ms-input-placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.mainLoginContainer form .TextInput::placeholder {
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.mainLoginContainer form .TextInput:focus {
+  border: 1px solid #99ccff;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.mainLoginContainer form .ButtonInput {
+  height: 40px;
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 15px;
+  font-weight: 400;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: none;
+  border-radius: 5px;
+  color: #eeeeee;
+  background-color: transparent;
+  border: 1px solid #99ccff;
+  cursor: pointer;
+  -webkit-transition: background-color 200ms ease-in-out;
+  transition: background-color 200ms ease-in-out;
+}
+
+.mainLoginContainer form .ButtonInput:hover {
+  background-color: #99ccff2e;
+}
+
+.accountBackground {
+  display: -ms-grid;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  background: #131618;
+}
+
+a {
+  position: absolute;
+  width: 150px;
+  top: 40px;
+  left: 35px;
+  text-decoration: none;
+  color: #f0e800;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.infoContainer {
+  place-self: center;
+  height: 100%;
+  max-width: 800px;
+  width: 60%;
+  min-width: 300px;
+  padding: 40px;
+}
+
+.infoContainer section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  margin-bottom: 40px;
+  padding: 20px;
+  color: #ccc;
+  font-family: 'Inter';
+  letter-spacing: 0.3px;
+  border-radius: 5px;
+  background: #1f2227;
+  border: 1px solid #36393d;
+}
+
+.infoContainer section * {
+  color: #eee;
+}
+
+.infoContainer section.userProfile {
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+  border: none;
+  padding: 10px;
+  background: transparent;
+  margin-bottom: 20px;
+}
+
+.infoContainer section.userProfile img {
+  place-self: center;
+  width: 100px;
+  max-height: 100px;
+}
+
+.infoContainer section.userProfile h1 {
+  font-family: 'Inter';
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.infoContainer section.userInfo > form {
+  height: 160px;
+  width: 48%;
+  min-width: 200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.infoContainer section.userInfo > form div {
+  position: relative;
+}
+
+.infoContainer section.userInfo > form div label {
+  position: absolute;
+  top: -11px;
+  left: 12px;
+  padding: 2px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  background: #1f2227;
+  opacity: 0.8;
+}
+
+.infoContainer section.userInfo > form div input {
+  height: 42px;
+  width: 100%;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 21px 12px;
+  letter-spacing: 1px;
+  border: 1px solid #36393d;
+  background: transparent;
+}
+
+.infoContainer section.userInfo > form div input[type=button] {
+  height: 36px;
+  padding: 0 12px 2px 12px;
+  color: inherit;
+  cursor: pointer;
+  -webkit-transition: all 300ms;
+  transition: all 300ms;
+}
+
+.infoContainer section.userInfo > form div input[type=button]:hover {
+  background: #fff;
+  color: #080a0e;
+}
+
+.infoContainer section.userInfo > form div p {
+  position: absolute;
+  bottom: -9px;
+  right: 12px;
+  padding: 2px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  background: #1f2227;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.infoContainer section.userInfo > form div p:hover {
+  text-decoration: underline;
+}
+
+.infoContainer section.userInfo > form div select {
+  height: 42px;
+  width: 100%;
+  padding: 0 12px 2px 12px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  border: 1px solid #36393d;
+  background: transparent;
+  cursor: pointer;
+  -webkit-transition: all 300ms;
+  transition: all 300ms;
+}
+
+.infoContainer section.userInfo > form div select:hover {
+  background: #fff;
+  color: #080a0e;
+}
+
+.infoContainer section.userInfo > form div select * {
+  background: #1a1d21;
+  color: #fff;
+}
+
+.infoContainer section.TwoFA {
+  background: #33c35733;
+  padding: 8px 20px;
+  border: none;
+}
+
+.infoContainer section.TwoFA h3 {
+  font-family: 'Inter';
+  color: #33c457;
+  padding: 6px;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.infoContainer section.userStorage {
+  display: block;
+}
+
+.infoContainer section.userStorage span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+.infoContainer section.userStorage span > p {
+  margin: 0 20px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.infoContainer section.userStorage span .progress {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  height: 32px;
+  min-width: 300px;
+  border-radius: 3px;
+  border: 1px solid #36393d;
+  overflow: hidden;
+}
+
+.infoContainer section.userStorage span .progress > div {
+  min-width: 1px;
+}
+
+.infoContainer section.userStorage span .usage_1 {
+  border-right: 1px solid #b104a2;
+  background: #b104a266;
+}
+
+.infoContainer section.userStorage span .usage_2 {
+  border-right: 1px solid #219903;
+  background: #21990366;
+}
+
+.infoContainer section.userStorage span .usage_3 {
+  border-right: 1px solid #000d80;
+  background: #000d8066;
+}
+
+.infoContainer section.userStorage span .usage_4 {
+  border-right: 1px solid #d8ca07;
+  background: #dacc0766;
+}
+
+.infoContainer section.userStorage .storageBreakdown {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  place-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul {
+  list-style: none;
+  width: 60%;
+  min-width: 300px;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul li > p {
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-variant: all-petite-caps;
+  font-family: 'Inter';
+  letter-spacing: 1px;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul li > span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul li > span * {
+  font-family: 'Inter';
+  font-size: 14px;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul li > span div {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  padding: 6px 0;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul li > span div div {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+
+.infoContainer section.userStorage .storageBreakdown ul li > span div p {
+  padding: 0 18px;
+}
+
+.infoContainer section.userStorage .storageBreakdown .sB_Images {
+  background: #d8ca0766;
+}
+
+.infoContainer section.userConnected span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+}
+
+.infoContainer section.userInformation {
+  border: none;
+  padding: 10px;
+  background: transparent;
+}
+
+.infoContainer section.userInformation p {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.infoContainer section:nth-last-child(2) {
+  margin-bottom: 0;
+}
+
+.sectionRight {
+  display: -ms-inline-grid;
+  display: inline-grid;
+  grid-gap: 10px;
+  place-content: center;
+}
+
+.sectionRight img {
+  height: 120px;
+  width: 120px;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.sectionRight button {
+  height: 30px;
+  width: 120px;
+  padding-bottom: 2px;
+  cursor: pointer;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
+}
+
+.sectionRight button:hover {
+  border-radius: 15px;
+}
+
+.sectionRight button.signout {
+  border: 1px solid #ff453a;
+  background: #ff443a33;
+  color: #ff453a;
+}
+
+.sectionRight button.FA_Enable {
+  border: 1px solid #33c357;
+  background: #33c35733;
+  color: #33c357;
+}
+
+.sectionRight button.storageUpgrade {
+  border: 1px solid #99ccff;
+  background: #99ccff33;
+  color: #99ccff;
+}
+
+.sectionRight button.lockAccount {
+  border: 1px solid #a266ee;
+  background: #a266ee33;
+  color: #a266ee;
+}
+
+@media only screen and (max-width: 600px) {
+  .mainLoginContainer {
+    height: 380px;
+    width: 90%;
+    top: calc(50% - 190px);
+    left: 5%;
+  }
+  .loginSecondaryTitle {
+    margin-bottom: 16px;
+  }
+}
+/*# sourceMappingURL=account.css.map */

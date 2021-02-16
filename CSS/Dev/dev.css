@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 * {
   padding: 0;
   margin: 0;
@@ -7,32 +8,12 @@
   font-family: 'Segoe UI';
 }
 
-.placeholder::-webkit-input-placeholder {
-  color: #555555;
-  font-size: 14px;
-}
-
-.placeholder:-ms-input-placeholder {
-  color: #555555;
-  font-size: 14px;
-}
-
-.placeholder::-ms-input-placeholder {
-  color: #555555;
-  font-size: 14px;
-}
-
-.placeholder::placeholder {
-  color: #555555;
-  font-size: 14px;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: #242528;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -47,7 +28,7 @@
 html {
   height: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: hidden scroll;
 }
 
 body {
@@ -149,6 +130,11 @@ body {
           box-sizing: border-box;
   color: #d3d1da;
   font-family: 'Helvetica';
+}
+
+.ContentWrapper section {
+  margin: 50px 0;
+  border-top: 1px solid #aaa;
 }
 
 .ContentWrapper h1 {
@@ -276,6 +262,149 @@ body {
   color: #c7cdd3;
   font-size: 15px;
   font-weight: 500;
+}
+
+.ContentWrapper ul span {
+  padding-left: 40px;
+}
+
+.DesignPage {
+  background: #080a0e;
+}
+
+.DesignPage > span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  position: relative;
+  min-height: 70px;
+  width: 100%;
+  padding: 20px 3% 0 3%;
+}
+
+.DesignPage > span > a {
+  width: 160px;
+  padding: 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #33c357;
+}
+
+.DesignPage > span > a > ::-moz-selection {
+  background: #f5f6f7;
+}
+
+.DesignPage > span > a > ::selection {
+  background: #f5f6f7;
+}
+
+.DesignPage .ImageGrid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(45%, 1fr))[auto-fill];
+      grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+  grid-auto-rows: auto 1fr;
+  grid-gap: 3vw;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 3vw;
+}
+
+.DesignPage .ImageGrid div {
+  position: relative;
+  min-height: 250px;
+  border-radius: 5px;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  color: white;
+  border-radius: 5px;
+  background: #141517;
+}
+
+.DesignPage .ImageGrid div img {
+  position: -webkit-sticky;
+  position: sticky;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
+  margin-bottom: 24px;
+  background: -webkit-gradient(linear, left top, right top, from(#272729), color-stop(#343536), to(#272729));
+  background: linear-gradient(90deg, #272729, #343536, #272729);
+  -webkit-animation: gradient 3s ease infinite;
+          animation: gradient 3s ease infinite;
+  background-size: 200%;
+}
+
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+.DesignPage .ImageGrid div img.fullscreen {
+  position: fixed;
+  height: auto;
+  max-height: 96%;
+  max-width: 96%;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 1;
+  background: transparent;
+}
+
+.DesignPage .ImageGrid div span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  position: absolute;
+  height: 24px;
+  width: 100%;
+  padding: 0 10px;
+  bottom: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  font-style: italic;
+  text-align: right;
+  color: #f5f6f7;
+}
+
+.DesignPage .ImageGrid div span h5 {
+  font-weight: 400;
+  font-style: normal;
 }
 
 @-webkit-keyframes arrowBounce {

@@ -9,6 +9,7 @@ $colors: (
     PC_6: #f0e800, // Yellow
     PC_7: #3e4f5f, // Dull Blue (Dark RC Hover)
     PC_8: #c8dce6, // Light Blue (White RC Hover)
+    PC_9: #a266ee, // Dev Purple
 
   // Palette_Dark - https://coolors.co/080a0e-0e0f11-141517-191b1e-282c32-565b61-83898f-cacccf-f5f6f7
   // OLDER = https://coolors.co/010b14-171b21-282c32-383c42-5c5f64-919396-cacccf-f5f6f7
@@ -61,10 +62,12 @@ $colors: (
 }
 html {
   overflow: hidden;
+  background: map-get($colors, PL_1);
+  .dark-theme & { background: map-get($colors, PD_3); }
 }
 body {
   display: grid;
-  grid-template-columns: 220px auto 240px;
+  grid-template-columns: 220px auto;
   grid-template-rows: 100vh;
   overflow: hidden;
   box-sizing: border-box;
@@ -87,7 +90,7 @@ body {
   align-items: center;
   width: 240px;
   right: 0px;
-  z-index: 1001;
+  z-index: 25;
 
   height: 57px;
   background: map-get($colors, PL_2);
@@ -173,7 +176,7 @@ body {
       height: 20px;
       width: 130px;
       margin: 30px 0 15px 25px;
-      background: url('/assets/main/nanode.svg');
+      background: url('/assets/home/nanode.svg'); // background: url('/assets/main/nanode.svg');
       background-size: contain;
       background-repeat: no-repeat;
       filter: brightness(0);
@@ -276,27 +279,6 @@ body {
 }
 
 
-
-.PageContainer {  // databaseBackgroundMain
-  position: relative;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
-  background-size: cover;
-  background-color: map-get($colors, PL_2);
-  height: 100%;
-  cursor: auto;
-
-  .dark-theme & {
-    background-color: map-get($colors, PD_2);
-  }
-
-  &.highlight {
-    filter: brightness(0.9);
-    box-shadow: inset 0px 0px 20px 10px rgba(254, 254, 254, 0.3);
-  }
-}
-
-
-
 .PageHeader { // location && search
   display: flex;
   height: 57px;
@@ -315,7 +297,7 @@ body {
     border: none;
     font-weight: 400;
     letter-spacing: 1px;
-    font-size: 19px;
+    font-size: 17px;
     resize: none;
     overflow: hidden;
     text-align: left;
@@ -328,7 +310,7 @@ body {
     .dirBtn {
       height: 30px;
       max-width: 200px;
-      padding: 3px 8px 0px 8px;
+      padding: 5px 8px 0px 8px;
       border-radius: 3px;
       opacity: 0.8;
       overflow: hidden;
@@ -422,550 +404,589 @@ body {
 }
 
 
+.Pages {
+  background-color: map-get($colors, PL_2);
+  .dark-theme & { background-color: map-get($colors, PD_2); }
 
-.Page { // central area
-  height: 100%;
-  padding-top: 20px;
-  border-top-left-radius: 8px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: map-get($colors, PL_1);
-  box-shadow: inset 6px 6px 6px -6px map-get($colors, PL_6);
-  .dark-theme & {
-    background: map-get($colors, PD_3);
-    box-shadow: inset 6px 6px 6px -6px map-get($colors, PD_0);
-  }
+  >section {
+    display: none;
+    grid-template-columns: auto 240px;
+    grid-template-rows: 100vh;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
 
+    &.PageDisplay { display: grid !important; height: 100%; width: 100%; }
 
-  .fileContainer {
-    display: grid;
-    grid-gap: 30px;
-    padding: 0 24px 24px 24px;
-    transition: width 600ms;
-
-    &::-webkit-scrollbar { display: none; }
-
-    .ContentContainer {
-      // height: fit-content;
-      // width: 100%;
-      padding: 12px 6px;
-      border-radius: 5px;
-      transition: box-shadow 300ms;
-      color: map-get($colors, PL_8);
-      background: map-get($colors, PL_2);
-      .dark-theme & { color: map-get($colors, PD_8); background: map-get($colors, PD_2); }
-    
-      display: grid;
-      grid-template-columns: repeat(auto-fill,minmax(105px, 1fr));
-      grid-auto-rows: auto 1fr;
-      grid-gap: 10px 6px;
-      box-sizing: border-box;
-
-      &>input {
-        grid-column: 1/-1;
-        width: 50%;
-        min-width: 200px;
-        margin: 0 0 0 12px;
-        font-size: 16px;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-        border: none;
-        user-select: none;
-        color: inherit;
-        background: transparent;
-        &:focus { padding-bottom: 3px; border-bottom: 1px solid map-get($colors, PL_7); 
-          .dark-theme & { border-bottom: 1px solid map-get($colors, PD_7); }
-        }
+    & .PageData { // Central Area
+      height: 100%;
+      padding-top: 20px;
+      border-top-left-radius: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: map-get($colors, PL_1);
+      box-shadow: inset 6px 6px 6px -6px map-get($colors, PL_6);
+      .dark-theme & {
+        background: map-get($colors, PD_3);
+        box-shadow: inset 6px 6px 6px -6px map-get($colors, PD_0);
       }
-    
-      &>div {
-        position: relative;
-        flex: 1;
-        min-height: 120px;
-        border-radius: 5px;
-        box-sizing: border-box;
-        cursor: pointer;
-        user-select: none;
-        &:hover {
-          background: map-get($colors, PL_4); 
-          .dark-theme & { background: map-get($colors, PD_4); }
-        }
-    
-        & textarea {
-          min-height: 30px;
-          max-height: 60px;
-          width: 100%;
-          padding: 2px;
-          font-size: 14px;
-          font-weight: 400;
-          text-align: center;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          transition: width 300ms;
-          border: none;
-          color: inherit;
-          background: transparent;
-          resize: none;
-          .dark-theme & {
-            color: #f2f2f2;
-          }
-
-          &:focus { 
-            resize: vertical;
-            max-height: max-content;
-            background: map-get($colors, PL_5);
-            .dark-theme & {
-              background:map-get($colors, PD_4);
-            }
-          }
-          &:disabled { cursor: pointer; }
-        }
-    
-        & img {
-          width: 100%;
-          max-height: 120px;
-          object-fit: cover;
-        }
+    }
+    & .PageInformation { // Right Bar
+      position: relative;
+      min-height: 500px;
+      width: 240px;
+      margin-top: 57px;
+      transition: right 600ms;
+      cursor: auto;
+      overflow: hidden;
+      overflow-y: auto;
+      background: map-get($colors, PL_1);
+      box-shadow: inset 0px 6px 6px -6px map-get($colors, PL_6);
+      &::-webkit-scrollbar { width: 4px; }
+      
+      .dark-theme & {
+        background: map-get($colors, PD_3);
+        box-shadow: inset 0px 6px 6px -6px map-get($colors, PD_0);
       }
     }
 
-    .ListContentContainer {
-      // width: 100%;
-      margin: 4px 0;
-      border-radius: 5px;
-      transition: box-shadow 300ms;
-      background: map-get($colors, PL_2);
-      .dark-theme & { background: map-get($colors, PD_2); }
+  }
+
+  >.Page_Loading {
+    display: grid;
+    position: absolute;
+    width: calc(100% - 220px);
+    grid-template-columns: auto;
+  }
+
+  >.User_Page {
+    .PageContainer {
+      position: relative;
+      transition: box-shadow 0.3s, filter 0.3s, width 600ms;
+      background-size: cover;
+      background-color: map-get($colors, PL_2);
+      height: 100%;
+      cursor: auto;
     
-      & table {
-        position: relative;
-        width: 100%;
-        border-radius: 5px;
-        border-spacing: 0px 2px;
-        border-collapse: collapse;
-        user-select: none;
-        color: map-get($colors, PL_8);
-        background: transparent;
-        .dark-theme & {
-          color: map-get($colors, PD_8);
-        }
-        & tr {
-          &:not(:first-child):hover:not(.noHover) {
-            transform: translateX(5px);
-            background: map-get($colors, PL_4);
-            border-radius: 6px;
-            .dark-theme & {
-              background: map-get($colors, PD_0);
-            }
-          }
-          height: 42px;
-          cursor: pointer;
-          & th {
-            font-size: 14px;
-            font-weight: 100;
-            font-family: inherit;
-          }
-          & td {
-            font-size: 14px;
-            font-weight: 100;
-            font-family: inherit;
-            & img {
-              object-fit: contain;
-              height: 32px;
-              width: 32px;
-            }
-          }
-        }
-
-        & tr:nth-child(1) { height: 36px; cursor: auto; user-select: none;
-          &:hover { opacity: 1; transform: none; box-shadow: none; }}
-        & tr:nth-child(n+2) { border-top: 1px solid map-get($colors, PL_4); 
-          .dark-theme & { border-top: 1px solid map-get($colors, PD_4); } }
-
-        & th:nth-child(1) {
-          & input {
-            position: absolute;
+      .dark-theme & {
+        background-color: map-get($colors, PD_2);
+      }
+    }
+    
+    .PageData {
+      .fileContainer {
+        display: grid;
+        grid-gap: 30px;
+        padding: 0 24px 24px 24px;
+        transition: width 600ms;
+    
+        &::-webkit-scrollbar { display: none; }
+    
+        .ContentContainer {
+          // height: fit-content;
+          // width: 100%;
+          padding: 12px 6px;
+          border-radius: 5px;
+          transition: box-shadow 300ms;
+          color: map-get($colors, PL_8);
+          background: map-get($colors, PL_2);
+          .dark-theme & { color: map-get($colors, PD_8); background: map-get($colors, PD_2); }
+        
+          display: grid;
+          grid-template-columns: repeat(auto-fill,minmax(105px, 1fr));
+          grid-auto-rows: auto 1fr;
+          grid-gap: 10px 6px;
+          box-sizing: border-box;
+    
+          &>input {
+            grid-column: 1/-1;
+            width: 50%;
             min-width: 200px;
-            top: 8px;
-            left: 18px;
+            margin: 0 0 0 12px;
             font-size: 16px;
-            font-weight: 600;
             letter-spacing: 0.5px;
+            font-weight: 600;
             border: none;
+            user-select: none;
             color: inherit;
             background: transparent;
             &:focus { padding-bottom: 3px; border-bottom: 1px solid map-get($colors, PL_7); 
               .dark-theme & { border-bottom: 1px solid map-get($colors, PD_7); }
             }
           }
-        }
-        & th:nth-child(2) {max-width: 0; width: auto; min-width: 160px; overflow: hidden;}
-        & th:nth-child(3) {width: 80px; min-width: 60px;}
-        & th:nth-child(4) {width: 100px;}
-        & th:nth-child(5) {width: 80px;}
-      
-        & th:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; .dark-theme & {opacity:0.6;} }
-        & td:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; text-align: center; font-size: 15px; .dark-theme & {opacity:0.8;} }
-      
-        & td:nth-child(1) { width: 50px; padding: 4px 0 0 4px;}
-        & td:nth-child(2) input {
-          height: 30px;
-          width: 100%;
-          font-size: 14px;
-          border: none;
-          color: inherit;
-          background: transparent;
-          &:focus { border-bottom: 1px solid; }
-          &:disabled { cursor: pointer; }
-        }
-      }
-    }  
-
-    .NewSpan {
-      height: 38px;
-      margin: 0 0 60px 0;
-      padding: 8px;
-      border-radius: 5px;
-      text-align: center;
-      font-variant: all-petite-caps;
-      color: map-get($colors, PL_7);
-      background: map-get($colors, PL_2);
-      transition: background-color 300ms;
-      user-select: none;
-      cursor: pointer;
-
-      .dark-theme & {
-        color: map-get($colors, PD_7);
-        background: map-get($colors, PD_2);
-      }
-      &:hover {
-        background: map-get($colors, PL_4);
-        .dark-theme & { background: map-get($colors, PD_1); }
-      }
-    }
-  }
-}
-
-
-.PageInformation { // right side bar
-  position: relative;
-  min-height: 500px;
-  width: 240px;
-  margin-top: 57px;
-  transition: right 600ms;
-  cursor: auto;
-  overflow: hidden;
-  overflow-y: auto;
-  background: map-get($colors, PL_1);
-  box-shadow: inset 0px 6px 6px -6px map-get($colors, PL_6);
-  &::-webkit-scrollbar { width: 4px; }
-  
-  .dark-theme & {
-    background: map-get($colors, PD_3);
-    box-shadow: inset 0px 6px 6px -6px black;
-  }
-
-  
-  .New {
-    position: relative;
-    display: inline-block;
-    height: 36px;
-    width: 146px;
-    top: 10px;
-    left: 10px;
-    padding: 8px 0;
-    border-radius: 8px;
-    text-align: center;
-    background: linear-gradient(40deg, #4f9aa2, #1cb23d);
-    color: map-get($colors, PD_8);
-    cursor: pointer;
-    user-select: none;
+        
+          &>div {
+            position: relative;
+            flex: 1;
+            min-height: 120px;
+            border-radius: 5px;
+            box-sizing: border-box;
+            cursor: pointer;
+            user-select: none;
+            &:hover {
+              background: map-get($colors, PL_4); 
+              .dark-theme & { background: map-get($colors, PD_4); }
+            }
+        
+            & textarea {
+              min-height: 30px;
+              max-height: 60px;
+              width: 100%;
+              padding: 2px;
+              font-size: 14px;
+              font-weight: 400;
+              text-align: center;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              transition: width 300ms;
+              border: none;
+              color: inherit;
+              background: transparent;
+              resize: none;
+              .dark-theme & {
+                color: #f2f2f2;
+              }
     
-    &:hover { >i { transform: rotate(180); } }
-    i { font-size: 14px; margin-right: 6px; transition: transform 300ms; }
-  }
-
-  .toggleDetailsBtn {
-      position: relative;
-      display: inline-block;
-    height: 27px;
-    width: 60px;
-    right: -17px;
-    top: 13px;
-    padding: 3px 4px;
-    border-radius: 18px;
-    font-size: 20px;
-    color: map-get($colors, highlight-color);
-    border: 1px solid map-get($colors, highlight-color);
-    cursor: pointer;
-    transition: text-align 300ms;
-    user-select: none;
-  }
-  
-  .NewOptions {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0px -15px 0px;
-    text-align: center;
-    color: map-get($colors, PD_8);
-    div {
-      display: inline-grid;
-      width: 100px;
-      padding: 1px;
-      font-size: 18px;
-      font-variant: all-petite-caps;
-      border-radius: 5px;
-      cursor: pointer;
-      user-select: none;
-      &:hover {transform: translateY(-1px);}
-    }
-  }
-
-  .ItemInformation {
-    position: relative;
-    top: 15px;
-    height: calc(100% - 130px);
-        // height: auto;
-    margin: 15px 0;
-    width: 100%;
-    border-radius: 0px;
-    font-size: 15px;
-    white-space: normal;
-    color: #1a1a1d;
-    border-left: 1px solid map-get($colors, PL_5);
-    .dark-theme & { color: map-get($colors, PD_7); border-color: map-get($colors, PD_4); }
-
-
-    > section {
-      position: relative;
-      padding: 5px 10px;
-      box-shadow: 0px 2px 6px -2px #d6dbdb;
-      .dark-theme & { box-shadow: 0px 2px 6px -2px map-get($colors, PD_1); }
-    }
-
-    .IIData {
-      z-index: 2;
-
-      .ItemInfo_Name {
-        width: 100%;
-        font-size: 18px;
-        padding: 8px 2px;
-        background: transparent;
-        border: none;
-        .dark-theme & { color: var(--highlight-color); }
-        &:focus {
-          background: #343743;
+              &:focus { 
+                resize: vertical;
+                max-height: max-content;
+                background: map-get($colors, PL_5);
+                .dark-theme & {
+                  background:map-get($colors, PD_4);
+                }
+              }
+              &:disabled { cursor: pointer; }
+            }
+        
+            & img {
+              width: 100%;
+              max-height: 120px;
+              object-fit: cover;
+            }
+          }
+        }
+    
+        .ListContentContainer {
+          // width: 100%;
+          margin: 4px 0;
+          border-radius: 5px;
+          transition: box-shadow 300ms;
+          background: map-get($colors, PL_2);
+          .dark-theme & { background: map-get($colors, PD_2); }
+        
+          & table {
+            position: relative;
+            width: 100%;
+            border-radius: 5px;
+            border-spacing: 0px 2px;
+            border-collapse: collapse;
+            user-select: none;
+            color: map-get($colors, PL_8);
+            background: transparent;
+            .dark-theme & {
+              color: map-get($colors, PD_8);
+            }
+            & tr {
+              &:not(:first-child):hover:not(.noHover) {
+                transform: translateX(5px);
+                background: map-get($colors, PL_4);
+                // border-radius: 6px;
+                .dark-theme & {
+                  background: map-get($colors, PD_0);
+                }
+              }
+              height: 42px;
+              cursor: pointer;
+              & th {
+                font-size: 14px;
+                font-weight: 100;
+                font-family: inherit;
+              }
+              & td {
+                font-size: 14px;
+                font-weight: 100;
+                font-family: inherit;
+                & img {
+                  object-fit: contain;
+                  height: 32px;
+                  width: 32px;
+                }
+              }
+            }
+    
+            & tr:nth-child(1) { height: 36px; cursor: auto; user-select: none;
+              &:hover { opacity: 1; transform: none; box-shadow: none; }}
+            & tr:nth-child(n+2) { border-top: 1px solid map-get($colors, PL_4); 
+              .dark-theme & { border-top: 1px solid map-get($colors, PD_4); } }
+    
+            & th:nth-child(1) {
+              & input {
+                position: absolute;
+                min-width: 200px;
+                top: 8px;
+                left: 18px;
+                font-size: 16px;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                border: none;
+                color: inherit;
+                background: transparent;
+                &:focus { padding-bottom: 3px; border-bottom: 1px solid map-get($colors, PL_7); 
+                  .dark-theme & { border-bottom: 1px solid map-get($colors, PD_7); }
+                }
+              }
+            }
+            & th:nth-child(2) {max-width: 0; width: auto; min-width: 160px; overflow: hidden;}
+            & th:nth-child(3) {width: 80px; min-width: 60px;}
+            & th:nth-child(4) {width: 100px;}
+            & th:nth-child(5) {width: 80px;}
+          
+            & th:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; .dark-theme & {opacity:0.6;} }
+            & td:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; text-align: center; font-size: 15px; .dark-theme & {opacity:0.8;} }
+          
+            & td:nth-child(1) { width: 50px; padding: 4px 0 0 4px;}
+            & td:nth-child(2) input {
+              height: 30px;
+              width: 100%;
+              font-size: 14px;
+              border: none;
+              color: inherit;
+              background: transparent;
+              &:focus { border-bottom: 1px solid; }
+              &:disabled { cursor: pointer; }
+            }
+          }
+        }  
+    
+        .NewSpan {
+          height: 38px;
+          margin: 0 0 60px 0;
+          padding: 8px;
+          border-radius: 5px;
+          text-align: center;
+          font-variant: all-petite-caps;
+          color: map-get($colors, PL_7);
+          background: map-get($colors, PL_2);
+          transition: background-color 300ms;
+          user-select: none;
+          cursor: pointer;
+    
+          .dark-theme & {
+            color: map-get($colors, PD_7);
+            background: map-get($colors, PD_2);
+          }
+          &:hover {
+            background: map-get($colors, PL_4);
+            .dark-theme & { background: map-get($colors, PD_1); }
+          }
         }
       }
-      
-      .ItemInfo_UUID {
-        padding: 6px 0px;
-        text-align: center;
-        font-size: 11px;
-        letter-spacing: 0.3px;
-        opacity: 0.6;
-        border-bottom: 1px solid #393c44;
-      }
-      
-      img {
+    }
+    
+    .PageInformation { // right side bar      
+      .New {
         position: relative;
-        object-fit: cover;
-        height: auto;
-        max-height: 128px;
-        width: auto;
-        max-width: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        margin: 8px 0;
-      }
-      
-      .ItemInfo_Directory {
-        width: 100%;
-        margin-top: -1px;
-        padding: 12px 4px;
-        border: none;
-        background: transparent;
-        border-top: 1px solid #393c44;
-        border-bottom: 1px solid #393c44;
-        color: inherit;
-      }
-
-      button {
-        display: flex;
-        justify-content: space-evenly;
-        width: calc(50% - 10px);
-        padding: 8px 5px;
-        border-radius: 3px;
-        border: none;
-        color: inherit;
-        background:rgba(0, 0, 0, 0.05);
+        display: inline-block;
+        height: 36px;
+        width: 146px;
+        top: 10px;
+        left: 10px;
+        padding: 8px 0;
+        border-radius: 8px;
+        text-align: center;
+        background: linear-gradient(40deg, #4f9aa2, #1cb23d);
+        color: map-get($colors, PD_8);
         cursor: pointer;
-        transition: box-shadow 300ms ease;
-        > i {
-          color: var(--highlight-color);
-          font-size: 15px;
-          padding: 1px 4px;
-        }
-        &:hover {
-          box-shadow: 0 0 6px var(--highlight-color);
-        }
-        .dark-theme & { background: rgba(0, 0, 0, 0.2); }
+        user-select: none;
+        
+        &:hover { >i { transform: rotate(180); } }
+        i { font-size: 14px; margin-right: 6px; transition: transform 300ms; }
+      }
+    
+      .toggleDetailsBtn {
+          position: relative;
+          display: inline-block;
+        height: 27px;
+        width: 60px;
+        right: -17px;
+        top: 13px;
+        padding: 3px 4px;
+        border-radius: 18px;
+        font-size: 20px;
+        color: map-get($colors, highlight-color);
+        border: 1px solid map-get($colors, highlight-color);
+        cursor: pointer;
+        transition: text-align 300ms;
+        user-select: none;
       }
       
-      table {
-        width: 100%;
-        margin: 16px 0;
-        & td {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          height: 28px;
+      .NewOptions {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0px -15px 0px;
+        text-align: center;
+        color: map-get($colors, PD_8);
+        div {
+          display: inline-grid;
+          width: 100px;
+          padding: 1px;
+          font-size: 18px;
+          font-variant: all-petite-caps;
+          border-radius: 5px;
+          cursor: pointer;
+          user-select: none;
+          &:hover {transform: translateY(-1px);}
+        }
+      }
     
-          > input {
-            height: 20px;
-            width: 50px;
+      .ItemInformation {
+        position: relative;
+        top: 15px;
+        height: calc(100% - 130px);
+            // height: auto;
+        margin: 15px 0;
+        width: 100%;
+        border-radius: 0px;
+        font-size: 15px;
+        white-space: normal;
+        color: #1a1a1d;
+        border-left: 1px solid map-get($colors, PL_5);
+        .dark-theme & { color: map-get($colors, PD_7); border-color: map-get($colors, PD_4); }
+    
+    
+        > section {
+          position: relative;
+          padding: 5px 10px;
+          box-shadow: 0px 2px 6px -2px #d6dbdb;
+          .dark-theme & { box-shadow: 0px 2px 6px -2px map-get($colors, PD_1); }
+        }
+    
+        .IIData {
+          z-index: 2;
+    
+          .ItemInfo_Name {
+            width: 100%;
+            font-size: 18px;
+            padding: 8px 2px;
+            background: transparent;
             border: none;
+            .dark-theme & { color: var(--highlight-color); }
+            &:focus {
+              background: map-get($colors, PL_4);
+              .dark-theme & { background: #343743; }
+            }
+          }
+          
+          .ItemInfo_UUID {
+            padding: 6px 0px;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+            opacity: 0.6;
+            border-bottom: 1px solid #393c44;
+          }
+          
+          img {
+            position: relative;
+            object-fit: cover;
+            height: auto;
+            max-height: 128px;
+            width: auto;
+            max-width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 8px 0;
+          }
+          
+          .ItemInfo_Directory {
+            width: 100%;
+            margin-top: -1px;
+            padding: 12px 4px;
+            border: none;
+            background: transparent;
+            border-top: 1px solid #393c44;
+            border-bottom: 1px solid #393c44;
+            color: inherit;
+          }
+    
+          button {
+            display: flex;
+            justify-content: space-evenly;
+            width: calc(50% - 10px);
+            padding: 8px 5px;
+            border-radius: 3px;
+            border: none;
+            color: inherit;
+            background:rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: box-shadow 300ms ease;
+            > i {
+              color: var(--highlight-color);
+              font-size: 15px;
+              padding: 1px 4px;
+            }
+            &:hover {
+              box-shadow: 0 0 6px var(--highlight-color);
+            }
+            .dark-theme & { background: rgba(0, 0, 0, 0.2); }
+          }
+          
+          table {
+            width: 100%;
+            margin: 16px 0;
+            & td {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              height: 28px;
+        
+              > input {
+                height: 20px;
+                width: 50px;
+                border: none;
+                background: transparent;
+              }
+            }
+            & td:nth-child(1) { padding: 0 0 2px 15px; font-size: 12px; opacity: 0.8; }
+            & td:nth-child(2) { text-align: right; padding-right: 15px; font-size: 14px; }
+          }
+          
+          textarea {
+            height: 50px;
+            width: 100%;
+            margin: 6px 0;
+            padding: 3px 5px;
+            resize: vertical;
+            font-size: 13px;
+            border: none;
+            color: inherit;
+            background: transparent;
+            background: rgba(0, 0, 0, 0.05);
+            .dark-theme & { background: rgba(0, 0, 0, 0.2);}
+          }
+        }
+        
+        .IIShare {
+          transform: translateY(-16px);
+          padding: 18px 10px 12px 10px;
+          > span > input {
+            height: 34px;
+          }
+        }
+        
+        sub {
+          opacity: 0.8;
+          padding: 0 1px;
+          font-size: 11px;
+        }
+    
+        span {
+          display: inline-flex;
+          justify-content: space-around;
+          height: 34px;
+          width: 100%;
+          margin: 4px 0;
+          color: inherit;
+          > input {
+            height: 38px;
+            width: 100%;
+            padding: 3px 4px 6px 8px;
+            color: inherit;
+            border: 1px solid#828489;
+            background: transparent;
+            .dark-theme & { background: rgba(0, 0, 0, 0.05); border-color: #393c44;}
+          }
+          .Input_Ops_Btn {
+            display: inline-block;
+            height: 31px;
+            width: 30px;
+            padding: 10px 4px;
+            font-size: 12px;
+            text-align: center;
+            background: #afb4b9;
+            border-radius: 2px;
+            cursor: pointer;
+            &:hover { color: var(--highlight-color); }
+            .dark-theme & { background: #4e535a; }
+          }
+        }
+      
+        div {
+          margin: -6px 0px 6px 0;
+          span {
+            justify-content: space-between;
+          }
+          button {
+            width: 65px;
+            &.selected {
+              border: 1px solid var(--highlight-color);
+            }
+          }
+          > input {
+            height: 32px;
+            width: 100%;
+            padding: 3px 4px 6px 8px;
+            color: inherit;
+            border: 1px solid #828489;
             background: transparent;
           }
         }
-        & td:nth-child(1) { padding: 0 0 2px 15px; font-size: 12px; opacity: 0.8; }
-        & td:nth-child(2) { text-align: right; padding-right: 15px; font-size: 14px; }
-      }
-      
-      textarea {
-        height: 50px;
-        width: 100%;
-        margin: 6px 0;
-        padding: 3px 5px;
-        resize: vertical;
-        font-size: 13px;
-        border: none;
-        color: inherit;
-        background: transparent;
-        background: rgba(0, 0, 0, 0.05);
-        .dark-theme & { background: rgba(0, 0, 0, 0.2);}
-      }
-    }
     
-    .IIShare {
-      transform: translateY(-16px);
-      padding: 18px 10px 12px 10px;
-      > span > input {
-        height: 34px;
-      }
-    }
     
-    sub {
-      opacity: 0.8;
-      padding: 0 1px;
-      font-size: 11px;
-    }
-
-    span {
-      display: inline-flex;
-      justify-content: space-around;
-      height: 34px;
-      width: 100%;
-      margin: 4px 0;
-      color: inherit;
-      > input {
-        height: 38px;
-        width: 100%;
-        padding: 3px 4px 6px 8px;
-        color: inherit;
-        border: 1px solid#828489;
-        background: transparent;
-        .dark-theme & { background: rgba(0, 0, 0, 0.05); border-color: #393c44;}
-      }
-      .Input_Ops_Btn {
-        display: inline-block;
-        height: 31px;
-        width: 30px;
-        padding: 10px 4px;
-        font-size: 12px;
-        text-align: center;
-        background: #afb4b9;
-        border-radius: 2px;
-        cursor: pointer;
-        &:hover { color: var(--highlight-color); }
-        .dark-theme & { background: #4e535a; }
-      }
-    }
-  
-    div {
-      margin: -6px 0px 6px 0;
-      span {
-        justify-content: space-between;
-      }
-      button {
-        width: 65px;
-        &.selected {
-          border: 1px solid var(--highlight-color);
-        }
-      }
-      > input {
-        height: 32px;
-        width: 100%;
-        padding: 3px 4px 6px 8px;
-        color: inherit;
-        border: 1px solid #828489;
-        background: transparent;
-      }
-    }
-
-
-
-    .Locked {    
-      background: map-get($colors, PL_2);
-      .dark-theme & { background: map-get($colors, PD_2); }
-
-      > span {
-        justify-content: space-between;
-         > h3 {
-          font-weight: 400;
-          padding: 3px;
-        }
-        > i {
-          height: 30px;
-          width: 30px;
-          padding: 5px;
-          font-size: 18px;
-          opacity: 0.6;
-          cursor: pointer;
-          &:hover { opacity: 1; }
-        }
-      }
-      h5 {
-        padding: 0px 6px 12px 6px;
-        opacity: 0.7;
-        font-weight: 400;
-        font-size: 13px;
-        font-style: italic;
-      }
-      .security_option {
-        & i {
-          padding: 8px 9px 9px 2px;
-          font-size: 16px;
-        }
-        > input {
-          height: 30px;
-        }
-      }
-      .securityEntry {
-        & input {
-          height: 30px;
-          padding-bottom: 6px;
-          border-radius: 8px;
-          border: none;
-          font-size: 17px;
-          font-variant: all-petite-caps;
-          color: map-get($colors, PD_8);
-          background: linear-gradient(40deg, #e8ae68, #e63811);
-          cursor: pointer !important;
-          transition: transform 200ms;
-          &:hover {
-            transform: translateY(-2px);
-            // background-image: linear-gradient(40deg, #4d9b9f, #1eb141);
+    
+        .Locked {    
+          background: map-get($colors, PL_2);
+          .dark-theme & { background: map-get($colors, PD_2); }
+    
+          > span {
+            justify-content: space-between;
+             > h3 {
+              font-weight: 400;
+              padding: 3px;
+            }
+            > i {
+              height: 30px;
+              width: 30px;
+              padding: 5px;
+              font-size: 18px;
+              opacity: 0.6;
+              cursor: pointer;
+              &:hover { opacity: 1; }
+            }
+          }
+          h5 {
+            padding: 0px 6px 12px 6px;
+            opacity: 0.7;
+            font-weight: 400;
+            font-size: 13px;
+            font-style: italic;
+          }
+          .security_option {
+            & i {
+              padding: 8px 9px 9px 2px;
+              font-size: 16px;
+            }
+            > input {
+              height: 30px;
+            }
+          }
+          .securityEntry {
+            & input {
+              height: 30px;
+              padding-bottom: 6px;
+              border-radius: 8px;
+              border: none;
+              font-size: 17px;
+              font-variant: all-petite-caps;
+              color: map-get($colors, PD_8);
+              background: linear-gradient(40deg, #e8ae68, #e63811);
+              cursor: pointer !important;
+              transition: transform 200ms;
+              &:hover {
+                transform: translateY(-2px);
+                // background-image: linear-gradient(40deg, #4d9b9f, #1eb141);
+              }
+            }
           }
         }
       }
@@ -1222,7 +1243,6 @@ body {
   }
 }
 
-
 ///////////////////////// MOVE /////////////////////////
 ///////////////////////// MOVE /////////////////////////
 
@@ -1282,6 +1302,37 @@ body {
 
 ///////////////////////// MISC /////////////////////////
 ///////////////////////// MISC /////////////////////////
+
+.DragDropOverlay {
+  &.display_Overlay { bottom: -10px; }
+
+  position: absolute;
+  height: 45px;
+  width: 200px;
+  bottom: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-radius: 25px;
+  box-shadow: 0 0 70px 0px #99ccff;
+  background: map-get($colors, PC_1);
+
+  margin: 30px 0;
+  z-index: 50;
+  user-select: none;
+
+  transition: bottom 300ms ease-in-out;
+  p {
+    height: 100%;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+    text-align: center;
+    color: map-get($colors, PD_8);
+  }
+}
 
 .Upload_Container {
   position: fixed;
@@ -1380,7 +1431,7 @@ body {
       width: 100%;
       padding: 0 20px;
       text-align: center;
-      background: map-get($colors, PL_8);
+      background: map-get($colors, PL_1);
       .dark-theme & {background: map-get($colors, PD_4);}
 
       > progress {
@@ -1599,7 +1650,6 @@ body {
 }
 
 .Loading_SVG {
-
   position:absolute;
   top: calc(50% - 18px);
   left: calc(50% - 18px);
@@ -1711,7 +1761,8 @@ body {
 }
 
 @media only screen and (max-width: 1000px) {
-  body { grid-template-columns: 80px auto 240px; }
+  body { grid-template-columns: 80px auto; }
+  .Pages .Page_Loading { width: calc(100% - 80px); }
 
   .PageList {
     width: 80px;
@@ -1757,38 +1808,29 @@ body {
   }
 }
 
-@media only screen and (max-width: 700px) {
-  body { grid-template-columns: 80px auto 0px; }
-
-  .PageHeader {
-    top: 32px;
-    // .PageControls {top: 28px;}
+@media only screen and (max-width: 750px) {
+  .Pages > section {  grid-template-columns: auto 0px; }
+  .Frame { width: 38px; 
+    button { margin-right: 0px; }
   }
+  .clientStatus {display: none;}
+  .search { margin-right: 28px; }
+}
+
+@media only screen and (max-width: 600px) {
+  body { grid-template-columns: 0px auto 0px; }
+  .Pages .Page_Loading { width: calc(100% - 0px); }
+  .PageList {width: 0px;}
 
   .ListContentTable {
     & th:nth-child(5) { display: none !important;}
     & td:nth-child(5) { display: none !important;}
   }
-  .clientStatus {display: none;}
-}
-
-@media only screen and (max-width: 600px) {
-  body { grid-template-columns: 0px auto 0px; }
-  .PageList {width: 0px;}
 }
 
 @media only screen and (max-width: 500px) {
-  .centralActionMain {
-    width: 90%;
-    left: 5%;
-  }
+  .Frame { display: none; }
+  .search { margin-right: 0px; }
   
-  .ListContentTable {
-    & th:nth-child(3) { display: none !important;}
-    & td:nth-child(3) { display: none !important;}
-  }
-  
-  .Item > img {
-    object-fit: contain;
-  }
+  .Item > img { object-fit: contain; }
 }

@@ -15,13 +15,18 @@
 
 html {
   overflow: hidden;
+  background: #fbfbfd;
+}
+
+.dark-theme html {
+  background: #191b1e;
 }
 
 body {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 220px auto 240px;
-      grid-template-columns: 220px auto 240px;
+  -ms-grid-columns: 220px auto;
+      grid-template-columns: 220px auto;
   -ms-grid-rows: 100vh;
       grid-template-rows: 100vh;
   overflow: hidden;
@@ -68,7 +73,7 @@ body {
           align-items: center;
   width: 240px;
   right: 0px;
-  z-index: 1001;
+  z-index: 25;
   height: 57px;
   background: #f5f5f7;
 }
@@ -178,7 +183,7 @@ body {
   height: 20px;
   width: 130px;
   margin: 30px 0 15px 25px;
-  background: url("/assets/main/nanode.svg");
+  background: url("/assets/home/nanode.svg");
   background-size: contain;
   background-repeat: no-repeat;
   -webkit-filter: brightness(0);
@@ -299,29 +304,6 @@ body {
   border-radius: 5px;
 }
 
-.PageContainer {
-  position: relative;
-  -webkit-transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  background-size: cover;
-  background-color: #f5f5f7;
-  height: 100%;
-  cursor: auto;
-}
-
-.dark-theme .PageContainer {
-  background-color: #141517;
-}
-
-.PageContainer.highlight {
-  -webkit-filter: brightness(0.9);
-          filter: brightness(0.9);
-  -webkit-box-shadow: inset 0px 0px 20px 10px rgba(254, 254, 254, 0.3);
-          box-shadow: inset 0px 0px 20px 10px rgba(254, 254, 254, 0.3);
-}
-
 .PageHeader {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -354,7 +336,7 @@ body {
   border: none;
   font-weight: 400;
   letter-spacing: 1px;
-  font-size: 19px;
+  font-size: 17px;
   resize: none;
   overflow: hidden;
   text-align: left;
@@ -368,7 +350,7 @@ body {
 .PageHeader #directoryLocation .dirBtn {
   height: 30px;
   max-width: 200px;
-  padding: 3px 8px 0px 8px;
+  padding: 5px 8px 0px 8px;
   border-radius: 3px;
   opacity: 0.8;
   overflow: hidden;
@@ -491,7 +473,34 @@ body {
   text-shadow: 0px 0px 3px white;
 }
 
-.Page {
+.Pages {
+  background-color: #f5f5f7;
+}
+
+.dark-theme .Pages {
+  background-color: #141517;
+}
+
+.Pages > section {
+  display: none;
+  -ms-grid-columns: auto 240px;
+      grid-template-columns: auto 240px;
+  -ms-grid-rows: 100vh;
+      grid-template-rows: 100vh;
+  position: relative;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.Pages > section.PageDisplay {
+  display: -ms-grid !important;
+  display: grid !important;
+  height: 100%;
+  width: 100%;
+}
+
+.Pages > section .PageData {
   height: 100%;
   padding-top: 20px;
   border-top-left-radius: 8px;
@@ -502,13 +511,63 @@ body {
           box-shadow: inset 6px 6px 6px -6px #cacccf;
 }
 
-.dark-theme .Page {
+.dark-theme .Pages > section .PageData {
   background: #191b1e;
   -webkit-box-shadow: inset 6px 6px 6px -6px #080a0e;
           box-shadow: inset 6px 6px 6px -6px #080a0e;
 }
 
-.Page .fileContainer {
+.Pages > section .PageInformation {
+  position: relative;
+  min-height: 500px;
+  width: 240px;
+  margin-top: 57px;
+  -webkit-transition: right 600ms;
+  transition: right 600ms;
+  cursor: auto;
+  overflow: hidden;
+  overflow-y: auto;
+  background: #fbfbfd;
+  -webkit-box-shadow: inset 0px 6px 6px -6px #cacccf;
+          box-shadow: inset 0px 6px 6px -6px #cacccf;
+}
+
+.Pages > section .PageInformation::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dark-theme .Pages > section .PageInformation {
+  background: #191b1e;
+  -webkit-box-shadow: inset 0px 6px 6px -6px #080a0e;
+          box-shadow: inset 0px 6px 6px -6px #080a0e;
+}
+
+.Pages > .Page_Loading {
+  display: -ms-grid;
+  display: grid;
+  position: absolute;
+  width: calc(100% - 220px);
+  -ms-grid-columns: auto;
+      grid-template-columns: auto;
+}
+
+.Pages > .User_Page .PageContainer {
+  position: relative;
+  -webkit-transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
+  transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  background-size: cover;
+  background-color: #f5f5f7;
+  height: 100%;
+  cursor: auto;
+}
+
+.dark-theme .Pages > .User_Page .PageContainer {
+  background-color: #141517;
+}
+
+.Pages > .User_Page .PageData .fileContainer {
   display: -ms-grid;
   display: grid;
   grid-gap: 30px;
@@ -517,11 +576,11 @@ body {
   transition: width 600ms;
 }
 
-.Page .fileContainer::-webkit-scrollbar {
+.Pages > .User_Page .PageData .fileContainer::-webkit-scrollbar {
   display: none;
 }
 
-.Page .fileContainer .ContentContainer {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer {
   padding: 12px 6px;
   border-radius: 5px;
   -webkit-transition: -webkit-box-shadow 300ms;
@@ -540,12 +599,12 @@ body {
           box-sizing: border-box;
 }
 
-.dark-theme .Page .fileContainer .ContentContainer {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer {
   color: #f5f6f7;
   background: #141517;
 }
 
-.Page .fileContainer .ContentContainer > input {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > input {
   grid-column: 1/-1;
   width: 50%;
   min-width: 200px;
@@ -562,16 +621,16 @@ body {
   background: transparent;
 }
 
-.Page .fileContainer .ContentContainer > input:focus {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > input:focus {
   padding-bottom: 3px;
   border-bottom: 1px solid #191b1e;
 }
 
-.dark-theme .Page .fileContainer .ContentContainer > input:focus {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > input:focus {
   border-bottom: 1px solid #cacccf;
 }
 
-.Page .fileContainer .ContentContainer > div {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > div {
   position: relative;
   -webkit-box-flex: 1;
       -ms-flex: 1;
@@ -587,15 +646,15 @@ body {
           user-select: none;
 }
 
-.Page .fileContainer .ContentContainer > div:hover {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > div:hover {
   background: #e8e9eb;
 }
 
-.dark-theme .Page .fileContainer .ContentContainer > div:hover {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > div:hover {
   background: #282c32;
 }
 
-.Page .fileContainer .ContentContainer > div textarea {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea {
   min-height: 30px;
   max-height: 60px;
   width: 100%;
@@ -613,11 +672,11 @@ body {
   resize: none;
 }
 
-.dark-theme .Page .fileContainer .ContentContainer > div textarea {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea {
   color: #f2f2f2;
 }
 
-.Page .fileContainer .ContentContainer > div textarea:focus {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea:focus {
   resize: vertical;
   max-height: -webkit-max-content;
   max-height: -moz-max-content;
@@ -625,22 +684,22 @@ body {
   background: #e1e2e4;
 }
 
-.dark-theme .Page .fileContainer .ContentContainer > div textarea:focus {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea:focus {
   background: #282c32;
 }
 
-.Page .fileContainer .ContentContainer > div textarea:disabled {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea:disabled {
   cursor: pointer;
 }
 
-.Page .fileContainer .ContentContainer > div img {
+.Pages > .User_Page .PageData .fileContainer .ContentContainer > div img {
   width: 100%;
   max-height: 120px;
   -o-object-fit: cover;
      object-fit: cover;
 }
 
-.Page .fileContainer .ListContentContainer {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer {
   margin: 4px 0;
   border-radius: 5px;
   -webkit-transition: -webkit-box-shadow 300ms;
@@ -650,11 +709,11 @@ body {
   background: #f5f5f7;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer {
   background: #141517;
 }
 
-.Page .fileContainer .ListContentContainer table {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table {
   position: relative;
   width: 100%;
   border-radius: 5px;
@@ -668,46 +727,45 @@ body {
   background: transparent;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer table {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table {
   color: #f5f6f7;
 }
 
-.Page .fileContainer .ListContentContainer table tr {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr {
   height: 42px;
   cursor: pointer;
 }
 
-.Page .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
   -webkit-transform: translateX(5px);
           transform: translateX(5px);
   background: #e8e9eb;
-  border-radius: 6px;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
   background: #080a0e;
 }
 
-.Page .fileContainer .ListContentContainer table tr th {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr th {
   font-size: 14px;
   font-weight: 100;
   font-family: inherit;
 }
 
-.Page .fileContainer .ListContentContainer table tr td {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr td {
   font-size: 14px;
   font-weight: 100;
   font-family: inherit;
 }
 
-.Page .fileContainer .ListContentContainer table tr td img {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr td img {
   -o-object-fit: contain;
      object-fit: contain;
   height: 32px;
   width: 32px;
 }
 
-.Page .fileContainer .ListContentContainer table tr:nth-child(1) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(1) {
   height: 36px;
   cursor: auto;
   -webkit-user-select: none;
@@ -716,7 +774,7 @@ body {
           user-select: none;
 }
 
-.Page .fileContainer .ListContentContainer table tr:nth-child(1):hover {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(1):hover {
   opacity: 1;
   -webkit-transform: none;
           transform: none;
@@ -724,15 +782,15 @@ body {
           box-shadow: none;
 }
 
-.Page .fileContainer .ListContentContainer table tr:nth-child(n+2) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(n+2) {
   border-top: 1px solid #e8e9eb;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer table tr:nth-child(n+2) {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(n+2) {
   border-top: 1px solid #282c32;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(1) input {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input {
   position: absolute;
   min-width: 200px;
   top: 8px;
@@ -745,61 +803,61 @@ body {
   background: transparent;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
   padding-bottom: 3px;
   border-bottom: 1px solid #191b1e;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
   border-bottom: 1px solid #cacccf;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(2) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(2) {
   max-width: 0;
   width: auto;
   min-width: 160px;
   overflow: hidden;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(3) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(3) {
   width: 80px;
   min-width: 60px;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(4) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(4) {
   width: 100px;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(5) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(5) {
   width: 80px;
 }
 
-.Page .fileContainer .ListContentContainer table th:nth-child(n+3) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(n+3) {
   opacity: 1;
   font-variant: all-petite-caps;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer table th:nth-child(n+3) {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(n+3) {
   opacity: 0.6;
 }
 
-.Page .fileContainer .ListContentContainer table td:nth-child(n+3) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(n+3) {
   opacity: 1;
   font-variant: all-petite-caps;
   text-align: center;
   font-size: 15px;
 }
 
-.dark-theme .Page .fileContainer .ListContentContainer table td:nth-child(n+3) {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(n+3) {
   opacity: 0.8;
 }
 
-.Page .fileContainer .ListContentContainer table td:nth-child(1) {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(1) {
   width: 50px;
   padding: 4px 0 0 4px;
 }
 
-.Page .fileContainer .ListContentContainer table td:nth-child(2) input {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input {
   height: 30px;
   width: 100%;
   font-size: 14px;
@@ -808,15 +866,15 @@ body {
   background: transparent;
 }
 
-.Page .fileContainer .ListContentContainer table td:nth-child(2) input:focus {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input:focus {
   border-bottom: 1px solid;
 }
 
-.Page .fileContainer .ListContentContainer table td:nth-child(2) input:disabled {
+.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input:disabled {
   cursor: pointer;
 }
 
-.Page .fileContainer .NewSpan {
+.Pages > .User_Page .PageData .fileContainer .NewSpan {
   height: 38px;
   margin: 0 0 60px 0;
   padding: 8px;
@@ -834,45 +892,20 @@ body {
   cursor: pointer;
 }
 
-.dark-theme .Page .fileContainer .NewSpan {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .NewSpan {
   color: #cacccf;
   background: #141517;
 }
 
-.Page .fileContainer .NewSpan:hover {
+.Pages > .User_Page .PageData .fileContainer .NewSpan:hover {
   background: #e8e9eb;
 }
 
-.dark-theme .Page .fileContainer .NewSpan:hover {
+.dark-theme .Pages > .User_Page .PageData .fileContainer .NewSpan:hover {
   background: #0e0f11;
 }
 
-.PageInformation {
-  position: relative;
-  min-height: 500px;
-  width: 240px;
-  margin-top: 57px;
-  -webkit-transition: right 600ms;
-  transition: right 600ms;
-  cursor: auto;
-  overflow: hidden;
-  overflow-y: auto;
-  background: #fbfbfd;
-  -webkit-box-shadow: inset 0px 6px 6px -6px #cacccf;
-          box-shadow: inset 0px 6px 6px -6px #cacccf;
-}
-
-.PageInformation::-webkit-scrollbar {
-  width: 4px;
-}
-
-.dark-theme .PageInformation {
-  background: #191b1e;
-  -webkit-box-shadow: inset 0px 6px 6px -6px black;
-          box-shadow: inset 0px 6px 6px -6px black;
-}
-
-.PageInformation .New {
+.Pages > .User_Page .PageInformation .New {
   position: relative;
   display: inline-block;
   height: 36px;
@@ -891,12 +924,12 @@ body {
           user-select: none;
 }
 
-.PageInformation .New:hover > i {
+.Pages > .User_Page .PageInformation .New:hover > i {
   -webkit-transform: rotate(180);
           transform: rotate(180);
 }
 
-.PageInformation .New i {
+.Pages > .User_Page .PageInformation .New i {
   font-size: 14px;
   margin-right: 6px;
   -webkit-transition: -webkit-transform 300ms;
@@ -905,7 +938,7 @@ body {
   transition: transform 300ms, -webkit-transform 300ms;
 }
 
-.PageInformation .toggleDetailsBtn {
+.Pages > .User_Page .PageInformation .toggleDetailsBtn {
   position: relative;
   display: inline-block;
   height: 27px;
@@ -925,7 +958,7 @@ body {
           user-select: none;
 }
 
-.PageInformation .NewOptions {
+.Pages > .User_Page .PageInformation .NewOptions {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -936,7 +969,7 @@ body {
   color: #f5f6f7;
 }
 
-.PageInformation .NewOptions div {
+.Pages > .User_Page .PageInformation .NewOptions div {
   display: -ms-inline-grid;
   display: inline-grid;
   width: 100px;
@@ -951,12 +984,12 @@ body {
           user-select: none;
 }
 
-.PageInformation .NewOptions div:hover {
+.Pages > .User_Page .PageInformation .NewOptions div:hover {
   -webkit-transform: translateY(-1px);
           transform: translateY(-1px);
 }
 
-.PageInformation .ItemInformation {
+.Pages > .User_Page .PageInformation .ItemInformation {
   position: relative;
   top: 15px;
   height: calc(100% - 130px);
@@ -969,28 +1002,28 @@ body {
   border-left: 1px solid #e1e2e4;
 }
 
-.dark-theme .PageInformation .ItemInformation {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation {
   color: #cacccf;
   border-color: #282c32;
 }
 
-.PageInformation .ItemInformation > section {
+.Pages > .User_Page .PageInformation .ItemInformation > section {
   position: relative;
   padding: 5px 10px;
   -webkit-box-shadow: 0px 2px 6px -2px #d6dbdb;
           box-shadow: 0px 2px 6px -2px #d6dbdb;
 }
 
-.dark-theme .PageInformation .ItemInformation > section {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation > section {
   -webkit-box-shadow: 0px 2px 6px -2px #0e0f11;
           box-shadow: 0px 2px 6px -2px #0e0f11;
 }
 
-.PageInformation .ItemInformation .IIData {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData {
   z-index: 2;
 }
 
-.PageInformation .ItemInformation .IIData .ItemInfo_Name {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name {
   width: 100%;
   font-size: 18px;
   padding: 8px 2px;
@@ -998,15 +1031,19 @@ body {
   border: none;
 }
 
-.dark-theme .PageInformation .ItemInformation .IIData .ItemInfo_Name {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name {
   color: var(--highlight-color);
 }
 
-.PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
+  background: #e8e9eb;
+}
+
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
   background: #343743;
 }
 
-.PageInformation .ItemInformation .IIData .ItemInfo_UUID {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_UUID {
   padding: 6px 0px;
   text-align: center;
   font-size: 11px;
@@ -1015,7 +1052,7 @@ body {
   border-bottom: 1px solid #393c44;
 }
 
-.PageInformation .ItemInformation .IIData img {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData img {
   position: relative;
   -o-object-fit: cover;
      object-fit: cover;
@@ -1029,7 +1066,7 @@ body {
   margin: 8px 0;
 }
 
-.PageInformation .ItemInformation .IIData .ItemInfo_Directory {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Directory {
   width: 100%;
   margin-top: -1px;
   padding: 12px 4px;
@@ -1040,7 +1077,7 @@ body {
   color: inherit;
 }
 
-.PageInformation .ItemInformation .IIData button {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1060,53 +1097,53 @@ body {
   transition: box-shadow 300ms ease, -webkit-box-shadow 300ms ease;
 }
 
-.PageInformation .ItemInformation .IIData button > i {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData button > i {
   color: var(--highlight-color);
   font-size: 15px;
   padding: 1px 4px;
 }
 
-.PageInformation .ItemInformation .IIData button:hover {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData button:hover {
   -webkit-box-shadow: 0 0 6px var(--highlight-color);
           box-shadow: 0 0 6px var(--highlight-color);
 }
 
-.dark-theme .PageInformation .ItemInformation .IIData button {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData button {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.PageInformation .ItemInformation .IIData table {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData table {
   width: 100%;
   margin: 16px 0;
 }
 
-.PageInformation .ItemInformation .IIData table td {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData table td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   height: 28px;
 }
 
-.PageInformation .ItemInformation .IIData table td > input {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData table td > input {
   height: 20px;
   width: 50px;
   border: none;
   background: transparent;
 }
 
-.PageInformation .ItemInformation .IIData table td:nth-child(1) {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData table td:nth-child(1) {
   padding: 0 0 2px 15px;
   font-size: 12px;
   opacity: 0.8;
 }
 
-.PageInformation .ItemInformation .IIData table td:nth-child(2) {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData table td:nth-child(2) {
   text-align: right;
   padding-right: 15px;
   font-size: 14px;
 }
 
-.PageInformation .ItemInformation .IIData textarea {
+.Pages > .User_Page .PageInformation .ItemInformation .IIData textarea {
   height: 50px;
   width: 100%;
   margin: 6px 0;
@@ -1119,27 +1156,27 @@ body {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.dark-theme .PageInformation .ItemInformation .IIData textarea {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData textarea {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.PageInformation .ItemInformation .IIShare {
+.Pages > .User_Page .PageInformation .ItemInformation .IIShare {
   -webkit-transform: translateY(-16px);
           transform: translateY(-16px);
   padding: 18px 10px 12px 10px;
 }
 
-.PageInformation .ItemInformation .IIShare > span > input {
+.Pages > .User_Page .PageInformation .ItemInformation .IIShare > span > input {
   height: 34px;
 }
 
-.PageInformation .ItemInformation sub {
+.Pages > .User_Page .PageInformation .ItemInformation sub {
   opacity: 0.8;
   padding: 0 1px;
   font-size: 11px;
 }
 
-.PageInformation .ItemInformation span {
+.Pages > .User_Page .PageInformation .ItemInformation span {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -1151,7 +1188,7 @@ body {
   color: inherit;
 }
 
-.PageInformation .ItemInformation span > input {
+.Pages > .User_Page .PageInformation .ItemInformation span > input {
   height: 38px;
   width: 100%;
   padding: 3px 4px 6px 8px;
@@ -1160,12 +1197,12 @@ body {
   background: transparent;
 }
 
-.dark-theme .PageInformation .ItemInformation span > input {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation span > input {
   background: rgba(0, 0, 0, 0.05);
   border-color: #393c44;
 }
 
-.PageInformation .ItemInformation span .Input_Ops_Btn {
+.Pages > .User_Page .PageInformation .ItemInformation span .Input_Ops_Btn {
   display: inline-block;
   height: 31px;
   width: 30px;
@@ -1177,33 +1214,33 @@ body {
   cursor: pointer;
 }
 
-.PageInformation .ItemInformation span .Input_Ops_Btn:hover {
+.Pages > .User_Page .PageInformation .ItemInformation span .Input_Ops_Btn:hover {
   color: var(--highlight-color);
 }
 
-.dark-theme .PageInformation .ItemInformation span .Input_Ops_Btn {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation span .Input_Ops_Btn {
   background: #4e535a;
 }
 
-.PageInformation .ItemInformation div {
+.Pages > .User_Page .PageInformation .ItemInformation div {
   margin: -6px 0px 6px 0;
 }
 
-.PageInformation .ItemInformation div span {
+.Pages > .User_Page .PageInformation .ItemInformation div span {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
 
-.PageInformation .ItemInformation div button {
+.Pages > .User_Page .PageInformation .ItemInformation div button {
   width: 65px;
 }
 
-.PageInformation .ItemInformation div button.selected {
+.Pages > .User_Page .PageInformation .ItemInformation div button.selected {
   border: 1px solid var(--highlight-color);
 }
 
-.PageInformation .ItemInformation div > input {
+.Pages > .User_Page .PageInformation .ItemInformation div > input {
   height: 32px;
   width: 100%;
   padding: 3px 4px 6px 8px;
@@ -1212,26 +1249,26 @@ body {
   background: transparent;
 }
 
-.PageInformation .ItemInformation .Locked {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked {
   background: #f5f5f7;
 }
 
-.dark-theme .PageInformation .ItemInformation .Locked {
+.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .Locked {
   background: #141517;
 }
 
-.PageInformation .ItemInformation .Locked > span {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked > span {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
 
-.PageInformation .ItemInformation .Locked > span > h3 {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked > span > h3 {
   font-weight: 400;
   padding: 3px;
 }
 
-.PageInformation .ItemInformation .Locked > span > i {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked > span > i {
   height: 30px;
   width: 30px;
   padding: 5px;
@@ -1240,11 +1277,11 @@ body {
   cursor: pointer;
 }
 
-.PageInformation .ItemInformation .Locked > span > i:hover {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked > span > i:hover {
   opacity: 1;
 }
 
-.PageInformation .ItemInformation .Locked h5 {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked h5 {
   padding: 0px 6px 12px 6px;
   opacity: 0.7;
   font-weight: 400;
@@ -1252,16 +1289,16 @@ body {
   font-style: italic;
 }
 
-.PageInformation .ItemInformation .Locked .security_option i {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked .security_option i {
   padding: 8px 9px 9px 2px;
   font-size: 16px;
 }
 
-.PageInformation .ItemInformation .Locked .security_option > input {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked .security_option > input {
   height: 30px;
 }
 
-.PageInformation .ItemInformation .Locked .securityEntry input {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked .securityEntry input {
   height: 30px;
   padding-bottom: 6px;
   border-radius: 8px;
@@ -1277,7 +1314,7 @@ body {
   transition: transform 200ms, -webkit-transform 200ms;
 }
 
-.PageInformation .ItemInformation .Locked .securityEntry input:hover {
+.Pages > .User_Page .PageInformation .ItemInformation .Locked .securityEntry input:hover {
   -webkit-transform: translateY(-2px);
           transform: translateY(-2px);
 }
@@ -1743,6 +1780,43 @@ body {
   background: #83898f !important;
 }
 
+.DragDropOverlay {
+  position: absolute;
+  height: 45px;
+  width: 200px;
+  bottom: -200px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  border-radius: 25px;
+  -webkit-box-shadow: 0 0 70px 0px #99ccff;
+          box-shadow: 0 0 70px 0px #99ccff;
+  background: #4285f4;
+  margin: 30px 0;
+  z-index: 50;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-transition: bottom 300ms ease-in-out;
+  transition: bottom 300ms ease-in-out;
+}
+
+.DragDropOverlay.display_Overlay {
+  bottom: -10px;
+}
+
+.DragDropOverlay p {
+  height: 100%;
+  width: 100%;
+  margin: 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-align: center;
+  color: #f5f6f7;
+}
+
 .Upload_Container {
   position: fixed;
   height: 100px;
@@ -1872,7 +1946,7 @@ body {
   width: 100%;
   padding: 0 20px;
   text-align: center;
-  background: #080a0e;
+  background: #fbfbfd;
 }
 
 .dark-theme .Upload_Container .UC_Bottom .Upload_Progress {
@@ -2357,8 +2431,11 @@ body {
 
 @media only screen and (max-width: 1000px) {
   body {
-    -ms-grid-columns: 80px auto 240px;
-        grid-template-columns: 80px auto 240px;
+    -ms-grid-columns: 80px auto;
+        grid-template-columns: 80px auto;
+  }
+  .Pages .Page_Loading {
+    width: calc(100% - 80px);
   }
   .PageList {
     width: 80px;
@@ -2414,22 +2491,22 @@ body {
   }
 }
 
-@media only screen and (max-width: 700px) {
-  body {
-    -ms-grid-columns: 80px auto 0px;
-        grid-template-columns: 80px auto 0px;
+@media only screen and (max-width: 750px) {
+  .Pages > section {
+    -ms-grid-columns: auto 0px;
+        grid-template-columns: auto 0px;
   }
-  .PageHeader {
-    top: 32px;
+  .Frame {
+    width: 38px;
   }
-  .ListContentTable th:nth-child(5) {
-    display: none !important;
-  }
-  .ListContentTable td:nth-child(5) {
-    display: none !important;
+  .Frame button {
+    margin-right: 0px;
   }
   .clientStatus {
     display: none;
+  }
+  .search {
+    margin-right: 28px;
   }
 }
 
@@ -2438,21 +2515,26 @@ body {
     -ms-grid-columns: 0px auto 0px;
         grid-template-columns: 0px auto 0px;
   }
+  .Pages .Page_Loading {
+    width: calc(100% - 0px);
+  }
   .PageList {
     width: 0px;
+  }
+  .ListContentTable th:nth-child(5) {
+    display: none !important;
+  }
+  .ListContentTable td:nth-child(5) {
+    display: none !important;
   }
 }
 
 @media only screen and (max-width: 500px) {
-  .centralActionMain {
-    width: 90%;
-    left: 5%;
+  .Frame {
+    display: none;
   }
-  .ListContentTable th:nth-child(3) {
-    display: none !important;
-  }
-  .ListContentTable td:nth-child(3) {
-    display: none !important;
+  .search {
+    margin-right: 0px;
   }
   .Item > img {
     -o-object-fit: contain;

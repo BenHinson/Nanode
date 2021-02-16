@@ -1,0 +1,131 @@
+<div class='PageContainer' style="position: relative;">
+  
+  <div class='PageHeader'>
+    <Header>Bin</Header>
+  </div>
+
+  <div class='PageData'>
+    <div class='binContainer' style="display: grid; place-items: center;">
+      <table class='binTable'>
+        <tbody>
+          <!-- <tr class='tableHeaderRow'><th></th><th class='tableHeader'>Type</th><th class='tableHeader'>Deleted</th><th class='tableHeader'>Size</th></tr> -->
+          <tr class='tableHeaderRow' style="opacity: 0;"><th></th><th class='tableHeader'></th><th class='tableHeader'></th><th class='tableHeader'></th></tr>
+          <tr class='tableDataRow'><td class="tableDataName">Holiday Photos 2020</td><td>Folder</td><td>05/01/2021</td><td>-</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="binIsEmpty"><img class='binIsEmptyImg' src="/assets/logo/Logo_282c32.svg" alt="Empty Bin"><p>Deleted files within the last 30 days will show here.</p></div>
+  </div>
+  
+  <div style="position: absolute; bottom: 10px; left: 50%; width: 80%; height: 20px; border-radius: 10px; background: #4285f4; text-align: center; font-size: 13px; color: #f5f6f7; line-height: 20px; transform: translateX(-50%);">Items left in the bin will be permanently deleted after 30 days. <i class="fas fa-times" style="position: absolute; right: 8px; top: 2px; font-size: 16px; cursor: pointer;"></i></div>
+
+</div>
+
+
+<div class='PageInformation'>
+  <div class='BinInformation'>
+    <p style="text-align: center; color: #cacccf;">Bin Size: 3.3GB</p>
+  
+    <div style='width: 200px; height: 200px; border-radius: 50%; position: relative; padding: 20px; background: #282c32;'><div style="width: 100%; height: 100%; background: #191b1e; border-radius: 50%;"></div></div>
+  
+    <div style="width: 200px; flex: 1; border-radius: 8px; margin-top: 10px; display: flex; flex-direction: column; gap: 20px;">
+      <p style="color: #f5f6f7; border-bottom: 1px solid #282c32; padding-bottom: 10px;">Holiday Photos 2020</p>
+  
+      <table style="color: #cacccf; font-size: 14px;">
+        <tbody>
+          <tr style="height: 24px;"><td>Size</td> <td style="text-align: right;">1.2GB</td></tr>
+          <tr style="height: 24px;"><td>Type</td> <td style="text-align: right;">Folder</td></tr>
+          <tr style="height: 24px;"><td>Deleted</td> <td style="text-align: right;">05/01/2021</td></tr>
+          <tr style="height: 24px;"><td>Contents</td> <td style="text-align: right;">23 Items</td></tr>
+        </tbody>
+      </table>
+  
+      <button style="width: 100%; height: 30px; border-radius: 2px; border: 1px solid #4285f4; background: #4285f433; color: #4285f4; cursor: pointer;">Restore</button>
+      <button style="width: 100%; height: 30px; border-radius: 2px; border: 1px solid #ff453a; background: #ff443a33; color: #ff453a; cursor: pointer;">Delete</button>
+  
+    </div>
+  
+    <div style="padding-top: 20px; border-top: 1px solid #282c32;">
+      <button style="background: #e53329; border: none; border-radius: 5px; width: 200px; height: 30px; color: #f5f6f7; cursor: pointer;">Empty Bin</button>
+    </div>
+  </div>
+  <!-- <div id="like_button_container"></div> -->
+</div>
+
+<style>
+  .PageInformation {
+    display: flex;
+  }
+  .BinInformation {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+    padding: 20px;
+    gap: 20px;
+    border-left: 1px solid #282c32;
+  } 
+
+
+  .binTable {
+    width: 80%;
+    border-radius: 5px;
+    border-spacing: 0px 4px;
+    border-collapse: collapse;
+    color: #f5f6f7;
+    background: #141517;
+  }
+  .tableHeaderRow {
+    height: 36px;
+    border-bottom: 1px solid #282c32;
+  }
+  .tableHeader {
+    width: 80px;
+    opacity: 0.6;
+    font-size: 14px;
+    font-weight: 100;
+    font-variant: all-petite-caps;
+    user-select: none;
+  }
+  .tableDataRow {
+    height: 48px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 100;
+    opacity: 0.8;
+    font-variant: all-petite-caps;
+    font-size: 15px;
+  }
+  .tableDataName {
+    text-align: left;
+    padding: 0 30px;
+    opacity: 1;
+    font-variant: normal;
+    font-size: 14px;
+  }
+
+  .binIsEmpty {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 200px;
+    top: 50%;
+    left: 50%;
+    gap: 20px;
+    transform: translate(-50%, -50%);
+    font-size: 15px;
+    text-align: center;
+    color: #565b61;
+    user-select: none;
+    pointer-events: none
+  }
+  .binIsEmptyImg {
+    width: 100%;
+    height: 140px;
+    filter: opacity(0.4);
+  }
+</style>
+
+<!-- <script>$.ajaxPrefilter(function(options) { options.async = true; });</script> -->
+
+<script text="text/javascript" src="/JS/drive/bin/bin.js"></script>

@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
+  <title>Prime Spiral</title>
   <meta charset="UTF-8">
-  <meta name="description" content="Prime Spiral">
+  <meta name='HandheldFriendly' content="True">
+  <meta name='MobileOptimized' content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spiral</title>
-  <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/Nanode_Fade.svg" alt='Nanode'/>
+  <link rel="canonical" href="https://nanode.one/">
+  <meta name="description" content="Create a Spiral of Prime Numbers and see the Resulting Patterns">
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/logo.svg" alt='Nanode'/>
+  <meta name="image" content="https://nanode.one/assets/logo/logo.svg">
+  <link rel="apple-touch-icon" type="image/x-icon" href="/assets/logo/logo.svg">
+
+
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <link rel="stylesheet" href="../CSS/Spiral/spiral.css">
 </head>
@@ -26,7 +33,7 @@
       <input type="number" name="scale" value='100' onchange="Scale = this.value">
 
       <span> <h5>Background</h5> <input type="color" name="background" value='#0f1923' onchange=" document.documentElement.style.setProperty('--background', this.value); "> </span>
-      <span> <h5>Pixel</h5> <input type="color" name="pixel" value='#99cdff' onchange="setColour(this.value)"> </span>
+      <span> <h5>Pixel</h5> <input type="color" name="pixel" value='#99ccff' onchange="setColour(this.value)"> </span>
 
       <span> <h5>Rainbow</h5> <input type="checkbox" name="rainbow" onchange="setEffect('rainbow', this.checked)"> </span>
       <span> <h5>Frosted</h5> <input type="checkbox" name="frosted" onchange="setEffect('frosted', this.checked)"> </span>

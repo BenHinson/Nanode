@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang='en-GB'>
   <head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Secure File Storage">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login to Nanode</title>
-    <link rel="shortcut icon" type="image/x-icon" href="../assets/logo/Nanode_Fade.svg"/>
-    <link rel="stylesheet" href="../CSS/Master/master.css">
+    <meta charset="UTF-8">
+    <meta name='HandheldFriendly' content="True">
+    <meta name='MobileOptimized' content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://nanode.one/">
+    <meta name="description" content="Login to Nanode to gain access to your Cloud Storage, or signup for a free 10GB">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/logo.svg" alt='Nanode'/>
+    <link rel="apple-touch-icon" type="image/x-icon" href="/assets/logo/logo.svg">
+    
+    <link rel="stylesheet" href="../CSS/Account/account.css">
   </head>
   <body class="dark-theme">
 
     <div class="loginBackground">
       <div class="mainLoginContainer">
-        <h2 class="MainTitle">Welcome</h2>
-        <div class="SecondaryTitle">Login to your drive</div>
+        <h1 class="MainTitle">Welcome</h1>
+        <h2 class="SecondaryTitle">Login to Nanode</h2>
+        
 
         <form id="loginForm" method="POST" action='/login'>
           <div id="TitleEmail" class="InputTitle">Email</div>
-          <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required>
+          <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required title='Please enter your Email'>
 
           <div id="TitlePwd" class="InputTitle">Password</div>
-          <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required>
+          <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required title='Please enter your Password'>
 
           <!-- <button>Forgot your password?</button> -->
           <input id="loginBtn" class="ButtonInput" type="submit" value="Login">
@@ -35,4 +41,4 @@
   </body>
 </html>
 
-<script text="text/javascript" src="../JS/login.js"></script>
+<script text="text/javascript" src="../JS/account/login.js"></script>

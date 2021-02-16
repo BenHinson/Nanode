@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Design History</title>
+    <meta charset="UTF-8">
+    <meta name='HandheldFriendly' content="True">
+    <meta name='MobileOptimized' content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://nanode.one/">
+    <meta name="description" content="Explore the various designs and assets used throughout the development of Nanode">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/logo_green.svg" alt='Nanode'/>
+    <meta name="image" content="https://nanode.one/assets/logo/logo_green.svg">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/assets/logo/logo_green.svg">
+    
+    <link rel="stylesheet" href="/CSS/dev/dev.css">
+  </head>
+<body class='DesignPage'>
+  <span><a href="//nanode.one"><img src="/assets/home/Nanode.svg" alt="Nanode"><p>Design History</p></a></span>
+
+  <div class='ImageGrid'>
+    <div><img loading='lazy' src="/assets/designs/21_01_2021_Light.png" alt=""> <span> <h5>Light colour palette</h5><p>21 / 01 / 2021 - Light</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/21_01_2021.png" alt=""> <span> <h5>Top navigation bar, dark colour palette</h5> <p>21 / 01 / 2021</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/01_01_2021.png" alt=""> <span> <h5>Storage, New, Move, Information</h5> <p>01 / 01 / 2021</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/12_07_2020.jpg" alt=""> <span> <h5>Settings, bin, directory location</h5> <p>12 / 07 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/17_06_2020.png" alt=""> <span> <h5>Basic mobile support</h5> <p>17 / 06 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/15_06_2020.jpg" alt=""> <span> <h5>Image lazy load, speed improvements</h5> <p>15 / 06 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/10_06_2020.png" alt=""> <span> <h5>List view</h5> <p>10 / 06 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/05_06_2020.png" alt=""> <span> <h5>Upload rework, item colours</h5> <p>05 / 06 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/11_05_2020.png" alt=""> <span> <h5>Read files remotely - Details, Upload, Span + Folder Creation</h5> <p>11 / 05 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/23_04_2020.png" alt=""> <span> <h5>Addition of file and folder icons</h5> <p>23 / 04 / 2020</p> </span></div>
+    <div><img loading='lazy' src="/assets/designs/15_04_2020.png" alt=""> <span> <h5>Original POC, reading local files</h5> <p>15 / 04 / 2020</p> </span></div>
+  </div>
+</body>
+</html>
+
+<script>
+  document.querySelectorAll('img').forEach((image) => {
+    image.addEventListener('click', (e) => {
+      let isFS = e.target.classList.contains('fullscreen');
+      document.querySelectorAll('.fullscreen').forEach((fs) => { fs.classList.remove('fullscreen') });
+      isFS ? '' : e.target.classList.add('fullscreen');
+    })
+  })
+</script>

@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang='en-GB'>
   <head>
+    <title>My Drive</title>
     <meta charset="UTF-8">
-    <meta name="description" content="Secure File Storage">
+    <meta name='HandheldFriendly' content="True">
+    <meta name='MobileOptimized' content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://nanode.one/">
     <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+    <meta name="description" content="Save, Sort and Share Files, Notes, Webpages and More">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/logo.svg" alt='Nanode'/>
+    <meta name="image" content="https://nanode.one/assets/logo/logo.svg">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/assets/logo/logo.svg">
 
-    <title>Nano Drive</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo/Nanode_Fade.svg"/>
     <link rel="stylesheet" href="/CSS/drive.css">
     <!-- <link rel="stylesheet" href="/CSS/pages.css"> -->
   </head>
@@ -29,7 +34,7 @@
       <div>
         <a title="Nanode" id="NanodeRtn" href="//nanode.one" width="130" height="30"></a>
         <span drvPage="User" title="User" class="SelectedPage"><i class="fas fa-user"></i><p>Home</p></span>
-        <span drvPage="Contacts" title="Contacts"><i class="fas fa-users"></i><p>Share</p></span>
+        <span drvPage="Share" title="Share"><i class="fas fa-users"></i><p>Share</p></span>
         <span drvPage="Blocks" title="Blocks"><i class="fas fa-th"></i><p>Blocks</p></span>
         <span drvPage="Codex" title="Codex"><i class="fas fa-stream"></i><p>Lists</p></span>
       </div>
@@ -47,31 +52,17 @@
     </div>
 
 
-    <div class='PageContainer'>
+    <div class='Pages'>
+      <section class="Page_Loading"> <div><div class='PageHeader'></div><div class='PageData'><svg class='Loading_SVG medium' title='Loading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'><circle cx='50' cy='50' r='45'></circle></svg></div></div></section>
 
-      <div class='PageHeader'>
-        <div class='PageControls'>
-          <span id="directoryControlBack" title="Back"><i class="fas fa-chevron-left"></i></span>
-          <span id="directoryControlForward" title="Forward"><i class="fas fa-chevron-right"></i></span>
-        </div>
-        <div id='directoryLocation' type='text' placeholder='Current Directory'></div>
-        <input class='search' type="text" placeholder="Search...">
-        <!-- <div class='PageInformationToggle'><i class='fas fa-chevron-right'></i></div> -->
-      </div>
-
-      <div class='Page'>
-        <div class='fileContainer' rc='File_Container'></div>
-      </div>
+      <section class='User_Page'></section>
+      <section class='Share_Page'></section>
+      <section class='Blocks_Page'></section>
+      <section class='Codex_Page'></section>
+      <section class='Bin_Page'></section>
+      <section class='Settings_Page'></section>
     </div>
 
-
-    <div class='PageInformation'>
-      <div class='New' title="New Folder or Upload Files"><i class='fas fa-plus'></i>New</div>
-      <div class='Switch SW_View' style='top: 14px;right: 10px;'>
-        <div class='Slider SL_View'></div> <div><i class="fas fa-bars"></i></div> <div><i class="fas fa-th-large"></i></div>
-      </div>
-      <div class='ItemInformation'></div>
-    </div>
 
 
     <div class='UploadBtns'>
@@ -80,7 +71,7 @@
       <input id="codexUploadBtn" type="file" accept="text/*" multiple>
     </div>
     
-    <div style='visibility: hidden;' class='Upload_Container'>
+    <div class='Upload_Container' style='visibility: hidden;'>
       <div class='UC_Queue_Viewer'><table><tbody></tbody></table></div>
       <div class='UC_Top'>
         <h4 onclick="Upload_Listeners.Control(this)" class='Upload_Control' action='Choose'>Choose Items</h4>
@@ -98,6 +89,11 @@
       </div>
     </div>
 
+
+    <div class='DragDropOverlay'>
+      <p>Drop your files to Upload</p>
+    </div>
+
     <table class='RightClickContainer'></table>
 
   </body>
@@ -112,12 +108,16 @@
 <script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script text="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<script text="text/javascript" src="/JS/client.js"></script>
-<script text="text/javascript" src="/JS/tools.js"></script>
-<script text="text/javascript" src="/JS/settings.js"></script>
-<script text="text/javascript" src="/JS/listeners.js"></script>
-<script text="text/javascript" src="/JS/viewer.js"></script>
-<script text="text/javascript" src="/JS/pages.js"></script>
-<script text="text/javascript" src="/JS/rightClick.js"></script>
-<script text="text/javascript" src="/JS/upload.js"></script>
-<script text="text/javascript" src="/JS/button&keys.js"></script>
+<script text="text/javascript" src="/JS/drive/main.js"></script>
+<script text="text/javascript" src="/JS/drive/tools.js"></script>
+<script text="text/javascript" src="/JS/drive/settings.js"></script>
+<script text="text/javascript" src="/JS/drive/upload.js"></script>
+<script text="text/javascript" src="/JS/drive/rightClick.js"></script>
+
+
+<!-- <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script> -->
+
+<!-- <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script> -->
+

@@ -1,5 +1,7 @@
 temp/
-assets/background/
+.OLD/
+assets/background
+assets/main
 
 # Logs
 logs
