@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://github.com/BenHinson/nanode">
-    <img src="assets/logo/nanode_circle.png" alt="Logo" width="80" height="80">
+    <img src="/assets/logo/nanode_circle.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Nanode</h3>
@@ -24,7 +24,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Nanode Screenshot](/assets/demo/overview.png)
+![Nanode Screenshot](/assets/covers/overview.png)
 
 On a mission to change how files are stored, accessed and organised, Nanode has the goal of offering all the features you may want to help save you time, money and memories.
 
