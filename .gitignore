@@ -1,5 +1,6 @@
 temp/
 .OLD/
+.OLD_JS/
 assets/background
 assets/main
 
