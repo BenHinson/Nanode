@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://github.com/BenHinson/nanode">
-    <img src="/assets/logo/nanode dark circle.png" alt="Logo" width="80" height="80">
+    <img src="/assets/logo/Nanode Dark Circle.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Nanode</h3>
