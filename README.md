@@ -3,15 +3,14 @@
   <a href="https://github.com/BenHinson/nanode">
     <img src="/assets/logo/Nanode Dark Circle.png" alt="Logo" width="120" height="120">
   </a>
+</p>
 
+<div align="center">
   <h3 align="center">Nanode</h3>
 
   <p align="center">
     Nanode is an online cloud storage service, to save, organise and share your files from anywhere and at anytime.
   </p>
-</p>
-
-<div align="center">
   
   [View the Server End](https://github.com/BenHinson/Nanode-Server)
 </div>
