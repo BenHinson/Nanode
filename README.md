@@ -11,6 +11,11 @@
   </p>
 </p>
 
+<div align="center">
+  
+  [View the Server End](https://github.com/BenHinson/Nanode-Server)
+</div>
+
 <!-- Features -->
 ## Features
 - **Item Customisation** - Set colours, descriptions, security and names for every file and folder.
