@@ -8,7 +8,7 @@ $("#directoryControlForward").on("click", function() {
     Tree_Steps = Directory_Tree[Tree_Number].Start;
   } else { return; }
   
-  Directory_Call(Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Nano, false)
+  HomeCall({"Folder":Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Nano, "Reload": false});
 })
 
 $("#directoryControlBack").on("click", function(e) {
@@ -21,7 +21,7 @@ $("#directoryControlBack").on("click", function(e) {
   
   Tree_Steps = Directory_Route.length;
 
-  Directory_Call(Directory_Route[Tree_Steps - 1].Nano, false)
+  HomeCall({"Folder":Directory_Route[Tree_Steps - 1].Nano, "Reload": false});
 })
 
 $(".New").on("click", function() {
@@ -40,10 +40,9 @@ $(".Switch.SW_View").on("click", function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? document.querySelectorAll('div[nano-id]:not([home-span]):not([Sub-Span])') : document.querySelectorAll('tr[nano-id]'));
+  let Items = (View == 0 ? fileContainer.querySelectorAll('div[nano-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tr[nano-id]'));
 
   $(Items).on("click", function(selected) {
-    console.log(63);
     if (selected.currentTarget.hasAttribute('focus')) { return; }
     selected = selected.currentTarget;
 
@@ -93,7 +92,7 @@ function ItemActions(selected) {
   let clicked = selected.getAttribute("nano-id");
   let type = selected.getAttribute("type");
 
-  if (type == "folder") { Directory_Call(selected.getAttribute('nano-id')); }
+  if (type == "folder") { HomeCall({"Folder":selected.getAttribute('nano-id')}); }
   else if (type.match(/image|text|video/g)) { ViewItem(type, clicked) }
 }
 
@@ -190,7 +189,7 @@ function setupFileMove(Caller) {
         e.target.classList.add('listItem-Hover');
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
-          Directory_Call(e.target.getAttribute("nano-id"));
+          HomeCall({"Folder":e.target.getAttribute("nano-id")});
         }, 2000)
       },
       out : function(e) {
@@ -265,7 +264,7 @@ function Route(Nano_Path, Text_Path) {
     if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
     {Tree_Number++;   Tree_Steps = Directory_Route.length;   Directory_Tree.push({"Start":Tree_Steps, "Route": Directory_Route});}
 
-    Directory_Call(NanoID, false);
+    HomeCall({"Folder":NanoID, "Reload":false});
   })
 
 
@@ -286,11 +285,11 @@ function ChangeView() {
   let ListView = Boolean(UserSettings.ViewT); // 0=false, 1+ = true
   UserSettings.ViewT = ListView ? 0 : 1; // Inverts ViewT
   document.querySelector('.Slider.SL_View').style.transform = `translateX(${ListView ? 28 : 0}px)`;
-  Directory_Call(NanoID, false);
+  HomeCall({"Folder":NanoID, "Reload":false});
 }
 
 function refreshDirectory() {
-  Directory_Call(NanoID, false);
+  HomeCall({"Folder":NanoID, "Reload":false});
 }
 
 function collapseSpan(span, expand=false) {

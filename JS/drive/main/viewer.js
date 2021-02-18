@@ -18,6 +18,52 @@ const UC_Queue_Viewer_Table = document.querySelector('.UC_Queue_Viewer table tbo
 
 
 
+HomeCall = async(CallData, Resp) => {
+  const {Folder=NanoName, Reload=true, Skip=false} = CallData;
+  
+  FolderCall = Reload;
+
+  if (!Skip) {
+    Resp = await Directory_Call({'Folder': Folder, 'Section': 'main', 'subSection': ''})
+  }
+
+  if (Resp.Auth) { RightBar_Security_Inputs(Resp);}
+  else if (Resp.Parent) {
+    NanoName = Resp.Parent.id == "homepage" ? "homepage" : Resp.Parent.name;
+    NanoID = Resp.Parent.id;
+    NanoSelected = [];
+    Directory_Content = Resp.Contents;
+
+    Route(NanoID, NanoName);
+    UserSettings.ViewT == 0 ? viewContentAsBlock(NanoID) : viewContentAsList(NanoID);
+    uploadDirectory = NanoName == "homepage" ? "_GENERAL_" : NanoName;
+    setupFileMove();
+  }
+}
+
+HomeCall({"Folder":NanoName});
+
+// ========================
+
+  // File Move for Block.
+
+  // The Multiple Update:
+      // Selection Box - Shows Selection Data at the bottom. Narrow Bar like VSCode blue bar.
+      // Multi-Move
+
+  // The Right-Click Update:
+      // Security. Including removal.
+      // Copy To
+      // Move To
+      // Create Shortcut
+      // Share
+
+  // Settings Review, JS, Functions and Page Revision.
+
+  // Icons for Different File types.
+
+  // Search Implementation - Remember to check the previous names settings too for items.
+
 ////////////////////////////   VIEW   //////////////////////////////////
 
 async function ViewItem(Type, NanoID) {
@@ -65,7 +111,7 @@ function viewContentAsBlock(NanoID) {
 
       Container.innerHTML += `
         <div class='Item' directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='TEXTAREA,IMG' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='border-bottom: 2px solid "+item.color+"'" : ""}>
-          <img loading='lazy' height='90' width='${!item.mime == "FOLDER" ? 90 : 120}' src='${N_ItemImage(item.mime, object, "Block")}'></img>
+          <img loading='lazy' height='90' width='${!item.mime == "FOLDER" ? 90 : 120}' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img>
           <textarea rcpar='1' disabled style='pointer-events:none;'>${N_CapFirstLetter(item.name)}</textarea>
         </div>
       `
@@ -114,7 +160,7 @@ function viewContentAsList(NanoID) {
 
       Table.innerHTML += `
         <tr directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
-          <td><img loading='lazy' height='32' width='32' src='${N_ItemImage(item.mime, object)}'></img></td>
+          <td><img loading='lazy' height='32' width='32' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img></td>
           <td><input rcPar='2' value='${N_CapFirstLetter(item.name)}' disabled style='pointer-events:none;'></input></td>
           <td>${N_CapFirstLetter(N_TypeChecker(item.mime, "TRIM"))}</td>
           <td>${N_DateFormater(item.time.modified || item.time.created)}</td>
@@ -286,7 +332,7 @@ function RightBar_Security_Inputs(itemLocked) {
       case 200:
         ItemInfo.innerHTML = '';
         clientStatus("CS5", "Ok", 400)
-        Directory_Call(false, true, true, await res.json()); 
+        HomeCall({"Reload":true, "Skip": true}, await res.json());
         break;
       case 401:
         $(".security_option > i").each( function(i, val) { 

@@ -501,7 +501,7 @@ body {
 }
 
 .Pages > section .PageData {
-  height: 100%;
+  height: calc(100% - 57px);
   padding-top: 20px;
   border-top-left-radius: 8px;
   overflow-y: auto;
@@ -542,6 +542,22 @@ body {
           box-shadow: inset 0px 6px 6px -6px #080a0e;
 }
 
+.Pages > section .PageContainer {
+  position: relative;
+  height: 100%;
+  -webkit-transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
+  transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  background-size: cover;
+  background-color: #f5f5f7;
+  cursor: auto;
+}
+
+.dark-theme .Pages > section .PageContainer {
+  background-color: #141517;
+}
+
 .Pages > .Page_Loading {
   display: -ms-grid;
   display: grid;
@@ -551,23 +567,7 @@ body {
       grid-template-columns: auto;
 }
 
-.Pages > .User_Page .PageContainer {
-  position: relative;
-  -webkit-transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  background-size: cover;
-  background-color: #f5f5f7;
-  height: 100%;
-  cursor: auto;
-}
-
-.dark-theme .Pages > .User_Page .PageContainer {
-  background-color: #141517;
-}
-
-.Pages > .User_Page .PageData .fileContainer {
+.Pages > .main_Page .PageData .fileContainer {
   display: -ms-grid;
   display: grid;
   grid-gap: 30px;
@@ -576,11 +576,11 @@ body {
   transition: width 600ms;
 }
 
-.Pages > .User_Page .PageData .fileContainer::-webkit-scrollbar {
+.Pages > .main_Page .PageData .fileContainer::-webkit-scrollbar {
   display: none;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer {
   padding: 12px 6px;
   border-radius: 5px;
   -webkit-transition: -webkit-box-shadow 300ms;
@@ -599,12 +599,12 @@ body {
           box-sizing: border-box;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ContentContainer {
   color: #f5f6f7;
   background: #141517;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > input {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > input {
   grid-column: 1/-1;
   width: 50%;
   min-width: 200px;
@@ -621,16 +621,16 @@ body {
   background: transparent;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > input:focus {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > input:focus {
   padding-bottom: 3px;
   border-bottom: 1px solid #191b1e;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > input:focus {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ContentContainer > input:focus {
   border-bottom: 1px solid #cacccf;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > div {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > div {
   position: relative;
   -webkit-box-flex: 1;
       -ms-flex: 1;
@@ -646,15 +646,15 @@ body {
           user-select: none;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > div:hover {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > div:hover {
   background: #e8e9eb;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > div:hover {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ContentContainer > div:hover {
   background: #282c32;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > div textarea {
   min-height: 30px;
   max-height: 60px;
   width: 100%;
@@ -672,11 +672,11 @@ body {
   resize: none;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ContentContainer > div textarea {
   color: #f2f2f2;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea:focus {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > div textarea:focus {
   resize: vertical;
   max-height: -webkit-max-content;
   max-height: -moz-max-content;
@@ -684,22 +684,22 @@ body {
   background: #e1e2e4;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea:focus {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ContentContainer > div textarea:focus {
   background: #282c32;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > div textarea:disabled {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > div textarea:disabled {
   cursor: pointer;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ContentContainer > div img {
+.Pages > .main_Page .PageData .fileContainer .ContentContainer > div img {
   width: 100%;
   max-height: 120px;
   -o-object-fit: cover;
      object-fit: cover;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer {
   margin: 4px 0;
   border-radius: 5px;
   -webkit-transition: -webkit-box-shadow 300ms;
@@ -709,11 +709,11 @@ body {
   background: #f5f5f7;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer {
   background: #141517;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table {
   position: relative;
   width: 100%;
   border-radius: 5px;
@@ -727,45 +727,45 @@ body {
   background: transparent;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer table {
   color: #f5f6f7;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr {
   height: 42px;
   cursor: pointer;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
   -webkit-transform: translateX(5px);
           transform: translateX(5px);
   background: #e8e9eb;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr:not(:first-child):hover:not(.noHover) {
   background: #080a0e;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr th {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr th {
   font-size: 14px;
   font-weight: 100;
   font-family: inherit;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr td {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr td {
   font-size: 14px;
   font-weight: 100;
   font-family: inherit;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr td img {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr td img {
   -o-object-fit: contain;
      object-fit: contain;
   height: 32px;
   width: 32px;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(1) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(1) {
   height: 36px;
   cursor: auto;
   -webkit-user-select: none;
@@ -774,7 +774,7 @@ body {
           user-select: none;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(1):hover {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(1):hover {
   opacity: 1;
   -webkit-transform: none;
           transform: none;
@@ -782,15 +782,15 @@ body {
           box-shadow: none;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(n+2) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(n+2) {
   border-top: 1px solid #e8e9eb;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(n+2) {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer table tr:nth-child(n+2) {
   border-top: 1px solid #282c32;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input {
   position: absolute;
   min-width: 200px;
   top: 8px;
@@ -803,61 +803,61 @@ body {
   background: transparent;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
   padding-bottom: 3px;
   border-bottom: 1px solid #191b1e;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(1) input:focus {
   border-bottom: 1px solid #cacccf;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(2) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(2) {
   max-width: 0;
   width: auto;
   min-width: 160px;
   overflow: hidden;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(3) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(3) {
   width: 80px;
   min-width: 60px;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(4) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(4) {
   width: 100px;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(5) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(5) {
   width: 80px;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(n+3) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(n+3) {
   opacity: 1;
   font-variant: all-petite-caps;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table th:nth-child(n+3) {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer table th:nth-child(n+3) {
   opacity: 0.6;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(n+3) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table td:nth-child(n+3) {
   opacity: 1;
   font-variant: all-petite-caps;
   text-align: center;
   font-size: 15px;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(n+3) {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .ListContentContainer table td:nth-child(n+3) {
   opacity: 0.8;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(1) {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table td:nth-child(1) {
   width: 50px;
   padding: 4px 0 0 4px;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input {
   height: 30px;
   width: 100%;
   font-size: 14px;
@@ -866,17 +866,16 @@ body {
   background: transparent;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input:focus {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input:focus {
   border-bottom: 1px solid;
 }
 
-.Pages > .User_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input:disabled {
+.Pages > .main_Page .PageData .fileContainer .ListContentContainer table td:nth-child(2) input:disabled {
   cursor: pointer;
 }
 
-.Pages > .User_Page .PageData .fileContainer .NewSpan {
+.Pages > .main_Page .PageData .fileContainer .NewSpan {
   height: 38px;
-  margin: 0 0 60px 0;
   padding: 8px;
   border-radius: 5px;
   text-align: center;
@@ -892,20 +891,20 @@ body {
   cursor: pointer;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .NewSpan {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .NewSpan {
   color: #cacccf;
   background: #141517;
 }
 
-.Pages > .User_Page .PageData .fileContainer .NewSpan:hover {
+.Pages > .main_Page .PageData .fileContainer .NewSpan:hover {
   background: #e8e9eb;
 }
 
-.dark-theme .Pages > .User_Page .PageData .fileContainer .NewSpan:hover {
+.dark-theme .Pages > .main_Page .PageData .fileContainer .NewSpan:hover {
   background: #0e0f11;
 }
 
-.Pages > .User_Page .PageInformation .New {
+.Pages > .main_Page .PageInformation .New {
   position: relative;
   display: inline-block;
   height: 36px;
@@ -924,12 +923,12 @@ body {
           user-select: none;
 }
 
-.Pages > .User_Page .PageInformation .New:hover > i {
+.Pages > .main_Page .PageInformation .New:hover > i {
   -webkit-transform: rotate(180);
           transform: rotate(180);
 }
 
-.Pages > .User_Page .PageInformation .New i {
+.Pages > .main_Page .PageInformation .New i {
   font-size: 14px;
   margin-right: 6px;
   -webkit-transition: -webkit-transform 300ms;
@@ -938,7 +937,7 @@ body {
   transition: transform 300ms, -webkit-transform 300ms;
 }
 
-.Pages > .User_Page .PageInformation .toggleDetailsBtn {
+.Pages > .main_Page .PageInformation .toggleDetailsBtn {
   position: relative;
   display: inline-block;
   height: 27px;
@@ -958,7 +957,7 @@ body {
           user-select: none;
 }
 
-.Pages > .User_Page .PageInformation .NewOptions {
+.Pages > .main_Page .PageInformation .NewOptions {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -969,7 +968,7 @@ body {
   color: #f5f6f7;
 }
 
-.Pages > .User_Page .PageInformation .NewOptions div {
+.Pages > .main_Page .PageInformation .NewOptions div {
   display: -ms-inline-grid;
   display: inline-grid;
   width: 100px;
@@ -984,12 +983,12 @@ body {
           user-select: none;
 }
 
-.Pages > .User_Page .PageInformation .NewOptions div:hover {
+.Pages > .main_Page .PageInformation .NewOptions div:hover {
   -webkit-transform: translateY(-1px);
           transform: translateY(-1px);
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation {
+.Pages > .main_Page .PageInformation .ItemInformation {
   position: relative;
   top: 15px;
   height: calc(100% - 130px);
@@ -1002,28 +1001,28 @@ body {
   border-left: 1px solid #e1e2e4;
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation {
   color: #cacccf;
   border-color: #282c32;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation > section {
+.Pages > .main_Page .PageInformation .ItemInformation > section {
   position: relative;
   padding: 5px 10px;
   -webkit-box-shadow: 0px 2px 6px -2px #d6dbdb;
           box-shadow: 0px 2px 6px -2px #d6dbdb;
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation > section {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation > section {
   -webkit-box-shadow: 0px 2px 6px -2px #0e0f11;
           box-shadow: 0px 2px 6px -2px #0e0f11;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData {
   z-index: 2;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name {
   width: 100%;
   font-size: 18px;
   padding: 8px 2px;
@@ -1031,19 +1030,19 @@ body {
   border: none;
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name {
   color: var(--highlight-color);
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
   background: #e8e9eb;
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation .IIData .ItemInfo_Name:focus {
   background: #343743;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_UUID {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData .ItemInfo_UUID {
   padding: 6px 0px;
   text-align: center;
   font-size: 11px;
@@ -1052,7 +1051,7 @@ body {
   border-bottom: 1px solid #393c44;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData img {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData img {
   position: relative;
   -o-object-fit: cover;
      object-fit: cover;
@@ -1066,7 +1065,7 @@ body {
   margin: 8px 0;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData .ItemInfo_Directory {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData .ItemInfo_Directory {
   width: 100%;
   margin-top: -1px;
   padding: 12px 4px;
@@ -1077,7 +1076,7 @@ body {
   color: inherit;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData button {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1097,53 +1096,53 @@ body {
   transition: box-shadow 300ms ease, -webkit-box-shadow 300ms ease;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData button > i {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData button > i {
   color: var(--highlight-color);
   font-size: 15px;
   padding: 1px 4px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData button:hover {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData button:hover {
   -webkit-box-shadow: 0 0 6px var(--highlight-color);
           box-shadow: 0 0 6px var(--highlight-color);
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData button {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation .IIData button {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData table {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData table {
   width: 100%;
   margin: 16px 0;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData table td {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData table td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   height: 28px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData table td > input {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData table td > input {
   height: 20px;
   width: 50px;
   border: none;
   background: transparent;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData table td:nth-child(1) {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData table td:nth-child(1) {
   padding: 0 0 2px 15px;
   font-size: 12px;
   opacity: 0.8;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData table td:nth-child(2) {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData table td:nth-child(2) {
   text-align: right;
   padding-right: 15px;
   font-size: 14px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIData textarea {
+.Pages > .main_Page .PageInformation .ItemInformation .IIData textarea {
   height: 50px;
   width: 100%;
   margin: 6px 0;
@@ -1156,27 +1155,27 @@ body {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .IIData textarea {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation .IIData textarea {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIShare {
+.Pages > .main_Page .PageInformation .ItemInformation .IIShare {
   -webkit-transform: translateY(-16px);
           transform: translateY(-16px);
   padding: 18px 10px 12px 10px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .IIShare > span > input {
+.Pages > .main_Page .PageInformation .ItemInformation .IIShare > span > input {
   height: 34px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation sub {
+.Pages > .main_Page .PageInformation .ItemInformation sub {
   opacity: 0.8;
   padding: 0 1px;
   font-size: 11px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation span {
+.Pages > .main_Page .PageInformation .ItemInformation span {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -1188,7 +1187,7 @@ body {
   color: inherit;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation span > input {
+.Pages > .main_Page .PageInformation .ItemInformation span > input {
   height: 38px;
   width: 100%;
   padding: 3px 4px 6px 8px;
@@ -1197,12 +1196,12 @@ body {
   background: transparent;
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation span > input {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation span > input {
   background: rgba(0, 0, 0, 0.05);
   border-color: #393c44;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation span .Input_Ops_Btn {
+.Pages > .main_Page .PageInformation .ItemInformation span .Input_Ops_Btn {
   display: inline-block;
   height: 31px;
   width: 30px;
@@ -1214,33 +1213,33 @@ body {
   cursor: pointer;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation span .Input_Ops_Btn:hover {
+.Pages > .main_Page .PageInformation .ItemInformation span .Input_Ops_Btn:hover {
   color: var(--highlight-color);
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation span .Input_Ops_Btn {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation span .Input_Ops_Btn {
   background: #4e535a;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation div {
+.Pages > .main_Page .PageInformation .ItemInformation div {
   margin: -6px 0px 6px 0;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation div span {
+.Pages > .main_Page .PageInformation .ItemInformation div span {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation div button {
+.Pages > .main_Page .PageInformation .ItemInformation div button {
   width: 65px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation div button.selected {
+.Pages > .main_Page .PageInformation .ItemInformation div button.selected {
   border: 1px solid var(--highlight-color);
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation div > input {
+.Pages > .main_Page .PageInformation .ItemInformation div > input {
   height: 32px;
   width: 100%;
   padding: 3px 4px 6px 8px;
@@ -1249,26 +1248,26 @@ body {
   background: transparent;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked {
   background: #f5f5f7;
 }
 
-.dark-theme .Pages > .User_Page .PageInformation .ItemInformation .Locked {
+.dark-theme .Pages > .main_Page .PageInformation .ItemInformation .Locked {
   background: #141517;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked > span {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked > span {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked > span > h3 {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked > span > h3 {
   font-weight: 400;
   padding: 3px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked > span > i {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked > span > i {
   height: 30px;
   width: 30px;
   padding: 5px;
@@ -1277,11 +1276,11 @@ body {
   cursor: pointer;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked > span > i:hover {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked > span > i:hover {
   opacity: 1;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked h5 {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked h5 {
   padding: 0px 6px 12px 6px;
   opacity: 0.7;
   font-weight: 400;
@@ -1289,16 +1288,16 @@ body {
   font-style: italic;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked .security_option i {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked .security_option i {
   padding: 8px 9px 9px 2px;
   font-size: 16px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked .security_option > input {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked .security_option > input {
   height: 30px;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked .securityEntry input {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked .securityEntry input {
   height: 30px;
   padding-bottom: 6px;
   border-radius: 8px;
@@ -1314,9 +1313,327 @@ body {
   transition: transform 200ms, -webkit-transform 200ms;
 }
 
-.Pages > .User_Page .PageInformation .ItemInformation .Locked .securityEntry input:hover {
+.Pages > .main_Page .PageInformation .ItemInformation .Locked .securityEntry input:hover {
   -webkit-transform: translateY(-2px);
           transform: translateY(-2px);
+}
+
+.Pages > .bin_Page .PageHeader {
+  display: -ms-grid;
+  display: grid;
+}
+
+.Pages > .bin_Page .PageData .binContainer {
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+}
+
+.Pages > .bin_Page .PageData .binContainer table {
+  width: 100%;
+  max-width: 750px;
+  padding: 0 24px;
+  border-spacing: 0px 14px;
+  color: #080a0e;
+}
+
+.dark-theme .Pages > .bin_Page .PageData .binContainer table {
+  color: #f5f6f7;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr {
+  height: 46px;
+  text-align: center;
+  opacity: 0.8;
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-transition: background-color 100ms;
+  transition: background-color 100ms;
+  background: #f5f5f7;
+}
+
+.dark-theme .Pages > .bin_Page .PageData .binContainer table tr {
+  background: #141517;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr.selected {
+  background: #e1e2e4;
+}
+
+.dark-theme .Pages > .bin_Page .PageData .binContainer table tr.selected {
+  background: #83898f;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr:hover:not(.noHover) {
+  background: #cacccf;
+}
+
+.dark-theme .Pages > .bin_Page .PageData .binContainer table tr:hover:not(.noHover) {
+  background: #282c32;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(1) {
+  width: 50px;
+  padding-top: 3px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(2) {
+  text-align: left;
+  padding: 0 20px;
+  font-size: 14px;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(n+3) {
+  opacity: 0.8;
+}
+
+.dark-theme .Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(n+3) {
+  opacity: 0.6;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(3) {
+  width: 80px;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(4) {
+  width: 100px;
+}
+
+.Pages > .bin_Page .PageData .binContainer table tr > td:nth-child(5) {
+  width: 80px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.Pages > .bin_Page .PageData .binIsEmpty {
+  position: absolute;
+  width: 200px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  font-size: 15px;
+  text-align: center;
+  color: #565b61;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-transition: opacity 300ms;
+  transition: opacity 300ms;
+}
+
+.Pages > .bin_Page .PageData .binIsEmpty.displayBinIsEmpty {
+  opacity: 1;
+}
+
+.Pages > .bin_Page .PageData .binIsEmpty > img {
+  width: 100%;
+  height: 140px;
+  margin-bottom: 20px;
+  -webkit-filter: opacity(0.1);
+          filter: opacity(0.1);
+}
+
+.dark-theme .Pages > .bin_Page .PageData .binIsEmpty > img {
+  -webkit-filter: opacity(0.4);
+          filter: opacity(0.4);
+}
+
+.Pages > .bin_Page .binInfoPopup {
+  position: absolute;
+  height: 20px;
+  width: 80%;
+  bottom: -30px;
+  left: 50%;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 20px;
+  color: #f5f6f7;
+  background: #4285f4;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  opacity: 0;
+  -webkit-transition: bottom 300ms, opacity 300ms;
+  transition: bottom 300ms, opacity 300ms;
+}
+
+.Pages > .bin_Page .binInfoPopup.displayPopup {
+  bottom: 10px;
+  opacity: 1;
+}
+
+.Pages > .bin_Page .binInfoPopup i {
+  position: absolute;
+  top: 2px;
+  right: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.Pages > .bin_Page .PageInformation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 20px 0;
+  padding: 5px 20px;
+  gap: 20px;
+  border-left: 1px solid #cacccf;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation {
+  border-left: 1px solid #282c32;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binSize {
+  text-align: center;
+  color: #191b1e;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation .binSize {
+  color: #cacccf;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binUsage {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  padding: 20px;
+  border-radius: 50%;
+  background: #e1e2e4;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation .binUsage {
+  background: #282c32;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binUsage > div {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  background: #fbfbfd;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation .binUsage > div {
+  background: #191b1e;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  gap: 20px;
+  width: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData p {
+  color: #080a0e;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #cacccf;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation .binItemData p {
+  border-bottom: 1px solid #282c32;
+  color: #f5f6f7;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData table {
+  font-size: 14px;
+  color: #191b1e;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation .binItemData table {
+  color: #cacccf;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData table tr {
+  height: 24px;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData table tr > td:nth-child(2) {
+  text-align: right;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData .binRestoreBtn {
+  border-radius: 2px;
+  border: 1px solid #4285f4;
+  background: #4285f433;
+  color: #4285f4;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData .binRestoreBtn:hover {
+  background: #4285f4;
+  color: #f5f6f7;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData .binDeleteBtn {
+  border-radius: 2px;
+  border: 1px solid #ff453a;
+  background: #ff443a33;
+  color: #ff453a;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binItemData .binDeleteBtn:hover {
+  background: #ff453a;
+  color: #f5f6f7;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binBtn {
+  height: 30px;
+  width: 200px;
+  max-width: 100%;
+  border: none;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-transition: background-color 300ms, color 300ms;
+  transition: background-color 300ms, color 300ms;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binEmptyContainer {
+  padding-top: 20px;
+  border-top: 1px solid #cacccf;
+}
+
+.dark-theme .Pages > .bin_Page .PageInformation > .binInformation .binEmptyContainer {
+  border-top: 1px solid #282c32;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binEmptyContainer > .binEmptyBtn {
+  border-radius: 5px;
+  color: #f5f6f7;
+  background: #e53329;
+}
+
+.Pages > .bin_Page .PageInformation > .binInformation .binEmptyContainer > .binEmptyBtn:hover {
+  background-color: #ff443a33;
+  color: #ff453a;
 }
 
 .BlockOut {
@@ -2395,6 +2712,39 @@ body {
 
 .dark-theme .Switch.SW_View .SL_View {
   background: #4285f4;
+}
+
+.Switch.SW_Bin {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  place-self: center;
+  width: 340px;
+  max-width: 80%;
+  margin-top: 2px;
+  border-radius: 20px;
+  padding: 0;
+}
+
+.Switch.SW_Bin > div {
+  width: 33%;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  font-variant: initial;
+  font-size: 13.5px;
+  padding: 3px;
+}
+
+.Switch.SW_Bin .SL_Bin {
+  background: #cacccf;
+}
+
+.dark-theme .Switch.SW_Bin .SL_Bin {
+  background: #83898f;
 }
 
 .ExpandSpan {

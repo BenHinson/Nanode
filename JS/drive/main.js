@@ -1,5 +1,6 @@
 // ================ Variables ================
-let currentPage = "User";
+let currentPage = "main";
+let Section='main';
 
 let NanoName = "home";
 let Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
@@ -7,12 +8,12 @@ let Directory_Route = []; // The Current Route, is whats used for the dir btns. 
 let Tree_Number = 0; // Current Tree Index
 let Tree_Steps = 0; // Current Index in Tree
 let FolderCall = true; // If Route Was Called by Clicking on a Folder
-let Section='main';
 let Directory_Content = '';
 let NanoSelected = [];
 let UserSettings = {};
 
 // ===========================================  Connect to socket.io
+
 window.socket = io.connect('https://Nanode.one', { reconnection:false });
 
 function Socket_Reconnect(status) {
@@ -23,10 +24,33 @@ function Socket_Reconnect(status) {
     Recon.addEventListener("click", function() {if (socket) { Recon.innerText = "Reconnecting"; socket.connect(); } }) }
 }
 
+// =========================================== SocketIO Listeners
+
+if (socket !== undefined) {
+  socket.on("Directory", (Folder_Response) => { // 3 Server Side Events Emit to this
+    // ItemLockEntries - (Successfull Locked Input), ItemCreate, ItemEdit
+    HomeCall({'Reload':true, 'SkipCall':true}, Folder_Response);
+  })
+  
+  socket.on('Link_Return', function(Type, Returned) {
+    clientStatus("CS3", "True", 500);
+    let element = ''
+    if (Type == "LINK") { element = $(".ItemInfo_Link_Input")[0] };
+    if (Type == "DOWNLOAD") { element = $(".ItemInfo_Download_Input")[0] };
+
+    element.value = Returned;
+    $(element).on("click", function(e) {
+      e.target.select();
+      document.execCommand('copy');
+    })
+  });
+}
+
 // =========================================== Initial Actions
+
 document.addEventListener("DOMContentLoaded", async(event) => {
   await Settings_Call();
-  await pageSwitch('User');
+  await pageSwitch(currentPage);
   
   // Check for Connection
   if (socket !== undefined) {
@@ -37,7 +61,22 @@ document.addEventListener("DOMContentLoaded", async(event) => {
   }
 })
 
+
+// =========================================== Directory Caller
+
+Directory_Call = async(FetchData, Folder_Response) => {
+  const {Folder, Section, subSection} = FetchData;
+  clientStatus("CS4", "Wait");
+  let Folder_Request = await fetch(`https://drive.nanode.one/folder/${Folder.toLowerCase()}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`);
+  Folder_Response = await Folder_Request.json();
+  clientStatus("CS4", "Off"); clientStatus("CS7", "Wait", 800);
+  
+  // console.log(Folder_Response);
+  return Folder_Response;
+}
+
 // =========================================== Settings Caller
+
 Settings_Call = async() => {
   let curSet = JSON.parse(localStorage.getItem('user-settings'));
   if (curSet && (new Date().getTime() - new Date(curSet.LastAc).getTime()) < 20*60*1000) {
@@ -58,6 +97,7 @@ Settings_Call = async() => {
 }
 
 // =========================================== Page Changer
+
 pageSwitch = async(pageName) => {
   let pageToSwitch = document.querySelector('.Pages .'+pageName+'_Page');
   document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
@@ -65,6 +105,7 @@ pageSwitch = async(pageName) => {
     await $(pageToSwitch).load(`/views/drive/${pageName}.html`);
   }
   pageToSwitch.classList.add('PageDisplay');
+  Section=pageName;
 }
 
 document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
@@ -76,6 +117,7 @@ document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
 })
 
 // =========================================== Button and Key Listeners
+
 const shortcutKeys = {
   "Ctrl+A": "All",
   "Ctrl+N": "New",

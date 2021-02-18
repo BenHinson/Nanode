@@ -179,7 +179,7 @@ Upload = async () => {
     if (Upload_Queue.length == 0) { // Queue is empty.
       Upload_Visuals.Status("Complete", "Complete");
       fetch('https://drive.nanode.one/upload', { method:'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"message":"Queue_Empty"})} )
-      Directory_Call(NanoID, false);
+      HomeCall({"Folder":NanoID, "Reload": false});
       Upload_Actions.Reset_Upload();
       return;
     }

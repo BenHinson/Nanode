@@ -91,9 +91,11 @@
   
     return trim ? converted.replaceAll('_', ' ') : converted;
   }
-  const N_ItemImage = (type, OID, Block) => { // Used Twice outside Tools
+  const N_ItemImage = (params) => { // Used Twice outside Tools
+    const {type, oID, section, h, w} = params;
+
     if (type == "FOLDER")               return "/assets/file_icons/folder.svg";
-    else if (type.includes('image'))    return Block ? `/storage/${OID}?h=90&w=120` : `/storage/${OID}?h=90&w=120`;
+    else if (type.includes('image'))    return `/storage/${oID}?h=${h}&w=${w}&s=${section}`;
   
     let file_type = N_ItemChecker(type)
     if (file_type == "unknown")     return "/assets/file_icons/file.svg";
