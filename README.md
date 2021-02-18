@@ -6,7 +6,7 @@
 </p>
 
 <div align="center">
-  <h3 align="center" href='https://nanode.one/'>Nanode</h3>
+  <h3 align="center"><a href='https://nanode.one/'>Nanode</a></h3>
 
   <p align="center">
     Nanode is an online cloud storage service, to save, organise and share your files from anywhere and at anytime.
