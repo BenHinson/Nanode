@@ -1,12 +1,12 @@
 <!-- PROJECT LOGO -->
 <p align="center">
-  <a href="https://github.com/BenHinson/nanode">
+  <a href="https://nanode.one/">
     <img src="/assets/logo/Nanode Dark Circle.png" alt="Logo" width="120" height="120">
   </a>
 </p>
 
 <div align="center">
-  <h3 align="center">Nanode</h3>
+  <h3 align="center"><a href='https://nanode.one/'>Nanode</a></h3>
 
   <p align="center">
     Nanode is an online cloud storage service, to save, organise and share your files from anywhere and at anytime.
