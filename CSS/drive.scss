@@ -1925,6 +1925,7 @@ body {
   font-size: 17px;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
   color: map-get($colors, PL_8);
   border: 1px solid map-get($colors, PL_6);
 
@@ -1944,7 +1945,7 @@ body {
     border-radius: 3px;
     z-index: 1;
     background: map-get($colors, PC_1);
-    transition: transform 250ms;
+    transition: transform 250ms ease-in-out;
   }
 
 
@@ -1967,7 +1968,7 @@ body {
     border-radius: 20px;
     padding: 0;
     >div {
-      width: 33%;
+      width: calc(100% / 3);
       border-radius: 20px;
       letter-spacing: 1px;
       font-variant: initial;

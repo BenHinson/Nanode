@@ -70,7 +70,7 @@ async function ViewItem(Type, NanoID) {
   let BlockOut = PopUpBase();
   BlockOut.innerHTML = `
     <div class='Preview'>
-      <svg class='Loading_SVG medium' title='Loading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'> <circle cx='50' cy='50' r='45'></circle> </svg>
+      ${N_Loading('medium')}
     </div>`;
 
   if (Type == "image") {
@@ -136,6 +136,7 @@ function viewContentAsBlock(NanoID) {
   ItemClickListener(UserSettings.ViewT);
   clientStatus("CS7", "Ok", 400);
 }
+
 function viewContentAsList(NanoID) {
   fileContainer.innerHTML = '';
   document.querySelector('.Slider.SL_View').style.transform = 'translateX(0px)';
@@ -199,7 +200,7 @@ async function callItemInformation(selected) {
   const SelectedID = selected.getAttribute('nano-id');
   const NanoPath = selected.getAttribute('directory');
 
-  ItemInfo.innerHTML = "<svg class='Loading_SVG medium' style='position:absolute;top: calc(50% - 18px); left: calc(50% - 18px);' title='Loading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'> <circle cx='50' cy='50' r='45'></circle> </svg>";
+  ItemInfo.innerHTML = N_Loading('medium');
 
   const Request = await fetch('https://drive.nanode.one/user/files/'+SelectedID);
   let RequestInfo = await Request.json();

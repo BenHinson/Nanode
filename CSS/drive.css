@@ -2661,6 +2661,7 @@ body {
   font-size: 17px;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
   color: #080a0e;
   border: 1px solid #cacccf;
 }
@@ -2685,10 +2686,10 @@ body {
   border-radius: 3px;
   z-index: 1;
   background: #4285f4;
-  -webkit-transition: -webkit-transform 250ms;
-  transition: -webkit-transform 250ms;
-  transition: transform 250ms;
-  transition: transform 250ms, -webkit-transform 250ms;
+  -webkit-transition: -webkit-transform 250ms ease-in-out;
+  transition: -webkit-transform 250ms ease-in-out;
+  transition: transform 250ms ease-in-out;
+  transition: transform 250ms ease-in-out, -webkit-transform 250ms ease-in-out;
 }
 
 .Switch.SW_View {
@@ -2731,7 +2732,7 @@ body {
 }
 
 .Switch.SW_Bin > div {
-  width: 33%;
+  width: calc(100% / 3);
   border-radius: 20px;
   letter-spacing: 1px;
   font-variant: initial;

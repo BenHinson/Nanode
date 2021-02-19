@@ -322,7 +322,7 @@ Upload_Visuals = async() => {
       Complete: "<i class='far fa-check-circle green' title='Complete'></i>",
       Incomplete: "<i class='far fa-times-circle dark_red' title='Form Error'></i>",
       Failed: "<i class='far fa-times-circle red' title='Failed'></i>",
-      Uploading: "<svg class='Loading_SVG small' title='Uploading' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'> <circle cx='50' cy='50' r='45'></circle> </svg>",
+      Uploading: N_Loading('medium', 'Uploading'),
       Waiting: "<i class='far fa-clock' title='Waiting'></i>",
     }[status] ?? "<i class='far fa-question-circle' title='Eh? No Status from Server... big yikes.'></i>"
   }
