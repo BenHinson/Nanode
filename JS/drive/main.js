@@ -1,78 +1,27 @@
 // ================ Variables ================
-let currentPage = "main";
-let Section='main';
+let currentPage = 'main';
+let Section = 'main';
 
-let NanoName = "home";
-let Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
-let Directory_Route = []; // The Current Route, is whats used for the dir btns. Doesnt Store Forward
-let Tree_Number = 0; // Current Tree Index
-let Tree_Steps = 0; // Current Index in Tree
-let FolderCall = true; // If Route Was Called by Clicking on a Folder
+let NanoName = 'home';
 let Directory_Content = '';
-let NanoSelected = [];
+let NanoSelected = []; // Items that are currently selected
 let UserSettings = {};
-
-// ===========================================  Connect to socket.io
-
-window.socket = io.connect('https://Nanode.one', { reconnection:false });
-
-function Socket_Reconnect(status) {
-  let Recon = document.getElementById('Recon_Btn');
-  Recon.style.display = status === true ? "none" : "block";
-  if (status === false) {
-    Recon.innerText = Recon.innerText == "Reconnecting" ? "Failed" : "Reconnect";
-    Recon.addEventListener("click", function() {if (socket) { Recon.innerText = "Reconnecting"; socket.connect(); } }) }
-}
-
-// =========================================== SocketIO Listeners
-
-if (socket !== undefined) {
-  socket.on("Directory", (Folder_Response) => { // 3 Server Side Events Emit to this
-    // ItemLockEntries - (Successfull Locked Input), ItemCreate, ItemEdit
-    HomeCall({'Reload':true, 'SkipCall':true}, Folder_Response);
-  })
-  
-  socket.on('Link_Return', function(Type, Returned) {
-    clientStatus("CS3", "True", 500);
-    let element = ''
-    if (Type == "LINK") { element = $(".ItemInfo_Link_Input")[0] };
-    if (Type == "DOWNLOAD") { element = $(".ItemInfo_Download_Input")[0] };
-
-    element.value = Returned;
-    $(element).on("click", function(e) {
-      e.target.select();
-      document.execCommand('copy');
-    })
-  });
-}
 
 // =========================================== Initial Actions
 
 document.addEventListener("DOMContentLoaded", async(event) => {
   await Settings_Call();
   await pageSwitch(currentPage);
-  
-  // Check for Connection
-  if (socket !== undefined) {
-    socket.on('connect', function() { setTimeout(function() { clientStatus("CS0", "Ok"); Socket_Reconnect(true); }, 1000) })
-    socket.on('disconnect', function() {clientStatus("CS0", "False"); Socket_Reconnect(false); })
-    socket.on('connect_error', function() {clientStatus("CS0", "False"); Socket_Reconnect(false); })
-    socket.on('connect_failed', function() {clientStatus("CS0", "Wait"); })  
-  }
 })
-
 
 // =========================================== Directory Caller
 
-Directory_Call = async(FetchData, Folder_Response) => {
+Directory_Call = async(FetchData, Response) => {
   const {Folder, Section, subSection} = FetchData;
-  clientStatus("CS4", "Wait");
-  let Folder_Request = await fetch(`https://drive.nanode.one/folder/${Folder.toLowerCase()}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`);
-  Folder_Response = await Folder_Request.json();
-  clientStatus("CS4", "Off"); clientStatus("CS7", "Wait", 800);
-  
-  // console.log(Folder_Response);
-  return Folder_Response;
+  N_ClientStatus("CS4", "Wait");
+  let Request = await fetch(`https://drive.nanode.one/folder/${Folder.toLowerCase()}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`);
+  N_ClientStatus("CS4", "Off"); N_ClientStatus("CS7", "Wait", 800);
+  return await Request.json();
 }
 
 // =========================================== Settings Caller
@@ -101,7 +50,7 @@ Settings_Call = async() => {
 pageSwitch = async(pageName) => {
   let pageToSwitch = document.querySelector('.Pages .'+pageName+'_Page');
   document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
-  if (pageToSwitch.innerHTML.length == 0) {
+  if (pageToSwitch.innerHTML.length === 0) {
     await $(pageToSwitch).load(`/views/drive/${pageName}.html`);
   }
   pageToSwitch.classList.add('PageDisplay');
@@ -116,6 +65,14 @@ document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
   })
 })
 
+// =========================================== Search Call and Response
+
+Search_Call = async(FetchData, Response) => {
+  const {Search, Section, subSection} = FetchData;
+  let Request = await fetch(`https://drive.nanode.one/search/${Search}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`)
+  return await Request.json();
+}
+
 // =========================================== Button and Key Listeners
 
 const shortcutKeys = {
@@ -127,28 +84,14 @@ const shortcutKeys = {
   "Arrow_Left": "Back a directory",
   "Arrow_Right": "Forward a directory",
 }
-
 const keyMap = {};
-
 onkeydown = function(e) { keyMap[e.key] = true; }
 onkeyup = function(e) { keyMap[e.key] = false; }
 
 // =========================================== Visual Functions
 
-function clientStatus(Light, Status, Time) {
-  lightColours = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
-  if (document.getElementById(Light) != undefined) {
-    document.getElementById(Light).style.cssText = "background: "+lightColours[Status]+"; color:"+lightColours[Status]+";";
-    if (Time) {
-      setTimeout(function() {
-        document.getElementById(Light).style.cssText = "background: none; color: none;";
-      }, Time)
-    }
-  }
-}
-
 function ColorPicker(calledBy, callback) {
-  clientStatus("CS7", "Wait", 400); clientStatus("CS8", "User");
+  N_ClientStatus("CS7", "Wait", 400); N_ClientStatus("CS8", "User");
 
   if ($(".colorContainer")[0]) {$(".colorContainer")[0].remove();}
 
@@ -204,7 +147,8 @@ function ColorPicker(calledBy, callback) {
     $(".colorContainer")[0].remove();
 
     if (typeof RCElement !== 'undefined' && calledBy == "RC") {
-      socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": RCElement.getAttribute('nano-id'), "EditData": {"color": ColorPicked}, "Path": NanoID })
+      // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": RCElement.getAttribute('nano-id'), "EditData": {"color": ColorPicked}, "Path": NanoID })
+      EditPOST({"action": "DATA", "section": Section, "id": RCElement.getAttribute('nano-id'), "data": { "color": ColorPicked }, "path": NanoID})
       return;
     }
     callback(ColorPicked);

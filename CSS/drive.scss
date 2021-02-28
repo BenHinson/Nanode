@@ -287,7 +287,7 @@ body {
   background: map-get($colors, PL_2);
   .dark-theme & { background: map-get($colors, PD_2); }
 
-  #directoryLocation  {
+  .directoryLocation  {
     display: flex;
     align-content: flex-end;
     box-sizing: border-box;
@@ -360,6 +360,12 @@ body {
     background: transparent;
     transition: width 300ms;
 
+    &::placeholder {
+      opacity: 0.8;
+      color: #080a0e;
+      .dark-theme & { color: #f1f1f1; }
+    }
+
     &:focus { width: 300px; }
     .dark-theme & {
       color: map-get($colors, PD_8);
@@ -393,12 +399,15 @@ body {
       }
   
       &:hover:not(.notActive) {
-        color: map-get($colors, PL_8);
-        text-shadow: 0px 0px 3px black;
+        transition: padding 200ms;
+        color: black;
+        // text-shadow: 0px 0px 3px black;
         .dark-theme & {
           color: white;
-          text-shadow: 0px 0px 3px white;
+          // text-shadow: 0px 0px 3px white;
         }
+        &.navigateForward { padding-left: 12px; }
+        &.navigateBackward { padding-right: 12px; }
       }
     }
   }
@@ -752,7 +761,6 @@ body {
         border-left: 1px solid map-get($colors, PL_5);
         .dark-theme & { color: map-get($colors, PD_7); border-color: map-get($colors, PD_4); }
     
-    
         > section {
           position: relative;
           padding: 5px 10px;
@@ -779,7 +787,7 @@ body {
           .ItemInfo_UUID {
             padding: 6px 0px;
             text-align: center;
-            font-size: 11px;
+            font-size: 10px;
             letter-spacing: 0.3px;
             opacity: 0.6;
             border-bottom: 1px solid #393c44;
@@ -1480,6 +1488,7 @@ body {
 ///////////////////////// MOVE /////////////////////////
 
 .listItem-Placeholder {
+  position: absolute;
   height: 38px;
   min-width: 200px;
   padding: 2px 20px 4px 40px;
@@ -1889,6 +1898,7 @@ body {
 
   &.medium { max-width: 36px; }
   &.small { max-width: 24px; }
+  &.upload { position: relative; margin-top: 5px; }
 
   animation: 2s linear infinite svg-animation;
   max-width: 24px;

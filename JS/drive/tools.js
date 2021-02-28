@@ -160,6 +160,22 @@ const N_ConvertSize = (InputSize) => { // Used Twelve Times
   return InputSize;
 }
 
+// Status / Waiting
+const N_Loading = (sizePosClass='medium', title='Loading') => {
+  return `<svg class='Loading_SVG ${sizePosClass}' title='${title}' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'><circle cx='50' cy='50' r='45'></circle></svg>`;
+}
+const lightColours = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
+const N_ClientStatus = (Light, Status, Time) => {
+  if (document.getElementById(Light) != undefined) {
+    document.getElementById(Light).style.cssText = "background: "+lightColours[Status]+"; color:"+lightColours[Status]+";";
+    if (Time) {
+      setTimeout(function() {
+        document.getElementById(Light).style.cssText = "background: none; color: none;";
+      }, Time)
+    }
+  }
+}
+
 
 
 const N_ItemsPath = (Parent, Name, path="") => { // Used Four times
@@ -172,8 +188,4 @@ const N_ItemsPath = (Parent, Name, path="") => { // Used Four times
     path += Name;
     return path;
   }
-}
-
-const N_Loading = (size='medium', title='Loading') => {
-  return `<svg class='Loading_SVG ${size}' title='${title}' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'><circle cx='50' cy='50' r='45'></circle></svg>`;
 }

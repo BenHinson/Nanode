@@ -3,6 +3,10 @@ temp/
 .OLD_JS/
 assets/background
 assets/main
+assets/designs
+assets/dot
+assets/file_icons
+JS/site
 
 # Logs
 logs

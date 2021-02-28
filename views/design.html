@@ -13,25 +13,58 @@
     <link rel="apple-touch-icon" type="image/x-icon" href="/assets/logo/logo_green.svg">
     
     <link rel="stylesheet" href="/CSS/dev/dev.css">
-  </head>
-<body class='DesignPage'>
-  <span><a href="//nanode.one"><img src="/assets/home/Nanode.svg" alt="Nanode"><p>Design History</p></a></span>
 
-  <div class='ImageGrid'>
-    <div><img loading='lazy' src="/assets/designs/21_01_2021_Light.png" alt=""> <span> <h5>Light colour palette</h5><p>21 / 01 / 2021 - Light</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/21_01_2021.png" alt=""> <span> <h5>Top navigation bar, dark colour palette</h5> <p>21 / 01 / 2021</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/01_01_2021.png" alt=""> <span> <h5>Storage, New, Move, Information</h5> <p>01 / 01 / 2021</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/12_07_2020.jpg" alt=""> <span> <h5>Settings, bin, directory location</h5> <p>12 / 07 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/17_06_2020.png" alt=""> <span> <h5>Basic mobile support</h5> <p>17 / 06 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/15_06_2020.jpg" alt=""> <span> <h5>Image lazy load, speed improvements</h5> <p>15 / 06 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/10_06_2020.png" alt=""> <span> <h5>List view</h5> <p>10 / 06 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/05_06_2020.png" alt=""> <span> <h5>Upload rework, item colours</h5> <p>05 / 06 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/11_05_2020.png" alt=""> <span> <h5>Read files remotely - Details, Upload, Span + Folder Creation</h5> <p>11 / 05 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/23_04_2020.png" alt=""> <span> <h5>Addition of file and folder icons</h5> <p>23 / 04 / 2020</p> </span></div>
-    <div><img loading='lazy' src="/assets/designs/15_04_2020.png" alt=""> <span> <h5>Original POC, reading local files</h5> <p>15 / 04 / 2020</p> </span></div>
-  </div>
+    <!-- <script text="text/javascript" src="../JS/drive/tools.js" defer></script>
+    <script text="text/javascript" src="../JS/site/design.js" defer></script> -->
+  </head>
+  <body class='DesignPage DesignPageRevamp'>
+
+    <!-- <div class='PageHeader' style="flex-direction: column;">
+      <a href="//nanode.one"><img src="https://nanode.one/assets/logo/logo_green.svg" alt="Nanode"></a>
+      <div class='Switch SW_Designs'>
+        <div class='Slider SL_Designs'></div>
+        <div swOpPos=1 class='SwitchSelected'>All</div>
+        <div swOpPos=2>Drive</div>
+        <div swOpPos=3>Posters</div>
+      </div>
+    </div> -->
+    
+    <div class='ImageGridColumn'>
+      <div class='ImgColumn'>
+        <img loading='lazy' src="/assets/designs/drive/01_01_2021.png" alt="">
+          <img loading='lazy' src='/assets/designs/logos/Two_Way.svg'>
+          <img loading='lazy' src='/assets/designs/poster/Nanode Poster 1280x640.png'>
+          <img loading='lazy' src='/assets/designs/logos/Nano____.png'>
+          <img loading='lazy' src="/assets/designs/drive/12_07_2020.jpg" alt="">
+          <img loading='lazy' src='/assets/designs/logos/N_Nodes.svg'>
+          <img loading='lazy' src='/assets/designs/logos/N_Colour.svg'>
+          <img loading='lazy' src="/assets/designs/drive/17_06_2020.png" alt="">
+          <img loading='lazy' src="/assets/designs/drive/15_06_2020.jpg" alt="">
+        </div>
+        <div class='ImgColumn'>
+          <img loading='lazy' src='/assets/designs/logos/Collection.svg'>
+          <img loading='lazy' src='/assets/designs/poster/Annotated.png'>
+          <img loading='lazy' src='/assets/designs/logos/NovaLogo.svg'>
+          <img loading='lazy' src='/assets/designs/poster/Server.svg'>
+          <img loading='lazy' src="/assets/designs/drive/05_06_2020.png" alt="">
+          <img loading='lazy' src='/assets/designs/logos/Nanode_Album.svg'>
+        </div>
+        <div class='ImgColumn'>
+          <img loading='lazy' src="/assets/designs/drive/21_01_2021_Light.png" alt=""> 
+          <img loading='lazy' src='/assets/designs/logos/Nanode_Points.png'>
+          <img loading='lazy' src="/assets/designs/drive/21_01_2021.png" alt="">
+          <img loading='lazy' src='/assets/designs/poster/Nanode Poster Server 1280x640.png'>
+          <img loading='lazy' src='/assets/designs/poster/Afterlife-Nanode.jpg'>
+          <img loading='lazy' src='/assets/designs/poster/NanodeDesk.jpg'>
+          <img loading='lazy' src='/assets/designs/logos/Noon.svg'>
+          <img loading='lazy' src='/assets/designs/poster/Poster.png'>
+        </div>
+      </div>
+    </div>
+    <!-- <div class='ImageGrid'> </div> -->
 </body>
 </html>
+
 
 <script>
   document.querySelectorAll('img').forEach((image) => {

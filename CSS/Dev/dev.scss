@@ -350,6 +350,111 @@ body {
 }
 
 
+.DesignPageRevamp {
+  .PageHeader {
+    display: flex;
+    height: 57px;
+    padding: 14px 24px;
+    > a {
+      position: absolute;
+      width: 28px;
+    }
+  }
+
+  .ImageGridColumn {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 16px;
+    .ImgColumn {
+      flex: 33%;
+      max-width: 33%;
+      padding: 0 16px;
+      img {
+        margin-top: 32px;
+        vertical-align: middle;
+        width: 100%;
+        background: #fff;
+      }
+    }
+  }
+
+}
+
+.Loading_SVG {
+  position:absolute;
+  top: calc(50% - 18px);
+  left: calc(50% - 18px);
+
+  &.medium { max-width: 36px; }
+  &.small { max-width: 24px; }
+
+  animation: 2s linear infinite svg-animation;
+  max-width: 24px;
+  circle {
+    animation: 1.4s ease-in-out infinite both circle-animation;
+    display: block;
+    fill: transparent;
+    stroke: map-get($colors, PD_8);
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 280;
+    stroke-width: 10px;
+    transform-origin: 50% 50%;
+
+    @keyframes circle-animation {
+      0%, 25% { stroke-dashoffset: 280; transform: rotate(0); }
+      50%, 75% { stroke-dashoffset: 75; transform: rotate(45deg); }
+      100% { stroke-dashoffset: 280; transform: rotate(360deg); }
+    }
+  }
+  @keyframes svg-animation {
+    0% { transform: rotateZ(0deg); }
+    100% { transform: rotateZ(360deg) }
+  }
+}
+
+.Switch {
+  text-align: center;
+  color: map-get($colors, PD_8);
+  border: 1px solid map-get($colors, PD_4);
+  overflow: hidden;
+  cursor: pointer;
+
+  >div {
+    height: 23px;
+  }
+
+  &.SW_Designs {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    place-self: center;
+    width: 340px;
+    max-width: 80%;
+    margin-top: 2px;
+    border-radius: 20px;
+    padding: 0;
+    user-select: none;
+
+    >div {
+      width: calc(100% / 3);
+      border-radius: 20px;
+      letter-spacing: 1px;
+      font-size: 13.5px;
+      padding: 1px;
+      z-index: 1;
+    }
+    .SL_Designs {
+      position: absolute;
+      transition: transform 250ms ease-in-out;
+      background: map-get($colors, PD_4);
+    }
+  }
+}
+
+
+
+
 
 
 

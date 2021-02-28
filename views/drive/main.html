@@ -1,11 +1,11 @@
-<div class='PageContainer'>
+<div class='PageContainer homePageContainer'>
   
   <div class='PageHeader'>
     <div class='PageControls'>
-      <span id="directoryControlBack" title="Back"><i class="fas fa-chevron-left"></i></span>
-      <span id="directoryControlForward" title="Forward"><i class="fas fa-chevron-right"></i></span>
+      <span class="navigateBackward" title="Back"><i class="fas fa-chevron-left"></i></span>
+      <span class="navigateForward" title="Forward"><i class="fas fa-chevron-right"></i></span>
     </div>
-    <div id='directoryLocation' type='text' placeholder='Current Directory'></div>
+    <div class='directoryLocation' type='text' placeholder='Current Directory'></div>
     <input class='search' type="text" placeholder="Search...">
     <!-- <div class='PageInformationToggle'><i class='fas fa-chevron-right'></i></div> -->
   </div>
@@ -28,3 +28,4 @@
 <script>$.ajaxPrefilter(function(options) { options.async = true; });</script>
 <script text="text/javascript" src="/JS/drive/main/listeners.js"></script>
 <script text="text/javascript" src="/JS/drive/main/viewer.js"></script>
+<script text="text/javascript" src="/JS/drive/main/navigate.js"></script>

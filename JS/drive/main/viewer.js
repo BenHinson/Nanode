@@ -16,34 +16,16 @@ const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
 const UC_Queue_Viewer = document.getElementsByClassName('UC_Queue_Viewer')[0];
 const UC_Queue_Viewer_Table = document.querySelector('.UC_Queue_Viewer table tbody');
 
-
-
-HomeCall = async(CallData, Resp) => {
-  const {Folder=NanoName, Reload=true, Skip=false} = CallData;
-  
-  FolderCall = Reload;
-
-  if (!Skip) {
-    Resp = await Directory_Call({'Folder': Folder, 'Section': 'main', 'subSection': ''})
-  }
-
-  if (Resp.Auth) { RightBar_Security_Inputs(Resp);}
-  else if (Resp.Parent) {
-    NanoName = Resp.Parent.id == "homepage" ? "homepage" : Resp.Parent.name;
-    NanoID = Resp.Parent.id;
-    NanoSelected = [];
-    Directory_Content = Resp.Contents;
-
-    Route(NanoID, NanoName);
-    UserSettings.ViewT == 0 ? viewContentAsBlock(NanoID) : viewContentAsList(NanoID);
-    uploadDirectory = NanoName == "homepage" ? "_GENERAL_" : NanoName;
-    setupFileMove();
-  }
-}
-
-HomeCall({"Folder":NanoName});
-
 // ========================
+
+// Socket IO Removal - Why? Although very useful.
+//    Have to load code and Connect everytime.
+//    A loss of connection requires manually reconnecting.
+//    If a socket request is the first event after a cookie has ran out, you cant set the new cookie on the server.
+
+// Fix of Navigation
+
+
 
   // File Move for Block.
 
@@ -128,13 +110,14 @@ function viewContentAsBlock(NanoID) {
 
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
-        socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
+        // socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
+        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NanoID})
       })
     })
   }
 
   ItemClickListener(UserSettings.ViewT);
-  clientStatus("CS7", "Ok", 400);
+  N_ClientStatus("CS7", "Ok", 400);
 }
 
 function viewContentAsList(NanoID) {
@@ -181,21 +164,23 @@ function viewContentAsList(NanoID) {
     fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
-        socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
+        console.log("160");
+        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NanoID})
+        // socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
       })
   })
   }
   
   ItemClickListener(UserSettings.ViewT);
-  clientStatus("CS7", "Ok", 400);
+  N_ClientStatus("CS7", "Ok", 400);
 }
 
 /////////////////////////   RIGHT BAR   //////////////////////////////
 
 async function callItemInformation(selected) {
   if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
-  clientStatus("CS2", "True", 500); clientStatus("CS4", "Wait", 400);
-  clientStatus("CS5", "Wait", 300); clientStatus("CS7", "Wait", 300);
+  N_ClientStatus("CS2", "True", 500); N_ClientStatus("CS4", "Wait", 400);
+  N_ClientStatus("CS5", "Wait", 300); N_ClientStatus("CS7", "Wait", 300);
 
   const SelectedID = selected.getAttribute('nano-id');
   const NanoPath = selected.getAttribute('directory');
@@ -205,7 +190,7 @@ async function callItemInformation(selected) {
   const Request = await fetch('https://drive.nanode.one/user/files/'+SelectedID);
   let RequestInfo = await Request.json();
   RequestInfo = RequestInfo[SelectedID];
-  clientStatus("CS3", "True", 600);
+  N_ClientStatus("CS3", "True", 600);
 
   // console.log(RequestInfo);
   ItemInfo.innerHTML = `
@@ -259,8 +244,8 @@ async function callItemInformation(selected) {
 function ItemInfoListeners(ItemRequest) {
 
   document.querySelector('.ItemInfo_Name').addEventListener('change', function(e) {
-    FolderCall = false;
-    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"name": e.target.value}, "Path": NanoID} )
+    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"name": e.target.value}, "Path": NanoID} )
+    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "name": e.target.value }, "path": NanoID})
   })
 
   document.querySelector('.ItemInfo_Tab').addEventListener('click', function() {
@@ -277,11 +262,13 @@ function ItemInfoListeners(ItemRequest) {
   })
 
   document.querySelector('.ItemInfo_Color').addEventListener('change', function(e) {
-    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value}, "Path": NanoID })
+    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value}, "Path": NanoID })
+    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "color": e.target.value }, "path": NanoID})
   })
 
   document.querySelector('.ItemInfo_Description').addEventListener('change', function(e) {
-    socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"description": e.target.value}})
+    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"description": e.target.value}})
+    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "description": e.target.value }})
   })
 
 
@@ -291,15 +278,34 @@ function ItemInfoListeners(ItemRequest) {
     // to add after: $(".parent > h2:nth-child(1)").after("<h6>html text to add</h6>");
   })
 
-  document.querySelector('.ItemInfo_Link_Input').addEventListener('click', function(e) { // Link
-    if (!e.target.value) { socket.emit('Share', ({"Action": "Link", "section": Section, "objectID": ItemRequest.id})); }
-    else { e.target.select(); document.execCommand('copy'); }
+  document.querySelector('.ItemInfo_Link_Input').addEventListener('click', async function(e) { // Link
+    if (!e.target.value) {
+
+      const Form = { 
+        "ACTION": "LINK",
+        "oID": ItemRequest.id,
+        "SECTION": Section,
+      }
+      
+      let res = await fetch('https://drive.nanode.one/share', {
+        method:'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
+      })
+  
+      N_ClientStatus("CS3", "True", 500)
+      let resp = await res.json();
+      resp.link ? e.target.value = resp.link : e.target.style.color = 'crimson';
+    }
+    e.target.select();
+    document.execCommand('copy');
   })
 }
 
 
+
 function RightBar_Security_Inputs(itemLocked) {
-  clientStatus("CS7", "Wait", 400); clientStatus("CS5", "False");
+  N_ClientStatus("CS7", "Wait", 400); N_ClientStatus("CS5", "False");
 
   ItemInfo.innerHTML = '<section class="Locked"><span><h3>Locked</h3><i class="far fa-times-circle"></i></span><h5>Enter the items credentials to view</h5></section>';
 
@@ -332,7 +338,7 @@ function RightBar_Security_Inputs(itemLocked) {
     switch (await res.status) {
       case 200:
         ItemInfo.innerHTML = '';
-        clientStatus("CS5", "Ok", 400)
+        N_ClientStatus("CS5", "Ok", 400)
         HomeCall({"Reload":true, "Skip": true}, await res.json());
         break;
       case 401:
@@ -346,13 +352,13 @@ function RightBar_Security_Inputs(itemLocked) {
 //////////////////////////   POP UPS   /////////////////////////////////
 
 function PopUpBase() {
-  clientStatus("CS7", "Wait", 500); clientStatus("CS8", "User");
+  N_ClientStatus("CS7", "Wait", 500); N_ClientStatus("CS8", "User");
 
   if (document.querySelector('.BlockOut')) { return document.querySelector('.BlockOut'); }
   let BlockOut = document.createElement('div');
   BlockOut.setAttribute('class', "BlockOut")
   document.body.appendChild(BlockOut)
-  BlockOut.addEventListener("mousedown", function(e) { e.stopImmediatePropagation(); if (e.target == BlockOut) { BlockOut.remove(); clientStatus("CS8", "Off"); } })
+  BlockOut.addEventListener("mousedown", function(e) { e.stopImmediatePropagation(); if (e.target == BlockOut) { BlockOut.remove(); N_ClientStatus("CS8", "Off"); } })
   return BlockOut;
 }
 
@@ -383,8 +389,9 @@ function PopUp_Accept_Cancel(Action, Title, Accept, Decline, Text) { // Delete (
         else {console.log('Invalid Span ID'); return;}
       }
       let forDeletion = NanoSelected.length ? NanoSelected : [selectedItem.getAttribute('nano-id')];
-      FolderCall = false;
-      socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": forDeletion, "To": "bin", "Path": NanoID})
+      // socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": forDeletion, "To": "bin", "Path": NanoID})
+      // socket.emit('ItemEdit', {"action": "DELETE", "section": Section, "ID": forDeletion, "Path": NanoID})
+      EditPOST({"action": "DELETE", "section": Section, "id": forDeletion, "path": NanoID})
     }
     BlockOut.remove();
   });
@@ -406,14 +413,17 @@ function PopUp_New_Span() {
   `
 
   document.querySelector('.Popup_Reject').addEventListener('click', function() { BlockOut.remove(); })
-  document.querySelector('.Popup_Accept').addEventListener('click', function() {
-    if (!$(".Popup_Input_Name")[0].value) { $(".Popup_Input_Name")[0].style.borderColor = "crimson"; return; }
-
-    FolderCall = false;
-    socket.emit('ItemCreate', {"section": Section, "type": "Span", "name": $(".Popup_Input_Name")[0].value, Path: NanoID});
-
-    clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
-    BlockOut.remove();
+  document.querySelector('.Popup_Accept').addEventListener('click', async function() {
+    let created = await CreatePOST(
+      { 
+        "section": Section,
+        "path": NanoID,
+        "type": "Span",
+        "name": document.querySelector('.Popup_Input_Name').value || 'New Span'
+      }
+    )
+    if (created.Error) { console.log(created.Error) }
+    else { BlockOut.remove(); }
   })
 }
 
@@ -446,32 +456,58 @@ function PopUp_New_Folder() {
     </div>
   `
 
-  $(".Popup_Dropdown_Content a").on("click", function(e) { 
-    $(".Popup_Location")[0].setAttribute('value', e.target.getAttribute('value'));
-    $(".Popup_Location p")[0].innerText = e.target.innerText; });
-  document.querySelector(".Popup_Option_Colour").addEventListener("click", function(e) { ColorPicker("ISC", function(chosenColor) { e.target.value = chosenColor; e.target.style.background = chosenColor; }) })
-  document.querySelector(".Popup_Reject").addEventListener("click", function() { BlockOut.remove(); clientStatus("CS8", "Off"); })
-  document.querySelector(".Popup_Accept").addEventListener("click", function() {
+  const Popup_Dropdown = BlockOut.querySelector('.Popup_Dropdown');
+  const Popup_Location = BlockOut.querySelector('.Popup_Location');
+  const Popup_Name = BlockOut.querySelector('.Popup_Input_Name');
 
-    if (!$(".Popup_Input_Name")[0].value) { $(".Popup_Input_Name")[0].style.borderColor = "crimson"; return; }
+  const Popup_Description = BlockOut.querySelector('.Popup_Option_Desc');
+  const Popup_Colour = BlockOut.querySelector('.Popup_Option_Colour');
+  const Popup_Pass = BlockOut.querySelector('.Popup_Option_Pass');
+  const Popup_Pin = BlockOut.querySelector('.Popup_Option_Pin');
 
-    let Options = {
-      "description": $(".Popup_Option_Desc")[0].value,
-      "color": N_RGBtoHex($(".Popup_Option_Colour")[0].value),
-      "pass": $(".Popup_Option_Pass")[0].value,
-      "pin": $(".Popup_Option_Pin")[0].value
-    }
-    clientStatus("CS2", "True", 400); clientStatus("CS8", "Off");
+  if (NanoID == "homepage") {
+    const DropDown_Options = Popup_Dropdown.querySelectorAll('.Popup_Dropdown_Content a');
+    DropDown_Options.forEach(option => {
+      option.addEventListener('click', (e) => {
+        Popup_Location.setAttribute('value', e.target.getAttribute('value'));
+        Popup_Location.querySelector('p').innerText = e.target.innerText
+      })
+    })
+  }
 
-    FolderCall = false;
-    socket.emit('ItemCreate', {"parent": (NanoID=="homepage" ? $(".Popup_Location")[0].getAttribute('value') : NanoID), "section": Section, "type": "Folder", "name": $(".Popup_Input_Name")[0].value, "options": Options, Path: NanoID });
+  Popup_Colour.addEventListener("click", function(e) { 
+    ColorPicker("ISC", function(chosenColor) { e.target.value = chosenColor; e.target.style.background = chosenColor; })
+  })
 
-    BlockOut.remove();
+
+  BlockOut.querySelector(".Popup_Reject").addEventListener("click", function() { 
+    BlockOut.remove(); N_ClientStatus("CS8", "Off");
+  })
+
+  BlockOut.querySelector(".Popup_Accept").addEventListener("click", async function() {
+    let created = await CreatePOST(
+      {
+        "section": Section,
+        "path": NanoID,
+        "type": "Folder",
+        "parent": (NanoID=="homepage" ? Popup_Location.getAttribute('value') : NanoID),
+        "name": Popup_Name.value || 'New Folder',
+        "options": {
+          "description": Popup_Description.value,
+          "color": N_RGBtoHex(Popup_Colour.value),
+          "pass": Popup_Pass.value,
+          "pin": Popup_Pin.value
+        }
+      }
+    );
+
+    if (created.Error) { console.log(created.Error) }
+    else { BlockOut.remove(); }
   })
 }
 
 function PopUp_Upload() {
-  clientStatus("CS7", "Wait", 600);
+  N_ClientStatus("CS7", "Wait", 600);
   Upload_Visuals.Status("Choose", "Choose Items");
   Upload_Values[0].innerText = '0 Items';
   Upload_Values[1].innerText = '0 B';
@@ -541,7 +577,7 @@ async function PopUp_Download(Item, Caller) {
     })
     
     document.querySelector(".Popup_Reject").addEventListener("click", () => { 
-      BlockOut.remove(); clientStatus("CS8", "Off"); 
+      BlockOut.remove(); N_ClientStatus("CS8", "Off"); 
     })
 
     document.querySelector('.Popup_Accept').addEventListener('click', async(e) => {

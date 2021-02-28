@@ -226,7 +226,7 @@ Upload = async () => {
     Read_Chunk(Upload.Data, async(e) => {
       Form.file = Array.from(new Uint8Array(e.target.result)); // Fastest and Easiest to Convert on the Server
 
-      clientStatus("CS1", "User", 400);
+      N_ClientStatus("CS1", "User", 400);
       Time_Difference = Date.now();
       let res = await fetch('https://drive.nanode.one/upload', {
         method:'POST',
@@ -322,7 +322,7 @@ Upload_Visuals = async() => {
       Complete: "<i class='far fa-check-circle green' title='Complete'></i>",
       Incomplete: "<i class='far fa-times-circle dark_red' title='Form Error'></i>",
       Failed: "<i class='far fa-times-circle red' title='Failed'></i>",
-      Uploading: N_Loading('medium', 'Uploading'),
+      Uploading: N_Loading('small upload', 'Uploading'),
       Waiting: "<i class='far fa-clock' title='Waiting'></i>",
     }[status] ?? "<i class='far fa-question-circle' title='Eh? No Status from Server... big yikes.'></i>"
   }
