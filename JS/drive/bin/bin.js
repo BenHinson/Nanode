@@ -1,10 +1,13 @@
 let binSubSection = 'main';
 const binSections = {1: 'main', 2: 'blocks', 3: 'codex'}
 let binReminderTriggered = false;
+const binSizeColors = {'FOLDER': '#f3cc2d', 'image': '#2df377', 'text': '#b7c6d0'}
 
+const binUsage = document.querySelector('.binUsage');
 const binContainer = document.querySelector('.binContainer');
 const binInfoPopup = document.querySelector('.binInfoPopup');
 const binItemData = document.querySelector('.binItemData');
+const binSize = document.querySelector('.binSize');
 
 // @ == Initialise Bin Page
 BinDataCall();
@@ -12,7 +15,30 @@ BinItemCall();
 binSwitchController();
 
 async function BinDataCall() {
-  console.log('Fetch from server user bin size and data breakdown.')
+  let req = await fetch(`https://drive.nanode.one/settings/bin`)
+  let request = await req.json();
+
+  if (request && request.size.bin) {
+    let totalSize = Object.values(request.size.bin).reduce((a, b) => a + b);
+    binSize.innerText = `Bin Size: ${N_ConvertSize(totalSize)}`
+
+    let sizeMap = new Map(Object.entries(request.size.bin))
+    sizeMap = new Map([...sizeMap].sort((a,b) => a[1] === b[1] ? b[0] - a[0] : a[1] - b[1]))  // Sorts the object values from lowest to highest
+
+    let count = sizeMap.size + 1;
+    for (const [type, size] of sizeMap) { // 0% = dasharray: 280. 100% = dasharray: 565. Range = 285;   // Range: 280 - 495 = 215
+      count--;
+      let rotation = (Math.ceil(2.15 * ((size / totalSize) * 100)) + 280);
+      binUsage.innerHTML += `<svg class='binSize_SVG' viewBox='0 0 100 100' style='z-index:${count};'> <circle cx='50' cy='50' r='45' style='stroke-dasharray: 280; stroke: ${binSizeColors[type] || '#474d50'};'></circle> </svg>`;
+
+      setTimeout(() => { // Without empty function call, no transition is played.
+        binUsage.lastChild.childNodes[1].style.strokeDasharray = rotation;
+      })
+    }
+
+  } else {
+    binSize.innerText = `Bin is Empty`
+  }
 }
 
 async function BinItemCall() {  
@@ -27,7 +53,7 @@ RenderBinList = function(data) {
     document.querySelector('.binIsEmpty').classList.remove('displayBinIsEmpty');
 
     binContainer.innerHTML = `
-      <table class='binTable'>
+      <table class='binTable tableTemplate'>
         <tbody></tbody>
       </table>
     `;

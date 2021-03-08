@@ -1,3 +1,8 @@
+const search = document.querySelector('input.search');
+const searchContainer = document.getElementsByClassName('searchContainer')[0];
+const searchResults = document.querySelector('.searchResults tbody')
+
+
 $(".New").on("click", function() {
   if (document.getElementsByClassName('NewOptions')[0]) { document.getElementsByClassName('NewOptions')[0].remove(); return; }
   $(".ItemInformation").before( `<span class='NewOptions'> <div id='uploadBtn' style='background:linear-gradient(40deg, #2993d8, #203ed3)'><i class='fas fa-cloud-upload-alt'></i>Upload</div> <div id='folderBtn' style='background:linear-gradient(40deg, #ddaa1f, #b35632)'><i class='fas fa-folder-plus'></i>Folder</div> </span>` )
@@ -73,17 +78,50 @@ function ItemActions(selected) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-document.querySelector('input.search').addEventListener('change', async(e) => { // Search
-  let searchInput = e.target.value;
-  let searchParams = {"mine": "up"}
-  if (searchInput) {
-    let req = await fetch(`https://drive.nanode.one/search/${searchInput}`, {
+searchTest = async(params={}) => {
+  let req = await fetch(`https://drive.nanode.one/search`, {
+    method:'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: new Blob( [ JSON.stringify(params) ], { type: 'text/plain' }),
+  })
+  let request = await req.json();
+  console.log(request);
+}
+
+search.addEventListener('click', (e) => {
+  if (!searchContainer.classList.contains('searchActive')) {
+    searchContainer.classList.toggle('searchActive');
+    if (searchResults.innerHTML.length) {
+      searchResults.parentNode.classList.toggle('display');
+    }
+    
+    document.addEventListener('click', closeSearch);
+
+    function closeSearch(e) {
+      if (!searchContainer.contains(e.target)) {
+        searchContainer.classList.toggle('searchActive');
+        searchResults.parentNode.classList.remove('display');
+        if (!search.value) {
+          searchResults.innerHTML = '';
+        }
+        document.removeEventListener('click', closeSearch)
+      }
+    }
+  }  
+})
+
+search.addEventListener('change', async(e) => { // Search
+  let searchParams = {"input": e.target.value}
+  if (searchParams.input) {
+    let req = await fetch(`https://drive.nanode.one/search`, {
       method:'POST',
       headers: {'Content-Type': 'application/json'},
       body: new Blob( [ JSON.stringify(searchParams) ], { type: 'text/plain' }),
     })
     let request = await req.json();
     console.log(request);
+
+    renderSearch(request);
 
     // Stretch search to whole topbar.
     //      Add Search Icon
@@ -92,6 +130,8 @@ document.querySelector('input.search').addEventListener('change', async(e) => { 
     //      Changing Options requests the search again with new params?
     //      ONLY show first 5 items when in dropdown search mode. Have 'show more' button for full request.  View All Results
     //      Full request loads the items into the directory instead.
+
+    // Save dropdown search results on client so when user 'off-clicks' and clicks back on, the results are loaded.
 
     // Go to directory button.
     //      Gets parent and loads directory. If a span... ?
@@ -109,7 +149,6 @@ document.querySelector('input.search').addEventListener('change', async(e) => { 
     // ALTERNATIVE:
     // Load requests in real time and display in a dropdown menu from the search
   }
-
 })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

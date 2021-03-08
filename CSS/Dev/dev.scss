@@ -153,9 +153,12 @@ body {
     color: #d4e917;
   }
   & h4 {
-    color: rgb(204, 204, 221);
-    font-size: 15px;
+    width: fit-content;
     margin-top: 12px;
+    padding-bottom: 2px;
+    font-size: 15px;
+    color: rgb(204, 204, 221);
+    border-bottom: 2px solid #a266e7;
   }
   & h5 {
     color: #2ccc74;
@@ -234,13 +237,36 @@ body {
     margin-top: 15px;
     list-style: inside;
     & li {
-      margin: 4px 0 0 20px;
+      margin: 6px 0 0 20px;
       color: #c7cdd3;
       font-size: 15px;
       font-weight: 500;
     }
+    & h4 {
+      color: #f1f1f1;
+      padding-bottom: 2px;
+      border-bottom: 2px solid #a266e2;
+      font-weight: inherit;
+      margin-top: 12px;
+      width: fit-content;
+    }
+    & h5 {
+      color: inherit;
+      font-weight: inherit;
+      >p {
+        margin-top: 15px;
+        font-weight: 600;
+        font-style: italic;
+        font-size: 16px;
+      }
+    }
     & span {
       padding-left: 40px;
+    }
+    & img {
+      max-height: 360px;
+      max-width: 360px;
+      cursor: pointer;
     }
   }
 }

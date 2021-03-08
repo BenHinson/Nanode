@@ -175,6 +175,29 @@ function viewContentAsList(NanoID) {
   N_ClientStatus("CS7", "Ok", 400);
 }
 
+/////////////////////////     SEARCH    //////////////////////////////
+
+function renderSearch(results) {
+  searchResults.parentNode.classList.add('display');
+  searchResults.innerHTML = '';
+
+  results.Found.forEach((item) => {
+    searchResults.innerHTML += `
+      <tr type='${N_ItemChecker(item.type.mime)}' nano-id='${item.id}' rc='Bin_Item' rcOSP='TD'>
+        <td><img loading='lazy' height='38' width='38' src='${N_ItemImage({"type":item.type.mime, "oID": item.id, "section": "main", "h": 38, "w": 38})}'></img></td>
+        <td>${N_CapFirstLetter(item.name)}</td>
+        <td>${N_CapFirstLetter(N_TypeChecker(item.type.mime, "TRIM"))}</td>
+        <td>${N_DateFormater(item.time?.modified?.stamp || item.time?.created?.stamp)}</td>
+        <td>${item.size > 1 ? N_ConvertSize(item.size) : "-"}</td>
+      </tr>
+    `
+  })
+  // if (SpeechRecognitionResultList)
+  if (results.Found.length == 5) {
+    searchResults.innerHTML += ` <div class='searchLoadMore'>Load More</div> `
+  }
+}
+
 /////////////////////////   RIGHT BAR   //////////////////////////////
 
 async function callItemInformation(selected) {

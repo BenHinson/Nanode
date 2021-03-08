@@ -368,6 +368,106 @@ section img {
   width: 200px;
 }
 
+.S_3 {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  min-height: 40vh;
+  background: #f5f6f7;
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+}
+
+.S_3 > h3 {
+  position: absolute;
+  width: 100%;
+  margin-top: 30px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 300;
+  font-family: 'Inter';
+  text-transform: uppercase;
+}
+
+.S_3 div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  width: inherit;
+  padding: 40px 20px;
+}
+
+.S_3 div > span {
+  display: -ms-grid;
+  display: grid;
+  gap: 10px;
+  max-width: 400px;
+  width: 25%;
+}
+
+.S_3 div > span > h1 {
+  height: 26px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  font-size: 20px;
+  font-family: 'Inter';
+  font-weight: 300;
+  text-transform: uppercase;
+  border-bottom: 2px solid #9cf;
+}
+
+.S_3 div > span a {
+  position: relative;
+  text-decoration: none;
+  padding-bottom: 5px;
+}
+
+.S_3 div > span a:hover:before {
+  visibility: visible;
+  width: 100%;
+}
+
+.S_3 div > span a:before {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 0;
+  left: 0;
+  bottom: 0;
+  visibility: hidden;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.S_3 div > span a.novaPowered {
+  color: #60cb73;
+}
+
+.S_3 div > span a.novaPowered:before {
+  background-color: #60cb73;
+}
+
+.S_3 div > span a.tensorflowPowered {
+  color: #ff9101;
+}
+
+.S_3 div > span a.tensorflowPowered:before {
+  background-color: #ff9101;
+}
+
+.S_3 div > span a.nordPowered {
+  color: #be13d4;
+}
+
+.S_3 div > span a.nordPowered:before {
+  background-color: #be13d4;
+}
+
 .S_4 {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -437,6 +537,20 @@ section img {
   }
   .S_3 .Brand {
     display: none;
+  }
+  .S_3 div {
+    display: -ms-grid;
+    display: grid;
+    gap: 40px;
+    place-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin-top: 30px;
+  }
+  .S_3 div span {
+    width: 100%;
   }
 }
 

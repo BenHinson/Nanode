@@ -162,9 +162,14 @@ body {
 }
 
 .ContentWrapper h4 {
-  color: #ccccdd;
-  font-size: 15px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   margin-top: 12px;
+  padding-bottom: 2px;
+  font-size: 15px;
+  color: #ccccdd;
+  border-bottom: 2px solid #a266e7;
 }
 
 .ContentWrapper h5 {
@@ -258,14 +263,43 @@ body {
 }
 
 .ContentWrapper ul li {
-  margin: 4px 0 0 20px;
+  margin: 6px 0 0 20px;
   color: #c7cdd3;
   font-size: 15px;
   font-weight: 500;
 }
 
+.ContentWrapper ul h4 {
+  color: #f1f1f1;
+  padding-bottom: 2px;
+  border-bottom: 2px solid #a266e2;
+  font-weight: inherit;
+  margin-top: 12px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.ContentWrapper ul h5 {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.ContentWrapper ul h5 > p {
+  margin-top: 15px;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 16px;
+}
+
 .ContentWrapper ul span {
   padding-left: 40px;
+}
+
+.ContentWrapper ul img {
+  max-height: 360px;
+  max-width: 360px;
+  cursor: pointer;
 }
 
 .DesignPage {

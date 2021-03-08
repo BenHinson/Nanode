@@ -13,9 +13,6 @@
     <link rel="apple-touch-icon" type="image/x-icon" href="/assets/logo/logo_purple.svg">
     
     <link rel="stylesheet" type="text/css" href="/css/Dev/dev.css">
-    
-    <script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
-    <script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body class="dark-theme" style="background: #121214;">
 
@@ -26,18 +23,22 @@
 
         <div class="divide"></div>
         <p>GENERAL</p>
-        <li><a class="DLSelected" id='Intro'>Intro</a></li>
-        <li><a id='ChangeLog'>Change Log</a></li>
-        <li><a id='Incoming'>Incoming</a></li>
-        <!-- <li><a id="WhatWeUse">What We Use</a></li> -->
+        <li><a class="DLSelected" id='intro'>Intro</a></li>
+        <li><a id='changelog'>Change Log</a></li>
+        <li><a id='incoming'>Incoming</a></li>
+        <!-- <li><a id="whatweuse">What We Use</a></li> -->
 
         <p>CALLS</p>
-        <li><a id='Accounts'>Accounts</a></li>
-        <li><a id='Read'>Read</a></li>
-        <li><a id='Write'>Write</a></li>
+        <li><a id='accounts'>Accounts</a></li>
+        <li><a id='read'>Read</a></li>
+        <li><a id='write'>Write</a></li>
+
+        <p>SUB</p>
+        <li><a id='nova'>Nova</a></li>
+        <li><a id='nord'>Nord</a></li>
 
         <!-- <p>OPTIONS</p> -->
-        <!-- <li><a id='Settings'>Settings</a></li> -->
+        <!-- <li><a id='settings'>Settings</a></li> -->
 
       </div>
     </div>
@@ -48,11 +49,35 @@
 </html>
 
 <script>
-  $(".DevContent").load('/views/development/intro.html');
-  $(".DevList > li").on("click", function(e) { SwitchPage(e.target.id, e.target); })
-  SwitchPage = function(targetFile, sideLink) {
-    $(".DevContent").load(`/views/development/${targetFile}.html`);
-    $(".DLSelected")[0].classList.remove('DLSelected')
+  const content = document.querySelector('.DevContent');
+  const pageList = document.querySelectorAll('.DevList li');
+
+  let url = window.location.href.split('https://dev.nanode.one/#')[1];
+  if (url && url.match(/intro|changelog|incoming|accounts|read|write|nova|nord/)) {
+    setSideSelected( document.getElementById(url) )
+    loadPage(`/views/development/${url}.html`);
+  } else {
+    loadPage('/views/development/intro.html');
+  }
+
+  pageList.forEach((page) => {
+    page.addEventListener('click', (e) => { SwitchPage(e.target.id, e.target); })
+  })
+
+  function SwitchPage(targetFile, sideLink) {
+    setSideSelected(sideLink);
+    content.innerHTML = `<svg class='Loading_SVG medium' title='Loading page' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45'></circle></svg>`
+    loadPage(`/views/development/${targetFile}.html`);
+  }
+
+  function setSideSelected(sideLink) {
+    document.getElementsByClassName('DLSelected')[0].classList.remove('DLSelected')
     sideLink.classList.add('DLSelected');
+  }
+
+  function loadPage(page) {
+    fetch(page)
+      .then(data => { return data.text() })
+      .then(data => { content.innerHTML = data; })
   }
 </script>

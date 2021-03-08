@@ -1,0 +1,51 @@
+<div class="ContentWrapper">
+  <h1>Nord Authentication</h1>
+
+  <span>Nord is Nanodes internal system for account authentication inspired by <a href="https://jwt.io/" target="_blank">JWT</a> (JSON Web Token). This page will explain the process behind Nord and how it is integrated.</span>
+
+  <img src="/assets/dev/nord_flowchart.svg" alt="Nord Flowchart" style="max-width: 900px; width: 100%; margin-top: 20px;">
+
+  <h2>Process</h2>
+  <span>○ Nord can be integrated simply into a project and through its middleware, works for both HTTP connections and SocketIO.<br>○ Hooked up to a MongoDB collection, Nord saves authentication data seperately to account data, improving speed and allowing for seperate servers to handle the process.<br>○ By design, Nord tries to avoid checking its information against the database to reduce load and time, as an alternative Nord checks the data parsed against itself and to internal variables.<br>○ Security of the process is pivotal, instead of saving a password or any personal data in the cookies, Nord provides the user account id, all that is needed to fetch data.</span>
+
+  <h2>Cookies</h2>
+  <span>Nord provides two cookies to authenticate users <code>Nord Cookie</code> and <code>Session Cookie</code>. Both cookies are AES 256 bit encrypted and then signed to prevent the tampering or construction of a cookie. The resulting cipher is then sent with headers <code>httpOnly: true</code> and <code>secure: true</code> </span>
+
+  <h4>Nord</h4>
+  <ul>
+    <li>Domain - The domain in which the cookie is assigned too.</li>
+    <li>Cookie ID - An account specific cookie id.</li>
+    <li>User ID - The user assigned to the cookie.</li>
+    <li>Session ID - The Session Cookie the Nord is paired to.</li>
+  </ul>
+
+  <h4>Session</h4>
+  <ul>
+    <li>Domain - The domain in which the cookie is assigned too.</li>
+    <li>Session ID - The session the cookie is assigned to.</li>
+    <li>Time of Creation - When the session was created and assigned to the user.</li>
+    <li>Rotational Key - A server assigned rotational key.</li>
+  </ul>
+
+  <h2>Data</h2>
+  <span>Failure to match, lack of data or outside the time restraints results in a database check to re-submit a cookie or redirect to the login page.</span>
+  <br>
+  <span>
+    <h5>Domain:</h5> The domain of the two cookies are matched together and then to the corresponding <a href="https://www.mongodb.com/" target="_blank">MongoDB</a> collection to find the domains registered user accounts.
+    <br><br>
+    <h5>Cookie ID:</h5> The cookie ID is used to link a user account to a secondary unknowable id, used for verification when submitting a new cookie.
+    <br><br>
+    <h5>User ID:</h5> By saving the user id inside the cookie, a call to the account database is not required. If all other data matches and the session is within the time limit, the user id can be trusted.
+    <br><br>
+    <h5>Session ID:</h5> The session id is used to link the session or computer, to specific information in the database. This unique data can allow blocking of certain sessions, device and time stamp matching and location.
+    <br><br>
+    <h5>Time of Creation:</h5> To prevent infinite access to an account, session cookies are given a time-of-creation (toc). When ANY event is processed through the server, the toc is checked to be within the limits governed, resulting in device and location test if failed.
+    <br><br>
+    <h5>Rotational Key:</h5> As another layer of protection to tempering and as a way to reset ALL granted sessions, the rotational key is server bound and able to change when required, resulting in all users needing to be authenticated again.
+  </span>
+
+
+  
+  
+  <!-- <div></div> -->
+</div>
