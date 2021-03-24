@@ -25,8 +25,6 @@ const UC_Queue_Viewer_Table = document.querySelector('.UC_Queue_Viewer table tbo
 
 // Fix of Navigation
 
-
-
   // File Move for Block.
 
   // The Multiple Update:
@@ -181,6 +179,10 @@ function renderSearch(results) {
   searchResults.parentNode.classList.add('display');
   searchResults.innerHTML = '';
 
+  if (results.Found.length == 0) {
+    searchResults.innerHTML = ` <div class='searchInfoBtn searchNoMatch'>No Matches Found</div> `
+  }
+
   results.Found.forEach((item) => {
     searchResults.innerHTML += `
       <tr type='${N_ItemChecker(item.type.mime)}' nano-id='${item.id}' rc='Bin_Item' rcOSP='TD'>
@@ -192,10 +194,28 @@ function renderSearch(results) {
       </tr>
     `
   })
-  // if (SpeechRecognitionResultList)
   if (results.Found.length == 5) {
-    searchResults.innerHTML += ` <div class='searchLoadMore'>Load More</div> `
+    searchResults.innerHTML += ` <div class='searchInfoBtn searchLoadMore'>Load More</div> `
   }
+}
+
+function paramListeners() {
+  document.querySelectorAll('.searchBy input').forEach(input => {
+    input.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        let option = e.target.value;
+        if (option == 'size') {
+          // Set Min Max Input 
+        }
+      }
+    })
+  })
+}
+
+getSearchParams = () => {
+  searchParamsContainer.querySelectorAll('input:checked').forEach((option) => {
+    console.log(option.value)
+  })
 }
 
 /////////////////////////   RIGHT BAR   //////////////////////////////

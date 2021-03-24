@@ -303,6 +303,7 @@ body {
     overflow: hidden;
     text-align: left;
     background: transparent;
+    z-index: 2;
 
     .dark-theme & {
       color: map-get($colors, PD_8);
@@ -367,7 +368,8 @@ body {
     }
 
     &.searchActive {
-      // ~ .searchParams { } // TO match between siblings. ie: search:focus ~ .searchParams {width: 10%;} will set both search & searchParams width to 10% on search focus.
+      // TO match between siblings. ie: search:focus ~ .searchParams {width: 10%;} will set both search & searchParams width to 10% on search focus.
+      // ~ .searchParams { }
       .search {
         height: 42px;
         width: 100%;
@@ -380,7 +382,7 @@ body {
         height: 42px;
         width: 50px;
         top: 0;
-        opacity: 0.6;
+        opacity: 1;
         pointer-events: all;
       }
     }
@@ -390,10 +392,12 @@ body {
       padding: 0 8px;
       border-radius: 5px;
       color: map-get($colors, PL_8);
-      background: map-get($colors, PL_4);
+      background: map-get($colors, PL_2);
+      border: 1px solid map-get($colors, PL_5);
       z-index: 5;
       
       .dark-theme & {
+        border: none;
         color: map-get($colors, PD_8);
         background: map-get($colors, PD_4);
       }
@@ -421,47 +425,164 @@ body {
         color: map-get($colors, PD_7);
         background: map-get($colors, PD_5);
       }
+      i {
+        transition: transform 300ms;
+      }
+      &:hover i {
+        transform: rotate(90deg);
+      }
     }
 
-    .searchResults {
+    .searchDropdown {
       display: none;
       position: absolute;
-      max-height: 300px;
-      height: fit-content;
       max-width: 100%;
       width: 100%;
       top: 45px;
-      padding: 3px 5px 30px 5px;
       border-radius: 5px;
-      border-spacing: 0 1px;
-      z-index: 5;
-      border: 1px solid map-get($colors, PL_6);
+      z-index: 1;
       background: map-get($colors, PL_4);
-      .dark-theme & {
-        border: 1px solid map-get($colors, PD_4);
-        background: #1f2125;
+      .dark-theme & { background: map-get($colors, PD_4); }
+      &.display {
+        display: grid;
+        padding: 5px 5px 30px 5px;
       }
-      &.display { display: inline-table; }
-    }
-    .searchLoadMore {
-      position: absolute;
-      height: 20px;
-      width: 30%;
-      left: 35%;
-      margin-top: 5px;
-      border-radius: 5px;
-      text-align: center;
-      font-size: 14px;
-      letter-spacing: 1px;
-      font-variant: all-petite-caps;
-      background: #4285f433;
-      color: #4285f4;
-      transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
-      cursor: pointer;
-      user-select: none;
-      &:hover {
-        color: #f5f6f7;
-        background: #4285f4;
+
+      .searchParamsContainer {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        height: 0;
+        width: 50px;
+        border-radius: 5px;
+        overflow: hidden;
+        transition: all 300ms;
+        background: map-get($colors, PL_2);
+        .dark-theme & { background: map-get($colors, PD_5); }
+        &.display {
+          position: relative;
+          height: 120px;
+          width: 100%;
+          margin-bottom: 5px;
+          padding: 5px 10px;
+        }
+
+        form {
+          display: flex;
+          flex-direction: column;
+          width: 25%;
+          p {
+            width: fit-content;
+            margin-bottom: 5px;
+            color: #f5f6f7;
+            font-size: 15px;
+            letter-spacing: 1.2px;
+            font-variant: all-petite-caps;
+            color: map-get($colors, PL_8);
+            border-bottom: 1px solid map-get($colors, PL_6);
+            user-select: none;
+            .dark-theme & {
+              color: map-get($colors, PD_8);
+              border-bottom: 1px solid map-get($colors, PD_6);
+            }
+          }
+          span {
+            margin: 1px 0;
+            label {
+              position: absolute;
+              font-size: 14px;
+              margin: 0 0 4px 6px;
+              color: map-get($colors, PL_8);
+              .dark-theme & { color: map-get($colors, PD_7); }
+            }
+            input[type=radio] {
+              padding: 4px;
+              border-radius: 10px;
+              background-color: #282c32;
+              -webkit-appearance: none;
+              cursor: pointer;
+              &:after {
+                display: block;
+                position: relative;
+                height: 7px;
+                width: 7px;
+                border-radius: 50%;
+                background-color: #565b61;
+                content: '';
+              }
+              &:checked:after {
+                background-color: #99ccff;
+              }
+            }
+            input[type=checkbox] {
+              height: 15px;
+              width: 15px;
+              font-size: 14px;
+              text-align: center;
+              background-color: #282c32;
+              -webkit-appearance: none;
+              cursor: pointer;
+              &:checked:after {
+                position: relative;
+                top: -3px;
+                content: '\2714';
+                color: #99ccff;
+              }
+            }
+          }
+        }
+      }
+
+      .searchResults {
+        display: none;
+        max-height: 300px;
+        max-width: 100%;
+        padding: 0;
+        border-radius: 5px;
+        border-spacing: 0 1px;
+        &.display {
+          display: inline-table;
+        }
+        & tr {
+          opacity: 1;
+          background: map-get($colors, PL_2);
+          .dark-theme & { background: map-get($colors, PD_5); }
+          &:hover:not(.noHover) {
+            background: map-get($colors, PL_6);
+            .dark-theme & { background: map-get($colors, PD_6); }
+          }
+        }
+      }
+      
+      .searchInfoBtn {
+        position: absolute;
+        height: 20px;
+        width: 30%;
+        left: 35%;
+        padding: 2px;
+        border-radius: 5px;
+        font-size: 13px;
+        font-variant: none;
+        text-align: center;
+        letter-spacing: 1px;
+        transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
+        cursor: pointer;
+        user-select: none;
+
+        &.searchLoadMore {
+          margin-top: 5px;
+          background: #4285f433;
+          color: #4285f4;
+          &:hover {
+            color: #f5f6f7;
+            background: #4285f4;
+          }
+        }
+        &.searchNoMatch {
+          margin-top: 3px;
+          background: #e5332933;
+          color: #e53329;
+        }
       }
     }
   }

@@ -1,6 +1,10 @@
 const search = document.querySelector('input.search');
 const searchContainer = document.getElementsByClassName('searchContainer')[0];
-const searchResults = document.querySelector('.searchResults tbody')
+const searchDropdown = document.getElementsByClassName('searchDropdown')[0];
+const searchResults = document.querySelector('.searchResults tbody');
+const searchParams = document.getElementsByClassName('searchParams')[0];
+const searchParamsContainer = document.getElementsByClassName('searchParamsContainer')[0];
+let paramListenersCalled = false
 
 
 $(".New").on("click", function() {
@@ -78,36 +82,30 @@ function ItemActions(selected) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-searchTest = async(params={}) => {
-  let req = await fetch(`https://drive.nanode.one/search`, {
-    method:'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: new Blob( [ JSON.stringify(params) ], { type: 'text/plain' }),
-  })
-  let request = await req.json();
-  console.log(request);
-}
-
 search.addEventListener('click', (e) => {
   if (!searchContainer.classList.contains('searchActive')) {
-    searchContainer.classList.toggle('searchActive');
-    if (searchResults.innerHTML.length) {
-      searchResults.parentNode.classList.toggle('display');
-    }
-    
-    document.addEventListener('click', closeSearch);
+    // Open Search
+    searchContainer.classList.add('searchActive');
+    searchDropdown.classList.add('display');
 
+    searchResults.innerHTML.length ? searchResults.parentNode.classList.add('display') : searchResults.parentNode.classList.remove('display') 
+    
+    // Close Search
+    document.addEventListener('click', closeSearch);
     function closeSearch(e) {
       if (!searchContainer.contains(e.target)) {
-        searchContainer.classList.toggle('searchActive');
-        searchResults.parentNode.classList.remove('display');
-        if (!search.value) {
-          searchResults.innerHTML = '';
-        }
+        searchContainer.classList.remove('searchActive');
+        searchDropdown.classList.remove('display');
+        if (!search.value) searchResults.innerHTML = '';
         document.removeEventListener('click', closeSearch)
       }
     }
   }  
+})
+
+searchParams.addEventListener('click', (e) => {
+  searchParamsContainer.classList.toggle('display');
+  if (!paramListenersCalled) {paramListeners(); paramListenersCalled = true; }
 })
 
 search.addEventListener('change', async(e) => { // Search
