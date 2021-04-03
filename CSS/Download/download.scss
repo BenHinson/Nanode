@@ -13,6 +13,7 @@
 
 
 ::-webkit-scrollbar {
+  height: 0px;
   width: 4px;
 }
 ::-webkit-scrollbar-track {
@@ -135,7 +136,7 @@ table {
     opacity: 0.9;
   }
   & th:nth-child(1) { text-align: left; }
-  & td:nth-child(1) { padding: 0; }
+  & td:nth-child(1) { padding: 0; overflow-x: overlay; }
 
   & th:nth-child(2) { width: 30%; }
   & td:nth-child(2) { text-align: center; font-size: 13px; }

@@ -13,32 +13,38 @@
       <div class='searchParams'><i class="fas fa-cog"></i></div>
       <div class='searchDropdown'>
         <div class='searchParamsContainer'>
-          <form>
-            <p>Within</p>
-            <span><input type="radio" name="searchWithin" value="withinAll" checked> <label>All</label></span>
-            <span><input type="radio" name="searchWithin" value="withinParent"> <label>Current</label></span>
-          </form>
-          <form class='searchBy'>
-            <p>By</p>
-            <span><input type="checkbox" name="Colour" value="color"> <label>Colour</label></span>
-            <span><input type="checkbox" name="Type" value="type"> <label>Type</label></span>
-            <span><input type="checkbox" name="Date" value="date"> <label>Date</label></span>
-            <span><input type="checkbox"name="Size" value="size"> <label>Size</label></span>
-          </form>
-          <form>
-            <p>For</p>
-            <span><input type="radio" name="searchFor" value='onlyAll' checked> <label>All</label></span>
-            <span><input type="radio" name="searchFor" value="onlyFolders"> <label>Folders</label></span>
-            <span><input type="radio" name="searchFor" value="onlyFiles"> <label>Files</label></span>
-            <span><input type="radio" name="searchFor" value="onlyShared"> <label>Shared</label></span>
-          </form>
-          <form>
-            <p>Include</p>
-            <span><input type="checkbox" name="Description" value="description" checked> <label>Description</label></span>
-            <span><input type="checkbox" name="Previous Names" value="prevNames" checked> <label>Previous Names</label></span>
-          </form>
+          <div class='searchSelectors'>
+            <form>
+              <p>Within</p>
+              <span><input type="radio" name="searchWithin" value="withinAll" checked> <label>All</label></span>
+              <span><input type="radio" name="searchWithin" value="withinParent"> <label>Current</label></span>
+            </form>
+            <form>
+              <p>By</p>
+              <span><input type="checkbox" name="Colour" value="color" search='ColorSelect'> <label>Colour</label></span>
+              <span><input type="checkbox" name="Type" value="type" search='TypeSelect'> <label>Type</label></span>
+            </form>
+            <form>
+              <p>In Range</p>
+              <span><input type="checkbox" name="Date" value="date" search='DateRange'> <label>Date</label></span>
+              <span><input type="checkbox"name="Size" value="size" search='SizeRange'> <label>Size</label></span>
+            </form>
+            <form>
+              <p>Only For</p>
+              <span><input type="checkbox" name="searchFor" value="onlyFolders"> <label>Folders</label></span>
+              <span><input type="checkbox" name="searchFor" value="onlyFiles"> <label>Files</label></span>
+            </form>
+            <form>
+              <p>Include</p>
+              <span><input type="checkbox" name="Description" value="description" checked> <label>Description</label></span>
+              <span><input type="checkbox" name="Previous Names" value="prevNames" checked> <label>Previous Names</label></span>
+            </form>
+          </div>
+          <span class='searchOptionInput'></span>
         </div>
-        <table class='searchResults tableTemplate'><tbody></tbody></table>
+        <div class='searchResultsContainer'>
+          <table class='searchResults tableTemplate'><tbody></tbody></table>
+        </div>
       </div>
     </span>
   </div>

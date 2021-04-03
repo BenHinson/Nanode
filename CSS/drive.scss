@@ -443,6 +443,7 @@ body {
       z-index: 1;
       background: map-get($colors, PL_4);
       .dark-theme & { background: map-get($colors, PD_4); }
+
       &.display {
         display: grid;
         padding: 5px 5px 30px 5px;
@@ -450,8 +451,6 @@ body {
 
       .searchParamsContainer {
         position: relative;
-        display: flex;
-        flex-direction: row;
         height: 0;
         width: 50px;
         border-radius: 5px;
@@ -467,89 +466,123 @@ body {
           padding: 5px 10px;
         }
 
-        form {
+        >.searchSelectors {
           display: flex;
-          flex-direction: column;
-          width: 25%;
-          p {
-            width: fit-content;
-            margin-bottom: 5px;
-            color: #f5f6f7;
-            font-size: 15px;
-            letter-spacing: 1.2px;
-            font-variant: all-petite-caps;
-            color: map-get($colors, PL_8);
-            border-bottom: 1px solid map-get($colors, PL_6);
-            user-select: none;
-            .dark-theme & {
-              color: map-get($colors, PD_8);
-              border-bottom: 1px solid map-get($colors, PD_6);
-            }
-          }
-          span {
-            margin: 1px 0;
-            label {
-              position: absolute;
-              font-size: 14px;
-              margin: 0 0 4px 6px;
+          flex-direction: row;
+
+          form {
+            display: flex;
+            flex-direction: column;
+            width: 25%;
+            p {
+              width: fit-content;
+              margin-bottom: 5px;
+              color: #f5f6f7;
+              font-size: 15px;
+              letter-spacing: 1.2px;
+              font-variant: all-petite-caps;
               color: map-get($colors, PL_8);
-              .dark-theme & { color: map-get($colors, PD_7); }
-            }
-            input[type=radio] {
-              padding: 4px;
-              border-radius: 10px;
-              background-color: #282c32;
-              -webkit-appearance: none;
-              cursor: pointer;
-              &:after {
-                display: block;
-                position: relative;
-                height: 7px;
-                width: 7px;
-                border-radius: 50%;
-                background-color: #565b61;
-                content: '';
-              }
-              &:checked:after {
-                background-color: #99ccff;
+              border-bottom: 1px solid map-get($colors, PL_6);
+              user-select: none;
+              .dark-theme & {
+                color: map-get($colors, PD_8);
+                border-bottom: 1px solid map-get($colors, PD_6);
               }
             }
-            input[type=checkbox] {
-              height: 15px;
-              width: 15px;
-              font-size: 14px;
-              text-align: center;
-              background-color: #282c32;
-              -webkit-appearance: none;
-              cursor: pointer;
-              &:checked:after {
-                position: relative;
-                top: -3px;
-                content: '\2714';
-                color: #99ccff;
+            span {
+              margin: 1px 0;
+              label {
+                position: absolute;
+                font-size: 14px;
+                margin: 0 0 4px 6px;
+                color: map-get($colors, PL_8);
+                .dark-theme & { color: map-get($colors, PD_7); }
+              }
+              input[type=radio] {
+                padding: 4px;
+                border-radius: 10px;
+                background-color: map-get($colors, PL_6);
+                .dark-theme & { background-color: map-get($colors, PD_4); }
+                -webkit-appearance: none;
+                cursor: pointer;
+                &:after {
+                  display: block;
+                  position: relative;
+                  height: 7px;
+                  width: 7px;
+                  border-radius: 50%;
+                  background-color: map-get($colors, PL_4);
+                  .dark-theme & { background-color: map-get($colors, PD_5); }
+                  content: '';
+                }
+                &:checked:after {
+                  background-color: map-get($colors, PD_4);
+                  .dark-theme & { background-color: map-get($colors, PC_0); }
+                }
+              }
+              input[type=checkbox] {
+                height: 15px;
+                width: 15px;
+                font-size: 14px;
+                text-align: center;
+                background-color: map-get($colors, PL_6);
+                .dark-theme & { background-color: map-get($colors, PD_4); }
+                -webkit-appearance: none;
+                cursor: pointer;
+                &:checked:after {
+                  position: relative;
+                  top: -3px;
+                  content: '\2714';
+                  color: map-get($colors, PD_4);
+                  .dark-theme & { color: map-get($colors, PC_0); }
+                }
               }
             }
           }
         }
+
+        >.searchOptionInput {
+          display: inline-flex;
+          height: 30px;
+          width: 100%;
+          margin: 9px 0;
+          border-radius: 5px;
+          background: map-get($colors, PL_4);
+          .dark-theme & { background: map-get($colors, PD_4); }
+        }
+
       }
 
-      .searchResults {
-        display: none;
-        max-height: 300px;
-        max-width: 100%;
-        padding: 0;
+      .searchResultsContainer {
+        max-height: 50vh;
         border-radius: 5px;
-        border-spacing: 0 1px;
-        &.display {
-          display: inline-table;
-        }
-        & tr {
-          opacity: 1;
-          background: map-get($colors, PL_2);
-          .dark-theme & { background: map-get($colors, PD_5); }
-          &:hover:not(.noHover) {
-            background: map-get($colors, PL_6);
-            .dark-theme & { background: map-get($colors, PD_6); }
+        overflow-x: hidden;
+        overflow-y: initial;
+
+        &::-webkit-scrollbar { width: 5px; }
+        &::-webkit-scrollbar-track { background: transparent; }
+        &::-webkit-scrollbar-thumb { border-radius: 4px; background: linear-gradient(40deg, #a4b4af, #a9c7d5);}
+        &::-webkit-scrollbar-thumb:hover { background: map-get($colors, PC_0);  }
+
+
+        .searchResults {
+          display: none;
+          max-height: 300px;
+          max-width: 100%;
+          padding: 0;
+          border-radius: 5px;
+          border-spacing: 0 1px;
+          &.display {
+            display: inline-table;
+          }
+          & tr {
+            opacity: 1;
+            background: map-get($colors, PL_2);
+            .dark-theme & { background: map-get($colors, PD_5); }
+            &:hover:not(.noHover) {
+              background: map-get($colors, PL_6);
+              .dark-theme & { background: map-get($colors, PD_6); }
+            }
           }
         }
       }
@@ -1692,6 +1725,7 @@ body {
       text-align: left;
       padding: 0 20px;
       font-size: 14px;
+      line-break: anywhere;
     }
     & >td:nth-child(n+3) { opacity: 0.8; .dark-theme & {opacity:0.6;} }
     & >td:nth-child(3) { width: 80px; }

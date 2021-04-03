@@ -91,7 +91,7 @@ search.addEventListener('click', (e) => {
     searchResults.innerHTML.length ? searchResults.parentNode.classList.add('display') : searchResults.parentNode.classList.remove('display') 
     
     // Close Search
-    document.addEventListener('click', closeSearch);
+    document.addEventListener('mousedown', closeSearch);
     function closeSearch(e) {
       if (!searchContainer.contains(e.target)) {
         searchContainer.classList.remove('searchActive');

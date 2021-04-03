@@ -162,13 +162,13 @@ body {
 }
 
 .ContentWrapper h4 {
+  color: #f1f1f1;
+  padding-bottom: 2px;
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   margin-top: 12px;
-  padding-bottom: 2px;
   font-size: 15px;
-  color: #ccccdd;
   border-bottom: 2px solid #a266e7;
 }
 
@@ -185,6 +185,13 @@ body {
   font-weight: 400;
   display: contents;
   word-break: break-all;
+}
+
+.ContentWrapper b {
+  display: -ms-grid;
+  display: grid;
+  padding: 10px;
+  font-size: 14px;
 }
 
 .ContentWrapper pre {
@@ -266,7 +273,6 @@ body {
   margin: 6px 0 0 20px;
   color: #c7cdd3;
   font-size: 15px;
-  font-weight: 500;
 }
 
 .ContentWrapper ul h4 {
@@ -281,8 +287,12 @@ body {
 }
 
 .ContentWrapper ul h5 {
+  font-size: 15px;
+  display: inline-block;
+  border-left: 4px solid #a266e7;
+  padding-left: 8px;
   color: inherit;
-  font-weight: inherit;
+  font-weight: 700;
 }
 
 .ContentWrapper ul h5 > p {
@@ -300,6 +310,17 @@ body {
   max-height: 360px;
   max-width: 360px;
   cursor: pointer;
+}
+
+.ContentWrapper li {
+  margin: 6px 0 0 20px;
+  color: #c7cdd3;
+  font-size: 15px;
+}
+
+.ContentWrapper img {
+  margin: 20px 0;
+  border-radius: 10px;
 }
 
 .DesignPage {
@@ -644,6 +665,40 @@ body {
   100% {
     -webkit-transform: translateY(0);
             transform: translateY(0);
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .DevSelector {
+    width: 160px;
+  }
+  .DevSelector .NanodeLogo {
+    height: 30px;
+    width: 30px;
+    top: 20px;
+    left: calc(50% - 20px);
+    margin-right: 5px;
+    background: url(/assets/logo/Nanode_Light.svg) no-repeat;
+    -webkit-filter: hue-rotate(60deg);
+            filter: hue-rotate(60deg);
+  }
+  .DevSelector .NanodeLogo img {
+    display: none;
+  }
+  .DevSelector .NanodeLogo p {
+    display: none;
+  }
+  .DevSelector .DevList {
+    width: 150px;
+    top: 60px;
+    padding: 0 10px;
+  }
+  .DevSelector .DevList li {
+    font-size: 15px;
+    margin: 6px 0;
+  }
+  .DevContent {
+    width: calc(100vw - 160px);
   }
 }
 /*# sourceMappingURL=dev.css.map */

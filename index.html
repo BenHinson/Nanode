@@ -43,8 +43,8 @@
       </div>
       <img src="/assets/home/Lines.svg" alt='_' class='IMG_Lines'>
       <span class="MainNav">
-        <a href='https://account.nanode.one'><button class="MV_Account">My Account</button></a>
-        <a href='https://drive.nanode.one'><button class="MV_Drive">Enter Drive</button></a>
+        <a href='https://account.nanode.one'><button class="MV_Account"></button></a>
+        <a href='https://drive.nanode.one'><button class="MV_Drive"></button></a>
       </span>
       <span class='Build'>Alpha 3.3.0</span>
     </section>
@@ -114,6 +114,13 @@
 </html>
 
 <script>
+  (async() => {
+    const Request = await fetch('https://nanode.one/check');
+    let RequestInfo = await Request.json();
+    document.getElementsByClassName('MV_Account')[0].innerText = RequestInfo?.loggedIn == true ? 'My Account' : 'Sign In';
+    document.getElementsByClassName('MV_Drive')[0].innerText = RequestInfo?.loggedIn == true ? 'Enter Drive' : 'Free 10GB Account';
+  })()
+
   document.querySelectorAll('.Showcase div').forEach((sc) => { 
     sc.addEventListener('click', (e) => {
       if (e.currentTarget.classList.contains('Displaying')) { return; }

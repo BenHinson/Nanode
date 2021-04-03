@@ -1,4 +1,28 @@
 <div class="ContentWrapper">
   <h1>Nova Search</h1>
 
+  <span>Nova is Nanodes front-end facing search engine. Nova offers the ability to search for specific queries as well as combine queries. In Range, Including, Within Folders, Only For.</span>
+
+  <img src="/assets/dev/nova_flowchart.svg" alt="Nova Flowchart" style="max-width: 900px; width: 100%;">
+
+  
+  <h2>Search Types</h2>
+  <span>All options can be used simultaneously. Eg: Folders of <code>Colour: #9cf, Size: '50kb - 50mb', Date: '05/06/2007 - 01/03/2021'</code></span>
+  <ul>
+    <li><h5>Within</h5> - Search Within All Directories in the section, or within the current directory.</li>
+    <li><h5>By</h5> - Search by looking for specific colours or types.</li>
+    <li><h5>In Range</h5> - Provides the option to only include items within the range of two dates, and / or two sizes.</li>
+    <li><h5>Only For</h5> - Limits returned items to only Folders, or Files</li>
+    <li><h5>Include</h5> - Tells Nova whether to read and match descriptions and previous names of items to the query.</li>
+  </ul>
+
+  <img src='/assets/dev/search.png' alt='Image of Search' style='max-width:900px; width:100%;'>
+  
+  <h2>Results</h2>
+  <span>At current implementation, Nova does not index item data. As a result, a query requires loading the JSON structure of the required section. 'Within: Current' works differently by finding the parent and iterating through each child.</span>
+  <span>Once the desired Nodes (items) are loaded, Nova checks each element against the queries. If called via the dropdown, Nova stops at 5 matches and returns. If more items are to be searched. Nova also provides a 'Load More' button.</span>
+
+  <img src="/assets/dev/search_matches.png" alt="" style='max-width:600px; width:100%;'>
+
+
 </div>

@@ -4,6 +4,7 @@
 }
 
 ::-webkit-scrollbar {
+  height: 0px;
   width: 4px;
 }
 
@@ -148,6 +149,7 @@ table th:nth-child(1) {
 
 table td:nth-child(1) {
   padding: 0;
+  overflow-x: overlay;
 }
 
 table th:nth-child(2) {

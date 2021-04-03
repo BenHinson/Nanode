@@ -44,7 +44,7 @@ What started as a simple python text editor, to an [electron](https://www.electr
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [Incoming Section](https://dev.nanode.one/) for a list of proposed features.
+See the [Incoming Section](https://dev.nanode.one/#incoming) for a list of proposed features.
 
 
 <!-- LICENSE -->

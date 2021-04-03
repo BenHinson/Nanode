@@ -341,6 +341,7 @@ body {
   overflow: hidden;
   text-align: left;
   background: transparent;
+  z-index: 2;
 }
 
 .dark-theme .PageHeader .directoryLocation {
@@ -547,13 +548,6 @@ body {
 
 .PageHeader .searchContainer .searchDropdown .searchParamsContainer {
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
   height: 0;
   width: 50px;
   border-radius: 5px;
@@ -575,7 +569,17 @@ body {
   padding: 5px 10px;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -586,7 +590,7 @@ body {
   width: 25%;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form p {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form p {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
@@ -603,66 +607,125 @@ body {
           user-select: none;
 }
 
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer form p {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form p {
   color: #f5f6f7;
   border-bottom: 1px solid #83898f;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span {
   margin: 1px 0;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span label {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span label {
   position: absolute;
   font-size: 14px;
   margin: 0 0 4px 6px;
   color: #080a0e;
 }
 
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer form span label {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span label {
   color: #cacccf;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span input[type=radio] {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio] {
   padding: 4px;
   border-radius: 10px;
-  background-color: #282c32;
+  background-color: #cacccf;
   -webkit-appearance: none;
   cursor: pointer;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span input[type=radio]:after {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio] {
+  background-color: #282c32;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:after {
   display: block;
   position: relative;
   height: 7px;
   width: 7px;
   border-radius: 50%;
-  background-color: #565b61;
+  background-color: #e8e9eb;
   content: '';
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span input[type=radio]:checked:after {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:after {
+  background-color: #565b61;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:checked:after {
+  background-color: #282c32;
+}
+
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:checked:after {
   background-color: #99ccff;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span input[type=checkbox] {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox] {
   height: 15px;
   width: 15px;
   font-size: 14px;
   text-align: center;
-  background-color: #282c32;
+  background-color: #cacccf;
   -webkit-appearance: none;
   cursor: pointer;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer form span input[type=checkbox]:checked:after {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox] {
+  background-color: #282c32;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox]:checked:after {
   position: relative;
   top: -3px;
   content: '\2714';
+  color: #282c32;
+}
+
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox]:checked:after {
   color: #99ccff;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchResults {
+.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchOptionInput {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  height: 30px;
+  width: 100%;
+  margin: 9px 0;
+  border-radius: 5px;
+  background: #e8e9eb;
+}
+
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchOptionInput {
+  background: #282c32;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer {
+  max-height: 50vh;
+  border-radius: 5px;
+  overflow-x: hidden;
+  overflow-y: initial;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: linear-gradient(40deg, #a4b4af, #a9c7d5);
+}
+
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer::-webkit-scrollbar-thumb:hover {
+  background: #99ccff;
+}
+
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults {
   display: none;
   max-height: 300px;
   max-width: 100%;
@@ -671,24 +734,24 @@ body {
   border-spacing: 0 1px;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchResults.display {
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults.display {
   display: inline-table;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchResults tr {
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr {
   opacity: 1;
   background: #f5f5f7;
 }
 
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchResults tr {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr {
   background: #565b61;
 }
 
-.PageHeader .searchContainer .searchDropdown .searchResults tr:hover:not(.noHover) {
+.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr:hover:not(.noHover) {
   background: #cacccf;
 }
 
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchResults tr:hover:not(.noHover) {
+.dark-theme .PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr:hover:not(.noHover) {
   background: #83898f;
 }
 
@@ -2309,6 +2372,7 @@ body {
   text-align: left;
   padding: 0 20px;
   font-size: 14px;
+  line-break: anywhere;
 }
 
 .tableTemplate tr > td:nth-child(n+3) {

@@ -82,3 +82,42 @@ Along With File Information Rework, download has been reworked, improved, and co
 Generating a link for items has been developed, with each link looking like so in the database:
    {"_id": {"url": `the url path pointer. 16 character nanoid.`}, {"owner:" `uuid`}, {"object": `object id in users database`}, {"file": `name of item`}, {"mime": `mime-type of item`}}
 Easier Method on server end to read and write account information, reducing development time for account info related features.
+
+
+
+
+   .search {
+      height: 29px;
+      width: 200px;
+      right: 25px;
+      padding: 0 8px;
+      border-radius: 5px;
+      font-size: 15px;
+      border: none;
+      color: map-get($colors, PL_8);
+      background: map-get($colors, PL_4);
+      transition: all 300ms;
+      z-index: 5;
+      
+      .dark-theme & {
+        color: map-get($colors, PD_8);
+        background: map-get($colors, PD_4);
+      }
+  
+      &::placeholder {
+        opacity: 0.8;
+        color: map-get($colors, PL_8);
+        .dark-theme & { color: map-get($colors, PD_8); }
+      }
+  
+      &:focus {
+        position: absolute;
+        height: 42px;
+        width: calc(100% - 50px);
+        top: 8px;
+        padding: 0 5%;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        // padding-left: calc(max(50px, 5%));
+      }
+    }
