@@ -291,8 +291,70 @@ body {
     margin: 20px 0;
     border-radius: 10px;
   }
+
+  & table {
+    max-width: 1200px;
+    width: 100%;
+    margin: 20px 0 5px 0;
+    border-radius: 8px;
+    background: #242528;
+
+    & tr {
+      height: 50px;
+    }
+    & th {
+      font-size: 15px;
+      font-weight: 400;
+      font-variant: all-petite-caps;
+      padding-bottom: 5px;
+      opacity: 0.8;
+    }
+    & td {
+      text-align: center;
+      & t:after {
+        padding-right: 0px;
+      }
+      & x:after {
+        color: #e53329;
+        content: '\2718';
+      }
+      & super {
+        vertical-align: super;
+        font-size: 11px;
+        padding-left: 4px
+      }
+    }
+
+    &.VoidPlans {
+      & tr:nth-child(1) { box-shadow: 0 2px #a266e7 }
+      & th:nth-child(n+3) { width: 75px; background: #282c32; }
+      & td:nth-child(n+3) { background: #282c32; }
+    }
+
+    &.VoidCompare {
+      & th:nth-child(n+2) { box-shadow: 0 2px #a266e7; width: 250px; }
+      & td:nth-child(n+2) { background: #282c32; }
+      & td:nth-child(1) { width: 250px; box-shadow: 2px 0 #a266e7; font-variant: all-petite-caps; }
+      & td { font-size: 15px; }
+    }
+  }
+}
+t:after {
+  padding-right: 6px;
+  content: '\2714';
+  color: #a266e7;
 }
 
+
+// #080a0e, // Black
+// #0e0f11, // Basically Black
+// #141517, // Component_1
+// #191b1e, // Component_2
+// #282c32, // Border_1 | Selected_1   #1f2125
+// #565b61, // Border_2 | Selected_2
+// #83898f, // Highlighted
+// #cacccf, // Text Secondary
+// #f5f6f7, // Text
 
 //////////////////////////// DESIGN PAGE ////////////////////////////
 //////////////////////////// DESIGN PAGE ////////////////////////////

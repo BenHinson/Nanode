@@ -323,6 +323,86 @@ body {
   border-radius: 10px;
 }
 
+.ContentWrapper table {
+  max-width: 1200px;
+  width: 100%;
+  margin: 20px 0 5px 0;
+  border-radius: 8px;
+  background: #242528;
+}
+
+.ContentWrapper table tr {
+  height: 50px;
+}
+
+.ContentWrapper table th {
+  font-size: 15px;
+  font-weight: 400;
+  font-variant: all-petite-caps;
+  padding-bottom: 5px;
+  opacity: 0.8;
+}
+
+.ContentWrapper table td {
+  text-align: center;
+}
+
+.ContentWrapper table td t:after {
+  padding-right: 0px;
+}
+
+.ContentWrapper table td x:after {
+  color: #e53329;
+  content: '\2718';
+}
+
+.ContentWrapper table td super {
+  vertical-align: super;
+  font-size: 11px;
+  padding-left: 4px;
+}
+
+.ContentWrapper table.VoidPlans tr:nth-child(1) {
+  -webkit-box-shadow: 0 2px #a266e7;
+          box-shadow: 0 2px #a266e7;
+}
+
+.ContentWrapper table.VoidPlans th:nth-child(n+3) {
+  width: 75px;
+  background: #282c32;
+}
+
+.ContentWrapper table.VoidPlans td:nth-child(n+3) {
+  background: #282c32;
+}
+
+.ContentWrapper table.VoidCompare th:nth-child(n+2) {
+  -webkit-box-shadow: 0 2px #a266e7;
+          box-shadow: 0 2px #a266e7;
+  width: 250px;
+}
+
+.ContentWrapper table.VoidCompare td:nth-child(n+2) {
+  background: #282c32;
+}
+
+.ContentWrapper table.VoidCompare td:nth-child(1) {
+  width: 250px;
+  -webkit-box-shadow: 2px 0 #a266e7;
+          box-shadow: 2px 0 #a266e7;
+  font-variant: all-petite-caps;
+}
+
+.ContentWrapper table.VoidCompare td {
+  font-size: 15px;
+}
+
+t:after {
+  padding-right: 6px;
+  content: '\2714';
+  color: #a266e7;
+}
+
 .DesignPage {
   background: #080a0e;
 }
