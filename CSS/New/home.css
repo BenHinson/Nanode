@@ -145,6 +145,9 @@ section img {
 }
 
 .S_Main .Central h4 {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   font-size: 15px;
   font-weight: 400;
   font-family: 'Inter';
@@ -221,6 +224,225 @@ section img {
   }
 }
 
+.S_Main .Servers {
+  position: absolute;
+  height: 30vw;
+  max-height: 600px;
+  width: 30%;
+  max-width: 600px;
+  top: 50%;
+  right: 15%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  z-index: 2;
+  background: url("/assets/home/server/server_traffic.svg") bottom no-repeat;
+}
+
+.S_Main .Servers .server {
+  position: absolute;
+  width: 26%;
+  z-index: 3;
+  -webkit-animation: server_bob 5s infinite ease-in-out;
+          animation: server_bob 5s infinite ease-in-out;
+}
+
+.S_Main .Servers .server.ser_0 {
+  bottom: 22%;
+  left: 37%;
+  -webkit-filter: drop-shadow(0px 7px 4px #33c357);
+          filter: drop-shadow(0px 7px 4px #33c357);
+}
+
+.S_Main .Servers .server.ser_1 {
+  bottom: 6%;
+  right: 3%;
+  -webkit-animation-delay: -1s;
+          animation-delay: -1s;
+}
+
+.S_Main .Servers .server.ser_2 {
+  bottom: 6%;
+  left: 3%;
+  -webkit-animation-delay: -3s;
+          animation-delay: -3s;
+}
+
+.S_Main .Servers .server.ser_3 {
+  bottom: 45.4%;
+  left: 3%;
+  -webkit-animation-delay: -2s;
+          animation-delay: -2s;
+}
+
+.S_Main .Servers .server.ser_4 {
+  bottom: 45.4%;
+  right: 3%;
+  -webkit-animation-delay: -4s;
+          animation-delay: -4s;
+}
+
+.S_Main .Servers .shadow {
+  position: absolute;
+  height: 12%;
+  width: 20%;
+  background: url("/assets/home/server/server_shadow.svg") no-repeat;
+  -webkit-filter: brightness(300%);
+          filter: brightness(300%);
+  -webkit-animation: shadow_squeeze 5s infinite ease-in-out;
+          animation: shadow_squeeze 5s infinite ease-in-out;
+}
+
+.S_Main .Servers .shadow.ss_1 {
+  bottom: 3.2%;
+  right: 6%;
+  -webkit-animation-delay: -1s;
+          animation-delay: -1s;
+}
+
+.S_Main .Servers .shadow.ss_2 {
+  bottom: 3.2%;
+  left: 6%;
+  -webkit-animation-delay: -3s;
+          animation-delay: -3s;
+}
+
+.S_Main .Servers .shadow.ss_3 {
+  bottom: 42.8%;
+  left: 6%;
+  -webkit-animation-delay: -2s;
+          animation-delay: -2s;
+}
+
+.S_Main .Servers .shadow.ss_4 {
+  bottom: 42.8%;
+  right: 6%;
+  -webkit-animation-delay: -4s;
+          animation-delay: -4s;
+}
+
+.S_Main .Servers .glow {
+  position: absolute;
+  height: 16%;
+  width: 26%;
+  background: url("/assets/home/server/server_shadow.svg") no-repeat;
+  -webkit-animation: server_glow 5s infinite ease-in-out;
+          animation: server_glow 5s infinite ease-in-out;
+}
+
+.S_Main .Servers .glow.sg_1 {
+  bottom: 6.4%;
+  right: 3%;
+  -webkit-animation-delay: -1s;
+          animation-delay: -1s;
+}
+
+.S_Main .Servers .glow.sg_2 {
+  bottom: 6.4%;
+  left: 3%;
+  -webkit-animation-delay: -3s;
+          animation-delay: -3s;
+}
+
+.S_Main .Servers .glow.sg_3 {
+  bottom: 46%;
+  left: 3%;
+  -webkit-animation-delay: -2s;
+          animation-delay: -2s;
+}
+
+.S_Main .Servers .glow.sg_4 {
+  bottom: 46%;
+  right: 3%;
+  -webkit-animation-delay: -4s;
+          animation-delay: -4s;
+}
+
+@-webkit-keyframes server_bob {
+  0% {
+  }
+  50% {
+    -webkit-transform: translateY(-12px);
+            transform: translateY(-12px);
+  }
+  100% {
+  }
+}
+
+@keyframes server_bob {
+  0% {
+  }
+  50% {
+    -webkit-transform: translateY(-12px);
+            transform: translateY(-12px);
+  }
+  100% {
+  }
+}
+
+@-webkit-keyframes shadow_squeeze {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(0.8);
+            transform: scale(0.8);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes shadow_squeeze {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(0.8);
+            transform: scale(0.8);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@-webkit-keyframes server_glow {
+  0% {
+    -webkit-filter: drop-shadow(0px 10px 12px #4285f4);
+            filter: drop-shadow(0px 10px 12px #4285f4);
+  }
+  50% {
+    -webkit-filter: drop-shadow(0px 20px 8px #4285f4);
+            filter: drop-shadow(0px 20px 8px #4285f4);
+    -webkit-transform: translateY(-12px);
+            transform: translateY(-12px);
+  }
+  100% {
+    -webkit-filter: drop-shadow(0px 10px 12px #4285f4);
+            filter: drop-shadow(0px 10px 12px #4285f4);
+  }
+}
+
+@keyframes server_glow {
+  0% {
+    -webkit-filter: drop-shadow(0px 10px 12px #4285f4);
+            filter: drop-shadow(0px 10px 12px #4285f4);
+  }
+  50% {
+    -webkit-filter: drop-shadow(0px 20px 8px #4285f4);
+            filter: drop-shadow(0px 20px 8px #4285f4);
+    -webkit-transform: translateY(-12px);
+            transform: translateY(-12px);
+  }
+  100% {
+    -webkit-filter: drop-shadow(0px 10px 12px #4285f4);
+            filter: drop-shadow(0px 10px 12px #4285f4);
+  }
+}
+
 .S_Main .Build {
   position: absolute;
   right: 15px;
@@ -243,7 +465,7 @@ section img {
       justify-content: space-around;
   -ms-flex-line-pack: distribute;
       align-content: space-around;
-  height: 200vh;
+  height: 1750px;
   background: #0e0f11;
   color: #f5f6f7;
   z-index: 2;
@@ -256,7 +478,7 @@ section img {
   position: absolute;
   height: 50%;
   width: 100%;
-  background-size: 800px;
+  max-width: 800px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -273,7 +495,7 @@ section img {
 }
 
 .S_Info .bg_fade.bg_left {
-  top: 45%;
+  bottom: 100px;
   left: 0;
   background: url("/assets/home/BG_Left.svg") no-repeat 0%;
   background-size: 700px auto;
@@ -281,7 +503,7 @@ section img {
 
 .S_Info .Showcase {
   position: absolute;
-  top: 12%;
+  top: 230px;
   left: 15%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -371,7 +593,7 @@ section img {
   gap: 20px;
   position: absolute;
   width: 380px;
-  top: 61%;
+  bottom: 280px;
   right: 15%;
   line-height: 25px;
   z-index: 2;
@@ -397,9 +619,9 @@ section img {
 
 .S_Info .Features {
   position: absolute;
-  top: 65px;
+  top: calc(50% - 350px);
   width: 700px;
-  height: 800px;
+  height: 700px;
 }
 
 .S_Info .Features img {
@@ -562,110 +784,202 @@ t:after {
   content: '\2714';
 }
 
-@media only screen and (max-width: 1500px) {
-  .S_4 {
-    height: 200vh;
-    padding: 10vh;
+@media only screen and (max-width: 1400px) {
+  .S_Info {
+    height: 1500px;
   }
-  .S_4 .IMG_Web {
-    background-image: url("/assets/home/WebVertical.svg") !important;
+  .S_Info .bg_fade {
+    background-size: 600px auto !important;
+  }
+  .S_Info .bg_left {
+    bottom: 50px !important;
+  }
+  .S_Info .Showcase {
+    right: 10%;
+  }
+  .S_Info .Showcase_2 {
+    bottom: 150px;
+    right: 10%;
+  }
+  .S_Info .Figures {
+    height: 450px;
+    width: 450px;
+  }
+  .S_Info .Features {
+    height: 600px;
+    width: 600px;
+    top: calc(50% - 300px);
+  }
+  .S_Info .Features > img {
+    height: 70px;
+    width: 70px;
   }
 }
 
 @media only screen and (max-width: 1200px) {
   .S_Info {
-    padding: 10vh 2vw 10vh 5vw;
+    height: 1450px;
+  }
+  .S_Info .bg_fade {
+    background-size: 500px auto !important;
+  }
+  .S_Info .bg_left {
+    bottom: 100px;
   }
   .S_Info .Showcase {
-    width: 40%;
-    min-width: 300px;
+    top: 100px;
+    left: 10%;
   }
-  .S_Info .Showcase div {
-    width: 100%;
+  .S_Info .Showcase_2 {
+    top: auto;
+    bottom: 200px;
+    right: 10%;
   }
   .S_Info .Figures {
-    width: 40%;
-    min-width: 300px;
+    height: 450px;
+    width: 450px;
+  }
+  .S_Info .Features {
+    height: 500px;
+    width: 500px;
+    top: calc(50% - 250px);
+  }
+  .S_Info .Features > img {
+    height: 60px;
+    width: 60px;
   }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1000px) {
   .S_Info {
-    height: auto;
-    padding: 10vh;
+    height: 1250px;
   }
-  .S_Development .Brand {
+  .S_Info .bg_fade {
+    background: none !important;
+    height: auto;
+    width: auto;
+  }
+  .S_Info .Showcase {
+    top: 5%;
+    left: 50px;
+  }
+  .S_Info .Showcase_2 {
+    right: 50px;
+    bottom: 150px;
+  }
+  .S_Info .Figures {
+    height: 400px;
+    width: 400px;
+    position: absolute;
+    right: calc(50vw - 420px);
+    top: 120px;
+  }
+  .S_Info .Features {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    place-content: start;
+    gap: 25px;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    width: 230px;
+    top: auto;
+    bottom: 150px;
+    left: calc(50vw - 320px);
+    -webkit-filter: invert(68%) sepia(170%) saturate(430%) hue-rotate(180deg) brightness(188%);
+            filter: invert(68%) sepia(170%) saturate(430%) hue-rotate(180deg) brightness(188%);
+  }
+  .S_Info .Features > img {
+    position: initial;
+    height: 60px;
+    width: 60px;
+  }
+  .S_Info .Features > img[src="/assets/home/features/nanode.svg"] {
     display: none;
   }
+}
+
+@media only screen and (max-width: 850px) {
+  .S_Info {
+    height: 900px;
+  }
+  .S_Info .Showcase {
+    position: absolute;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    height: auto;
+    top: 60px;
+    left: 10%;
+    gap: 30px;
+  }
+  .S_Info .Showcase div {
+    -ms-flex-preferred-size: calc(50% - 20px);
+        flex-basis: calc(50% - 20px);
+    background: #282c32;
+  }
+  .S_Info .Showcase div p {
+    font-size: 15px;
+  }
+  .S_Info .Showcase h5 {
+    position: absolute;
+    top: -50px;
+    left: 5px;
+    margin: 0;
+    font-size: 28px;
+    font-family: 'gr-bold';
+    text-transform: none;
+  }
+  .S_Info .Showcase_2 {
+    position: absolute;
+    width: 80%;
+    left: 10%;
+    bottom: 350px;
+  }
+  .S_Info .Showcase_2 ul {
+    display: none;
+  }
+  .S_Info .Features {
+    position: absolute;
+    width: 485px;
+    left: calc(50vw - 245px);
+    bottom: 100px;
+  }
+  .S_Info .Figures {
+    display: none;
+  }
+  .S_Development h3 {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    text-align: left;
+    font-size: 28px;
+    font-family: 'gr-bold';
+    opacity: 1;
+  }
   .S_Development div {
-    display: -ms-grid;
-    display: grid;
-    gap: 40px;
-    place-content: center;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    margin-top: 30px;
+    place-items: center;
+    gap: 20px;
   }
   .S_Development div span {
-    width: 100%;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .S_Main header span {
-    width: 260px;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .S_Main .Central {
-    width: auto;
-    margin: 0 20px;
-  }
-  .S_Main .Central > * {
-    max-width: 100%;
-  }
-  .S_Main .Central h1 {
-    font-size: 34px;
-  }
-  .S_Main .Central h2 {
-    font-size: 20px;
-  }
-  .S_Main header a {
-    width: 100%;
-    text-align: center;
-  }
-  .S_Main header span {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    -webkit-box-pack: space-evenly;
-        -ms-flex-pack: space-evenly;
-            justify-content: space-evenly;
-    top: 80px;
-    margin: 0;
-  }
-  .S_Main header span a {
-    width: 120px;
-  }
-  .S_Development {
     height: auto;
-    padding: 5%;
+    width: 85%;
+    max-width: 85%;
+    min-width: 400px;
+    gap: 10px;
   }
-  .S_Development div {
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-  }
-  .S_Development div img {
-    margin: 30px 0;
-  }
-}
-
-@media only screen and (max-width: 500px) {
-  .S_4 {
-    padding: 20px;
+  .S_Development div span h5 {
+    height: 15px;
   }
 }
 /*# sourceMappingURL=home.css.map */
