@@ -393,7 +393,7 @@ body {
 
 .PageHeader .directoryLocation .dirArrow {
   width: 30px;
-  background-image: url(https://nanode.one/assets/svg/Arrow_Right_Black.svg);
+  background-image: url(https://nanode.one/assets/drive/svg/arrow_right_black.svg);
   background-position: center;
   opacity: 0.4;
   -webkit-user-select: none;
@@ -403,7 +403,7 @@ body {
 }
 
 .dark-theme .PageHeader .directoryLocation .dirArrow {
-  background-image: url(https://nanode.one/assets/svg/Arrow_Right_White.svg);
+  background-image: url(https://nanode.one/assets/drive/svg/arrow_right_white.svg);
 }
 
 .PageHeader .searchContainer {
