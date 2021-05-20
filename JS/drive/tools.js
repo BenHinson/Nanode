@@ -79,7 +79,7 @@ const N_TypeChecker = (type, trim) => { // Replace _ with spaces. use _ for file
     case ("multipart/x-gzip"): converted = "gZip"; break;
     case ("application/vnd.rar"): converted = "RAR"; break;
     case ("application/x-7z-compressed"): converted = "7-Zip"; break;
-    // == MISCCCC
+    // == MISC
     case ("application/octet-stream"): converted = "Executable"; break;
     case ("application/xml"): converted = "XML"; break;
     case ("font/otf"): converted = "Font"; break;
@@ -94,12 +94,12 @@ const N_TypeChecker = (type, trim) => { // Replace _ with spaces. use _ for file
 const N_ItemImage = (params) => { // Used Twice outside Tools
   const {type, oID, section, h, w} = params;
 
-  if (type == "FOLDER")               return "/assets/file_icons/folder.svg";
+  if (type == "FOLDER")               return "/assets/drive/file_icons/folder.svg";
   else if (type.includes('image'))    return `/storage/${oID}?h=${h}&w=${w}&s=${section}`;
 
   let file_type = N_ItemChecker(type)
-  if (file_type == "unknown")     return "/assets/file_icons/file.svg";
-  else                            return "/assets/file_icons/"+file_type+".svg";
+  if (file_type == "unknown")     return "/assets/drive/file_icons/file.svg";
+  else                            return "/assets/drive/file_icons/"+file_type+".svg";
 }
 const N_ItemChecker = (item_Type) => { // Used Once outside Tools
   item_Type = item_Type.mime || item_Type;
@@ -108,6 +108,7 @@ const N_ItemChecker = (item_Type) => { // Used Once outside Tools
   if (item_Type.includes("video")) { return "video" }
   if (item_Type.includes("audio")) { return "audio" }
   if (item_Type.includes("text")) { return "text" }
+  if (item_Type.includes("font")) { return "font" }
   return "unknown";
 }
 
@@ -125,7 +126,7 @@ const N_DateFormater = (date) => { // Used Four times (2 in pages)
   if (month.length < 2) month = '0' + month;
   if (day.length < 2)  day = '0' + day;
 
-  return dateFormat == 0 ? [day, month, year].join('/') : [month, day, year].join('/');
+  return UserSettings.user.date == 0 ? [day, month, year].join('/') : [month, day, year].join('/');
 }
 const N_TimeFormater = (time) => { // Used Four times in pages
   let Minutes = Math.floor(time / 60) < 10 ?  "0" + Math.floor(time / 60) : Math.floor(time / 60);
@@ -160,26 +161,35 @@ const N_ConvertSize = (InputSize) => { // Used Twelve Times
   return InputSize;
 }
 
+// Elements
+const N_PareAttr = (element, attrName) => {
+  console.log(element);
+  console.log(attrName);
+  return element.parentElement.getAttribute(attrName);
+}
+
 // Status / Waiting
 const N_Loading = (sizePosClass='medium', title='Loading') => {
   return `<svg class='Loading_SVG ${sizePosClass}' title='${title}' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'><circle cx='50' cy='50' r='45'></circle></svg>`;
 }
-const lightColours = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
-const N_ClientStatus = (Light, Status, Time) => {
-  if (document.getElementById(Light) != undefined) {
-    document.getElementById(Light).style.cssText = "background: "+lightColours[Status]+"; color:"+lightColours[Status]+";";
-    if (Time) {
-      setTimeout(function() {
-        document.getElementById(Light).style.cssText = "background: none; color: none;";
-      }, Time)
-    }
+
+const lightColor = {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"};
+const statusBar = document.querySelector('.clientStatus');
+
+const N_ClientStatus = (pos, status, time) => {
+  if (pos > 9 || pos < 0) { return; }
+  
+  let light = statusBar.children[pos];
+  light.style.cssText = `background:${lightColor[status]}; color:${lightColor[status]};`;
+  if (time) {
+    setTimeout(function() { light.style.cssText = ""; }, time)
   }
 }
 
 
 
 const N_ItemsPath = (Parent, Name, path="") => { // Used Four times
-  if (NanoName == "homepage") {
+  if (NodeName == "homepage") {
     return Parent+" > "+Name;
   } else {
     for (let i=0; i<Directory_Route.length; i++) {

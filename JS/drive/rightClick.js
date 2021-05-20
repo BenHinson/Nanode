@@ -1,47 +1,49 @@
-// HTML with attribute of 'rc-name' |  right-click-name of the object  |  rc-name="centralContentBox"
+// HTML with attribute of 'rc-name' |  right-click-name of the object  |  rc-name="centralContentBox"   |   RCE = Right Click Element
 
-RightClickObjectMenu = {
+const RightClickObjectMenu = {
   "File_Container" : {
     "New Folder": [{"Command": "PopUp_New_Folder"}],
     "Refresh": [{"Command": "refreshDirectory"}],
-    "Nano_SPLIT_1": "",
-    "RC_VAR_Switch_View": [{"Command": 'ChangeView'}], 
-    "RC_VAR_Change_Theme": [{"Command":'changeSetting', 'Var1': 'Theme'}],
-    "Nano_SPLIT_2": "", 
+    "Node_SPLIT_1": "",
+    "RC_VAR_Switch_View": [{"Command": 'ToggleView'}], 
+    "RC_VAR_Change_Theme": [{"Command":'ToggleTheme'}],
+    "Node_SPLIT_2": "", 
     "Upload": [{"Command": "PopUp_Upload", 'Var1':'Upload'}],
   },
   "Homepage_Span" : {
+    "New Folder": [{"Command": "PopUp_New_Folder", "Var1": "RCE"}],
+    "Node_SPLIT_1": "", 
     "RC_VAR_Collapse": [{"Command": "collapseSpan"}],
-    "Nano_SPLIT_1": "", 
+    "Node_SPLIT_2": "", 
     "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Spans and their content <u>cannot</u> be reclaimed."}]
   },
-  "Nano_Folder" : {
+  "Node_Folder" : {
     "Open": [{"Command": "ItemActions"}],
     "View Details": [{"Command": "callItemInformation", "Var1": "RCElement"}],
     "Security": "",
-    "Nano_SPLIT_1": "",
+    "Node_SPLIT_1": "",
     "Move To": "",
     "Create Shotcut": "",
-    "Nano_SPLIT_2": "",
+    "Node_SPLIT_2": "",
     "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
     "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Folders and their contents to the Bin, where they can be reclaimed."}],
-    "Nano_SPLIT_3": "",
+    "Node_SPLIT_3": "",
     "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
   },
-  "Nano_File" : {
+  "Node_File" : {
     "Open": [{"Command": "ItemActions"}],
     "View Details": [{"Command": "callItemInformation", "Var1": "RCElement"}],
     "Security": "",
-    "Nano_SPLIT_1": "",
+    "Node_SPLIT_1": "",
     "Copy To": "",
     "Move To": "",
     "Create Shotcut": "",
-    "Nano_SPLIT_2": "",
+    "Node_SPLIT_2": "",
     "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
     "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Files to the Bin, where they can be reclaimed."}],
-    "Nano_SPLIT_3": "",
+    "Node_SPLIT_3": "",
     "Share": "",
     "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
   },
@@ -63,7 +65,7 @@ document.addEventListener("contextmenu", function(e) {
 
   if (e.target.hasAttribute('rcPar')) { RCElement = e.path[ e.target.getAttribute('rcPar') ] }
   if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { RCElement = e.target.offsetParent; }
-  if (e.target.hasAttribute('rc') && e.target.getAttribute('rc').match(/Nano_Folder|Nano_File/)) { RCElement = e.target; };
+  if (e.target.hasAttribute('rc') && e.target.getAttribute('rc').match(/Node_Folder|Node_File/)) { RCElement = e.target; };
 
   SelectItem(RCElement, "FORCE");
 
@@ -80,7 +82,7 @@ document.addEventListener("contextmenu", function(e) {
         let VarOption = Option;
         if (Option.includes("RC_VAR_")) {  VarOption = window[Option](Option, e) };
         let newOption = document.createElement('li');
-        !Option.includes("Nano_SPLIT") ? newOption.innerText = VarOption : newOption.setAttribute("class", "Nano_SPLIT");
+        !Option.includes("Node_SPLIT") ? newOption.innerText = VarOption : newOption.setAttribute("class", "Node_SPLIT");
         newOption.setAttribute("RCAction", Option)
         $('.RightClickContainer')[0].appendChild(newOption);
       }
@@ -92,7 +94,7 @@ document.addEventListener("contextmenu", function(e) {
     $(".RightClickContainer").fadeIn(100, startFocusOut());
 
     $(".RightClickContainer > li").unbind();
-    $(".RightClickContainer > li").not( $(".Nano_SPLIT") ).click(function(e) {
+    $(".RightClickContainer > li").not( $(".Node_SPLIT") ).click(function(e) {
       let RCAction = e.currentTarget.getAttribute("RCAction");
       RCAction = RightClickObjectMenu[menuName][RCAction];
       window[RCAction[0].Command](RCAction[0].Var1, RCAction[0].Var2, RCAction[0].Var3, RCAction[0].Var4, RCAction[0].Var5);
@@ -115,6 +117,6 @@ function startFocusOut() {
 }
 
 
-function RC_VAR_Collapse(Option, e) { return (e.target.parentNode.hasAttribute('collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
-function RC_VAR_Switch_View(Option, e) { return UserSettings.ViewT == 0 ? "List View" : "Block View"; }
-function RC_VAR_Change_Theme(Option, e) { return UserSettings.Theme == 0 ? "Light Theme" : "Dark Theme"; }
+function RC_VAR_Collapse(Option, e) { return (N_PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+function RC_VAR_Switch_View(Option, e) { return UserSettings.local.layout == 0 ? "List View" : "Block View"; }
+function RC_VAR_Change_Theme(Option, e) { return UserSettings.local.theme == 0 ? "Light Theme" : "Dark Theme"; }

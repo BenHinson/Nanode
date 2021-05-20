@@ -15,15 +15,11 @@ $(".New").on("click", function() {
   document.getElementById('folderBtn').addEventListener("click", function() { PopUp_New_Folder() });
 })
 
-$(".Switch.SW_View").on("click", function() {
- ChangeView();
-})
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? fileContainer.querySelectorAll('div[nano-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tr[nano-id]'));
+  let Items = (View == 0 ? fileContainer.querySelectorAll('div[node-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tr[node-id]'));
 
   $(Items).on("click", function(selected) {
     if (selected.currentTarget.hasAttribute('focus')) { return; }
@@ -33,7 +29,7 @@ function ItemClickListener(View) {
 
     if (!selected.classList.contains('noOpen')) {
       ItemActions(selected);
-      N_ClientStatus("CS5", "Ok", 500);
+      N_ClientStatus(5, "Ok", 500);
     }
   })
 }
@@ -46,18 +42,18 @@ function SelectItem(item, force) {
   if (item.hasAttribute('selected') && !force) { // Remove from Selected
     item.removeAttribute('selected');
     item.classList.remove('ItemSelected');
-    NanoSelected = NanoSelected.filter(id => id !== item.getAttribute('nano-id'));
-  } else if (item.hasAttribute('nano-id')) { // Add to Selected
+    NodeSelected = NodeSelected.filter(id => id !== item.getAttribute('node-id'));
+  } else if (item.hasAttribute('node-id')) { // Add to Selected
     item.setAttribute('selected', true);
     item.classList.add('ItemSelected');
-    NanoSelected.includes(item.getAttribute('nano-id')) ? '' : NanoSelected.push(item.getAttribute('nano-id'));
+    NodeSelected.includes(item.getAttribute('node-id')) ? '' : NodeSelected.push(item.getAttribute('node-id'));
   }
 
-  if (NanoSelected.length) { // Add Listener to Document for Off-Clicks
+  if (NodeSelected.length) { // Add Listener to Document for Off-Clicks
     setTimeout(function() {
       $(document.body).on("click",function(e) {
         if (!$(e.target).parents('.fileContainer').length && !$(e.target).parents('.RightClickContainer').length) {
-          NanoSelected = [];
+          NodeSelected = [];
           $('[selected=true]').each((index, item) => {
             $(item).removeAttr('selected');
             $(item).removeClass('ItemSelected');
@@ -72,10 +68,10 @@ function SelectItem(item, force) {
 function ItemActions(selected) {
   if (!selected && RCElement) { selected = RCElement }
 
-  let clicked = selected.getAttribute("nano-id");
+  let clicked = selected.getAttribute("node-id");
   let type = selected.getAttribute("type");
 
-  if (type == "folder") { HomeCall({"Folder":selected.getAttribute('nano-id')}); }
+  if (type == "folder") { HomeCall({"Folder":selected.getAttribute('node-id')}); }
   else if (type.match(/image|text|video/g)) { ViewItem(type, clicked) }
 }
 
@@ -152,16 +148,9 @@ search.addEventListener('change', async(e) => { // Search
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function ChangeView() {
-  let ListView = Boolean(UserSettings.ViewT); // 0=false, 1+ = true
-  UserSettings.ViewT = ListView ? 0 : 1; // Inverts ViewT
-  document.querySelector('.Slider.SL_View').style.transform = `translateX(${ListView ? 28 : 0}px)`;
-  HomeCall({"Folder":NanoID, "Reload":false});
-}
-
 function collapseSpan(span, expand=false) {
-  span = span ? (UserSettings.ViewT == 0 ? span.parentNode : span.parentNode.parentNode.parentNode) : RCElement;
-  if (UserSettings.ViewT == 0) {
+  span = span ? (UserSettings.local.layout == 0 ? span.parentNode : span.parentNode.parentNode.parentNode) : RCElement;
+  if (UserSettings.local.layout == 0) {
     expand = span.hasAttribute('collapsed') ? true : false;
     expand == true ? span.removeAttribute('collapsed') : span.setAttribute('collapsed', true)
     expand ? span.querySelector('button').remove() : span.innerHTML += `<button class='ExpandSpan VT_Block' onclick='collapseSpan(this, true)'>Expand</button>`
@@ -188,10 +177,10 @@ function collapseSpan(span, expand=false) {
   }
 }
 
-function createLocation() {
-  return  NanoName == "homepage" 
-    ? `value='_GENERAL_'><p>General</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>`
-    : `value='${NanoID}'><p>Current</p>`;
+function createLocation(RCE) {
+  return  NodeName == "homepage" 
+    ? `value= '${RCE == 'RCE' ? N_PareAttr(RCElement, 'node-id') : "_General_"}'><p>${RCE == 'RCE' ? N_PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>`
+    : `value='${NodeID}'><p>Current</p>`;
   function spanList() { let HTML_Spans = ""; for (let [id,data] of Object.entries(Directory_Content)) { HTML_Spans += `<a value='${id}'>${data.name}</a>` }; return HTML_Spans; }
 }
 
@@ -211,7 +200,7 @@ function renameItem(e) {
 
   targetInput.addEventListener('change', function() {
     ReturnItemState();
-    EditPOST({"action": "DATA", "section": Section, "id": focusedElement.getAttribute('nano-id'), "data": { "name": targetInput.value }, "path": NanoID}, true)
+    EditPOST({"action": "DATA", "section": Section, "id": focusedElement.getAttribute('node-id'), "data": { "name": targetInput.value }, "path": NodeID}, true)
   });
 
   setTimeout(function() {

@@ -11,6 +11,7 @@ $colors: (
     PC_8: #c8dce6, // Light Blue (White RC Hover)
     PC_9: #a266ee, // Dev Purple,
     PC_10: #e53329, // Rich Red
+    PC_11: #ff9800,
 
   // Palette_Dark - https://coolors.co/080a0e-0e0f11-141517-191b1e-282c32-565b61-83898f-cacccf-f5f6f7
   // OLDER = https://coolors.co/010b14-171b21-282c32-383c42-5c5f64-919396-cacccf-f5f6f7
@@ -37,6 +38,8 @@ $colors: (
     PL_8: #080a0e,  // Text
 );
 
+// map-get($colors, PL_1);
+
 :root {
   // --highlight-color:  #18ec58;
   // --highlight-color:  #18baec;
@@ -47,7 +50,6 @@ $colors: (
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300');
-
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -111,13 +113,14 @@ body {
   }
   .clientStatus {
     position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
     height: 20px;
     width: 150px;
-    top: 18px;
     right: 80px;
-    padding: 0px 8px;
     border-radius: 20px;
-    user-select: none;
     z-index: 1001;
     background: map-get($colors, PL_3);
     .dark-theme & {
@@ -125,30 +128,11 @@ body {
     }
 
     div {
-      display: inline-block;
       height: 4px;
       width: 4px;
       border-radius: 2px;
-      margin: 0px 0 3px 5px;
       box-shadow: 0px 0px 3px 0px;
       .dark-theme & { box-shadow: 0px 0px 6px 1px; }
-    }
-
-    #Recon_Btn {
-      position: absolute;
-      height: 20px;
-      width: 126px;
-      right: 0px;
-      text-align: center;
-      color: map-get($colors, PD_8);;
-      line-height: 17px;
-      font-variant: all-petite-caps;
-      border-radius: 10px;
-      background: linear-gradient(40deg, #ba3472, #b21c2a);
-      box-shadow: none;
-      user-select: none;
-      cursor: pointer;
-      z-index: 1002;
     }
   }
 }
@@ -177,7 +161,7 @@ body {
       height: 20px;
       width: 130px;
       margin: 30px 0 15px 25px;
-      background: url('/assets/home/nanode.svg'); // background: url('/assets/main/nanode.svg');
+      background: url('/assets/nanode/nanode.svg'); // background: url('/assets/main/nanode.svg');
       background-size: contain;
       background-repeat: no-repeat;
       filter: brightness(0);
@@ -197,6 +181,7 @@ body {
       transition: all 200ms;
       color: map-get($colors, PL_8);
       cursor: pointer;
+      user-select: none;
 
       .dark-theme & { color: map-get($colors, PD_7); }
 
@@ -899,7 +884,7 @@ body {
             & th:nth-child(5) {width: 80px;}
           
             & th:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; .dark-theme & {opacity:0.6;} }
-            & td:nth-child(n+3) { opacity: 1; font-variant: all-petite-caps; text-align: center; font-size: 15px; .dark-theme & {opacity:0.8;} }
+            & td:nth-child(n+3) { opacity: 1; font-size: 13px; text-align: center; .dark-theme & {opacity:0.8;} }
           
             & td:nth-child(1) { width: 50px; padding: 4px 0 0 4px;}
             & td:nth-child(2) input {
@@ -1301,6 +1286,7 @@ body {
       background: map-get($colors, PC_1);
       transform: translateX(-50%);
       opacity: 0;
+      z-index: 11;
       transition: bottom 300ms, opacity 300ms;
 
       &.displayPopup { bottom: 10px; opacity: 1; }
@@ -1447,6 +1433,7 @@ body {
   overflow: hidden;
   background: rgba(0, 0, 0, 0.4);
   z-index: 25;
+  cursor: auto;
 
   .Popup_Container {
     position: absolute;
@@ -1644,6 +1631,7 @@ body {
     .dark-theme & { background: black; }
 
     .ViewImage {
+      width: fit-content;
       max-height: 80vh;
       max-width: calc(100vw - 20px);
       object-fit: contain;
@@ -1831,147 +1819,42 @@ body {
 }
 
 .Upload_Container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
   position: fixed;
-  height: 100px;
   max-width: 360px;
   width: 100%;
   bottom: 20px;
   right: 20px;
-  border-radius: 6px;
-  box-shadow: 1px 2px 3px 1px map-get($colors, PL_6);
-  background: map-get($colors, PL_1);
-  color: map-get($colors, PL_8);
   z-index: 10;
-  .dark-theme & { 
-    background: map-get($colors, PD_4);
-    color: map-get($colors, PD_8);
-    box-shadow: 1px 2px 3px 1px map-get($colors, PD_2);
-  }
-
+  
   > div {
-    height: 50%;
-    border-radius: 5px;
-  }
-
-  .UC_Top {
-    background: rgba(0,0,0,0.05);
-    .dark-theme & { background: rgba(0,0,0,0.2); }
-
-    .Upload_Control {
-      position: absolute;
-      height: 34px;
-      margin: 8px;
-      padding: 7px 14px;
-      border-radius: 4px;
-      color: map-get($colors, PD_8);
-      font-weight: 400;
-      background: linear-gradient(40deg,#46a14d,#098d62);
-      cursor: pointer;
-      user-select: none;
-    }
-    span {
-      display: flex;
-      justify-content: space-around;
-      position: absolute;
-      height: 50px;
-      width: 100px;
-      right: 0;
-      padding: 9px 0;
-      font-size: 20px;
-      opacity: 0.8;
-      i {
-        display: grid;
-        place-items: center;
-        height: 32px;
-        width: 32px;
-        text-align: center;
-        border-radius: 20px;
-        cursor: pointer;
-        &:hover { background: rgba(0, 0, 0, 0.2); }
-      }
-    }
-  }
-
-  .UC_Bottom {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    font-size: 16px;
-    
-    button {
-      height: 30px;
-      width: 80px;
-      border: none;
-      line-height: 20px;
-      font-weight: 400;
-      color: inherit;
-      cursor: pointer;
-      background: map-get($colors, PL_5);
-      .dark-theme & { background: map-get($colors, PD_5); }
-      &:hover {transform: translateY(-2px);}
-    }
-    p {
-      // width: 70px;
-      margin: 5px 0;
-      font-size: 15px;
-      text-align: center;
-    }
-
-    .Upload_Progress {
-      visibility: hidden;
-
-      display: flex;
-      justify-content: space-around;
-      position: absolute;
-      height: 30px;
-      width: 100%;
-      padding: 0 20px;
-      text-align: center;
-      background: map-get($colors, PL_1);
-      .dark-theme & {background: map-get($colors, PD_4);}
-
-      > progress {
-        height: 6px;
-        width: 80%;
-        border-radius: 5px;
-        margin-top: 12px;
-
-        &::-webkit-progress-bar {
-          border-radius: 5px;
-          background-color: map-get($colors, PL_4);
-          .dark-theme & { background-color: map-get($colors, PD_4); }
-        }
-        &::-webkit-progress-value {
-          background-color: var(--highlight-color);
-          border-radius: 5px;
-        }
-      }
-      > p {
-        width: 40px;
-        font-size: 14px;
-      }
-    }
-  }
-
-  .UC_Queue_Viewer {
-    visibility: hidden;
-    position: absolute;
-    max-height: 180px;
-    height: initial;
+    position: relative;
     width: 100%;
-    bottom: 110px;
-    padding: 7px 10px;
-    overflow-y: scroll;
+    border-radius: 5px;
+    // height: 50%;
     color: map-get($colors, PL_8);
     background: map-get($colors, PL_1);
     box-shadow: 1px 2px 3px 1px map-get($colors, PL_6);
-    .dark-theme & {
+    .dark-theme & { 
+      color: map-get($colors, PD_8);
       background: map-get($colors, PD_4);
-      color: map-get($colors, PD_7);
       box-shadow: 1px 2px 3px 1px map-get($colors, PD_2);
     }
+  }
 
-    &::-webkit-scrollbar-track { background: map-get($colors, PL_3); .dark-theme & {background: map-get($colors, PD_3);} }
+  .UC_Queue {
+    display: none;
+
+    max-height: 180px;
+    height: initial;
+    padding: 7px 10px;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { .dark-theme & {background: map-get($colors, PD_5);} }
 
     table {
       position: relative;
@@ -1982,6 +1865,22 @@ body {
       tr {
         height: 39px;
         font-family: inherit;
+        cursor: pointer;
+        transition: all 100ms ease-in-out;
+
+        &:nth-child(n+2) {
+          border-top: 1px solid map-get($colors, PL_4);
+          .dark-theme & { border-color: map-get($colors, PD_5); }}
+      
+        &.waiting_upload:hover:not(.active_upload) {
+          background: map-get($colors, PL_5);
+          box-shadow: -8px 0px 0 0px crimson;
+          transform: translateX(8px);
+          .dark-theme & {
+            background: map-get($colors, PD_5);
+          }
+        }
+
         td {
           i {
             &.yellow { color: #ff8d00; }
@@ -1994,21 +1893,136 @@ body {
           background: map-get($colors, PL_3);
           .dark-theme & {background: map-get($colors, PD_5);}
         }
-        & td:nth-child(1) {
-          width: auto; max-width: 200px; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding: 0 10px;
-        }
+        &.paused_upload { border: 2px solid #ff8d00; }
+        
+        & td:nth-child(1) {width: auto; max-width: 200px; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding: 0 10px;}
         & td:nth-child(2) {min-width: 65px; text-align: center; font-size: 13px; opacity: 0.7;}
         & td:nth-child(3) {width: 50px; font-size: 18px; text-align: center;}
       }
-      & tr:nth-child(n+2) {
-        border-top: 1px solid map-get($colors, PL_4);
-        .dark-theme & { border-color: map-get($colors, PD_4); }}
     }
-
   }
 
-  .UC_Showing {
-    visibility: visible !important;
+  .UC_Info {
+    display: none;
+    position: relative;
+    height: 31px;
+    padding: 7px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    transform: translateY(42px);
+    transition: transform 300ms;
+
+    &.notification {
+      background: #ff980033;
+      color: #ff9800;
+    }
+    &.error {
+      background: #ff443a33;
+      color: #ff453a;
+    }
+    &.success {
+      background: #33c35733;
+      color: #33c357;
+    }
+
+    i {position: absolute; right: 10px; top: 6px; font-size: 18px; cursor: pointer;}
+  }
+
+  .UC_Control {
+    > div {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      padding: 10px;
+      font-weight: 400;
+    }
+
+    .UC_Top {
+      justify-content: space-between;
+
+      background: rgba(0,0,0,0.05);
+      .dark-theme & { background: rgba(0,0,0,0.2); }
+  
+      .Upload_Control {
+        height: 34px;
+        padding: 8px 14px;
+        border-radius: 4px;
+        font-weight: 400;
+        background: map-get($colors, PC_1);;
+        cursor: pointer;
+        user-select: none;
+      }
+      span {
+        display: flex;
+        justify-content: space-around;
+        width: 100px;
+        font-size: 20px;
+        opacity: 0.8;
+        i {
+          display: grid;
+          place-items: center;
+          height: 32px;
+          width: 32px;
+          border-radius: 20px;
+          cursor: pointer;
+          &:hover { background: rgba(0, 0, 0, 0.2); }
+        }
+      }
+    }
+  
+    .UC_Bottom {
+      justify-content: space-around;
+      
+      button {
+        height: 30px;
+        width: 80px;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        background: map-get($colors, PL_5);
+        .dark-theme & { background: map-get($colors, PD_5); }
+        &:hover {transform: translateY(-2px);}
+      }
+      p {
+        font-size: 15px;
+      }
+  
+      .Upload_Progress {
+        visibility: hidden;
+  
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        position: absolute;
+        height: 30px;
+        width: 100%;
+        padding: 0 20px;
+        text-align: center;
+        background: map-get($colors, PL_1);
+        .dark-theme & {background: map-get($colors, PD_4);}
+  
+        > progress {
+          height: 6px;
+          width: 80%;
+          border-radius: 5px;
+  
+          &::-webkit-progress-bar {
+            border-radius: 5px;
+            background-color: map-get($colors, PL_4);
+            .dark-theme & { background-color: map-get($colors, PD_1); }
+          }
+          &::-webkit-progress-value {
+            background-color: var(--highlight-color);
+            border-radius: 5px;
+          }
+        }
+        > p {
+          width: 40px;
+          font-size: 14px;
+        }
+      }
+    }
   }
 }
 
@@ -2039,7 +2053,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
 
-    &.Nano_SPLIT {
+    &.Node_SPLIT {
       margin: 6px;
       padding: 0;
       opacity: 0.4;
@@ -2050,7 +2064,7 @@ body {
       }
     }
   }
-  :not(.nano_SPLIT):hover {
+  :not(.node_SPLIT):hover {
     background: map-get($colors, PC_8);
     .dark-theme & {
       background: map-get($colors, PC_7);
@@ -2280,6 +2294,14 @@ body {
   }
 }
 
+///////////////////////// Global /////////////////////////
+///////////////////////// Global /////////////////////////
+
+.display { display: block !important; transform: translate(0, 0) !important; }
+// .highlight {}
+// New Options, Folder/Files picker increase font size. Choose Items change background. (#4285f4)
+// Upload / Folder on hover add the faded backgrounds?
+
 ///////////////////////// @media /////////////////////////
 ///////////////////////// @media /////////////////////////
 
@@ -2309,8 +2331,8 @@ body {
         width: 30px;
         margin: 25px 0 10px 25px;
         filter: none;
-        background: url('/assets/logo/Nanode_Light.svg');
-        .dark-theme & { background: url('/assets/logo/Nanode_Dark.svg'); }
+        background: url('/assets/nanode/logo/blue_light.svg');
+        .dark-theme & { background: url('/assets/nanode/logo/blue_dark.svg'); }
       }
       > span > p {
         display: none;

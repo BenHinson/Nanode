@@ -2,15 +2,14 @@
 let currentPage = 'main';
 let Section = 'main';
 
-let NanoName = 'home';
+let NodeName = 'home';
 let Directory_Content = '';
-let NanoSelected = []; // Items that are currently selected
-let UserSettings = {};
+let NodeSelected = []; // Items that are currently selected
 
 // =========================================== Initial Actions
 
 document.addEventListener("DOMContentLoaded", async(event) => {
-  await Settings_Call();
+  await sessionSettings();
   await pageSwitch(currentPage);
 })
 
@@ -18,31 +17,20 @@ document.addEventListener("DOMContentLoaded", async(event) => {
 
 Directory_Call = async(FetchData, Response) => {
   const {Folder, Section, subSection} = FetchData;
-  N_ClientStatus("CS4", "Wait");
+  N_ClientStatus(4, "Wait");
   let Request = await fetch(`https://drive.nanode.one/folder/${Folder.toLowerCase()}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`);
-  N_ClientStatus("CS4", "Off"); N_ClientStatus("CS7", "Wait", 800);
+  N_ClientStatus(4, "Off"); N_ClientStatus(7, "Wait", 800);
   return await Request.json();
 }
 
 // =========================================== Settings Caller
 
 Settings_Call = async() => {
-  let curSet = JSON.parse(localStorage.getItem('user-settings'));
-  if (curSet && (new Date().getTime() - new Date(curSet.LastAc).getTime()) < 20*60*1000) {
-    SetStorage( JSON.parse(localStorage.getItem('user-plan')) );
-    return readSettings( curSet );
-  } else {
-    let Settings_Request = await fetch('https://drive.nanode.one/settings');
-    let Settings_Response = await Settings_Request.json();
-    if (Settings_Response.Error) { noSettings(); return false; }
-    else {
-      Settings_Response.Settings.LastAc = new Date().toISOString();
-      localStorage.setItem('user-plan', JSON.stringify(Settings_Response.Plan))
-      localStorage.setItem('user-settings', JSON.stringify(Settings_Response.Settings))
-      SetStorage( Settings_Response.Plan );
-      return readSettings(Settings_Response.Settings);
-    }
-  }
+  N_ClientStatus(4, "Wait");
+  let Settings_Request = await fetch('https://drive.nanode.one/account/settings');
+  let Settings_Response = await Settings_Request.json();
+  N_ClientStatus(4, "Off");
+  return Settings_Response.Error ? false : Settings_Response;
 }
 
 // =========================================== Page Changer
@@ -91,7 +79,7 @@ onkeyup = function(e) { keyMap[e.key] = false; }
 // =========================================== Visual Functions
 
 function ColorPicker(calledBy, callback) {
-  N_ClientStatus("CS7", "Wait", 400); N_ClientStatus("CS8", "User");
+  N_ClientStatus(7, "Wait", 400); N_ClientStatus(8, "User");
 
   if ($(".colorContainer")[0]) {$(".colorContainer")[0].remove();}
 
@@ -101,7 +89,7 @@ function ColorPicker(calledBy, callback) {
   document.body.appendChild(colorContainer);
 
   if (typeof RCElement === 'object' && RCElement.hasAttribute('style')) {
-    let HexColor = UserSettings.ViewT == 0 ? N_RGBtoHex($(RCElement).css('borderBottom')) : N_RGBtoHex($(RCElement).css('boxShadow'));
+    let HexColor = UserSettings.local.layout == 0 ? N_RGBtoHex($(RCElement).css('borderBottom')) : N_RGBtoHex($(RCElement).css('boxShadow'));
 
     $("#colorPickEntry")[0].value = HexColor
     $("#colorPickEntry")[0].style.color = HexColor;
@@ -147,8 +135,8 @@ function ColorPicker(calledBy, callback) {
     $(".colorContainer")[0].remove();
 
     if (typeof RCElement !== 'undefined' && calledBy == "RC") {
-      // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": RCElement.getAttribute('nano-id'), "EditData": {"color": ColorPicked}, "Path": NanoID })
-      EditPOST({"action": "DATA", "section": Section, "id": RCElement.getAttribute('nano-id'), "data": { "color": ColorPicked }, "path": NanoID})
+      // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": RCElement.getAttribute('node-id'), "EditData": {"color": ColorPicked}, "Path": NodeID })
+      EditPOST({"action": "DATA", "section": Section, "id": RCElement.getAttribute('node-id'), "data": { "color": ColorPicked }, "path": NodeID})
       return;
     }
     callback(ColorPicked);
@@ -184,10 +172,4 @@ function dragElement(element) {
     document.onmouseup = null;
     document.onmousemove = null;
   }
-}
-
-function SetStorage(plan) {
-  let StorageElem = document.querySelector('.Storage');
-  StorageElem.querySelector('p').innerText = `${N_ConvertSize(plan.used)} / ${N_ConvertSize(plan.max).replace('.00', '')}`;
-  StorageElem.querySelector('progress').value = parseFloat(((plan.used / plan.max) * 100).toFixed(2));
 }

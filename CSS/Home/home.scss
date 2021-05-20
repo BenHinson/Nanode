@@ -147,34 +147,32 @@ header {
     text-align: center;
 
     a {
-      height: 38px;
-      width: 230px;
-      border-radius: 20px;
+      height: 43px;
+      width: 220px;
+      border-radius: 5px;
 
-      font-family: 'inter';
-      font-size: 20px;
-      font-variant: all-petite-caps;
+      font-size: 15px;
       font-weight: 500;
       letter-spacing: 0.6px;
+      line-height: 32px;
       
-      transition: all 400ms;
+      transition: all 300ms;
 
-      &.MV_Account { background: map-get($colors, PD_4);
-        &:hover { background: map-get($colors, PD_8); color: map-get($colors, PD_0); }
-      }
       &.MV_Drive {
-        background: linear-gradient(45deg, #a9d2fb, #74afe2, #31648b);
-        // background: linear-gradient(90deg ,#272729,#343536,#272729);
-        &:hover {
-          animation: gradient 2s ease infinite;
-          background-size: 200%;
-          @keyframes gradient {
-            0% { background-position: 0%; }
-            50% { background-position: 100%; }
-            100% { background-position: 0%; }
-          }
-        }
+        color: map-get($colors, PD_1);
+        border: 1px solid map-get($colors, PD_8);
+        background: map-get($colors, PD_8);
+      }
+      &.MV_Account {
+        color: map-get($colors, PD_6);
+        border: 1px solid map-get($colors, PD_4);
+        background: transparent;
+      }
 
+      &:hover, &:active {
+        color: map-get($colors, PD_8);
+        background: transparent;
+        border: 1px solid map-get($colors, PD_8);
       }
     }
   }
@@ -257,43 +255,23 @@ header {
   }
 }
 
-.S_Info {
-  height: 1750px;
-
-  .bg_fade {
-    display: grid;
-    place-content: center;
-    position: absolute;
-    height: 50%;
-    width: 100%;
-    max-width: 800px;
-    max-width: 50%;
-    filter: saturate(0.6);
-
-    &.bg_right {
-      right: 0;
-      background: url("/assets/homepage/bg_right.svg") no-repeat 100%;
-      background-size: 700px auto;
-    }
-    &.bg_left {
-      bottom: 100px;
-      left: 0;
-      background: url("/assets/homepage/bg_left.svg") no-repeat 0%;
-      background-size: 700px auto;
-    }
-  }
-
+.S_Spotlight {
+  height: 600px;
+  margin: 0 0 100px;
 
   .Showcase {
     justify-content: space-evenly;
-    position: absolute;
     height: 500px;
-    width: fit-content;
-    top: 220px;
-    left: 15%;
     z-index: 2;
 
     >h3 { margin: 0 0 20px 20px; }
+    >h2 {
+      background-image: linear-gradient(90deg , #007cf0, #00dfd8);
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
     >div {
       justify-content: space-evenly;
       height: 140px;
@@ -319,16 +297,26 @@ header {
       &.Displaying {display: block; }
     }
   }
+}
+
+.S_FFF {
+  height: 600px;
+  margin: 0 0 100px;
 
   .Showcase_2 {
     display: grid;
     gap: 20px;
-    position: absolute;
     width: 380px;
-    bottom: 280px;
-    right: 15%;
     line-height: 25px;
     z-index: 2;
+
+    h2 {
+      background-image: linear-gradient( 90deg , orange, red);
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
     ul {
       font-size: 15px;
       opacity: 0.9;
@@ -336,21 +324,35 @@ header {
     }
   }
   .Features {
-    position: absolute;
-    top: calc(50% - 350px);
-    width: 700px;
-    height: 700px;
+    position: relative;
+    width: 500px;
+    height: 500px;
     img {
       position: absolute;
       height: 80px;
       width: 80px;
+
+      animation: feature_filter 20s infinite;
+
+      @for $i from 1 through 13 {
+        &:nth-child(3n + #{$i}) {
+          animation-delay: $i * 1s;
+        }
+      }
     }
+  }
+
+  @keyframes feature_filter {
+    3% { filter: invert(70%) sepia(100%) saturate(50); }
+    8% { filter: invert(70%) sepia(100%) saturate(50); }
+    30% { filter: none; }
   }
 }
 
 .S_Plans {
   height: 710px;
   width: 100%;
+  margin: 0 0 200px;
   gap: 60px;
 
   >div {
@@ -429,7 +431,7 @@ header {
 }
 
 .S_Chip {
-  height: 800px;
+  margin: 0 0 180px;
 
   >div {
     display: flex;
@@ -485,7 +487,7 @@ header {
 .S_Development {
   height: fit-content;
   min-height: 40vh;
-  margin: 80px 0;
+  margin: 0 0 160px;
 
   > h3 {
     width: 100%;
@@ -500,7 +502,7 @@ header {
     > div {
       height: 260px;
       background: map-get($colors, PD_4);
-      transition: all 100ms;
+      transition: all 200ms;
 
       > h1 {
         height: 30px;
@@ -720,6 +722,20 @@ button {
   text-align: right;
 }
 
+.fade_bkgrd {
+  // background: linear-gradient(45deg, #a9d2fb, #74afe2, #31648b);
+  background: linear-gradient(90deg ,#272729,#343536,#272729);
+  &:hover {
+    animation: gradient 2s ease infinite;
+    background-size: 200%;
+    @keyframes gradient {
+      0% { background-position: 0%; }
+      50% { background-position: 100%; }
+      100% { background-position: 0%; }
+    }
+  }
+}
+
 // =============================================
 
 .flex-wrap {
@@ -732,6 +748,14 @@ button {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.flex-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  padding: 0;
 }
 
 

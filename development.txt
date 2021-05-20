@@ -30,6 +30,11 @@ On drag-drop upload change .highlight to being a box showing thats whats happeni
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
+///////////// MAY /////////////////
+Upload Improvements, notifications, storage checks, queue removal, pause/continue
+Settings rewrite and purge
+
+
 
 ////////////// JANUARY //////////////////
 Continued implementation of new API's and Storage Engine.

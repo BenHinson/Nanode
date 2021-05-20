@@ -33,11 +33,10 @@
   <body class="dark-theme">
 
     <div class="Frame">
-      <button id="colorTheme" onclick="changeTheme()" title="Change Theme"><i></i></button>
+      <button id="colorTheme" onclick="ToggleTheme()" title="Change Theme"><i></i></button>
 
       <div class="clientStatus">
-        <div id='Recon_Btn' style="display: none;">Reconnect</div>
-        <div id="CS0"></div>  <div id="CS1"></div>  <div id="CS2"></div>  <div id="CS3"></div>  <div id="CS4"></div>  <div id="CS5"></div>  <div id="CS6"></div>  <div id="CS7"></div>  <div id="CS8"></div>  <div id="CS9"></div>
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
       </div>
     </div>
 
@@ -58,8 +57,8 @@
 
       <div class='Storage'>
         <h3>Storage</h3>
-        <p>65.3 GB / 100 GB</p>
-        <progress value='65.3' max="100" ></progress>
+        <p>0 GB / 10 GB</p>
+        <progress value='0' max="100" ></progress>
       </div>
     </div>
 
@@ -82,23 +81,32 @@
       <input id="folderUploadBtn" type="file" multiple webkitdirectory mozdirectory></input>
       <input id="codexUploadBtn" type="file" accept="text/*" multiple>
     </div>
-    
+    <!-- // this.parentNode.classList.remove('display') -->
     <div class='Upload_Container' style='visibility: hidden;'>
-      <div class='UC_Queue_Viewer'><table><tbody></tbody></table></div>
-      <div class='UC_Top'>
-        <h4 onclick="Upload_Listeners.Control(this)" class='Upload_Control' action='Choose'>Choose Items</h4>
-        <span>
-          <i onclick="Upload_Visuals.Queue(this)" class='fas fa-chevron-up'></i>
-          <i onclick="PopUp_Upload.Close()" class='fas fa-times'></i>
-        </span>
+      <div class='UC_Queue'><table><tbody></tbody></table></div>
+
+      <div class='UC_Info'>
+        <p></p>
+        <i class="far fa-times-circle" title="Dismiss" onclick='this.parentNode.classList.remove("display")'></i>
       </div>
-      <div class='UC_Bottom'>
-        <button Upload_Folder onclick="document.getElementById('folderUploadBtn').click()">Folder</button>
-        <button Upload_Files onclick="document.getElementById('fileUploadBtn').click()">Files</button>
-        <p>0 Items</p>
-        <p>0 B</p>
-        <div class='Upload_Progress'><progress value='0' max='100'></progress><p title='Estimated'>?</p></div>
+
+      <div class='UC_Control'>
+        <div class='UC_Top'>
+          <h4 onclick="Upload_Listeners.Control(this)" class='Upload_Control' action='Choose'>Choose Items</h4>
+          <span>
+            <i onclick="Upload_Visuals.Queue('toggle')" id='queue_toggle' class='fas fa-chevron-up'></i>
+            <i onclick="PopUp_Upload.Close()" class='fas fa-times'></i>
+          </span>
+        </div>
+
+        <div class='UC_Bottom'>
+          <button Upload_Folder onclick="document.getElementById('folderUploadBtn').click()">Folder</button>
+          <button Upload_Files onclick="document.getElementById('fileUploadBtn').click()">Files</button>
+          <p>0 Items</p> <p>0 B</p>
+          <div class='Upload_Progress'><progress value='0' max='100'></progress><p title='Estimated'>?</p></div>
+        </div>
       </div>
+
     </div>
 
 

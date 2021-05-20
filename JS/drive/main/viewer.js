@@ -13,8 +13,8 @@ const fileContainer = document.getElementsByClassName('fileContainer')[0];
 const ItemInfo = document.getElementsByClassName('ItemInformation')[0];
 
 const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
-const UC_Queue_Viewer = document.getElementsByClassName('UC_Queue_Viewer')[0];
-const UC_Queue_Viewer_Table = document.querySelector('.UC_Queue_Viewer table tbody');
+const UC_Queue = document.getElementsByClassName('UC_Queue')[0];
+const UC_Queue_Table = document.querySelector('.UC_Queue table tbody');
 
 // ========================
 
@@ -46,7 +46,7 @@ const UC_Queue_Viewer_Table = document.querySelector('.UC_Queue_Viewer table tbo
 
 ////////////////////////////   VIEW   //////////////////////////////////
 
-async function ViewItem(Type, NanoID) {
+async function ViewItem(Type, NodeID) {
   let BlockOut = PopUpBase();
   BlockOut.innerHTML = `
     <div class='Preview'>
@@ -54,24 +54,24 @@ async function ViewItem(Type, NanoID) {
     </div>`;
 
   if (Type == "image") {
-    let res = await fetch(`https://drive.nanode.one/storage/${NanoID}`);
+    let res = await fetch(`https://drive.nanode.one/storage/${NodeID}`);
     let blob = await res.blob();
     document.querySelector('.Preview').innerHTML = `<img class='ViewImage' src='${URL.createObjectURL(blob)}'></img>`;
   }
 
   if (Type == "video") {
-    document.querySelector('.BlockOut div').insertAdjacentHTML('afterbegin', `<video class='ViewImage' controls name='video' src='https://drive.nanode.one/storage/${NanoID}'></video`);
+    document.querySelector('.BlockOut div').insertAdjacentHTML('afterbegin', `<video class='ViewImage' controls name='video' src='https://drive.nanode.one/storage/${NodeID}'></video`);
   }
 
   if (Type == "text") {
-    let res = await fetch(`https://drive.nanode.one/storage/${NanoID}`)
+    let res = await fetch(`https://drive.nanode.one/storage/${NodeID}`)
     document.querySelector('.BlockOut div').insertAdjacentHTML('afterbegin', `<div class='ViewText'><pre></pre></div>`);
     document.querySelector('.ViewText > pre').innerText = await res.text();
   }
 }
 
 
-function viewContentAsBlock(NanoID) {
+function viewContentAsBlock(NodeID) {
   fileContainer.innerHTML = '';
   document.querySelector('.Slider.SL_View').style.transform = 'translateX(28px)';
 
@@ -79,8 +79,8 @@ function viewContentAsBlock(NanoID) {
   for (const [span, data] of Object.entries(Directory_Content))  {
 
     fileContainer.innerHTML += `
-      <div class='ContentContainer' nano-id='${span}' ${NanoID == "homepage" ? `Home-Span='${data.name}' rc='Homepage_Span'` : "Sub-Span" }>
-        <input ${NanoID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NanoName}'` }></input>
+      <div class='ContentContainer' node-id='${span}' ${NodeID == "homepage" ? `Home-Span='${data.name}' rc='Homepage_Span'` : "Sub-Span" }>
+        <input ${NodeID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NodeName}'` }></input>
       </div>
     `    
 
@@ -90,7 +90,7 @@ function viewContentAsBlock(NanoID) {
       let parent = N_CapFirstLetter(data.name) || "";
 
       Container.innerHTML += `
-        <div class='Item' directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='TEXTAREA,IMG' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='border-bottom: 2px solid "+item.color+"'" : ""}>
+        <div class='Item' directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' node-id='${object}' rc='${item.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TEXTAREA,IMG' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='border-bottom: 2px solid "+item.color+"'" : ""}>
           <img loading='lazy' height='90' width='${!item.mime == "FOLDER" ? 90 : 120}' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img>
           <textarea rcpar='1' disabled style='pointer-events:none;'>${N_CapFirstLetter(item.name)}</textarea>
         </div>
@@ -103,22 +103,22 @@ function viewContentAsBlock(NanoID) {
     SpanCount++;
   }
 
-  if (NanoID == "homepage") {
+  if (NodeID == "homepage") {
     fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
 
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
         // socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
-        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NanoID})
+        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID})
       })
     })
   }
 
-  ItemClickListener(UserSettings.ViewT);
-  N_ClientStatus("CS7", "Ok", 400);
+  ItemClickListener(UserSettings.local.layout);
+  N_ClientStatus(7, "Ok", 400);
 }
 
-function viewContentAsList(NanoID) {
+function viewContentAsList(NodeID) {
   fileContainer.innerHTML = '';
   document.querySelector('.Slider.SL_View').style.transform = 'translateX(0px)';
 
@@ -126,10 +126,10 @@ function viewContentAsList(NanoID) {
   for (const [span, data] of Object.entries(Directory_Content)) {
 
     fileContainer.innerHTML += `
-    <div class='ListContentContainer' nano-id='${span}' ${NanoID == "homepage" ? `Home-Span='${data.name}'` : "" }>
-      <table class='ListContentTable' ${NanoID == "homepage" ? `rc='Homepage_Span'` : ``}>
+    <div class='ListContentContainer' node-id='${span}' ${NodeID == "homepage" ? `Home-Span='${data.name}'` : "" }>
+      <table class='ListContentTable' ${NodeID == "homepage" ? `rc='Homepage_Span'` : ``}>
           <tbody>
-            <tr ${NanoID == "homepage" ? `rcOSP='TH'` : ``} > <th><input ${NanoID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NanoName}'` }></input></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
+            <tr ${NodeID == "homepage" ? `rcOSP='TH'` : ``} > <th><input ${NodeID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NodeName}'` }></input></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
           </tbody>
         </table>
       </div>
@@ -141,7 +141,7 @@ function viewContentAsList(NanoID) {
       let parent = N_CapFirstLetter(data.name) || "";
 
       Table.innerHTML += `
-        <tr directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' nano-id='${object}' rc='${item.mime == "FOLDER" ? "Nano_Folder" : "Nano_File"}' rcOSP='TD' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
+        <tr directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' node-id='${object}' rc='${item.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
           <td><img loading='lazy' height='32' width='32' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img></td>
           <td><input rcPar='2' value='${N_CapFirstLetter(item.name)}' disabled style='pointer-events:none;'></input></td>
           <td>${N_CapFirstLetter(N_TypeChecker(item.mime, "TRIM"))}</td>
@@ -158,19 +158,19 @@ function viewContentAsList(NanoID) {
     SpanCount++;
   }
 
-  if (NanoID == "homepage") {
+  if (NodeID == "homepage") {
     fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
         console.log("160");
-        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NanoID})
+        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID})
         // socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
       })
   })
   }
   
-  ItemClickListener(UserSettings.ViewT);
-  N_ClientStatus("CS7", "Ok", 400);
+  ItemClickListener(UserSettings.local.layout);
+  N_ClientStatus(7, "Ok", 400);
 }
 
 /////////////////////////     SEARCH    //////////////////////////////
@@ -185,7 +185,7 @@ function renderSearch(results) {
 
   results.Found.forEach((item) => {
     searchResults.innerHTML += `
-      <tr type='${N_ItemChecker(item.type.mime)}' nano-id='${item.id}' rc='Bin_Item' rcOSP='TD'>
+      <tr type='${N_ItemChecker(item.type.mime)}' node-id='${item.id}' rc='Bin_Item' rcOSP='TD'>
         <td><img loading='lazy' height='38' width='38' src='${N_ItemImage({"type":item.type.mime, "oID": item.id, "section": "main", "h": 38, "w": 38})}'></img></td>
         <td>${N_CapFirstLetter(item.name)}</td>
         <td>${N_CapFirstLetter(N_TypeChecker(item.type.mime, "TRIM"))}</td>
@@ -222,18 +222,18 @@ getSearchParams = () => {
 
 async function callItemInformation(selected) {
   if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
-  N_ClientStatus("CS2", "True", 500); N_ClientStatus("CS4", "Wait", 400);
-  N_ClientStatus("CS5", "Wait", 300); N_ClientStatus("CS7", "Wait", 300);
+  N_ClientStatus(2, "True", 500); N_ClientStatus(4, "Wait", 400);
+  N_ClientStatus(5, "Wait", 300); N_ClientStatus(7, "Wait", 300);
 
-  const SelectedID = selected.getAttribute('nano-id');
-  const NanoPath = selected.getAttribute('directory');
+  const SelectedID = selected.getAttribute('node-id');
+  const NodePath = selected.getAttribute('directory');
 
   ItemInfo.innerHTML = N_Loading('medium');
 
   const Request = await fetch('https://drive.nanode.one/user/files/'+SelectedID);
   let RequestInfo = await Request.json();
   RequestInfo = RequestInfo[SelectedID];
-  N_ClientStatus("CS3", "True", 600);
+  N_ClientStatus(3, "True", 600);
 
   // console.log(RequestInfo);
   ItemInfo.innerHTML = `
@@ -243,7 +243,7 @@ async function callItemInformation(selected) {
 
       ${RequestInfo.type.mime.includes('image') ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.id+"?h=128&w=null'></img>" : ""}
 
-      <input class='ItemInfo_Directory' value='${NanoPath}' title='${NanoPath}' readonly=true>
+      <input class='ItemInfo_Directory' value='${NodePath}' title='${NodePath}' readonly=true>
 
       <span style='margin: 8px 0 0 0;'>
         <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.type.file ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
@@ -287,8 +287,8 @@ async function callItemInformation(selected) {
 function ItemInfoListeners(ItemRequest) {
 
   document.querySelector('.ItemInfo_Name').addEventListener('change', function(e) {
-    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"name": e.target.value}, "Path": NanoID} )
-    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "name": e.target.value }, "path": NanoID})
+    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"name": e.target.value}, "Path": NodeID} )
+    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "name": e.target.value }, "path": NodeID})
   })
 
   document.querySelector('.ItemInfo_Tab').addEventListener('click', function() {
@@ -305,8 +305,8 @@ function ItemInfoListeners(ItemRequest) {
   })
 
   document.querySelector('.ItemInfo_Color').addEventListener('change', function(e) {
-    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value}, "Path": NanoID })
-    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "color": e.target.value }, "path": NanoID})
+    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value}, "Path": NodeID })
+    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "color": e.target.value }, "path": NodeID})
   })
 
   document.querySelector('.ItemInfo_Description').addEventListener('change', function(e) {
@@ -336,7 +336,7 @@ function ItemInfoListeners(ItemRequest) {
         body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
       })
   
-      N_ClientStatus("CS3", "True", 500)
+      N_ClientStatus(3, "True", 500)
       let resp = await res.json();
       resp.link ? e.target.value = resp.link : e.target.style.color = 'crimson';
     }
@@ -348,7 +348,7 @@ function ItemInfoListeners(ItemRequest) {
 
 
 function RightBar_Security_Inputs(itemLocked) {
-  N_ClientStatus("CS7", "Wait", 400); N_ClientStatus("CS5", "False");
+  N_ClientStatus(7, "Wait", 400); N_ClientStatus(5, "False");
 
   ItemInfo.innerHTML = '<section class="Locked"><span><h3>Locked</h3><i class="far fa-times-circle"></i></span><h5>Enter the items credentials to view</h5></section>';
 
@@ -381,7 +381,7 @@ function RightBar_Security_Inputs(itemLocked) {
     switch (await res.status) {
       case 200:
         ItemInfo.innerHTML = '';
-        N_ClientStatus("CS5", "Ok", 400)
+        N_ClientStatus(5, "Ok", 400)
         HomeCall({"Reload":true, "Skip": true}, await res.json());
         break;
       case 401:
@@ -395,13 +395,13 @@ function RightBar_Security_Inputs(itemLocked) {
 //////////////////////////   POP UPS   /////////////////////////////////
 
 function PopUpBase() {
-  N_ClientStatus("CS7", "Wait", 500); N_ClientStatus("CS8", "User");
+  N_ClientStatus(7, "Wait", 500); N_ClientStatus(8, "User");
 
   if (document.querySelector('.BlockOut')) { return document.querySelector('.BlockOut'); }
   let BlockOut = document.createElement('div');
   BlockOut.setAttribute('class', "BlockOut")
   document.body.appendChild(BlockOut)
-  BlockOut.addEventListener("mousedown", function(e) { e.stopImmediatePropagation(); if (e.target == BlockOut) { BlockOut.remove(); N_ClientStatus("CS8", "Off"); } })
+  BlockOut.addEventListener("mousedown", function(e) { e.stopImmediatePropagation(); if (e.target == BlockOut) { BlockOut.remove(); N_ClientStatus(8, "Off"); } })
   return BlockOut;
 }
 
@@ -428,13 +428,13 @@ function PopUp_Accept_Cancel(Action, Title, Accept, Decline, Text) { // Delete (
   $(".Popup_Accept")[0].addEventListener("click", function() {
     if (Action == "Delete") {
       if (selectedItem.getAttribute('rc') == "Homepage_Span") { // EMPTY THE SPAN FIRST DOES THIS CAUSE ISSUES? IE CONTENTS NOT BEING DELETED PERM
-        if (Directory_Content[selectedItem.parentNode.getAttribute('nano-id')]) {selectedItem = selectedItem.parentNode}
+        if (Directory_Content[selectedItem.parentNode.getAttribute('node-id')]) {selectedItem = selectedItem.parentNode}
         else {console.log('Invalid Span ID'); return;}
       }
-      let forDeletion = NanoSelected.length ? NanoSelected : [selectedItem.getAttribute('nano-id')];
-      // socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": forDeletion, "To": "bin", "Path": NanoID})
-      // socket.emit('ItemEdit', {"action": "DELETE", "section": Section, "ID": forDeletion, "Path": NanoID})
-      EditPOST({"action": "DELETE", "section": Section, "id": forDeletion, "path": NanoID})
+      let forDeletion = NodeSelected.length ? NodeSelected : [selectedItem.getAttribute('node-id')];
+      // socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": forDeletion, "To": "bin", "Path": NodeID})
+      // socket.emit('ItemEdit', {"action": "DELETE", "section": Section, "ID": forDeletion, "Path": NodeID})
+      EditPOST({"action": "DELETE", "section": Section, "id": forDeletion, "path": NodeID})
     }
     BlockOut.remove();
   });
@@ -460,7 +460,7 @@ function PopUp_New_Span() {
     let created = await CreatePOST(
       { 
         "section": Section,
-        "path": NanoID,
+        "path": NodeID,
         "type": "Span",
         "name": document.querySelector('.Popup_Input_Name').value || 'New Span'
       }
@@ -470,7 +470,7 @@ function PopUp_New_Span() {
   })
 }
 
-function PopUp_New_Folder() {
+function PopUp_New_Folder(RCE) {
 
   let BlockOut = PopUpBase();
 
@@ -479,7 +479,7 @@ function PopUp_New_Folder() {
       <div class='Popup_Main'>
         <h3>New Folder</h3>
         <div class='Popup_Dropdown' style='top: 15px; right: 15px;'>
-          <div class='Popup_Location' title='Location' ${createLocation()}</div>
+          <div class='Popup_Location' title='Location' ${createLocation(RCE)}</div>
         </div>
         <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='off'></input>
         <span>
@@ -508,7 +508,7 @@ function PopUp_New_Folder() {
   const Popup_Pass = BlockOut.querySelector('.Popup_Option_Pass');
   const Popup_Pin = BlockOut.querySelector('.Popup_Option_Pin');
 
-  if (NanoID == "homepage") {
+  if (NodeID == "homepage") {
     const DropDown_Options = Popup_Dropdown.querySelectorAll('.Popup_Dropdown_Content a');
     DropDown_Options.forEach(option => {
       option.addEventListener('click', (e) => {
@@ -524,16 +524,16 @@ function PopUp_New_Folder() {
 
 
   BlockOut.querySelector(".Popup_Reject").addEventListener("click", function() { 
-    BlockOut.remove(); N_ClientStatus("CS8", "Off");
+    BlockOut.remove(); N_ClientStatus(8, "Off");
   })
 
   BlockOut.querySelector(".Popup_Accept").addEventListener("click", async function() {
     let created = await CreatePOST(
       {
         "section": Section,
-        "path": NanoID,
+        "path": NodeID,
         "type": "Folder",
-        "parent": (NanoID=="homepage" ? Popup_Location.getAttribute('value') : NanoID),
+        "parent": (NodeID=="homepage" ? Popup_Location.getAttribute('value') : NodeID),
         "name": Popup_Name.value || 'New Folder',
         "options": {
           "description": Popup_Description.value,
@@ -550,7 +550,7 @@ function PopUp_New_Folder() {
 }
 
 function PopUp_Upload() {
-  N_ClientStatus("CS7", "Wait", 600);
+  N_ClientStatus(7, "Wait", 600);
   Upload_Visuals.Status("Choose", "Choose Items");
   Upload_Values[0].innerText = '0 Items';
   Upload_Values[1].innerText = '0 B';
@@ -559,7 +559,7 @@ function PopUp_Upload() {
   PopUp_Upload.Close = function() {
     UploadContainer.style.visibility = 'hidden';
     UploadContainer.querySelectorAll('span i')[0].classList = 'fas fa-chevron-up'
-    UC_Queue_Viewer.classList.remove('UC_Showing');
+    UC_Queue.classList.remove('UC_Showing');
     Progress_Div.classList.remove('UC_Showing');
     Upload_Actions.Reset_Upload();
   };
@@ -573,7 +573,7 @@ async function PopUp_Download(Item, Caller) {
     DownloadName = Item.name;
     Zipping = !Item.type.file;
   } else if (Caller == 'ContextMenu') { // ContextMenu
-    DownloadIDs = NanoSelected;
+    DownloadIDs = NodeSelected;
     DownloadName = DownloadIDs.length > 1 ? 'Drive_Download' : RCElement.getAttribute('directory').split(' > ').pop();
     Zipping = (DownloadIDs.length === 1 && RCElement) ? (RCElement.getAttribute('type') == 'folder' ? true : false) : true;
   } else { return; }
@@ -620,7 +620,7 @@ async function PopUp_Download(Item, Caller) {
     })
     
     document.querySelector(".Popup_Reject").addEventListener("click", () => { 
-      BlockOut.remove(); N_ClientStatus("CS8", "Off"); 
+      BlockOut.remove(); N_ClientStatus(8, "Off"); 
     })
 
     document.querySelector('.Popup_Accept').addEventListener('click', async(e) => {

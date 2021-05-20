@@ -10,11 +10,11 @@ let Tree_Steps = 0; // Current Index in Tree
 let FolderCall = true; // If Route Was Called by Clicking on a Folder
 
 // ====================================
-HomeCall({"Folder":NanoName});
+HomeCall({"Folder":NodeName});
 // Send Recieve
 
 async function HomeCall(CallData, Resp) {
-  const {Folder=NanoName, Reload=true, Skip=false} = CallData;
+  const {Folder=NodeName, Reload=true, Skip=false} = CallData;
 
   FolderCall = Reload;
 
@@ -24,20 +24,20 @@ async function HomeCall(CallData, Resp) {
 
   if (Resp.Auth) { RightBar_Security_Inputs(Resp);}
   else if (Resp.Parent) {
-    NanoName = Resp.Parent.id == "homepage" ? "homepage" : Resp.Parent.name;
-    NanoID = Resp.Parent.id;
-    NanoSelected = [];
+    NodeName = Resp.Parent.id == "homepage" ? "homepage" : Resp.Parent.name;
+    NodeID = Resp.Parent.id;
+    NodeSelected = [];
     Directory_Content = Resp.Contents;
 
-    Route(NanoID, NanoName);
-    UserSettings.ViewT == 0 ? viewContentAsBlock(NanoID) : viewContentAsList(NanoID);
-    uploadDirectory = NanoName == "homepage" ? "_GENERAL_" : NanoName;
+    Route(NodeID, NodeName);
+    UserSettings.local.layout == 0 ? viewContentAsBlock(NodeID) : viewContentAsList(NodeID);
+    uploadDirectory = NodeName == "homepage" ? "_GENERAL_" : NodeName;
     setupFileMove();
   }
 }
 
 refreshDirectory = () => {
-  HomeCall({"Folder":NanoID, "Reload":false});
+  HomeCall({"Folder":NodeID, "Reload":false});
 }
 
 EditPOST = async (Form, Skip=true) => {
@@ -49,7 +49,7 @@ EditPOST = async (Form, Skip=true) => {
     body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
   })
   let response = await res.json();
-  N_ClientStatus("CS2", "True", 400); N_ClientStatus("CS8", "Off");
+  N_ClientStatus(2, "True", 400); N_ClientStatus(8, "Off");
   if (response.Error) { return response; }
 
   HomeCall({"Skip": Skip, 'Reload': false}, response);
@@ -63,7 +63,7 @@ CreatePOST = async (Form) => {
     body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
   })
   let response = await res.json();
-  N_ClientStatus("CS2", "True", 400); N_ClientStatus("CS8", "Off");
+  N_ClientStatus(2, "True", 400); N_ClientStatus(8, "Off");
   if (response.Error) { return response; }
 
   HomeCall({'Skip':true, 'Reload': false}, response);
@@ -82,7 +82,7 @@ navigateForward.addEventListener('click', () => {
     Tree_Steps = Directory_Tree[Tree_Number].Start;
   } else { return; }
   
-  HomeCall({"Folder":Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Nano, "Reload": false});
+  HomeCall({"Folder":Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Node, "Reload": false});
 })
 
 navigateBackward.addEventListener('click', () => {
@@ -95,21 +95,21 @@ navigateBackward.addEventListener('click', () => {
   
   Tree_Steps = Directory_Route.length;
 
-  HomeCall({"Folder":Directory_Route[Tree_Steps - 1].Nano, "Reload": false});
+  HomeCall({"Folder":Directory_Route[Tree_Steps - 1].Node, "Reload": false});
 })
 
 // Directory Path
 
-function Route(Nano_Path, Text_Path) {
+function Route(Node_Path, Text_Path) {
   if (FolderCall == true) {
-    if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Nano == Nano_Path) {
+    if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Node == Node_Path) {
       // This was a return statement, but that breaks going forward into a locked folder.
     } else {
-      Directory_Route.push({"Nano": Nano_Path, "Text": Text_Path})
-      if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Nano": Nano_Path, "Text": Text_Path})) {
+      Directory_Route.push({"Node": Node_Path, "Text": Text_Path})
+      if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Node": Node_Path, "Text": Text_Path})) {
         Directory_Tree = Directory_Tree.slice(0, Tree_Number + 1);
       }
-      if (!Directory_Tree[Tree_Number]) {console.log(252); Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
+      if (!Directory_Tree[Tree_Number]) { Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
       Directory_Tree[Tree_Number].Route = Directory_Route;
       Tree_Steps++;
     }
@@ -117,22 +117,22 @@ function Route(Nano_Path, Text_Path) {
 
   FolderCall = true;
 
-  $(directoryLocation)[0].innerHTML = "<div class='dirBtn' nano-id='homepage' title='homepage'>homepage</div>";
+  $(directoryLocation)[0].innerHTML = "<div class='dirBtn' node-id='homepage' title='homepage'>homepage</div>";
   for (i=1; i<Tree_Steps; i++) {
-    $(directoryLocation)[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' nano-id='"+Directory_Route[i].Nano+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
+    $(directoryLocation)[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' node-id='"+Directory_Route[i].Node+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
   }
   $(".dirBtn").last()[0].classList.add('currentDirBtn');
 
 
   $(".dirBtn").on("click", function(e) {
-    let NanoID = e.target.getAttribute("nano-id");
-    let Route_Obj = Directory_Route.find(o => o.Nano === NanoID); // Find Object with Nano=NanoID in Directory_Route
+    let NodeID = e.target.getAttribute("node-id");
+    let Route_Obj = Directory_Route.find(o => o.Node === NodeID); // Find Object with Node=NodeID in Directory_Route
     Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
     
     if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
     {Tree_Number++;   Tree_Steps = Directory_Route.length;   Directory_Tree.push({"Start":Tree_Steps, "Route": Directory_Route});}
 
-    HomeCall({"Folder":NanoID, "Reload":false});
+    HomeCall({"Folder":NodeID, "Reload":false});
   })
 
 
@@ -142,7 +142,7 @@ function Route(Nano_Path, Text_Path) {
   if (Directory_Route.length > 1 || Directory_Tree[Tree_Number - 1])
   {$(navigateBackward)[0].classList.remove('notActive')} else { $(navigateBackward)[0].classList.add('notActive');}
 
-  // if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Nano": "homepage", "Text": "homepage"}]))
+  // if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify([{"Node": "homepage", "Text": "homepage"}]))
   // {$("#returnTohomepage")[0].classList.remove('notActive')} else { $("#returnTohomepage")[0].classList.add('notActive');}
 }
 
@@ -185,7 +185,7 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         droppedItem.draggable[0].remove();
         if ($(e.target).hasClass('codexItemFolder')) {
-          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": e.target.getAttribute('nano-id')}
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('node-id'), "To": e.target.getAttribute('node-id')}
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
       },
@@ -197,23 +197,23 @@ function setupFileMove(Caller) {
       drop: function(e, droppedItem) {
         if (CodexPath != "Home") {
           droppedItem.draggable[0].remove();
-          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('nano-id'), "To": CodexDirPath_Nano[CodexDirPath_Nano.length - 2]};
+          let emitAction = "Move"; let Data = {"OID": droppedItem.draggable[0].getAttribute('node-id'), "To": CodexDirPath_Node[CodexDirPath_Node.length - 2]};
           socket.emit('Codex', {emitAction, CodexWanted, CodexPath, Data});
         }
       }
     })
   }
 
-  else if (UserSettings.ViewT == 0) {
+  else if (UserSettings.local.layout == 0) {
     $(".ContentContainer").sortable({
-      items: "div[nano-id]",
+      items: "div[node-id]",
     })
   }
 
-  else if (UserSettings.ViewT == 1) {
+  else if (UserSettings.local.layout == 1) {
     let hoveringOver;
 
-    $("tr[nano-id]").draggable({
+    $("tr[node-id]").draggable({
       appendTo: '.homePageContainer',
       containment: ".homePageContainer",
       connectToSortable: ".ListContentTable",
@@ -227,12 +227,12 @@ function setupFileMove(Caller) {
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        return $( "<div class='listItem-Placeholder' nano-id="+e.currentTarget.getAttribute('nano-id')+"><img src="+$(e.currentTarget).find('img')[0].src+"></img><h5>"+$(e.currentTarget).find('input')[0].value+"</h5></div>" );
+        return $( "<div class='listItem-Placeholder' node-id="+e.currentTarget.getAttribute('node-id')+"><img src="+$(e.currentTarget).find('img')[0].src+"></img><h5>"+$(e.currentTarget).find('input')[0].value+"</h5></div>" );
       },
     }).disableSelection();
 
     $("tr[type=folder]").droppable({
-      accept: "tr[nano-id]",
+      accept: "tr[node-id]",
       hoverClass: "listItem-Hover",
       tolerance: 'pointer',
       greedy: true,
@@ -241,7 +241,7 @@ function setupFileMove(Caller) {
         e.target.classList.add('listItem-Hover');
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
-          HomeCall({"Folder":e.target.getAttribute("nano-id")});
+          HomeCall({"Folder":e.target.getAttribute("node-id")});
         }, 2000)
       },
       out : function(e) {
@@ -250,30 +250,30 @@ function setupFileMove(Caller) {
       },
       drop: function(e, droppedItem) {
         clearTimeout(hoveringOver);
-        EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('nano-id'), "to": e.target.getAttribute('nano-id')}, false)
+        EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('node-id'), "to": e.target.getAttribute('node-id')}, false)
         removeDroppedListItem(droppedItem);
       },
     })
 
     $(".ListContentContainer").droppable({
-      accept: "tr[nano-id]",
+      accept: "tr[node-id]",
       hoverClass: "listSpan-Hover",
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
         if (!e.target.contains(droppedItem.draggable[0])) {
-          EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('nano-id'), "to": e.target.getAttribute('nano-id'), "path": NanoID});
+          EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('node-id'), "to": e.target.getAttribute('node-id'), "path": NodeID});
           removeDroppedListItem(droppedItem);
         }
       },
     })
 
     $(".dirBtn").droppable({
-      accept: "tr[nano-id]",
+      accept: "tr[node-id]",
       hoverClass: "dirBtn-Hover",
       tolerance: 'pointer',
       drop: function(e, droppedItem) {
-        if (e.target.getAttribute('nano-id') != NanoID) {
-          EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('nano-id'), "to": e.target.getAttribute('nano-id'), "path": NanoID})
+        if (e.target.getAttribute('node-id') != NodeID) {
+          EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('node-id'), "to": e.target.getAttribute('node-id'), "path": NodeID})
           removeDroppedListItem(droppedItem);
         }
       }

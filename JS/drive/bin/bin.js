@@ -15,7 +15,7 @@ BinItemCall();
 binSwitchController();
 
 async function BinDataCall() {
-  let req = await fetch(`https://drive.nanode.one/settings/bin`)
+  let req = await fetch(`https://drive.nanode.one/account/bin`)
   let request = await req.json();
 
   if (request && request.size.bin) {
@@ -33,7 +33,7 @@ async function BinDataCall() {
 
       setTimeout(() => { // Without empty function call, no transition is played.
         binUsage.lastChild.childNodes[1].style.strokeDasharray = rotation;
-      })
+      }, 100)
     }
 
   } else {
@@ -63,7 +63,7 @@ RenderBinList = function(data) {
     for (const [object, item] of Object.entries(data.Contents)) {
       Table.insertAdjacentHTML('afterBegin',
       `
-        <tr type='${N_ItemChecker(item.type.mime)}' nano-id='${object}' rc='Bin_Item' rcOSP='TD'>
+        <tr type='${N_ItemChecker(item.type.mime)}' node-id='${object}' rc='Bin_Item' rcOSP='TD'>
           <td><img loading='lazy' height='38' width='38' src='${N_ItemImage({"type":item.type.mime, "oID": object, "section": "bin", "h": 38, "w": 38})}'></img></td>
           <td>${N_CapFirstLetter(item.name)}</td>
           <td>${N_CapFirstLetter(N_TypeChecker(item.type.mime, "TRIM"))}</td>
@@ -88,7 +88,7 @@ RenderBinList = function(data) {
 // @ == Item Listeners
 
 function BinItemClickListeners() {
-  let DeletedItems = binContainer.querySelectorAll('tr[nano-id]');
+  let DeletedItems = binContainer.querySelectorAll('tr[node-id]');
   let currentlySelected;
 
   DeletedItems.forEach((item) => {
@@ -100,18 +100,18 @@ function BinItemClickListeners() {
         currentlySelected ? currentlySelected.classList.remove('ItemSelected') : '';
         currentlySelected = selected;
         selected.classList.add('ItemSelected');
-        FetchBinItemInformation(selected.getAttribute('nano-id'));
+        FetchBinItemInformation(selected.getAttribute('node-id'));
       }
     })
   })
 }
 
-FetchBinItemInformation = async(nanoID) => {
+FetchBinItemInformation = async(nodeID) => {
   binItemData.innerHTML = N_Loading('small');
 
-  let FileRequest = await fetch(`https://drive.nanode.one/user/bin/${nanoID}`);
+  let FileRequest = await fetch(`https://drive.nanode.one/user/bin/${nodeID}`);
   let RequestInfo = await FileRequest.json();
-  RequestInfo = RequestInfo[nanoID];
+  RequestInfo = RequestInfo[nodeID];
 
   binItemData.innerHTML = `
     <p>${RequestInfo.name}</p>
