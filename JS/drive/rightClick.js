@@ -19,7 +19,7 @@ const RightClickObjectMenu = {
   },
   "Node_Folder" : {
     "Open": [{"Command": "ItemActions"}],
-    "View Details": [{"Command": "callItemInformation", "Var1": "RCElement"}],
+    "View Details": [{"Command": "FetchItemInformation", "Var1": "RCElement"}],
     "Security": "",
     "Node_SPLIT_1": "",
     "Move To": "",
@@ -33,7 +33,7 @@ const RightClickObjectMenu = {
   },
   "Node_File" : {
     "Open": [{"Command": "ItemActions"}],
-    "View Details": [{"Command": "callItemInformation", "Var1": "RCElement"}],
+    "View Details": [{"Command": "FetchItemInformation", "Var1": "RCElement"}],
     "Security": "",
     "Node_SPLIT_1": "",
     "Copy To": "",
@@ -56,15 +56,15 @@ const RightClickObjectMenu = {
 }
 
 document.addEventListener("contextmenu", function(e) {
-
+  
   if (e.target.getAttribute('noRC') != null) { return; }
-
+  
   e.stopPropagation();
   e.preventDefault();
   RCElement = '';
 
-  if (e.target.hasAttribute('rcPar')) { RCElement = e.path[ e.target.getAttribute('rcPar') ] }
-  if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { RCElement = e.target.offsetParent; }
+  if (e.target.hasAttribute('rcPar') || e.target.parentNode.hasAttribute('rcPar')) { RCElement = e.path[ e.target.getAttribute('rcPar') || e.target.parentNode.getAttribute('rcPar') ] }
+  if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { RCElement = e.target.parentNode; }
   if (e.target.hasAttribute('rc') && e.target.getAttribute('rc').match(/Node_Folder|Node_File/)) { RCElement = e.target; };
 
   SelectItem(RCElement, "FORCE");

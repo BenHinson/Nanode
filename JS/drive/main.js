@@ -6,39 +6,44 @@ let NodeName = 'home';
 let Directory_Content = '';
 let NodeSelected = []; // Items that are currently selected
 
-// =========================================== Initial Actions
-
+// @ == Initial Load
 document.addEventListener("DOMContentLoaded", async(event) => {
   await sessionSettings();
   await pageSwitch(currentPage);
 })
 
-// =========================================== Directory Caller
 
-Directory_Call = async(FetchData, Response) => {
-  const {Folder, Section, subSection} = FetchData;
-  N_ClientStatus(4, "Wait");
-  let Request = await fetch(`https://drive.nanode.one/folder/${Folder.toLowerCase()}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`);
-  N_ClientStatus(4, "Off"); N_ClientStatus(7, "Wait", 800);
-  return await Request.json();
+// @ == API Caller
+API_Fetch = async(fetchdata, response) => { // await API_Fetch({url: `drive.nanode.one/`})
+  const {url, conv} = fetchdata;
+  N_ClientStatus(4, 'Wait');
+  let req = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`);
+
+  if (conv == 'blob') { req = await req.blob() }
+  else if (conv == 'text') { req = await req.text() }
+  else { req = await req.json() }
+
+  N_ClientStatus(4, 'Off');
+  return req.Error ? false : req;
 }
 
-// =========================================== Settings Caller
-
-Settings_Call = async() => {
-  N_ClientStatus(4, "Wait");
-  let Settings_Request = await fetch('https://drive.nanode.one/account/settings');
-  let Settings_Response = await Settings_Request.json();
-  N_ClientStatus(4, "Off");
-  return Settings_Response.Error ? false : Settings_Response;
+API_Post = async(senddata, response) => { // await API_Post({url: `drive.nanode.one/`})
+  const {url, body} = senddata;
+  let req = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: new Blob( [ JSON.stringify(body) ], { type: 'text/plain' })
+  })
+  N_ClientStatus(3, "True", 500);
+  return await req.json();
 }
 
-// =========================================== Page Changer
+// @ == Change Pages
 
 pageSwitch = async(pageName) => {
-  let pageToSwitch = document.querySelector('.Pages .'+pageName+'_Page');
+  let pageToSwitch = document.querySelector(`.Pages .${pageName}_Page`);
   document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
-  if (pageToSwitch.innerHTML.length === 0) {
+  if (pageToSwitch.innerHTML.length === 0) { // WHAT IS AN ALTERNATIVE FOR THIS. ATLEAST THIS LOADS SCRIPTS
     await $(pageToSwitch).load(`/views/drive/${pageName}.html`);
   }
   pageToSwitch.classList.add('PageDisplay');
@@ -52,14 +57,6 @@ document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
     e.currentTarget.classList.add('SelectedPage');
   })
 })
-
-// =========================================== Search Call and Response
-
-Search_Call = async(FetchData, Response) => {
-  const {Search, Section, subSection} = FetchData;
-  let Request = await fetch(`https://drive.nanode.one/search/${Search}?s=${Section.toLowerCase()}&sub=${subSection.toLowerCase()}`)
-  return await Request.json();
-}
 
 // =========================================== Button and Key Listeners
 
@@ -76,100 +73,98 @@ const keyMap = {};
 onkeydown = function(e) { keyMap[e.key] = true; }
 onkeyup = function(e) { keyMap[e.key] = false; }
 
-// =========================================== Visual Functions
+// @ == Global Element Functions
 
-function ColorPicker(calledBy, callback) {
-  N_ClientStatus(7, "Wait", 400); N_ClientStatus(8, "User");
+function ColorPicker(caller) { new CreateColorPicker(caller) }
 
-  if ($(".colorContainer")[0]) {$(".colorContainer")[0].remove();}
+class CreateColorPicker {
+  constructor(caller) {
+    this.element = caller == 'RC' && typeof RCElement !== 'undefined' ? RCElement : null;
+    this.originColor = this.element?.hasAttribute('style')
+      ? N_RGBtoHex(getComputedStyle(this.element)[ UserSettings.local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
+      : '';
+    this.colorOptions = [
+      "#ffffff", "#d2d2d2", "#ababab", "#464646", "#000000", 
+      "#ff0000", "#cc7575", "#c83939", "#720000", "#460000",
+      "#f000ff", "#f4bdf7", "#f99aff", "#9c2ba3", "#630169",
+      "#66cfd4", "#6ec5e7", "#6697d4", "#4e4cb3", "#2825ca",
+      "#00ff4f", "#bdf7cf", "#60b179", "#148a39", "#004816",
+      "#f9fd00", "#fdff93", "#a8a95c", "#8e9000", "#474800",
+      "#ff7500", "#ff9133", "#a34b00", "#69370b", "#401e00",
+    ]
 
-  let colorContainer = document.createElement('div');
-  colorContainer.setAttribute('class', "colorContainer");
-  colorContainer.innerHTML = "<i id='closeColorPicker' class='fas fa-times' title='Close Picker'></i> <input type='text' id='colorPickEntry' class='colorPickEntry' placeholder='#000000'></input> <div class='colorOptionsContainer'></div><i id='acceptColorPicked' class='fas fa-check' title='Accept Colour'></i>";
-  document.body.appendChild(colorContainer);
-
-  if (typeof RCElement === 'object' && RCElement.hasAttribute('style')) {
-    let HexColor = UserSettings.local.layout == 0 ? N_RGBtoHex($(RCElement).css('borderBottom')) : N_RGBtoHex($(RCElement).css('boxShadow'));
-
-    $("#colorPickEntry")[0].value = HexColor
-    $("#colorPickEntry")[0].style.color = HexColor;
+    this._Initalise();
   }
 
-  const colorOptions = [
-    "#ffffff", "#d2d2d2", "#ababab", "#464646", "#000000", 
-    "#ff0000", "#cc7575", "#c83939", "#720000", "#460000",
-    "#f000ff", "#f4bdf7", "#f99aff", "#9c2ba3", "#630169",
-    "#66cfd4", "#6ec5e7", "#6697d4", "#4e4cb3", "#2825ca",
-    "#00ff4f", "#bdf7cf", "#60b179", "#148a39", "#004816",
-    "#f9fd00", "#fdff93", "#a8a95c", "#8e9000", "#474800",
-    "#ff7500", "#ff9133", "#a34b00", "#69370b", "#401e00",
-  ]
-
-  for (i=0; i<colorOptions.length; i++) {
-    let colorOption = document.createElement('div');
-    colorOption.setAttribute('color', colorOptions[i]);
-    colorOption.style.background = colorOptions[i];
-    $(".colorOptionsContainer")[0].appendChild(colorOption);
+  _Initalise() {
+    N_ClientStatus(8, "User");
+    document.querySelector(".colorContainer")?.remove();
+    this.RenderPicker_();
   }
 
-  $("#colorPickEntry").keypress(function(e) {
-    if ($(".selectedCol")[0]) {$(".selectedCol")[0].classList.remove('selectedCol')}
-    if ($("#colorPickEntry")[0].value.length > 9) { e.preventDefault() }
-    $("#colorPickEntry")[0].style.color = $("#colorPickEntry")[0].value + String.fromCharCode(e.keyCode);
-  })
+  RenderPicker_() {
+    this.container = document.createElement('div');
+    this.container.classList.add('colorContainer');
+    this.container.innerHTML = `
+      <i id='closeColorPicker' class='fas fa-times' title='Close Picker'></i>
+      <i id='acceptColorPicked' class='fas fa-check' title='Accept Colour'></i>
+      <input type='text' class='colorPickEntry' placeholder='#000000'></input>
+      <div class='colorOptionsContainer'>${this.colorOptions.reduce((a, b) => a + `<div style='background: ${b};'></div>`, ``)}</div>
+    `;
+    document.body.appendChild(this.container);
 
-  $(".colorOptionsContainer > div").on("click", function(e) {
-    selectedColor = e.target.getAttribute('color');
-    $("#colorPickEntry")[0].value = selectedColor
-    $("#colorPickEntry")[0].style.color = selectedColor;
-    if ($(".selectedCol")[0]) {$(".selectedCol")[0].classList.remove('selectedCol')}
-    e.target.classList.add('selectedCol');
-  })
+    this.colorEntry = this.container.querySelector('input');
+    this.UpdateColor_();
+    this.SetListeners_();
+    dragElement(this.container);
+  }
 
-  $("#closeColorPicker").on("click", function() {
-    $(".colorContainer")[0].remove();
-  })
-  $("#acceptColorPicked").on("click", function() {
-    if ( !$("#colorPickEntry")[0].style.color ) { let ColorPicked = null }
-    let ColorPicked = $("#colorPickEntry")[0].style.color;
-    $(".colorContainer")[0].remove();
-
-    if (typeof RCElement !== 'undefined' && calledBy == "RC") {
-      // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": RCElement.getAttribute('node-id'), "EditData": {"color": ColorPicked}, "Path": NodeID })
-      EditPOST({"action": "DATA", "section": Section, "id": RCElement.getAttribute('node-id'), "data": { "color": ColorPicked }, "path": NodeID})
-      return;
+  SetListeners_() {
+    document.getElementById('closeColorPicker').onclick = () => {this.container?.remove()}
+    document.getElementById('acceptColorPicked').onclick = async() => {
+      await NodeAPI('edit', {'action': 'DATA', 'section': Section, 'id': this.element.getAttribute('node-id'), 'data': {'color': this.colorEntry.value}, 'path': NodeID})
+      this.container?.remove();
     }
-    callback(ColorPicked);
-  })
+    this.colorEntry.addEventListener('keypress', (e) => { // For some reason this can make the thing lag badly.
+      this.container.querySelector('.selected')?.classList.remove('selected');
+      if (e.target.value.length > 6 && e.key !== 'Backspace') {e.preventDefault()}
+      e.target.style.color = e.target.value;
+    })
+    this.container.querySelectorAll('.colorOptionsContainer div').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        this.UpdateColor_(N_RGBtoHex(e.target.style.background))
+        this.container.querySelector('.selected')?.classList.remove('selected');
+        e.target.classList.add('selected');
+      })
+    })
+  }
 
-  dragElement($(".colorContainer")[0]);
+  UpdateColor_(newColor) {
+    this.colorEntry.value = newColor || this.originColor;
+    this.colorEntry.style.color = newColor || this.originColor;
+  }
 }
 
 function dragElement(element) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  element.onmousedown = dragMouseDown;
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-  function dragMouseDown(e) {
-    if (e.target != element) { return; }
+  element.onmousedown = (e) => {
+    if (e.target !== element) { return; }
     e.preventDefault();
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
-  }
+    [pos3, pos4] = [e.clientX, e.clientY];
 
-  function elementDrag(e) {
-    e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    element.style.top = (element.offsetTop - pos2) + "px";
-    element.style.left = (element.offsetLeft - pos1) + "px";
-  }
+    document.onmouseup = () => {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    };
 
-  function closeDragElement() {
-    document.onmouseup = null;
-    document.onmousemove = null;
+    document.onmousemove = (e) => {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      [pos3, pos4] = [e.clientX, e.clientY];
+      element.style.top = `${element.offsetTop - pos2}px`;
+      element.style.left = `${element.offsetLeft - pos1}px`;
+    };
   }
 }

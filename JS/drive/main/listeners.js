@@ -6,31 +6,23 @@ const searchParams = document.getElementsByClassName('searchParams')[0];
 const searchParamsContainer = document.getElementsByClassName('searchParamsContainer')[0];
 let paramListenersCalled = false
 
-
-$(".New").on("click", function() {
-  if (document.getElementsByClassName('NewOptions')[0]) { document.getElementsByClassName('NewOptions')[0].remove(); return; }
-  $(".ItemInformation").before( `<span class='NewOptions'> <div id='uploadBtn' style='background:linear-gradient(40deg, #2993d8, #203ed3)'><i class='fas fa-cloud-upload-alt'></i>Upload</div> <div id='folderBtn' style='background:linear-gradient(40deg, #ddaa1f, #b35632)'><i class='fas fa-folder-plus'></i>Folder</div> </span>` )
-
-  document.getElementById('uploadBtn').addEventListener("click", function() { PopUp_Upload() });
-  document.getElementById('folderBtn').addEventListener("click", function() { PopUp_New_Folder() });
-})
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? fileContainer.querySelectorAll('div[node-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tr[node-id]'));
+  let Items = (View == 0 ? fileContainer.querySelectorAll('div[node-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tr[node-id]:not(.tableHeader), .baseFolders > div'));
 
-  $(Items).on("click", function(selected) {
-    if (selected.currentTarget.hasAttribute('focus')) { return; }
-    selected = selected.currentTarget;
+  Items.forEach(item => {
+    item.addEventListener('click', function(selected) {
+      if (selected.currentTarget.hasAttribute('focus')) { return; }
 
-    if (keyMap["Shift"] == true || keyMap["Control"] == true) { SelectItem(selected); return; }
+      if (keyMap["Shift"] == true || keyMap["Control"] == true) { SelectItem(selected.currentTarget); return; }
 
-    if (!selected.classList.contains('noOpen')) {
-      ItemActions(selected);
-      N_ClientStatus(5, "Ok", 500);
-    }
+      if (!selected.currentTarget.classList.contains('noOpen')) {
+        ItemActions(selected.currentTarget);
+        N_ClientStatus(5, "Ok", 500);
+      }
+    })
   })
 }
 
@@ -200,7 +192,7 @@ function renameItem(e) {
 
   targetInput.addEventListener('change', function() {
     ReturnItemState();
-    EditPOST({"action": "DATA", "section": Section, "id": focusedElement.getAttribute('node-id'), "data": { "name": targetInput.value }, "path": NodeID}, true)
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": focusedElement.getAttribute('node-id'), "data": { "name": targetInput.value }, "path": NodeID}, true)
   });
 
   setTimeout(function() {

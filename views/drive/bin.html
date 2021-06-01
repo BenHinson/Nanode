@@ -1,5 +1,5 @@
 <div class='PageContainer'>
-  <div class='PageHeader' style="flex-direction: column;">
+  <div class='PageHeader flex-even-cent'>
     <div class='Switch SW_Bin'>
       <div class='Slider SL_Bin'></div>
       <div swOpPos=1 class='SwitchSelected'>Main</div>
@@ -9,17 +9,15 @@
   </div>
 
   <div class='PageData'>
-    <div class='binContainer'></div>
+    <div class='binContainer grid-items-center'></div>
 
-    <div class="binIsEmpty"><img src="/assets/nanode/logo/282c32.svg" alt="Empty Bin"><p>Items deleted in the last 30 days will show here</p></div>
+    <div class="binIsEmpty grid-items-center transform-center"><img src="/assets/nanode/logo/logo.svg" alt="This bin section is empty"><p>Items deleted in the last 30 days will show here</p></div>
   </div>
-  
-  <div class='binInfoPopup'>Items left in the bin will be permanently deleted after 30 days.<i class="fas fa-times"></i></div>
 </div>
 
 
 <div class='PageInformation'>
-  <div class='binInformation'>
+  <div class='binInfo flex-column-cent'>
     <p class='binSize'></p>
   
     <div class='binUsage'><div></div></div>
@@ -27,10 +25,11 @@
     <div class='binItemData'></div>
   
     <div class='binEmptyContainer'>
-      <button class='binBtn binEmptyBtn'>Empty Bin</button>
+      <button class='rb-btn-full red-full binEmptyBtn'>Empty Bin</button>
     </div>
 
   </div>
 </div>
+
 
 <script text="text/javascript" src="/JS/drive/bin/bin.js"></script>

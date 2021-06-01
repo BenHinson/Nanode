@@ -1,0 +1,8 @@
+# robots.txt for https://nanode.one/
+
+User-agent: *
+Disallow: /assets/
+Disallow: /CSS/
+Disallow: /JS/
+
+Sitemap: https://nanode.one/sitemap.xml

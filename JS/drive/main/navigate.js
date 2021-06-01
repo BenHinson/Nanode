@@ -13,21 +13,19 @@ let FolderCall = true; // If Route Was Called by Clicking on a Folder
 HomeCall({"Folder":NodeName});
 // Send Recieve
 
-async function HomeCall(CallData, Resp) {
+async function HomeCall(CallData, res) {
   const {Folder=NodeName, Reload=true, Skip=false} = CallData;
 
   FolderCall = Reload;
 
-  if (Skip === false) {
-    Resp = await Directory_Call({'Folder': Folder, 'Section': 'main', 'subSection': ''})
-  }
+  if (Skip === false) { res = await API_Fetch({url:`/folder/${Folder.toLowerCase()}?s=main`}) }
 
-  if (Resp.Auth) { RightBar_Security_Inputs(Resp);}
-  else if (Resp.Parent) {
-    NodeName = Resp.Parent.id == "homepage" ? "homepage" : Resp.Parent.name;
-    NodeID = Resp.Parent.id;
+  if (res.Auth) { RightBar_Security_Inputs(res);}
+  else if (res.Parent) {
+    NodeName = res.Parent.id == "homepage" ? "homepage" : res.Parent.name;
+    NodeID = res.Parent.id;
     NodeSelected = [];
-    Directory_Content = Resp.Contents;
+    Directory_Content = res.Contents;
 
     Route(NodeID, NodeName);
     UserSettings.local.layout == 0 ? viewContentAsBlock(NodeID) : viewContentAsList(NodeID);
@@ -36,39 +34,19 @@ async function HomeCall(CallData, Resp) {
   }
 }
 
-refreshDirectory = () => {
-  HomeCall({"Folder":NodeID, "Reload":false});
-}
-
-EditPOST = async (Form, Skip=true) => {
-  // Skip Etiquette: IF Path GIVEN in Form. Skip must be TRUE or BLANK. Only False if Path NOT given, but call must happen. (IN which case... just give path..?)
-
-  let res = await fetch('https://drive.nanode.one/edit', {
-    method:'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
-  })
-  let response = await res.json();
+NodeAPI = async(Location, Form, Skip=true) => { // For Creating or Editing Nodes
+  // Skip Etiquette: IF Path GIVEN in Form. Skip must be TRUE or BLANK.
+  // Only False if Path NOT given, but call must happen. (IN which case... just give path..?)
+  let res = await API_Post({url: `/${Location}`, body: Form});
   N_ClientStatus(2, "True", 400); N_ClientStatus(8, "Off");
-  if (response.Error) { return response; }
-
-  HomeCall({"Skip": Skip, 'Reload': false}, response);
+  if (res.Error) { return res; }
+  HomeCall({Skip, 'Reload': false}, res);
   return {};
 }
 
-CreatePOST = async (Form) => {
-  let res = await fetch('https://drive.nanode.one/create', {
-    method:'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
-  })
-  let response = await res.json();
-  N_ClientStatus(2, "True", 400); N_ClientStatus(8, "Off");
-  if (response.Error) { return response; }
 
-  HomeCall({'Skip':true, 'Reload': false}, response);
-  return {};
-}
+refreshDirectory = () => { HomeCall({"Folder":NodeID, "Reload":false}); }
+
 
 // Navigation Buttons
 
@@ -117,9 +95,9 @@ function Route(Node_Path, Text_Path) {
 
   FolderCall = true;
 
-  $(directoryLocation)[0].innerHTML = "<div class='dirBtn' node-id='homepage' title='homepage'>homepage</div>";
+  $(directoryLocation)[0].innerHTML = "<button class='dirBtn' node-id='homepage' title='homepage'>homepage</button>";
   for (i=1; i<Tree_Steps; i++) {
-    $(directoryLocation)[0].innerHTML += "<div class='dirArrow'></div>   <div class='dirBtn' node-id='"+Directory_Route[i].Node+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</div> ";
+    $(directoryLocation)[0].innerHTML += "<i></i> <button class='dirBtn' node-id='"+Directory_Route[i].Node+"' title='"+Directory_Route[i].Text+"' >"+Directory_Route[i].Text+"</button> ";
   }
   $(".dirBtn").last()[0].classList.add('currentDirBtn');
 
@@ -215,19 +193,25 @@ function setupFileMove(Caller) {
 
     $("tr[node-id]").draggable({
       appendTo: '.homePageContainer',
-      containment: ".homePageContainer",
-      connectToSortable: ".ListContentTable",
+      containment: '.homePageContainer',
+      connectToSortable: '.ListContentTable',
       revert: true,
 
       refreshPositions: true,
 
       delay: 150,
-      cursor: "move",
+      cursor: 'move',
       tolerance: 'pointer',
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        return $( "<div class='listItem-Placeholder' node-id="+e.currentTarget.getAttribute('node-id')+"><img src="+$(e.currentTarget).find('img')[0].src+"></img><h5>"+$(e.currentTarget).find('input')[0].value+"</h5></div>" );
+        SelectItem(e.currentTarget, true);
+        return `
+          <div class='listItem-Placeholder'>
+            <img src='${NodeSelected.length > 1 ? '/assets/drive/file_icons/multiple.svg' : e.currentTarget.children[0].children[0].src}'></img>
+            <h5>${NodeSelected.length > 1 ? 'Moving '+NodeSelected.length+' items' : e.currentTarget.children[1].children[0].value }</h5>
+          </div>
+        `;
       },
     }).disableSelection();
 
@@ -238,7 +222,6 @@ function setupFileMove(Caller) {
       greedy: true,
 
       over: function(e) {
-        e.target.classList.add('listItem-Hover');
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
           HomeCall({"Folder":e.target.getAttribute("node-id")});
@@ -250,38 +233,44 @@ function setupFileMove(Caller) {
       },
       drop: function(e, droppedItem) {
         clearTimeout(hoveringOver);
-        EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('node-id'), "to": e.target.getAttribute('node-id')}, false)
-        removeDroppedListItem(droppedItem);
+        moveToTarget(e, droppedItem);
       },
     })
 
-    $(".ListContentContainer").droppable({
+    $(".baseFolders > div").droppable({
+      accept: "tr[node-id]",
+      hoverClass: "baseFolder-Hover",
+      tolerance: 'pointer',
+      drop: moveToTarget,
+    })
+
+    $(".tableHeader").droppable({
       accept: "tr[node-id]",
       hoverClass: "listSpan-Hover",
       tolerance: 'pointer',
-      drop: function(e, droppedItem) {
-        if (!e.target.contains(droppedItem.draggable[0])) {
-          EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('node-id'), "to": e.target.getAttribute('node-id'), "path": NodeID});
-          removeDroppedListItem(droppedItem);
-        }
-      },
+      drop: moveToTarget,
     })
 
     $(".dirBtn").droppable({
       accept: "tr[node-id]",
       hoverClass: "dirBtn-Hover",
       tolerance: 'pointer',
-      drop: function(e, droppedItem) {
-        if (e.target.getAttribute('node-id') != NodeID) {
-          EditPOST({"action": "MOVE", "section": Section, "id": droppedItem.draggable[0].getAttribute('node-id'), "to": e.target.getAttribute('node-id'), "path": NodeID})
-          removeDroppedListItem(droppedItem);
-        }
-      }
+      drop: moveToTarget,
     })
 
-    let removeDroppedListItem = function(droppedItem) {
-      droppedItem.draggable[0].remove();
-      document.querySelector('.listItem-Placeholder').remove();
-    }
+  }
+}
+
+let moveToTarget = function(drop, item, type='table') {
+  let targetID = drop.target.getAttribute('node-id');
+  if (!NodeSelected.includes(targetID) && targetID !== NodeID && targetID) {
+    NodeAPI('edit', {"action": "MOVE", "section": Section, "id": NodeSelected, "to": targetID, "path": false})
+    
+    NodeSelected.forEach(itemID => {
+      document.querySelector(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove();
+    })
+    
+    NodeSelected = [];
+    document.querySelector('.listItem-Placeholder').remove();
   }
 }

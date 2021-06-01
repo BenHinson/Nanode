@@ -9,7 +9,7 @@ Queue_Showing = false;
 
 const Chunk_Size = (1 * 1024 * 1024) // (1mb)
 
-const Upload_Buttons = $('#fileUploadBtn, #folderUploadBtn');
+const Upload_Buttons = document.querySelector('#fileUploadBtn, #folderUploadBtn');
 const Drop_Area = document.querySelector('.Pages');
 const DragDropOverlay = document.querySelector('.DragDropOverlay');
 

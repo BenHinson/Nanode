@@ -163,9 +163,21 @@ const N_ConvertSize = (InputSize) => { // Used Twelve Times
 
 // Elements
 const N_PareAttr = (element, attrName) => {
-  console.log(element);
-  console.log(attrName);
   return element.parentElement.getAttribute(attrName);
+}
+const N_InfoPopup = (parent, info, displayTime) => {
+  // NOTE: we MUST use createElement here as using just innerHTML breaks the child elements of parent as they are repassed and loose their event listener references.
+  let popup = document.createElement('div');
+  popup.classList = 'info-popup'
+  popup.innerHTML = `${info}<i class="fas fa-times"></i></div>`
+  parent.appendChild(popup);
+
+  setTimeout(() => {
+    popup.classList.add('display');
+    popup.querySelector('i').addEventListener('click', () => {
+      popup.classList.remove('display');
+    });
+  }, displayTime)
 }
 
 // Status / Waiting

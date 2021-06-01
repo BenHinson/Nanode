@@ -13,13 +13,13 @@
     <meta name="image" content="https://nanode.one/assets/nanode/logo/logo.svg">
     <link rel="apple-touch-icon" type="image/x-icon" href="/assets/nanode/logo/logo.svg">
 
-    <link rel="stylesheet" href="/CSS/drive.css">
+    <link rel="stylesheet" href="/CSS/drive/drive.css">
+    <link rel="stylesheet" href="/CSS/drive/features.css">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" defer>
 
-    <!-- <script text="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js" defer></script> -->
-    <script text="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
-    <script text="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous" defer></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous" defer></script>
 
     <script text="text/javascript" src="/JS/drive/main.js" defer></script>
     <script text="text/javascript" src="/JS/drive/tools.js" defer></script>
@@ -32,12 +32,14 @@
 
   <body class="dark-theme">
 
-    <div class="Frame">
-      <button id="colorTheme" onclick="ToggleTheme()" title="Change Theme"><i></i></button>
-
-      <div class="clientStatus">
+    <div class="Frame flex-even-cent">
+      <div class="clientStatus flex-even-cent">
         <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
       </div>
+      <div class='Switch SW_View' onclick="ToggleView()"  style="display: none;">
+        <div class='Slider SL_View'></div> <div><i class="fas fa-bars"></i></div> <div><i class="fas fa-th-large"></i></div>
+      </div>
+      <button id="colorTheme" onclick="ToggleTheme()" title="Change Theme"><i></i></button>
     </div>
 
 
@@ -53,12 +55,12 @@
       <div class='PagesTwo'>
         <span drvPage="bin" title="Bin"><i class="fas fa-trash-alt"></i><p>Bin</p></span>
         <span drvPage="settings" title="Settings"><i class="fas fa-cog"></i><p>Settings</p></span>
-      </div>
 
-      <div class='Storage'>
-        <h3>Storage</h3>
-        <p>0 GB / 10 GB</p>
-        <progress value='0' max="100" ></progress>
+        <div class='Storage'>
+          <h3>Storage</h3>
+          <p>0 GB / 10 GB</p>
+          <progress value='0' max="100" ></progress>
+        </div>
       </div>
     </div>
 
@@ -80,8 +82,9 @@
       <input id="fileUploadBtn" type="file" multiple></input>
       <input id="folderUploadBtn" type="file" multiple webkitdirectory mozdirectory></input>
       <input id="codexUploadBtn" type="file" accept="text/*" multiple>
+      <div class='DragDropOverlay'>Drop your files to Upload</div>
     </div>
-    <!-- // this.parentNode.classList.remove('display') -->
+    
     <div class='Upload_Container' style='visibility: hidden;'>
       <div class='UC_Queue'><table><tbody></tbody></table></div>
 
@@ -106,22 +109,9 @@
           <div class='Upload_Progress'><progress value='0' max='100'></progress><p title='Estimated'>?</p></div>
         </div>
       </div>
-
-    </div>
-
-
-    <div class='DragDropOverlay'>
-      <p>Drop your files to Upload</p>
     </div>
 
     <table class='RightClickContainer'></table>
 
   </body>
 </html>
-
-<!-- <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script> -->
-
-<!-- <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script> -->
-

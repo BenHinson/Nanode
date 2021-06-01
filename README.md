@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://nanode.one/">
-    <img src="/assets/logo/Nanode Dark Circle.png" alt="Logo" width="120" height="120">
+    <img src="/assets/nanode/logo/Nanode Dark Circle.png" alt="Logo" width="120" height="120">
   </a>
 </p>
 

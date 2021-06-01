@@ -2,12 +2,12 @@ let UserSettings = {};
 
 // ======================
 
-async function sessionSettings(settings={}) {  // Call Settings_Call() if needed and send settings updates.
-  settings['user'] = readSettings('user') || await Settings_Call();
+async function sessionSettings(settings={}) {  // Call API_Fetch({url: '/account/settings'}) if needed and send settings updates.
+  settings['user'] = readSettings('user') || await API_Fetch({url: '/account/settings'});
   settings['local'] = readSettings('local') || {'theme': 0, 'layout': 0};
 
   if ((new Date().getTime() - new Date(settings.user.accessed || 0).getTime()) > 5*60*1000) {
-    settings['user'] = await Settings_Call() || {'accessed': new Date().toISOString(), 'date': 0, 'plan': {'max': 10 * 1024 * 1024 * 1024}, 'used': 0};
+    settings['user'] = await API_Fetch({url: '/account/settings'}) || {'accessed': new Date().toISOString(), 'date': 0, 'plan': {'max': 10 * 1024 * 1024 * 1024}, 'used': 0};
   }
 
   updateSettings(settings, 'local');

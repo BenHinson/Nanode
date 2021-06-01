@@ -10,7 +10,7 @@ const sec_values = {
 }
 
 const fileContainer = document.getElementsByClassName('fileContainer')[0];
-const ItemInfo = document.getElementsByClassName('ItemInformation')[0];
+const PageInfo = document.getElementsByClassName('PageInformation')[0];
 
 const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
 const UC_Queue = document.getElementsByClassName('UC_Queue')[0];
@@ -18,31 +18,10 @@ const UC_Queue_Table = document.querySelector('.UC_Queue table tbody');
 
 // ========================
 
-// Socket IO Removal - Why? Although very useful.
-//    Have to load code and Connect everytime.
-//    A loss of connection requires manually reconnecting.
-//    If a socket request is the first event after a cookie has ran out, you cant set the new cookie on the server.
-
-// Fix of Navigation
-
-  // File Move for Block.
-
-  // The Multiple Update:
-      // Selection Box - Shows Selection Data at the bottom. Narrow Bar like VSCode blue bar.
-      // Multi-Move
-
-  // The Right-Click Update:
-      // Security. Including removal.
-      // Copy To
-      // Move To
-      // Create Shortcut
-      // Share
-
-  // Settings Review, JS, Functions and Page Revision.
-
-  // Icons for Different File types.
-
-  // Search Implementation - Remember to check the previous names settings too for items.
+const makeReplaceElem = (parent, target, base) => {
+  if (!parent.querySelector(target)) { parent.innerHTML += base }
+  return parent.querySelector(target);
+}
 
 ////////////////////////////   VIEW   //////////////////////////////////
 
@@ -54,9 +33,8 @@ async function ViewItem(Type, NodeID) {
     </div>`;
 
   if (Type == "image") {
-    let res = await fetch(`https://drive.nanode.one/storage/${NodeID}`);
-    let blob = await res.blob();
-    document.querySelector('.Preview').innerHTML = `<img class='ViewImage' src='${URL.createObjectURL(blob)}'></img>`;
+    let image = await API_Fetch({url: `/storage/${NodeID}`, conv: 'blob'})
+    document.querySelector('.Preview').innerHTML = `<img class='ViewImage' src='${URL.createObjectURL(image)}'></img>`;
   }
 
   if (Type == "video") {
@@ -64,9 +42,9 @@ async function ViewItem(Type, NodeID) {
   }
 
   if (Type == "text") {
-    let res = await fetch(`https://drive.nanode.one/storage/${NodeID}`)
+    let text = await API_Fetch({url: `/storage/${NodeID}`, conv: 'text'})
     document.querySelector('.BlockOut div').insertAdjacentHTML('afterbegin', `<div class='ViewText'><pre></pre></div>`);
-    document.querySelector('.ViewText > pre').innerText = await res.text();
+    document.querySelector('.ViewText > pre').innerText = text;
   }
 }
 
@@ -108,8 +86,7 @@ function viewContentAsBlock(NodeID) {
 
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
-        // socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
-        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID})
+        NodeAPI('edit', {"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID})
       })
     })
   }
@@ -122,39 +99,44 @@ function viewContentAsList(NodeID) {
   fileContainer.innerHTML = '';
   document.querySelector('.Slider.SL_View').style.transform = 'translateX(0px)';
 
-  let SpanCount = 0;
+  let SpanCount = NodeID == 'homepage' ? 0 : 1;
   for (const [span, data] of Object.entries(Directory_Content)) {
 
-    fileContainer.innerHTML += `
-    <div class='ListContentContainer' node-id='${span}' ${NodeID == "homepage" ? `Home-Span='${data.name}'` : "" }>
-      <table class='ListContentTable' ${NodeID == "homepage" ? `rc='Homepage_Span'` : ``}>
-          <tbody>
-            <tr ${NodeID == "homepage" ? `rcOSP='TH'` : ``} > <th><input ${NodeID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NodeName}'` }></input></th> <th></th> <th>Type</th> <th>Modified</th> <th>Size</th> </tr>
-          </tbody>
-        </table>
-      </div>
-    `;
-
-    let Table = fileContainer.querySelectorAll('tbody')[SpanCount];
-
-    for (const [object, item] of Object.entries(data.contents)) {
-      let parent = N_CapFirstLetter(data.name) || "";
-
-      Table.innerHTML += `
-        <tr directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' node-id='${object}' rc='${item.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
-          <td><img loading='lazy' height='32' width='32' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img></td>
-          <td><input rcPar='2' value='${N_CapFirstLetter(item.name)}' disabled style='pointer-events:none;'></input></td>
-          <td>${N_CapFirstLetter(N_TypeChecker(item.mime, "TRIM"))}</td>
-          <td>${N_DateFormater(item.time.modified || item.time.created)}</td>
-          <td>${item.size > 1 ? N_ConvertSize(item.size) : "-"}</td>
-        </tr>
-      `
+    if (SpanCount == 0 && NodeID == 'homepage') {
+      renderBaseFolders(fileContainer, span, data);
     }
-    // <td>${N_CapFirstLetter(item.name)}</td>
+    else {
+      fileContainer.innerHTML += `
+      <div node-id='${span}' ${NodeID == "homepage" ? `Home-Span='${data.name}'` : "" }>
+        <table class='tableTemplate' ${NodeID == "homepage" ? `rc='Homepage_Span'` : ``} >
+            <tbody>
+              <tr ${NodeID == "homepage" ? `rcPar=3 node-id='${span}'` : `node-id='${span}'`} class='tableHeader' > <th><input ${NodeID == "homepage" ? `spanName value='${data.name}'` : `spanName=disabled disabled value='${NodeName}'` }></input></th> <th></th> ${SpanCount == 1 ? '<th>Type</th> <th>Modified</th> <th>Size</th>' : '<th></th> <th></th> <th></th>'} </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+  
+      let Table = fileContainer.querySelectorAll('tbody')[SpanCount - 1];
+  
+      for (const [object, item] of Object.entries(data.contents)) {
+        let parent = N_CapFirstLetter(data.name) || "";
+  
+        Table.innerHTML += `
+          <tr directory='${N_ItemsPath(parent, item.name)}' type='${N_ItemChecker(item.mime)}' node-id='${object}' rc='${item.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${N_ItemsPath(parent, item.name)}' ${item.color ? "style='box-shadow: "+item.color+" -3px 0' " : ""}>
+            <td><img loading='lazy' height='32' width='32' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img></td>
+            <td><input rcPar='2' value='${N_CapFirstLetter(item.name)}' disabled style='pointer-events:none;'></input></td>
+            <td>${N_CapFirstLetter(N_TypeChecker(item.mime, "TRIM"))}</td>
+            <td>${N_DateFormater(item.time.modified || item.time.created)}</td>
+            <td>${item.size > 1 ? N_ConvertSize(item.size) : "-"}</td>
+          </tr>
+        `
+      }
+  
+      $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
+        $(folder).insertAfter( Table.children[0]);
+      })
+    }
 
-    $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
-      $(folder).insertAfter( Table.children[0]);
-    })
     SpanCount++;
   }
 
@@ -162,15 +144,35 @@ function viewContentAsList(NodeID) {
     fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
-        console.log("160");
-        EditPOST({"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID})
-        // socket.emit('ItemEdit', {"Action": "DATA", "Item": "Span", "section": "main", "ID": e.target.defaultValue, EditData: {"name": e.target.value} })
+        NodeAPI('edit', {"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID});
       })
   })
   }
   
   ItemClickListener(UserSettings.local.layout);
   N_ClientStatus(7, "Ok", 400);
+}
+
+function renderBaseFolders(fileContainer, span, data) {
+  fileContainer.innerHTML += `
+    <div node-id='${span}' class='baseFolders flex-even-cent'>
+      ${renderFolders()}
+    </div>
+  `;
+
+  function renderFolders() {
+    let content = ``
+    for (const [object, item] of Object.entries(data.contents)) {
+      content += `
+        <div directory='${N_ItemsPath('Main', item.name)}' type='${N_ItemChecker(item.mime)}' node-id='${object}'>
+          <img loading='lazy' height='60' width='60' src='${N_ItemImage({"type":item.mime, "oID": object, "section": "main", "h": 90, "w": 120})}'></img>
+          <p title='${N_ItemsPath('Main', item.name)}'>${N_CapFirstLetter(item.name)}</p>
+          <div></div>
+        </div>
+      `
+    }
+    return content;
+  }
 }
 
 /////////////////////////     SEARCH    //////////////////////////////
@@ -180,7 +182,7 @@ function renderSearch(results) {
   searchResults.innerHTML = '';
 
   if (results.Found.length == 0) {
-    searchResults.innerHTML = ` <div class='searchInfoBtn searchNoMatch'>No Matches Found</div> `
+    searchResults.innerHTML = ` <button class='searchInfoBtn searchNoMatch notif-btn'>No Matches Found</button> `
   }
 
   results.Found.forEach((item) => {
@@ -194,8 +196,9 @@ function renderSearch(results) {
       </tr>
     `
   })
-  if (results.Found.length == 5) {
-    searchResults.innerHTML += ` <div class='searchInfoBtn searchLoadMore'>Load More</div> `
+  if (results.Found.length > 5) {
+    console.log(198);
+    searchResults.innerHTML += ` <button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button> `
   }
 }
 
@@ -220,7 +223,7 @@ getSearchParams = () => {
 
 /////////////////////////   RIGHT BAR   //////////////////////////////
 
-async function callItemInformation(selected) {
+async function FetchItemInformation (selected) {
   if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
   N_ClientStatus(2, "True", 500); N_ClientStatus(4, "Wait", 400);
   N_ClientStatus(5, "Wait", 300); N_ClientStatus(7, "Wait", 300);
@@ -228,26 +231,25 @@ async function callItemInformation(selected) {
   const SelectedID = selected.getAttribute('node-id');
   const NodePath = selected.getAttribute('directory');
 
-  ItemInfo.innerHTML = N_Loading('medium');
+  const ItemInfo = makeReplaceElem(PageInfo, '.ItemInfo', '<div class="ItemInfo"></div>');
+  ItemInfo.innerHTML = N_Loading('small');
 
-  const Request = await fetch('https://drive.nanode.one/user/files/'+SelectedID);
-  let RequestInfo = await Request.json();
-  RequestInfo = RequestInfo[SelectedID];
-  N_ClientStatus(3, "True", 600);
-
+  let req = await API_Fetch({url: `/user/files/${SelectedID}`})
   // console.log(RequestInfo);
+  renderItemInfo(ItemInfo, req[SelectedID])
+}
+
+renderItemInfo = (ItemInfo, RequestInfo) => {
   ItemInfo.innerHTML = `
-    <section class='IIData'>
+    <section class='IIData flex-column-cent'>
       <input class='ItemInfo_Name' contenteditable='true' value='${RequestInfo.name}'>
       <p class='ItemInfo_UUID' title='This Items Unique Identifier'>${RequestInfo.id}</p>
 
       ${RequestInfo.type.mime.includes('image') ? "<img loading='lazy' height='128' width='auto' src='/storage/"+RequestInfo.id+"?h=128&w=null'></img>" : ""}
 
-      <input class='ItemInfo_Directory' value='${NodePath}' title='${NodePath}' readonly=true>
-
-      <span style='margin: 8px 0 0 0;'>
-        <button class='ItemInfo_Tab' title='Open in New Tab (non shareable)' ${RequestInfo.type.file ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
-        <button class='ItemInfo_Download' title='Download This ${RequestInfo.type.file ? "File" : "Folder"}'><i class='fas fa-cloud-download-alt'></i>Download</button>
+      <span class='flex-even-cent'>
+        <button class='ItemInfo_Tab flex-even-cent' title='Open in New Tab (non shareable)' ${RequestInfo.type.file ? "" : "style='cursor: not-allowed'" } ><i class='fas fa-external-link-alt'></i>New Tab</button>
+        <button class='ItemInfo_Download flex-even-cent' title='Download This ${RequestInfo.type.file ? "File" : "Folder"}'><i class='fas fa-cloud-download-alt'></i>Download</button>
       </span>
 
       <table>
@@ -258,37 +260,35 @@ async function callItemInformation(selected) {
         </tbody>
       </table>
 
-      <sub>DESCRIPTION</sub>
       <textarea class='ItemInfo_Description' placeholder='Add a Description...' maxlength='100'>${RequestInfo.description || ""}</textarea>
+
     </section>
 
     <section class='IIShare'>
       <sub>SHARE - with another Nanode account</sub>
-      <span> <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'></span>
+      <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'>
 
       <sub>LINK - view only</sub>
-      <span> <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true style='cursor: pointer;' value='${RequestInfo.share ? 'https://link.nanode.one/'+ RequestInfo.share.link.url : ''}'></span>
+      <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true value='${RequestInfo.share ? 'https://link.nanode.one/'+ RequestInfo.share.link.url : ''}'>
     </section>
   `
 
   document.querySelector('.ItemInfo_Name').title = RequestInfo.previous ? 'Previous : '+RequestInfo.previous.toString().replace(',', ', ') : 'No Previous Names';
-  // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Share_Btn'></i>
-  // <i class='fas fa-chevron-down Input_Ops_Btn ItemInfo_Link_Btn'></i> 
 
-  const ItemInfoTable = $(ItemInfo).find('tbody')[0];
+  const ItemInfoTable = ItemInfo.querySelector('tbody');
+
   for (let key in RequestInfo.time) {
-    ItemInfoTable.innerHTML += `<tr><td>${N_CapFirstLetter(key)}</td><td title=${new Date(RequestInfo.time[key].stamp).toGMTString()}>${N_DateFormater(RequestInfo.time[key].stamp)}</td></tr>`
+    ItemInfoTable.innerHTML += `<tr><td>${N_CapFirstLetter(key)}</td><td title='${new Date(RequestInfo.time[key].stamp).toGMTString()}'>${N_DateFormater(RequestInfo.time[key].stamp)}</td></tr>`
   }
   ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${RequestInfo.color ? "value="+N_RGBtoHex(RequestInfo.color) : ""}></td></tr>`
 
   ItemInfoListeners(RequestInfo);
 }
 
-function ItemInfoListeners(ItemRequest) {
+ItemInfoListeners = (ItemRequest) => {
 
   document.querySelector('.ItemInfo_Name').addEventListener('change', function(e) {
-    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"name": e.target.value}, "Path": NodeID} )
-    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "name": e.target.value }, "path": NodeID})
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "name": e.target.value }, "path": NodeID})
   })
 
   document.querySelector('.ItemInfo_Tab').addEventListener('click', function() {
@@ -305,13 +305,11 @@ function ItemInfoListeners(ItemRequest) {
   })
 
   document.querySelector('.ItemInfo_Color').addEventListener('change', function(e) {
-    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"color": e.target.value}, "Path": NodeID })
-    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "color": e.target.value }, "path": NodeID})
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "color": e.target.value }, "path": NodeID})
   })
 
   document.querySelector('.ItemInfo_Description').addEventListener('change', function(e) {
-    // socket.emit('ItemEdit', {"action": "DATA", "section": Section, "ID": ItemRequest.id, "EditData": {"description": e.target.value}})
-    EditPOST({"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "description": e.target.value }})
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "description": e.target.value }});
   })
 
 
@@ -324,21 +322,13 @@ function ItemInfoListeners(ItemRequest) {
   document.querySelector('.ItemInfo_Link_Input').addEventListener('click', async function(e) { // Link
     if (!e.target.value) {
 
-      const Form = { 
+      let res = await API_Post({url: `/share`, body: {
         "ACTION": "LINK",
         "oID": ItemRequest.id,
         "SECTION": Section,
-      }
-      
-      let res = await fetch('https://drive.nanode.one/share', {
-        method:'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
-      })
-  
-      N_ClientStatus(3, "True", 500)
-      let resp = await res.json();
-      resp.link ? e.target.value = resp.link : e.target.style.color = 'crimson';
+      }});
+
+      res.link ? e.target.value = res.link : e.target.style.color = 'crimson';
     }
     e.target.select();
     document.execCommand('copy');
@@ -346,21 +336,28 @@ function ItemInfoListeners(ItemRequest) {
 }
 
 
-
 function RightBar_Security_Inputs(itemLocked) {
   N_ClientStatus(7, "Wait", 400); N_ClientStatus(5, "False");
 
-  ItemInfo.innerHTML = '<section class="Locked"><span><h3>Locked</h3><i class="far fa-times-circle"></i></span><h5>Enter the items credentials to view</h5></section>';
+  const ItemLocked = makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
+
+  ItemLocked.innerHTML = `
+    <span class='locked_title flex-between-cent'>
+      <h3>Locked</h3>
+      <i class="far fa-times-circle"></i>
+    </span>
+    <h5 class='italic-small'>Enter the items credentials to view</h5>
+  `;
 
   for (i=0; i<itemLocked.Auth.length; i++) {
-    ItemInfo.getElementsByTagName("section")[0].innerHTML +=
-      `<span class='security_option'>
+    ItemLocked.innerHTML +=
+      `<span class='security_option flex-between-cent'>
         <i class='${sec_icons[ itemLocked.Auth[i] ]}'></i>
         <input class='SecurityInputs ${sec_values[ itemLocked.Auth[i] ]}' ></input>
-      </span>`
+      </span>`;
   }
   
-  ItemInfo.getElementsByTagName("section")[0].innerHTML += ` <span class='securityEntry'> <input type='button' class='SecurityInputs' readOnly value='Submit' ></input> </span> `;
+  ItemLocked.innerHTML += `<button class='securityEntry rb-btn-full'>Submit</button>`;
 
   securityEntries = function( Values={} ) {
     for (i=0; i<itemLocked.Auth.length; i++) {
@@ -369,18 +366,18 @@ function RightBar_Security_Inputs(itemLocked) {
     return Values;
   }
   
-  document.querySelector('.Locked > span > i').addEventListener("click", function() { ItemInfo.innerHTML = ''; })
+  ItemLocked.querySelector('.locked_title > i').addEventListener("click", function() { ItemLocked.remove(); })
 
   document.querySelector('.securityEntry').addEventListener("click", async() => {
-    let res = await fetch('https://drive.nanode.one/auth', {
-      method:'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: new Blob( [ JSON.stringify( {"entries": securityEntries(), "oID": itemLocked.Item, "section": Section} ) ], { type: 'text/plain' } ),
-    })
+    let res = await API_Post({url: `/auth`, body: {
+      "entries": securityEntries(),
+      "oID": itemLocked.Item,
+      "section": Section,
+    }});
 
     switch (await res.status) {
       case 200:
-        ItemInfo.innerHTML = '';
+        ItemLocked.remove();
         N_ClientStatus(5, "Ok", 400)
         HomeCall({"Reload":true, "Skip": true}, await res.json());
         break;
@@ -424,17 +421,15 @@ function PopUp_Accept_Cancel(Action, Title, Accept, Decline, Text) { // Delete (
     </div>
   `
 
-  $(".Popup_Reject")[0].addEventListener("click", function() { BlockOut.remove(); });
-  $(".Popup_Accept")[0].addEventListener("click", function() {
+  document.querySelector('.Popup_Reject').addEventListener("click", function() { BlockOut.remove(); });
+  document.querySelector('.Popup_Accept').addEventListener("click", async() => {
     if (Action == "Delete") {
       if (selectedItem.getAttribute('rc') == "Homepage_Span") { // EMPTY THE SPAN FIRST DOES THIS CAUSE ISSUES? IE CONTENTS NOT BEING DELETED PERM
         if (Directory_Content[selectedItem.parentNode.getAttribute('node-id')]) {selectedItem = selectedItem.parentNode}
         else {console.log('Invalid Span ID'); return;}
       }
       let forDeletion = NodeSelected.length ? NodeSelected : [selectedItem.getAttribute('node-id')];
-      // socket.emit('ItemEdit', {"action": "MOVE", "section": Section, "ID": forDeletion, "To": "bin", "Path": NodeID})
-      // socket.emit('ItemEdit', {"action": "DELETE", "section": Section, "ID": forDeletion, "Path": NodeID})
-      EditPOST({"action": "DELETE", "section": Section, "id": forDeletion, "path": NodeID})
+      NodeAPI('edit', {"action": "DELETE", "section": Section, "id": forDeletion, "path": NodeID});
     }
     BlockOut.remove();
   });
@@ -456,9 +451,8 @@ function PopUp_New_Span() {
   `
 
   document.querySelector('.Popup_Reject').addEventListener('click', function() { BlockOut.remove(); })
-  document.querySelector('.Popup_Accept').addEventListener('click', async function() {
-    let created = await CreatePOST(
-      { 
+  document.querySelector('.Popup_Accept').addEventListener('click', async() => {
+    let created = await NodeAPI('create', { 
         "section": Section,
         "path": NodeID,
         "type": "Span",
@@ -527,9 +521,8 @@ function PopUp_New_Folder(RCE) {
     BlockOut.remove(); N_ClientStatus(8, "Off");
   })
 
-  BlockOut.querySelector(".Popup_Accept").addEventListener("click", async function() {
-    let created = await CreatePOST(
-      {
+  BlockOut.querySelector(".Popup_Accept").addEventListener("click", async() => {
+    let created = await NodeAPI('create', {
         "section": Section,
         "path": NodeID,
         "type": "Folder",
@@ -628,29 +621,22 @@ async function PopUp_Download(Item, Caller) {
         RequestSent = true;
         e.target.innerText = 'Zipping...';
 
-        const Form = { 
+        let res = await API_Post({url: `/download`, body: {
           "FOR": isForShare ? "SHARE" : "SELF",
           "NAME": DownloadName,
           "ITEMS": DownloadIDs,
           "SECTION": Section,
-        }
-        
-        let res = await fetch('https://drive.nanode.one/download', {
-          method:'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' }),
-        })
+        }});
 
-        let Reply = await res.json();
-        if (Reply.Error) {
+        if (res.Error) {
           CentralTextInput.value = 'An Error Occured. Close and Try Again.'; CentralTextInput.style.borderColor = 'crimson';
-        } else if (Reply.Link) {
+        } else if (res.Link) {
           e.target.innerText = 'Zipped';
-          CentralTextInput.value = 'https://link.nanode.one/download/'+Reply.Link;
+          CentralTextInput.value = 'https://link.nanode.one/download/'+res.Link;
           CentralTextInput.style.borderColor = '#0bc30b';
           if (!isForShare) {
-            console.log('Download Now.', Reply.Link)
-            // window.open( 'https://link.nanode.one/download/a/'+Reply.link );
+            console.log('Download Now.', res.Link)
+            // window.open( 'https://link.nanode.one/download/a/'+res.link );
           }
         }
       }
