@@ -34,10 +34,24 @@ $colors: (
     PL_8: #080a0e,  // Text
 );
 
-// map-get($colors, PL_1);
-
 :root {
-  --highlight-color: #99ccff;
+  --highlight-color: #2570d6; //#99ccff
+  --rich-blue: #4285f4;
+  --rich-blue-faded: #4285f433;
+
+  --folder: #ffca28;
+  --red: #ff453a;
+
+  --black: #080a0e;
+  --background: #191b1e;
+  --frame: #1e2126; // 1e2327
+  --component: #282c32;
+  --feature: #3d444a;
+  --highlight: #565b61;
+  --selected: #83898f;
+
+  --text-dull: #cacccf;
+  --text-bright: #f5f6f7;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300');
@@ -56,11 +70,7 @@ $colors: (
   color: inherit;
   font-size: 16px;
 }
-html {
-  overflow: hidden;
-  background: map-get($colors, PL_1);
-  .dark-theme & { background: map-get($colors, PD_3); }
-}
+html { overflow: hidden; }
 body {
   display: grid;
   grid-template-columns: 220px auto;
@@ -74,21 +84,20 @@ body {
 .Frame {
   position: absolute;
   height: 57px;
-  width: 240px;
+  width: 280px;
   right: 0px;
   z-index: 25;
 
   background: map-get($colors, PL_2);
-  .dark-theme & { background: map-get($colors, PD_2); }
+  .dark-theme & { background: var(--frame); }
 
   button {
     opacity: 0.6;
     color: map-get($colors, PL_8);
     .dark-theme & { color: map-get($colors, PD_8); }
-    &:hover { opacity: 1; }
+    &:hover { opacity: 1; color: var(--text-bright); background: var(--highlight-color); }
   }
   .clientStatus {
-
     height: 20px;
     width: 150px;
     right: 80px;
@@ -96,7 +105,7 @@ body {
     z-index: 1001;
     background: map-get($colors, PL_3);
     .dark-theme & {
-      background: map-get($colors, PD_3);;
+      background: var(--component);
     }
 
     div {
@@ -119,24 +128,35 @@ body {
   color: map-get($colors, PL_8);
 
   .dark-theme & {
-    background: map-get($colors, PD_2);
-    color: map-get($colors, PD_7);
+    background: var(--frame);
+    color: var(--text-dull);
+  }
+
+  .nanode {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 20px;
+    width: 155px;
+    margin: 25px 0 20px 20px;
+    font-size: 18px;
+    letter-spacing: 0.5em;
+    text-decoration: none;
+    filter: brightness(0);
+    transition: all 200ms;
+    > img {
+      transition: all 300ms;
+      margin-right: 0.5em;
+      height: 20px;
+      left: 0;
+    }
+    .dark-theme & { filter: none; }
+
+    &:hover { color: transparent; > img {left: 50%; transform: rotate(180deg); } }
   }
 
   div {
     display: inline-grid;
     grid-gap: 14px;
-    
-    a {
-      height: 20px;
-      width: 130px;
-      margin: 30px 0 15px 25px;
-      background: url('/assets/nanode/nanode.svg'); // background: url('/assets/main/nanode.svg');
-      background-size: contain;
-      background-repeat: no-repeat;
-      filter: brightness(0);
-      .dark-theme & { filter: none; }
-    }
 
     span {
       display: flex;
@@ -153,7 +173,7 @@ body {
 
       &:hover {
         opacity: 1;
-        color: var(--highlight-color);
+        background: var(--feature);
       }
 
       > * { padding: 5px; }
@@ -166,8 +186,8 @@ body {
       box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
       
       .dark-theme & {
-        color: map-get($colors, PD_8);
-        background: map-get($colors, PD_4);
+        color: var(--text-bright);
+        background: var(--highlight);
       }
     }
   }
@@ -178,7 +198,7 @@ body {
     padding: 10px 5px;
     border-top: 1px solid map-get($colors, PL_6);
     .dark-theme & {
-      border-top: 1px solid map-get($colors, PD_4);
+      border-top: 1px solid var(--feature);
     }
 
     h3 {
@@ -198,7 +218,7 @@ body {
       &::-webkit-progress-bar {
         border-radius: 5px;
         background-color: map-get($colors, PL_4);
-        .dark-theme & { background-color: map-get($colors, PD_4); }
+        .dark-theme & { background-color: var(--component) }
       }
       &::-webkit-progress-value {
         background-color: var(--highlight-color);
@@ -213,7 +233,7 @@ body {
 .PageHeader { // location && search
   height: 57px;
   color: map-get($colors, PL_8);
-  .dark-theme & { color: map-get($colors, PD_8); }
+  .dark-theme & { color: var(--text-bright); }
 
   .PageControls { // back forward
     margin-right: 10px;
@@ -224,20 +244,20 @@ body {
       padding: 6px 8px;
       cursor: pointer;
       color: map-get($colors, PL_7);
-      .dark-theme & { color: map-get($colors, PD_7); }
+      .dark-theme & { color: var(--text-dull); }
       
       > i {font-size: 18px;}
 
       &.notActive {
         color: map-get($colors, PL_6);
         cursor: default;
-        .dark-theme & { color: map-get($colors, PD_6); }
+        .dark-theme & { color: var(--highlight); }
       }
   
       &:hover:not(.notActive) {
-        color: #000;
+        color: var(--black);
         .dark-theme & {
-          color: #fff;
+          color: var(--text-bright);
         }
       }
     }
@@ -261,25 +281,17 @@ body {
       &:hover {
         opacity: 1;
         background: map-get($colors, PL_6);
-        .dark-theme & { background: map-get($colors, PD_5); }
-      }
-    }
-    .dirBtn-Hover {
-      opacity: 1;
-      background: map-get($colors, PL_6);
-      .dark-theme & {
-        color: var(--highlight-color);
-        background: map-get($colors, PD_5);
+        .dark-theme & { background: var(--highlight); }
       }
     }
     .currentDirBtn {
       opacity: 1;
       background: map-get($colors, PL_5);
-      .dark-theme & { background: map-get($colors, PD_4); }
+      .dark-theme & { background: var(--feature); }
     }
 
     i {
-      width: 30px;
+      width: 29px;
       opacity: 0.4;
       background: url(https://nanode.one/assets/drive/svg/arrow_right_black.svg) center;
       .dark-theme & {
@@ -291,19 +303,18 @@ body {
   .searchContainer {
     position: absolute;
     height: 36px;
-    width: calc(100% - 50px);
+    width: calc(100% - 15px);
 
     &.searchActive {
       // TO match between siblings. ie: search:focus ~ .searchParams {width: 10%;} will set both search & searchParams width to 10% on search focus.
       // ~ .searchParams { }
       .search {
-        height: 42px;
         width: 100%;
         padding: 0 60px 0 5%;
       }
       .searchParams {
-        height: 42px;
         width: 50px;
+        padding: 9px 0;
         opacity: 1;
         pointer-events: all !important;
       }
@@ -317,8 +328,8 @@ body {
       
       .dark-theme & {
         border: none;
-        color: map-get($colors, PD_8);
-        background: map-get($colors, PD_4);
+        color: var(--text-bright);
+        background: var(--feature);
       }
     }
 
@@ -333,7 +344,7 @@ body {
 
       .dark-theme & {
         color: map-get($colors, PD_7);
-        background: map-get($colors, PD_5);
+        background: var(--highlight-color);
       }
       &:hover i { transform: rotate(90deg); }
     }
@@ -350,11 +361,11 @@ body {
       display: none;
       position: absolute;
       width: 100%;
-      top: 45px;
+      top: 42px;
       border-radius: 5px;
       z-index: 3;
       background: map-get($colors, PL_4);
-      .dark-theme & { background: map-get($colors, PD_4); }
+      .dark-theme & { background: var(--feature); }
 
       &.display {
         display: grid;
@@ -369,7 +380,8 @@ body {
         overflow: hidden;
         transition: all 300ms;
         background: map-get($colors, PL_2);
-        .dark-theme & { background: map-get($colors, PD_5); }
+        .dark-theme & { background: var(--highlight); }
+
         &.display {
           position: relative;
           height: 120px;
@@ -389,16 +401,14 @@ body {
             p {
               width: fit-content;
               margin-bottom: 5px;
-              color: #f5f6f7;
               font-size: 15px;
               letter-spacing: 1.2px;
               font-variant: all-petite-caps;
               color: map-get($colors, PL_8);
-              border-bottom: 1px solid map-get($colors, PL_6);
+              border-bottom: 1px solid var(--selected);
               user-select: none;
               .dark-theme & {
-                color: map-get($colors, PD_8);
-                border-bottom: 1px solid map-get($colors, PD_6);
+                color: var(--text-bright);
               }
             }
             span {
@@ -408,13 +418,13 @@ body {
                 font-size: 14px;
                 margin: 0 0 4px 6px;
                 color: map-get($colors, PL_8);
-                .dark-theme & { color: map-get($colors, PD_7); }
+                .dark-theme & { color: var(--text-dull); }
               }
               input[type=radio] {
                 padding: 4px;
                 border-radius: 10px;
                 background-color: map-get($colors, PL_6);
-                .dark-theme & { background-color: map-get($colors, PD_4); }
+                .dark-theme & { background-color: var(--component); }
                 -webkit-appearance: none;
                 cursor: pointer;
                 &:after {
@@ -424,12 +434,12 @@ body {
                   width: 7px;
                   border-radius: 50%;
                   background-color: map-get($colors, PL_4);
-                  .dark-theme & { background-color: map-get($colors, PD_5); }
+                  .dark-theme & { background-color: var(--feature); }
                   content: '';
                 }
                 &:checked:after {
-                  background-color: map-get($colors, PD_4);
-                  .dark-theme & { background-color: map-get($colors, PC_0); }
+                  background-color: var(--feature);
+                  .dark-theme & { background-color: var(--highlight-color); }
                 }
               }
               input[type=checkbox] {
@@ -438,15 +448,15 @@ body {
                 font-size: 14px;
                 text-align: center;
                 background-color: map-get($colors, PL_6);
-                .dark-theme & { background-color: map-get($colors, PD_4); }
+                .dark-theme & { background-color: var(--component); }
                 -webkit-appearance: none;
                 cursor: pointer;
                 &:checked:after {
                   position: relative;
                   top: -3px;
                   content: '\2714';
-                  color: map-get($colors, PD_4);
-                  .dark-theme & { color: map-get($colors, PC_0); }
+                  color: var(--feature);
+                  .dark-theme & { color: var(--highlight-color); }
                 }
               }
             }
@@ -460,29 +470,27 @@ body {
           margin: 9px 0;
           border-radius: 5px;
           background: map-get($colors, PL_4);
-          .dark-theme & { background: map-get($colors, PD_4); }
+          .dark-theme & { background: var(--feature); }
         }
 
       }
 
       .searchResultsContainer {
-        max-height: 50vh;
-        border-radius: 5px;
+        max-height: 90vh;
         overflow-y: initial;
 
         .searchResults {
           display: none;
           max-height: 300px;
           padding: 0;
-          border-radius: 5px;
           border-spacing: 0 1px;
           & tr {
             opacity: 1;
             background: map-get($colors, PL_2);
-            .dark-theme & { background: map-get($colors, PD_5); }
+            .dark-theme & { background: var(--component); }
             &:hover:not(.noHover) {
               background: map-get($colors, PL_6);
-              .dark-theme & { background: map-get($colors, PD_6); }
+              .dark-theme & { background: var(--highlight); }
             }
           }
         }
@@ -514,7 +522,7 @@ body {
 
 .Pages {
   background-color: map-get($colors, PL_2);
-  .dark-theme & { background-color: map-get($colors, PD_2); }
+  .dark-theme & { background-color: var(--background) }
 
   > section {
     display: none;
@@ -534,8 +542,8 @@ body {
       background: map-get($colors, PL_1);
       box-shadow: inset 6px 6px 6px -6px map-get($colors, PL_6);
       .dark-theme & {
-        background: map-get($colors, PD_3);
-        box-shadow: inset 6px 6px 6px -6px map-get($colors, PD_0);
+        background: var(--background);
+        box-shadow: inset 6px 6px 6px -6px var(--black);
       }
     }
 
@@ -554,13 +562,15 @@ body {
         height: fit-content;
         border-radius: 10px;
         padding: 10px;
-        
+
+        color: map-get($colors, PL_8);
         background: map-get($colors, PL_1);
         box-shadow: 0 0 5px 0 map-get($colors, PL_6);
         
         .dark-theme & {
-          background: map-get($colors, PD_3);
-          box-shadow: 0 0 5px 0 map-get($colors, PD_0);
+          color: var(--text-bright);
+          background: var(--component);
+          box-shadow: 0 0 5px 0 var(--black);
         }
       }
     }
@@ -573,7 +583,7 @@ body {
       cursor: auto;
     
       .dark-theme & {
-        background-color: map-get($colors, PD_2);
+        background-color: var(--frame);
       }
     }
   }
@@ -597,7 +607,10 @@ body {
       &::-webkit-scrollbar { display: none; }
 
       .baseFolders {
-        height: 100px;
+        height: 130px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--component);
+
         >div {
           position: relative;
           display: flex;
@@ -605,18 +618,17 @@ body {
           align-items: center;
           width: calc(80% / 5);
           padding: 0 10px 10px 10px;
-          border-radius: 5px;
           cursor: pointer;
           color: map-get($colors, PL_8);
           transition: all 200ms;
-          .dark-theme & { color: map-get($colors, PD_8); }
+          .dark-theme & { color: var(--text-bright); }
 
           &:hover, :focus {
             >div {
               height: 100%;
               transform: none;
               box-shadow: 0px 2px 4px 1px map-get($colors, PL_6);
-              .dark-theme & { box-shadow: 0px 2px 4px 1px map-get($colors, PD_2); }
+              .dark-theme & { box-shadow: none; }
             }
           }
 
@@ -636,7 +648,7 @@ body {
             transition: all 300ms;
 
             background: map-get($colors, PL_4); 
-            .dark-theme & { background: map-get($colors, PD_4); }
+            .dark-theme & { background: var(--component); }
           }
         }
       }
@@ -734,12 +746,12 @@ body {
           opacity: 1;
 
           & th:nth-child(1) input {
-              min-width: 200px;
-              left: 0;
-              font-size: 15px;
-              &:focus { background: map-get($colors, PL_4); 
-                .dark-theme & { background: map-get($colors, PD_4); }
-              }
+            min-width: 200px;
+            left: 0;
+            font-size: 15px;
+            &:focus { background: map-get($colors, PL_4); 
+              .dark-theme & { background: var(--highlight) }
+            }
           }
           & td:nth-child(2) input {
             height: 30px;
@@ -753,24 +765,22 @@ body {
       }
   
       .NewSpan {
-        height: 38px;
-        padding: 8px;
+        line-height: 20px;
         border-radius: 5px;
-        text-align: center;
-        font-variant: all-petite-caps;
+        font-size: 12px;
+        letter-spacing: 1px;
         color: map-get($colors, PL_7);
-        background: map-get($colors, PL_2);
+        border: 1px solid map-get($colors, PL_5);
         transition: background-color 300ms;
-        user-select: none;
-        cursor: pointer;
   
         .dark-theme & {
-          color: map-get($colors, PD_7);
-          background: map-get($colors, PD_2);
+          color: var(--text-dull);
+          border: 1px solid var(--frame);
         }
         &:hover {
+          border: none;
           background: map-get($colors, PL_4);
-          .dark-theme & { background: map-get($colors, PD_1); }
+          .dark-theme & { background: var(--feature); }
         }
       }
     }
@@ -778,11 +788,26 @@ body {
     .PageInformation { // right side bar
       transition: all 600ms;
 
+      input, textarea {
+        border-radius: 5px;
+        background: map-get($colors, PL_4);
+        .dark-theme & { background: var(--feature);}
+        &:focus {
+          background: map-get($colors, PL_5);
+          .dark-theme & { background: var(--highlight); }
+        }
+      }
+
+
       .PIHeader {
-        color: map-get($colors, PD_8);
+        background: transparent;
+        box-shadow: none;
+        padding: 0 0 10px 0;
+        color: var(--text-bright);
+
         button {
           height: 34px;
-          width: 105px;
+          width: 115px;
           border-radius: 5px;
           &:hover {transform: translateY(-1px);}
   
@@ -794,28 +819,15 @@ body {
       .ItemInfo {
         flex: 1;
         overflow-y: auto;
-        color: map-get($colors, PL_8);
-        .dark-theme & { color: map-get($colors, PD_7);}
 
         > svg { position: relative; }
-
-        >section > * {
-          width: 100%;
-        }
+        > section > * { width: 100%; }
     
         .IIData {
           padding-bottom: 10px;
 
           .ItemInfo_Name {
             font-size: 17px;
-
-            background: map-get($colors, PL_4);
-            .dark-theme & { background: map-get($colors, PD_4); }
-
-            &:focus {
-              background: map-get($colors, PL_5);
-              .dark-theme & { background: map-get($colors, PD_5); }
-            }
           }
           
           .ItemInfo_UUID {
@@ -825,7 +837,7 @@ body {
             opacity: 0.6;
             overflow-x: auto;
             white-space: nowrap;
-            border-bottom: 1px solid #393c44;
+            border-bottom: 1px solid var(--highlight);
           }
           
           img {
@@ -834,29 +846,20 @@ body {
             max-height: 128px;
             margin: 12px 0 0;
           }
-          
-          // .ItemInfo_Directory {
-          //   width: 100%;
-          //   margin-top: -1px;
-          //   padding: 12px 4px;
-          //   font-size: 14px;
-          //   border-radius: 0;
-          //   border-top: 1px solid #393c44;
-          //   border-bottom: 1px solid #393c44;
-          // }
 
           > span {
             margin: 16px 0;
+            justify-content: space-between;
 
             > button {
               height: 36px;
-              width: calc(50% - 10px);
+              width: calc(50% - 4px);
               padding: 0;
               font-size: 14px;
-              background:map-get($colors, PL_4);
-              .dark-theme & { background: map-get($colors, PD_4); }
-              > i { color: var(--highlight-color); }
-              &:hover { box-shadow: 0 0 6px var(--highlight-color); }
+              background: map-get($colors, PL_4);
+              .dark-theme & { background: var(--feature); }
+              > i { color: var(--rich-blue); }
+              &:hover { .dark-theme & {background: var(--highlight);} }
             }
           }
           
@@ -881,15 +884,13 @@ body {
             margin: 10px 0;
             resize: vertical;
             font-size: 13px;
-            background: rgba(0, 0, 0, 0.05);
-            .dark-theme & { background: rgba(0, 0, 0, 0.2);}
           }
         }
         
         .IIShare {
           padding-top: 10px;
           border-top: 1px solid map-get($colors, PL_6);
-          .dark-theme & { border-top: 1px solid map-get($colors, PD_4);}
+          .dark-theme & { border-top: 1px solid var(--highlight);}
 
           sub {
             opacity: 0.8;
@@ -899,9 +900,6 @@ body {
             width: 100%;
             margin: 4px 0;
             font-size: 15px;
-            
-            background: map-get($colors, PL_4);
-            .dark-theme & { background: map-get($colors, PD_4); }
           }
         }
       }
@@ -910,14 +908,14 @@ body {
         > span {
           margin: 8px 0;
           border-radius: 5px;
-          background: map-get($colors, PL_4);
-          .dark-theme & { background: map-get($colors, PD_4); }
         }
 
         .locked_title {
           margin: 0 0 15px;
           padding: 8px 10px;
           border-radius: 20px;
+          background: map-get($colors, PL_4);
+          .dark-theme & { background: var(--feature);}
           > h3 { font-weight: 400; }
           > i {
             font-size: 18px;
@@ -939,6 +937,10 @@ body {
 
         button {
           background: linear-gradient(40deg, #e8ae68, #e63811);
+          &:hover {
+            background: #e76230;
+            box-shadow: 0 0 0px 4px #e7623033;
+          }
         }
       }
     }
@@ -946,10 +948,7 @@ body {
 
   >.bin_Page {
     .PageData {
-
-      .binContainer > table {
-        max-width: 750px;
-      }
+      .binContainer > table { max-width: 750px; }
 
       .binIsEmpty {
         gap: 20px;
@@ -968,7 +967,7 @@ body {
         }
         >p {
           font-size: 15px;
-          color: map-get($colors, PD_6);
+          color: var(--selected);
         }
 
       }
@@ -985,7 +984,7 @@ body {
           height: 19px;
           text-align: center;
           color: map-get($colors, PL_7);
-          .dark-theme & { color: map-get($colors, PD_7); }
+          .dark-theme & { color: var(--text-dull) }
         }
   
         .binUsage {
@@ -996,13 +995,11 @@ body {
           padding: 20px;
           border-radius: 50%;
           background: map-get($colors, PL_5);
-          .dark-theme & { background: map-get($colors, PD_4); }
+          .dark-theme & { background: var(--feature) }
           >div {
-            height: 100%;
-            width: 100%;
             border-radius: 50%;
             background: map-get($colors, PL_1);
-            .dark-theme & { background: map-get($colors, PD_3); }
+            .dark-theme & { background: var(--component); }
           }
         }
   
@@ -1017,14 +1014,14 @@ body {
             padding-bottom: 10px;
             border-bottom: 1px solid map-get($colors, PL_6);
             .dark-theme & {
-              border-bottom: 1px solid map-get($colors, PD_4);
-              color: map-get($colors, PD_8);
+              border-bottom: 1px solid var(--feature);
+              color: var(--text-bright);
             }
           }
   
           table {
             color: map-get($colors, PL_7);
-            .dark-theme & { color: map-get($colors, PD_7); }
+            .dark-theme & { color: var(--text-dull); }
             & tr {
               height: 24px;
               & td { font-size: 14px; }
@@ -1044,7 +1041,7 @@ body {
         .binEmptyContainer {
           padding-top: 20px;
           border-top: 1px solid map-get($colors, PL_6);
-          .dark-theme & { border-top: 1px solid map-get($colors, PD_4); }
+          .dark-theme & { border-top: 1px solid var(--highlight); }
         }
       }
     }
@@ -1053,49 +1050,44 @@ body {
 
 
 .BlockOut { // Pop_ups
-  display: grid;
-  place-items: center;
   position: absolute;
   width: 100vw;
   height: 100vh;
-  top: 0;
-  left: 0;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.4);
+  background: #00000080;
   z-index: 25;
   cursor: auto;
 
   .Popup_Container {
-    position: absolute;
-    height: auto;
     width: 400px;
-    font-size: 18px;
-    user-select: none;
     color: map-get($colors, PL_8);
-    .dark-theme & { color: map-get($colors, PD_8); }
-    
+    .dark-theme & { color: var(--text-bright); }
 
-    .Popup_Main {
+    > div {
       position: relative;
-      height: 150px;
       width: 100%;
       border-radius: 5px;
       padding: 10px 15px;
       background: map-get($colors, PL_1);
-      .dark-theme & { background: map-get($colors, PD_3); }
+      .dark-theme & { background: var(--component); }
+    }
+    
+
+    .Popup_Main {
+      height: 150px;
+      padding: 15px;
 
       h3 {
         display: inline-block;
         font-size: 18px;
         font-weight: 400;
-        padding: 5px 0px;
       }
 
       h5 {
         display: inline-block;
         font-size: 13px;
         padding: 4px;
-        vertical-align: text-top;
+        vertical-align: bottom;
       }
 
       > p {
@@ -1103,150 +1095,104 @@ body {
         line-height: 22px;
         margin-top: 5px;
         padding: 3px;
-        white-space: break-spaces;
-        width: 100%;
         border-top: 1px solid map-get($colors, PL_6);
         .dark-theme & { border-color: map-get($colors, PD_4); }
       }
 
-      span {
+      > span {
         position: absolute;
         right: 15px;
         bottom: 15px;
 
         > button {
           width: 90px;
-          margin: 0 4px;
-          padding: 6px;
-          line-height: 18px;
-          font-size: 16px;
-          border: none;
-          color: inherit;
-          background: transparent;
-          cursor: pointer;
-          user-select: none;
           transition: all 200ms;
-        }
-
-        & .Popup_Accept {
-          border-radius: 2px;
-          color: white;
-          background: map-get($colors, PC_1);
-          &:hover { transform: translateY(-2px); }
-
-          &.PUA_Red { background: map-get($colors, PC_5); }
-        }
-        & .Popup_Reject {
-          &:hover {
-            background: map-get($colors, PL_4);
-            .dark-theme & { background: map-get($colors, PD_4); }
+          &.Popup_Accept {
+            color: var(--text-bright);
+            background: var(--highlight-color);
+            &:hover { transform: translateY(-2px); }
+  
+            &.PUA_Red { background: map-get($colors, PC_5); }
+          }
+          &.Popup_Reject {
+            &:hover {
+              background: map-get($colors, PL_4);
+              .dark-theme & { background: var(--feature); }
+            }
           }
         }
+
       }
 
       .Popup_Input {
         position: absolute;
         width: calc(100% - 30px);
         left: 15px;
-        padding: 6px 10px;
-        border: none;
-        border-radius: 3px;
-        font-size: 15px;
-        color: inherit;
-        background: transparent;
 
         border: 1px solid map-get($colors, PL_6);
-        .dark-theme & {
-          border: 1px solid map-get($colors, PD_4);
-        }
-        &::placeholder { color: inherit; opacity: 0.8; font-size: 15px; }
+        .dark-theme & { border: 1px solid var(--highlight-color); }
+
         &.Popup_Input_Name { top: 55px; }
       }
     }
 
     .Popup_Secondary {
       display: grid;
-      grid-gap: 5px;
-      position: relative;
-      height: auto;
-      width: 100%;
-      border-radius: 5px;
+      grid-gap: 8px;
       margin-top: 10px;
-      padding: 10px 15px;
-      background: map-get($colors, PL_1);
-      .dark-theme & { background: map-get($colors, PD_3); }
 
       & > * {
-        background: transparent;
-        padding: 6px 10px 6px 10px;
         font-size: 15px;
         font-weight: 400;
-        border-radius: 3px;
-        color: inherit;
+        border-radius: 5px;
         border: 1px solid map-get($colors, PL_6);
-        .dark-theme & { border: 1px solid map-get($colors, PD_4);}
+        .dark-theme & { border: none; background: var(--frame)}
+        &::placeholder { color: inherit; opacity: 0.8; font-size: 14px; }
       }
 
       h4 {
-        padding: 0 0 4px 0 !important;
+        font-variant: all-petite-caps;
         opacity: 0.8;
-        border: none !important;
+        background: none !important;
       }
       textarea {
         height: 50px;
         resize: vertical;
-        &::placeholder { color: inherit; opacity: 0.8; font-size: 14px; }
-      }
-      input {
-        &::placeholder { color: inherit; opacity: 0.8; font-size: 14px; }
       }
       > button {
         text-align: left;
         font-size: 14px !important;
-        user-select: none;  
-        cursor: pointer;
       }
     }
 
     .Popup_Dropdown {
       position: absolute;
-      font-size: 16px;
-      &:hover .Popup_Dropdown_Content { display: block; }
-    
-      .Popup_Location {
+      z-index: 1;
+
+      > .Popup_Location {
+        min-width: 100px;
         max-width: 200px;
         border-radius: 3px;
-        padding: 4px 8px;
-        text-align: center;
-        background: map-get($colors, PL_4);
+        padding: 4px;
         cursor: pointer;
-        .dark-theme & { background: map-get($colors, PD_4); }
-    
-        p { display: inline-block; }
-        i { padding-left: 8px; }
-      }
-      .Popup_Dropdown_Content {
-        display: none;
-        position: absolute;
-        max-width: 200px;
-        margin-top: 3px;
-        right: 0;
-        padding: 3px;
-        border-radius: 3px;
-        font-size: 14px;
-        background-color: map-get($colors, PL_4);
-        box-shadow: 0px 6px 6px -2px map-get($colors, PL_6);
-        z-index: 5;
-        .dark-theme & { 
-          background: map-get($colors, PD_4);
-          box-shadow: 0px 6px 6px -2px map-get($colors, PD_1);
-        }
-        a {
-          display: block;
-          padding: 8px 10px;
-          &:hover {
-            background-color: map-get($colors, PL_6);
-            .dark-theme & { background-color: map-get($colors, PD_5); }
+        background: map-get($colors, PL_4);
+        .dark-theme & { background: var(--feature); }
+
+        > span { margin: 1px 4px; }
+
+        &:hover > .Popup_Dropdown_Content { display: flex; flex-direction: column; }
+
+        > .Popup_Dropdown_Content {
+          display: none;
+          margin-top: 4px;
+          a {
+            padding: 8px 4px;
+            font-size: 14px;
+            border-radius: 3px;
+            &:hover {
+              background-color: map-get($colors, PL_6);
+              .dark-theme & { background-color: var(--highlight); }
+            }
           }
         }
       }
@@ -1254,14 +1200,12 @@ body {
   }
 
   .Preview {
-    display: grid;
-    place-content: center;
-    max-width: calc(100% - 4vw);
+    max-width: 96%;
     background: white;
     .dark-theme & { background: black; }
 
     .ViewImage {
-      width: fit-content;
+      height: fit-content;
       max-height: 80vh;
       max-width: calc(100vw - 20px);
       object-fit: contain;
@@ -1284,9 +1228,9 @@ body {
       &::-webkit-scrollbar { width: 10px; }
   
       .dark-theme & {
-        border: 1px solid map-get($colors, PD_4);
-        background: map-get($colors, PD_3);
-        color: map-get($colors, PD_8);
+        border: 1px solid var(--feature);
+        background: var(--frame);
+        color: var(--text-bright);
       }
     
       > pre {
@@ -1306,59 +1250,61 @@ body {
 ///////////////////////// MOVE /////////////////////////
 
 .listItem-Placeholder {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
   position: absolute;
-  height: 38px;
+
+  height: 36px;
+  width: fit-content;
   min-width: 200px;
-  padding: 2px 20px 4px 40px;
-  font-family: inherit;
+  padding: 0 5px;
   z-index: 990;
-  color: map-get($colors, PL_7);
-  box-shadow: 0 1px 3px 0px map-get($colors, PL_6);
-  background: map-get($colors, PL_4);
-  .dark-theme & {
-    color: map-get($colors, PD_8);
-    box-shadow: 0 1px 3px 0px map-get($colors, PD_1);
-    background: map-get($colors, PD_4);
-  }
+  color: var(--text-bright);
+  box-shadow: 0 1px 3px 0px var(--feature);
+  background: var(--highlight-color);
 
   > h5 {
-    position: absolute;
-    bottom: 10px;
     font-size: 14px;
     font-weight: 100;
     white-space: nowrap;
-    padding-right: 10px;
     user-select: none;
   }
 
-  & img {
-    position: absolute;
-    left: 4px;
-    top: 3px;
-    height: 32px;
-    width: 32px;
+  > img {
+    max-height: 34px;
+    width: 35px;
     object-fit: contain;
   }
 }
 
 .listItem-Hover {
-  box-shadow: inset 0px 1px 4px 1px map-get($colors, PL_6) !important;
-  .dark-theme & { box-shadow: inset 0px 1px 0px 2px map-get($colors, PC_0) !important }
+  box-shadow: inset 0 0 0 2px map-get($colors, PL_6) !important;
+  .dark-theme & { box-shadow: inset 0 0 0 2px var(--folder) !important }
 }
 .listSpan-Hover {
-  box-shadow: 0px 0px 0px 2px map-get($colors, PC_0);
-  .dark-theme & { box-shadow: 0px 0px 0px 1px map-get($colors, PC_0); }
+  box-shadow: 0 0 0 2px map-get($colors, PC_0);
+  .dark-theme & { box-shadow: 0 0 0 1px var(--folder); }
 }
 .baseFolder-Hover {
   box-shadow: inset 0px 2px 6px 1px #ffca28 !important;
 }
+.dirBtn-Hover {
+  opacity: 1;
+  background: map-get($colors, PL_6);
+  .dark-theme & {
+    box-shadow: 0 0 0 1px var(--folder);
+    background: var(--highlight);
+  }
+}
 
 .ItemSelected {
   background: map-get($colors, PL_5) !important;
-  .dark-theme & { background: map-get($colors, PD_5) !important; }
+  .dark-theme & { background: var(--highlight) !important; }
   &:hover {
     background: map-get($colors, PL_6) !important;
-    .dark-theme & { background: map-get($colors, PD_6) !important; }
+    .dark-theme & { background: var(--selected) !important; }
   }
 }
 

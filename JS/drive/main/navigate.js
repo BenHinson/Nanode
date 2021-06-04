@@ -20,7 +20,7 @@ async function HomeCall(CallData, res) {
 
   if (Skip === false) { res = await API_Fetch({url:`/folder/${Folder.toLowerCase()}?s=main`}) }
 
-  if (res.Auth) { RightBar_Security_Inputs(res);}
+  if (res.Auth) { new SecurityInputContainer(res); } //  RightBar_Security_Inputs(res);
   else if (res.Parent) {
     NodeName = res.Parent.id == "homepage" ? "homepage" : res.Parent.name;
     NodeID = res.Parent.id;

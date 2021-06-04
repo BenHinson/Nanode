@@ -27,7 +27,7 @@ const RightClickObjectMenu = {
     "Node_SPLIT_2": "",
     "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
-    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Folders and their contents to the Bin, where they can be reclaimed."}],
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Folders and their contents to the Bin, where they can be reclaimed for 30 days."}],
     "Node_SPLIT_3": "",
     "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
   },
@@ -42,7 +42,7 @@ const RightClickObjectMenu = {
     "Node_SPLIT_2": "",
     "Change Colour": [{"Command": "ColorPicker", "Var1": "RC"}],
     "Rename": [{"Command": "renameItem"}],
-    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Files to the Bin, where they can be reclaimed."}],
+    "Delete": [{"Command": "PopUp_Accept_Cancel", "Var1": "Delete", "Var2": "Are you Sure?", "Var3": "Delete", "Var4": "Cancel", "Var5": "Send Files to the Bin, where they can be reclaimed for 30 days."}],
     "Node_SPLIT_3": "",
     "Share": "",
     "Download": [{"Command": "PopUp_Download", "Var1": "Download", "Var2": "ContextMenu"}],
@@ -72,43 +72,60 @@ document.addEventListener("contextmenu", function(e) {
   if (e.target.hasAttribute("rc") || RCElement) {    
     if (!RCElement) { RCElement = e.target }
 
-    var menuName = RCElement.getAttribute("rc");
-    let menuItems = RightClickObjectMenu[menuName];
-  
-    $(".RightClickContainer").empty();
-
-    for (var Option in menuItems) {
-      if (menuItems.hasOwnProperty(Option)) {
-        let VarOption = Option;
-        if (Option.includes("RC_VAR_")) {  VarOption = window[Option](Option, e) };
-        let newOption = document.createElement('li');
-        !Option.includes("Node_SPLIT") ? newOption.innerText = VarOption : newOption.setAttribute("class", "Node_SPLIT");
-        newOption.setAttribute("RCAction", Option)
-        $('.RightClickContainer')[0].appendChild(newOption);
-      }
-    }
-
-    let MenuHeight = $(".RightClickContainer").height();
-    $(".RightClickContainer").css("top", (($("body").height() < (e.pageY + MenuHeight)) ? (e.pageY - (MenuHeight - 5)) : (e.pageY - 5) ))
-    $(".RightClickContainer").css("left", (($("body").width() < (e.pageX + 185)) ? (e.pageX - 185) : (e.pageX - 5) ))
-    $(".RightClickContainer").fadeIn(100, startFocusOut());
-
-    $(".RightClickContainer > li").unbind();
-    $(".RightClickContainer > li").not( $(".Node_SPLIT") ).click(function(e) {
-      let RCAction = e.currentTarget.getAttribute("RCAction");
-      RCAction = RightClickObjectMenu[menuName][RCAction];
-      window[RCAction[0].Command](RCAction[0].Var1, RCAction[0].Var2, RCAction[0].Var3, RCAction[0].Var4, RCAction[0].Var5);
-      if (RCAction[1]) {
-        window[RCAction[1].Command](RCAction[1].Var1, RCAction[1].Var2, RCAction[1].Var3, RCAction[1].Var4, RCAction[1].Var5);
-      }
-    });
+    let menuName = RCElement.getAttribute("rc");  
+    new RightClickContainer(RightClickObjectMenu[menuName], e, RCElement);
   }
 })
 
 
-function startFocusOut() {
+class RightClickContainer {
+  constructor(menu, event, element) {
+    [this.menu, this.event, this.target] = [menu, event, element];
+    this.container = document.querySelector('.RightClickContainer');
+    this._Initalise();
+  }
+
+  _Initalise() {
+    this.RenderMenu_();
+    this.PositionMenu_();
+    this.SetListeners_();
+  }
+  RenderMenu_() {
+    let elements = ``;
+    for (let item in this.menu) {
+      let menuText = item.includes('RC_VAR_') ? window[item](this.event) : item;
+      elements += item.includes('Node_SPLIT') ? `<divide></divide>` : `<button RCAction='${item+"'>"+menuText}</button>`;
+    }
+    this.container.innerHTML = elements;
+    this.container.style.display = 'table';
+  }
+  PositionMenu_() {
+    let menuHeight = this.container.offsetHeight;
+    let [targetPosY, targetPosX] = [this.event.pageY, this.event.pageX]
+
+    this.container.style.cssText = `
+      top: ${(document.body.offsetHeight < (targetPosY + menuHeight) ? targetPosY - menuHeight : targetPosY) - 5}px;
+      left: ${(document.body.offsetWidth < (targetPosX + 185) ? targetPosX - 185 : targetPosX - 5)}px;`;
+
+    $(this.container).fadeIn(100, startFocusOut());
+  }
+  SetListeners_() {
+    this.container.querySelectorAll('button:not(divide)').forEach((option) => {
+      option.addEventListener('click', (e) => {
+        SelectItem(RCElement);
+        let RCAction = e.currentTarget.getAttribute("RCAction");
+        this.menu[RCAction].forEach((func) => {
+          window[func.Command](func.Var1, func.Var2, func.Var3, func.Var4, func.Var5)
+        })
+      })
+    })
+  }
+}
+
+
+function startFocusOut() {  // Called from PositionMenu_ in RightClickContainer. Needs replacing with non jquery version.
   setTimeout(function() {
-    $(document).on("click",function(){
+    $(document).on("click", () => {
       $('.RightClickContainer').empty();
       $(".RightClickContainer").hide();
       $(document).off("click");
@@ -117,6 +134,6 @@ function startFocusOut() {
 }
 
 
-function RC_VAR_Collapse(Option, e) { return (N_PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
-function RC_VAR_Switch_View(Option, e) { return UserSettings.local.layout == 0 ? "List View" : "Block View"; }
-function RC_VAR_Change_Theme(Option, e) { return UserSettings.local.theme == 0 ? "Light Theme" : "Dark Theme"; }
+function RC_VAR_Collapse(e) { return (N_PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+function RC_VAR_Switch_View(e) { return UserSettings.local.layout == 0 ? "List View" : "Block View"; }
+function RC_VAR_Change_Theme(e) { return UserSettings.local.theme == 0 ? "Light Theme" : "Dark Theme"; }

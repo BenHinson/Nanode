@@ -2,12 +2,6 @@ DownloadItems = [];
 dirPathPass = false;
 
 const SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
-const sec_icons = {"Password": "far fa-keyboard", "Pin": "fas fa-th", "Time": "far fa-clock"}
-const sec_values = {
-"Password": " 'placeholder='Password' inputType='pass' type='password'' ",
-"Pin": " 'placeholder='Pin Code • 1-9' inputType='pin' type='password'' ",
-"Time": " 'value='Time Restricted' readOnly type='text' inputType='Time'' "
-}
 
 const fileContainer = document.getElementsByClassName('fileContainer')[0];
 const PageInfo = document.getElementsByClassName('PageInformation')[0];
@@ -28,7 +22,7 @@ const makeReplaceElem = (parent, target, base) => {
 async function ViewItem(Type, NodeID) {
   let BlockOut = PopUpBase();
   BlockOut.innerHTML = `
-    <div class='Preview'>
+    <div class='Preview grid-items-center'>
       ${N_Loading('medium')}
     </div>`;
 
@@ -141,7 +135,7 @@ function viewContentAsList(NodeID) {
   }
 
   if (NodeID == "homepage") {
-    fileContainer.innerHTML += `<div class='NewSpan' onclick='PopUp_New_Span()'>New Span</div>`;
+    fileContainer.innerHTML += `<button class='NewSpan' onclick='PopUp_New_Span()'>New Span</button>`;
     fileContainer.querySelectorAll('input[spanName]').forEach(function(name) {
       name.addEventListener('change', function(e) {
         NodeAPI('edit', {"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID});
@@ -336,67 +330,79 @@ ItemInfoListeners = (ItemRequest) => {
 }
 
 
-function RightBar_Security_Inputs(itemLocked) {
-  N_ClientStatus(7, "Wait", 400); N_ClientStatus(5, "False");
-
-  const ItemLocked = makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
-
-  ItemLocked.innerHTML = `
-    <span class='locked_title flex-between-cent'>
-      <h3>Locked</h3>
-      <i class="far fa-times-circle"></i>
-    </span>
-    <h5 class='italic-small'>Enter the items credentials to view</h5>
-  `;
-
-  for (i=0; i<itemLocked.Auth.length; i++) {
-    ItemLocked.innerHTML +=
-      `<span class='security_option flex-between-cent'>
-        <i class='${sec_icons[ itemLocked.Auth[i] ]}'></i>
-        <input class='SecurityInputs ${sec_values[ itemLocked.Auth[i] ]}' ></input>
-      </span>`;
-  }
-  
-  ItemLocked.innerHTML += `<button class='securityEntry rb-btn-full'>Submit</button>`;
-
-  securityEntries = function( Values={} ) {
-    for (i=0; i<itemLocked.Auth.length; i++) {
-      Values[$(".SecurityInputs")[i].getAttribute("inputType")] = $(".SecurityInputs")[i].value;
+class SecurityInputContainer {
+  constructor(res) {
+    this.response = res;
+    this.securityIcons = {"Password": "far fa-keyboard", "Pin": "fas fa-th", "Time": "far fa-clock"}
+    this.securityElements = {
+      "Password": " 'placeholder='Password' inputType='pass' type='password'' ",
+      "Pin": " 'placeholder='Pin Code • 1-9' inputType='pin' type='password'' "
     }
-    return Values;
+    this._Initalise();
   }
-  
-  ItemLocked.querySelector('.locked_title > i').addEventListener("click", function() { ItemLocked.remove(); })
 
-  document.querySelector('.securityEntry').addEventListener("click", async() => {
-    let res = await API_Post({url: `/auth`, body: {
-      "entries": securityEntries(),
-      "oID": itemLocked.Item,
-      "section": Section,
-    }});
+  _Initalise() {
+    N_ClientStatus(5, "User");
+    this.container = makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
+    this.RenderContents_();
+    this.SetListeners_();
+  }
+  RenderContents_() {
+    this.container.innerHTML = `
+      <span class='locked_title flex-between-cent'>
+        <h3>Locked</h3>
+        <i class="far fa-times-circle"></i>
+      </span>
+      <h5 class='italic-small'>Enter the items credentials to view</h5>
+      ${this.RenderOptions_()}
+      <button class='securityEntry rb-btn-full'>Submit</button>
+    `;
+  }
+  RenderOptions_(elements = ``) {
+    this.response.Auth.forEach(measure => 
+      elements += `
+        <span class='security_option flex-between-cent'>
+          <i class='${this.securityIcons[measure]}'></i>
+          <input class='SecurityInputs ${this.securityElements[measure]}'></input>
+        </span>`
+    );
+    return elements;
+  }
+  SetListeners_() {
+    this.container.querySelector('.locked_title > i').addEventListener("click", () => { this.container.remove(); })
 
-    switch (await res.status) {
-      case 200:
-        ItemLocked.remove();
-        N_ClientStatus(5, "Ok", 400)
-        HomeCall({"Reload":true, "Skip": true}, await res.json());
-        break;
-      case 401:
-        $(".security_option > i").each( function(i, val) { 
-          $(val)[0].style.cssText = 'color: crimson'; } );
-        break;
-    }
-  })
+    this.container.querySelector('.securityEntry').addEventListener("click", async() => {
+      let res = await API_Post({url: `/auth`, body: {
+        "entries": this.GetEntries_(),
+        "oID": this.response.Item,
+        "section": Section,
+      }});
+
+      if (res.Error) {
+        this.container.style.boxShadow = 'inset 0 0 0 1px var(--red)';
+      } else {
+        HomeCall({"Reload":true, "Skip": true}, res);
+        this.container.remove();
+      }
+    })
+
+  }
+  GetEntries_(val={}) {
+    this.container.querySelectorAll('input').forEach(elem => {val[elem.getAttribute('inputType')] = elem.value})
+    return val;
+  }
 }
 
 //////////////////////////   POP UPS   /////////////////////////////////
+
+// 251 Original Length
 
 function PopUpBase() {
   N_ClientStatus(7, "Wait", 500); N_ClientStatus(8, "User");
 
   if (document.querySelector('.BlockOut')) { return document.querySelector('.BlockOut'); }
   let BlockOut = document.createElement('div');
-  BlockOut.setAttribute('class', "BlockOut")
+  BlockOut.setAttribute('class', "BlockOut grid-items-center")
   document.body.appendChild(BlockOut)
   BlockOut.addEventListener("mousedown", function(e) { e.stopImmediatePropagation(); if (e.target == BlockOut) { BlockOut.remove(); N_ClientStatus(8, "Off"); } })
   return BlockOut;
@@ -472,7 +478,7 @@ function PopUp_New_Folder(RCE) {
     <div class='Popup_Container'>
       <div class='Popup_Main'>
         <h3>New Folder</h3>
-        <div class='Popup_Dropdown' style='top: 15px; right: 15px;'>
+        <div class='Popup_Dropdown' style='top: 12px; right: 15px;'>
           <div class='Popup_Location' title='Location' ${createLocation(RCE)}</div>
         </div>
         <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='off'></input>

@@ -9,7 +9,7 @@ Queue_Showing = false;
 
 const Chunk_Size = (1 * 1024 * 1024) // (1mb)
 
-const Upload_Buttons = document.querySelector('#fileUploadBtn, #folderUploadBtn');
+const Upload_Buttons = document.querySelectorAll('.UploadBtns > input');
 const Drop_Area = document.querySelector('.Pages');
 const DragDropOverlay = document.querySelector('.DragDropOverlay');
 
@@ -23,12 +23,8 @@ const Queue_Toggle = document.getElementById('queue_toggle');
 // ========================================
 
 Upload_Listeners = async () => {
-
-  [].forEach.call(Upload_Buttons, function(e) {
-    e.onchange = function(e) {
-      Upload_Actions.Looper(this.files);
-    }
-  });
+  
+  Upload_Buttons.forEach((ele) => ele.addEventListener('change', (e) => Upload_Actions.Looper(e.target.files) ) );
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
     Drop_Area.addEventListener(event, preventDefaults, false)   
@@ -68,6 +64,7 @@ Upload_Listeners = async () => {
 Upload_Actions = function() {
 
   Looper = async(files, drop) => {
+    console.log(files);
     if (drop) {
       await Get_All_Files(files).then(function(files) {
         for (let i=0; i<files.length; i++) {

@@ -75,10 +75,11 @@ onkeyup = function(e) { keyMap[e.key] = false; }
 
 // @ == Global Element Functions
 
-function ColorPicker(caller) { new CreateColorPicker(caller) }
+function ColorPicker(caller, callback) { new CreateColorPicker(caller, callback) }
 
 class CreateColorPicker {
-  constructor(caller) {
+  constructor(caller, callback) {
+    this.callback = callback;
     this.element = caller == 'RC' && typeof RCElement !== 'undefined' ? RCElement : null;
     this.originColor = this.element?.hasAttribute('style')
       ? N_RGBtoHex(getComputedStyle(this.element)[ UserSettings.local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
@@ -106,9 +107,11 @@ class CreateColorPicker {
     this.container = document.createElement('div');
     this.container.classList.add('colorContainer');
     this.container.innerHTML = `
-      <i id='closeColorPicker' class='fas fa-times' title='Close Picker'></i>
-      <i id='acceptColorPicked' class='fas fa-check' title='Accept Colour'></i>
-      <input type='text' class='colorPickEntry' placeholder='#000000'></input>
+      <span class='flex-around-cent'>
+        <i id='closeColorPicker' class='fas fa-times' title='Close Picker'></i>
+        <input type='text' class='colorPickEntry' placeholder='#000000'></input>
+        <i id='acceptColorPicked' class='fas fa-check' title='Accept Colour'></i>
+      </span>
       <div class='colorOptionsContainer'>${this.colorOptions.reduce((a, b) => a + `<div style='background: ${b};'></div>`, ``)}</div>
     `;
     document.body.appendChild(this.container);
@@ -122,7 +125,8 @@ class CreateColorPicker {
   SetListeners_() {
     document.getElementById('closeColorPicker').onclick = () => {this.container?.remove()}
     document.getElementById('acceptColorPicked').onclick = async() => {
-      await NodeAPI('edit', {'action': 'DATA', 'section': Section, 'id': this.element.getAttribute('node-id'), 'data': {'color': this.colorEntry.value}, 'path': NodeID})
+      if (this.callback) {this.callback(this.colorEntry.value)}
+      else {await NodeAPI('edit', {'action': 'DATA', 'section': Section, 'id': this.element.getAttribute('node-id'), 'data': {'color': this.colorEntry.value}, 'path': NodeID})}
       this.container?.remove();
     }
     this.colorEntry.addEventListener('keypress', (e) => { // For some reason this can make the thing lag badly.

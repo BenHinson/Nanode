@@ -41,8 +41,8 @@ input:not(.searchSelectors *) {
   padding: 6px 10px;
   background: transparent;
   border-radius: 5px;
-  &::placeholder { color: map-get($colors, PD_5); .dark-theme & { color: map-get($colors, PD_7); opacity: 0.8; } }
-  &:focus { background: map-get($colors, PL_6); .dark-theme & { background: map-get($colors, PD_5); } }
+  &::placeholder { color: map-get($colors, PD_5); .dark-theme & { color: var(--text-dull); opacity: 0.8; } }
+  &:focus { background: map-get($colors, PL_6); .dark-theme & { background: var(--highlight); } }
 }
 button {
   padding: 6px 10px;
@@ -62,6 +62,7 @@ textarea {
   color: inherit;
   padding: 0.5em;
   background: transparent;
+  &::placeholder { color: map-get($colors, PD_5); .dark-theme & { color: var(--text-dull); opacity: 0.8; } }
 }
 
 ///////////////////////// ELEMENTS /////////////////////////
@@ -71,6 +72,7 @@ textarea {
 
 .flex-even-cent { display: flex; justify-content: space-evenly; align-items: center; }
 .flex-between-cent { display: flex; justify-content: space-between; align-items: center; }
+.flex-around-cent { display: flex; justify-content: space-around; align-items: center; }
 .flex-around { display: flex; justify-content: space-around; }
 .flex-column-cent { display: flex; flex-direction: column; align-items: center; }
 
@@ -90,7 +92,7 @@ textarea {
   margin: 10px 0 0;
   border-radius: 5px;
   font-size: 15px;
-  color: map-get($colors, PD_8);
+  color: var(--text-bright);
 }
 
 .notif-btn {
@@ -119,8 +121,8 @@ textarea {
   font-size: 13px;
   line-height: 20px;
   
-  color: map-get($colors, PD_8);
-  background: map-get($colors, PC_1);
+  color: var(--text-bright);
+  background: var(--highlight-color);
   transition: transform 300ms, opacity 300ms;
   opacity: 0;
   z-index: 11;
@@ -141,7 +143,7 @@ textarea {
   padding: 0 24px;
   border-spacing: 0px 14px;
   color: map-get($colors, PL_8);
-  .dark-theme & { color: map-get($colors, PD_8); }
+  .dark-theme & { color: var(--text-bright); }
 
   & tr {
     height: 46px;
@@ -151,11 +153,11 @@ textarea {
     cursor: pointer;
     transition: background-color 100ms;
     background: map-get($colors, PL_2);
-    .dark-theme & { background: map-get($colors, PD_2); }
+    .dark-theme & { background: var(--component); }
 
     &:hover:not(.noHover):not(.tableHeader) {
       background: map-get($colors, PL_6);
-      .dark-theme & { background: map-get($colors, PD_4); }
+      .dark-theme & { background: var(--highlight); }
     }
 
 
@@ -196,8 +198,8 @@ textarea {
   transform: translateX(-50%);
 
   border-radius: 25px;
-  box-shadow: 0 0 70px 0px #99ccff;
-  background: map-get($colors, PC_1);
+  box-shadow: 0 0 60px 5px var(--rich-blue);
+  background: var(--highlight-color);
 
   margin: 30px 0;
   z-index: 50;
@@ -208,12 +210,10 @@ textarea {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: map-get($colors, PD_8);
+  color: var(--text-bright);
 }
 
 .Upload_Container {
-  display: flex;
-  flex-direction: column;
   gap: 10px;
   
   position: fixed;
@@ -227,14 +227,14 @@ textarea {
     position: relative;
     width: 100%;
     border-radius: 5px;
-    // height: 50%;
+
     color: map-get($colors, PL_8);
     background: map-get($colors, PL_1);
     box-shadow: 1px 2px 3px 1px map-get($colors, PL_6);
     .dark-theme & { 
-      color: map-get($colors, PD_8);
-      background: map-get($colors, PD_4);
-      box-shadow: 1px 2px 3px 1px map-get($colors, PD_2);
+      color: var(--text-bright);
+      background: var(--feature);
+      box-shadow: 1px 2px 3px 1px var(--black);
     }
   }
 
@@ -247,30 +247,25 @@ textarea {
     overflow-y: scroll;
 
     &::-webkit-scrollbar-track { background: transparent; }
-    &::-webkit-scrollbar-thumb { .dark-theme & {background: map-get($colors, PD_5);} }
+    &::-webkit-scrollbar-thumb { .dark-theme & {background: var(--highlight);} }
 
     table {
-      position: relative;
       width: 100%;
-      border-radius: 6px;
-      border-spacing: 0px 2px;
       border-collapse: collapse;
       tr {
-        height: 39px;
-        font-family: inherit;
-        cursor: pointer;
+        height: 38px;
         transition: all 100ms ease-in-out;
 
         &:nth-child(n+2) {
           border-top: 1px solid map-get($colors, PL_4);
-          .dark-theme & { border-color: map-get($colors, PD_5); }}
+          .dark-theme & { border-color: var(--highlight); }}
       
         &.waiting_upload:hover:not(.active_upload) {
           background: map-get($colors, PL_5);
-          box-shadow: -8px 0px 0 0px crimson;
-          transform: translateX(8px);
+          box-shadow: -5px 0px 0 0px var(--red);
+          transform: translateX(5px);
           .dark-theme & {
-            background: map-get($colors, PD_5);
+            background: var(--highlight);
           }
         }
 
@@ -323,34 +318,26 @@ textarea {
 
   .UC_Control {
     > div {
-      display: flex;
-      align-items: center;
       height: 50px;
       padding: 10px;
       font-weight: 400;
     }
 
     .UC_Top {
-      justify-content: space-between;
-
-      background: rgba(0,0,0,0.05);
-      .dark-theme & { background: rgba(0,0,0,0.2); }
+      border-radius: 5px;
+      background: var(--component);
   
       .Upload_Control {
         height: 34px;
         padding: 8px 14px;
         border-radius: 4px;
         font-weight: 400;
-        background: map-get($colors, PC_1);;
-        cursor: pointer;
-        user-select: none;
+        background: var(--rich-blue);
       }
       span {
-        display: flex;
-        justify-content: space-around;
         width: 100px;
         font-size: 20px;
-        opacity: 0.8;
+        color: var(--text-dull);
         i {
           display: grid;
           place-items: center;
@@ -364,17 +351,11 @@ textarea {
     }
   
     .UC_Bottom {
-      justify-content: space-around;
-      
       button {
-        height: 30px;
         width: 80px;
-        border: none;
-        color: inherit;
-        cursor: pointer;
         background: map-get($colors, PL_5);
-        .dark-theme & { background: map-get($colors, PD_5); }
-        &:hover {transform: translateY(-2px);}
+        .dark-theme & { background: var(--highlight); }
+        &:hover { background: var(--selected); }
       }
       p { font-size: 15px; }
   
@@ -386,12 +367,12 @@ textarea {
         align-items: center;
 
         position: absolute;
-        height: 30px;
+        height: 31px;
         width: 100%;
         padding: 0 20px;
         text-align: center;
         background: map-get($colors, PL_1);
-        .dark-theme & {background: map-get($colors, PD_4);}
+        .dark-theme & {background: var(--feature);}
   
         > progress {
           height: 6px;
@@ -422,49 +403,46 @@ textarea {
 .RightClickContainer {
   display: none;
   position: fixed;
-  user-select: none;
-  z-index: 999;
   width: 180px;
+  padding: 6px 3px;
   border-radius: 4px;
-  padding: 6px 0px;
+  z-index: 999;
+  user-select: none;
   box-shadow: 1px 2px 3px 0px map-get($colors, PL_6);
   background: map-get($colors, PL_3);
   color: map-get($colors, PL_7);
   .dark-theme & {
-    box-shadow: 1px 2px 3px 0px map-get($colors, PD_1);
-    background: map-get($colors, PD_4);
-    color: map-get($colors, PD_7);
+    box-shadow: 1px 2px 3px 0px var(--black);
+    background: var(--component);
+    color: var(--text-dull);
   }
-  li {
-    line-height: 20px;
-    font-size: 14px;
-    list-style: none;
-    padding: 5px 10px;
-    cursor: pointer;
 
-    &.Node_SPLIT {
-      margin: 6px;
-      padding: 0;
-      opacity: 0.4;
-      border-top: 1px solid map-get($colors, PL_6);
-      cursor: auto;
+  > button {
+    height: 32px;
+    width: 100%;
+    font-size: 14px;
+    text-align: left;
+
+    &:hover {
+      background: map-get($colors, PC_8);
       .dark-theme & {
-        border-top: 1px solid map-get($colors, PD_5);
+        box-shadow: 0 0 0 1px var(--rich-blue);
+        background: var(--rich-blue-faded);
+        color: var(--text-bright);
       }
     }
   }
-  :not(.node_SPLIT):hover {
-    background: map-get($colors, PC_8);
-    .dark-theme & {
-      background: map-get($colors, PC_7);
-    }
+
+  > divide {
+    display: block;
+    margin: 6px;
+    border-top: 1px solid var(--highlight);
   }
 }
 
 .colorContainer {
   position: absolute;
-  user-select: none;
-  height: 300px;
+  height: fit-content;
   width: 200px;
   top: calc(50vh - 150px);
   left: calc(50vw - 100px);
@@ -473,74 +451,53 @@ textarea {
   color: map-get($colors, PL_7);
   box-shadow: 1px 1px 3px 0px map-get($colors, PL_4);
   background: map-get($colors, PL_2);
+  border-top: 15px solid var(--component);
   z-index: 999;
   cursor: all-scroll;
   .dark-theme & {
-    color: map-get($colors, PD_8);
-    box-shadow: 1px 1px 3px 0px map-get($colors, PD_1);
-    background: map-get($colors, PD_3);
+    color: var(--text-bright);
+    box-shadow: 1px 1px 3px 0px var(--black);
+    background: var(--feature);
   }
 
-  #closeColorPicker {
-    position: absolute;
-    height: 30px;
-    width: 30px;
-    top: 4px;
-    left: 10px;
-    padding: 7px;
+  > span {
     text-align: center;
-    cursor: pointer;
-  }
-  #acceptColorPicked {
-    position: absolute;
-    height: 30px;
-    width: 30px;
-    top: 4px;
-    right: 10px;
-    padding: 7px;
-    text-align: center;
-    cursor: pointer;
-  }
-  .colorPickEntry {
-    position: absolute;
-    height: 26px;
-    width: 86px;
-    top: 5px;
-    left: 57px;
-    padding: 3px;
-    border: none;
-    text-align: center;
-    background: transparent;
-    border-bottom: 1px solid;
-    color: map-get($colors, PL_7);
-    font-size: 16px;
-    font-weight: 500;
-    .dark-theme & {
-      color: map-get($colors, PD_8);
+    > i {
+      width: 30px;
+      padding: 7px;
+      cursor: pointer;
     }
+    > input {
+      width: 95px;
+      padding: 3px;
+      text-align: center;
+      border-bottom: 2px solid;
+      border-radius: 0;
+      color: map-get($colors, PL_7);
+      .dark-theme & {
+        color: var(--text-bright);
+      }
+    }
+
   }
+
   .colorOptionsContainer {
-    position: absolute;
-    height: 260px;
-    width: 188px;
-    bottom: 5px;
-    cursor: default;
-  
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 9px;
+    margin-top: 8px;
+    cursor: default;
   
     > div {
       height: 29px;
       width: 29px;
       border-radius: 5px;
-      margin: 4px;
       cursor: pointer;
       &:hover {
         border: 2px solid;
         border-radius: 4px;
       }
-      &.selectedCol {
+      &.selected {
         border: 3px solid;
         border-radius: 16px;
       }
@@ -592,11 +549,11 @@ textarea {
   cursor: pointer;
   overflow: hidden;
   color: map-get($colors, PL_8);
-  border: 1px solid map-get($colors, PL_6);
+  background: red;
 
   .dark-theme & {
-    color: map-get($colors, PD_8);
-    border-color: map-get($colors, PD_4);
+    color: var(--text-bright);
+    background: var(--feature);
   }
 
   >div {
@@ -609,18 +566,21 @@ textarea {
     position: absolute;
     border-radius: 3px;
     z-index: 1;
-    background: map-get($colors, PC_1);
+    background: var(--highlight-color);
     transition: transform 250ms ease-in-out;
   }
 
-
+  &.SW_DL > div {
+    padding: 3px 0;
+    font-size: 15px;
+  }
   &.SW_View {
     width: 62px;
     color: map-get($colors, PC_1);
     .SL_View { width: 28px; background: map-get($colors, PL_6);}
     >div { padding: 3px; }
     i { font-size: 15px; }
-    .dark-theme & { color: map-get($colors, PD_8); .SL_View{background: map-get($colors, PC_1);} }
+    .dark-theme & { color: var(--text-bright); .SL_View{background: var(--highlight-color);} }
   }
   &.SW_Bin {
     position: relative;
@@ -633,34 +593,27 @@ textarea {
       font-size: 14px;
       padding: 4px;
     }
-    .SL_Bin { background: map-get($colors, PL_6); }
-    .dark-theme & { .SL_Bin { background: map-get($colors, PD_6); } }
+    .SL_Bin {
+      background: map-get($colors, PL_6);
+      .dark-theme & { background: var(--selected); }
+    }
   }
 }
 
 .ExpandSpan {
+  font-size: 15px;
+  background: map-get($colors, PL_4);
+  .dark-theme & { background: var(--feature); }
+  &:hover { opacity: 0.7; }
+
   &.VT_Block {
     position: absolute;
     right: 35px;
-    transform: translateY(-2px);
   }
-
-  height: 22px;
-  width: 70px;
-  padding-bottom: 2px;
-  border: none;
-  line-height: 20px;
-  color: inherit;
-  background: map-get($colors, PL_4);
-  cursor: pointer;
-  .dark-theme & { background: map-get($colors, PD_4); }
-  &:hover { opacity: 0.7; }
 }
 
 .binSize_SVG {
   position: absolute;
-  height: 200px;
-  width: 200px;
   circle {
     fill: transparent;
     stroke-linecap: round;
@@ -669,8 +622,7 @@ textarea {
     stroke-width: 10%;
     transform-origin: 50% 50%;
     transform: rotate(-50deg);
-    transition: stroke-dasharray ease-in-out 1s;
-    transition-delay: 500ms;
+    transition: stroke-dasharray ease-in-out 1s 500ms;
   }
 }
 
@@ -690,36 +642,35 @@ textarea {
 
 .selected {
   background: map-get($colors, PL_5);
-  .dark-theme & { background: map-get($colors, PD_6); }
+  .dark-theme & { background: var(--selected); }
 }
-
 
 //////////////////// Colours /////////////////
 
 .blue-light {
-  border: 1px solid #4285f4;
-  background: #4285f433;
-  color: #4285f4;
+  border: 1px solid var(--rich-blue);
+  background: var(--rich-blue-faded);
+  color: var(--rich-blue);
   &:hover {
-    background: #4285f4;
-    color: map-get($colors, PD_8);
+    background: var(--rich-blue);
+    color: var(--text-bright);
   }
 }
 .red-light {
-  border: 1px solid #ff453a;
+  border: 1px solid var(--red);
   background: #ff443a33;
-  color: #ff453a;
+  color: var(--red);
   &:hover {
-    background: #ff453a;
-    color: map-get($colors, PD_8);
+    background: var(--red);
+    color: var(--text-bright);
   }
 }
 .red-full {
-  color: map-get($colors, PD_8);
-  background: map-get($colors, PC_10);
+  color: var(--text-bright);
+  background: var(--red);
   &:hover {
-    background-color: #ff443a33;
-    color: #ff453a;
+    color: var(--red);
+    background: #ff443a33;
   }
 }
 
@@ -727,5 +678,5 @@ textarea {
 
 ::-webkit-scrollbar { height: 5px; width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { border-radius: 4px; background: map-get($colors, PL_6); .dark-theme & { background: map-get($colors, PD_4); }}
-::-webkit-scrollbar-thumb:hover { background: linear-gradient(40deg, #a4b4af, #a9c7d5); }
+::-webkit-scrollbar-thumb { border-radius: 4px; background: map-get($colors, PL_6); .dark-theme & { background: var(--highlight); }}
+::-webkit-scrollbar-thumb:hover { background: var(--selected); }

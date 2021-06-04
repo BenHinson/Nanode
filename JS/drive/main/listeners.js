@@ -171,7 +171,7 @@ function collapseSpan(span, expand=false) {
 
 function createLocation(RCE) {
   return  NodeName == "homepage" 
-    ? `value= '${RCE == 'RCE' ? N_PareAttr(RCElement, 'node-id') : "_General_"}'><p>${RCE == 'RCE' ? N_PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i><div class='Popup_Dropdown_Content'>${spanList()}</div>`
+    ? `value= '${RCE == 'RCE' ? N_PareAttr(RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
     : `value='${NodeID}'><p>Current</p>`;
   function spanList() { let HTML_Spans = ""; for (let [id,data] of Object.entries(Directory_Content)) { HTML_Spans += `<a value='${id}'>${data.name}</a>` }; return HTML_Spans; }
 }

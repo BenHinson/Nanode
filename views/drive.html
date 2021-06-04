@@ -45,7 +45,8 @@
 
     <div class='PageList'>
       <div>
-        <a title="Nanode" id="NanodeRtn" href="//nanode.one" width="130" height="30"></a>
+        <a class='nanode' href='https://nanode.one'><img src='/assets/nanode/logo/logo.svg' alt='Nanode'>NΛNODE</a>
+        <!-- <a title="Nanode" id="NanodeRtn" href="//nanode.one" width="130" height="30"></a> -->
         <span drvPage="main" title="Home" class="SelectedPage"><i class="fas fa-user"></i><p>Home</p></span>
         <span drvPage="share" title="Share"><i class="fas fa-users"></i><p>Share</p></span>
         <span drvPage="blocks" title="Blocks"><i class="fas fa-th"></i><p>Blocks</p></span>
@@ -78,14 +79,8 @@
 
 
 
-    <div class='UploadBtns'>
-      <input id="fileUploadBtn" type="file" multiple></input>
-      <input id="folderUploadBtn" type="file" multiple webkitdirectory mozdirectory></input>
-      <input id="codexUploadBtn" type="file" accept="text/*" multiple>
-      <div class='DragDropOverlay'>Drop your files to Upload</div>
-    </div>
     
-    <div class='Upload_Container' style='visibility: hidden;'>
+    <div class='Upload_Container flex-column-cent' style='visibility: hidden;'>
       <div class='UC_Queue'><table><tbody></tbody></table></div>
 
       <div class='UC_Info'>
@@ -94,15 +89,15 @@
       </div>
 
       <div class='UC_Control'>
-        <div class='UC_Top'>
-          <h4 onclick="Upload_Listeners.Control(this)" class='Upload_Control' action='Choose'>Choose Items</h4>
-          <span>
+        <div class='UC_Top flex-between-cent'>
+          <button onclick="Upload_Listeners.Control(this)" class='Upload_Control' action='Choose'>Choose Items</button>
+          <span class='flex-even-cent'>
             <i onclick="Upload_Visuals.Queue('toggle')" id='queue_toggle' class='fas fa-chevron-up'></i>
             <i onclick="PopUp_Upload.Close()" class='fas fa-times'></i>
           </span>
         </div>
 
-        <div class='UC_Bottom'>
+        <div class='UC_Bottom flex-even-cent'>
           <button Upload_Folder onclick="document.getElementById('folderUploadBtn').click()">Folder</button>
           <button Upload_Files onclick="document.getElementById('fileUploadBtn').click()">Files</button>
           <p>0 Items</p> <p>0 B</p>
@@ -112,6 +107,13 @@
     </div>
 
     <table class='RightClickContainer'></table>
+
+    <div class='UploadBtns'>
+      <input id="fileUploadBtn" type="file" multiple></input>
+      <input id="folderUploadBtn" type="file" multiple webkitdirectory mozdirectory></input>
+      <input id="codexUploadBtn" type="file" accept="text/*" multiple>
+      <div class='DragDropOverlay'>Drop your files to Upload</div>
+    </div>
 
   </body>
 </html>
