@@ -1,115 +1,81 @@
 // Custom Tools
 // Function Format => N_FirstSecond = () => {}
 
-// Type
-const N_TypeChecker = (type, trim) => { // Replace _ with spaces. use _ for file calls
-  let mimeType = type.mime || type;
-  let converted = '';
-
-  switch (mimeType) {
-    case ("FOLDER"): converted = "Folder"; break;
+const N_TypeManager = (mime) => {
+  switch (mime) {
+    case ("FOLDER"): return {mime, general: 'folder', short: 'Folder', icon: 'folder.svg'};
     
     // == Image
-    case ("image/jpeg"): converted = "JPEG"; break;
-    case ("image/gif"): converted = "GIF"; break;
-    case ("image/tiff"): converted = "Tif"; break;
-    case ("image/x-icon	"): converted = "Icon"; break;
-    case ("image/svg+xml"): converted = "SVG"; break;
-    case ("image/ief"): converted = "Image"; break;
-    case ("image/bmp"): converted = "Bitmap"; break;
-    case ("image/pict"): converted = "Macintosh"; break;
-    case ("image/png"): converted = "PNG"; break;
-    case ("image/x-rgb"): converted = "RGB"; break;
-    case ("image/x-xbitmap"): converted = "X_Bitmap"; break;
-    case ("image/webp"): converted = "WEBP Image"; break;
+    case ("image/jpeg"): return {mime, general: 'image', short: 'JPEG', icon: 'image.svg'};
+    case ("image/gif"): return {mime, general: 'image', short: 'GIF', icon: 'image.svg'};
+    case ("image/svg+xml"): return {mime, general: 'image', short: 'SVG', icon: 'image.svg'};
+    case ("image/bmp"): return {mime, general: 'image', short: 'Bitmap', icon: 'image.svg'};
+    case ("image/png"): return {mime, general: 'image', short: 'PNG', icon: 'image.svg'};
+    case ("image/webp"): return {mime, general: 'image', short: 'Web Picture', icon: 'image.svg'};
     // == Audio
-    case ("audio/basic"): converted = "Audio"; break;
-    case ("audio/mpeg"): converted = "MP3"; break;
-    case ("audio/ogg"): converted = "OGG Audio"; break;
-    case ("audio/x-wav"): converted = "Wave"; break;
-    case ("audio/x-mpeg"): converted = "MPEG"; break;
-    case ("audio/x-voice"): converted = "Voice"; break;
-    case ("audio/webm"): converted = "WEBM Audio"; break;
+    case ("audio/basic"): return {mime, general: 'audio', short: 'Audio', icon: 'music.svg'};
+    case ("audio/mpeg"): return {mime, general: 'audio', short: 'MP3', icon: 'music.svg'};
+    case ("audio/ogg"): return {mime, general: 'audio', short: 'OGG Audio', icon: 'music.svg'};
+    case ("audio/x-wav"): return {mime, general: 'audio', short: 'Wave', icon: 'music.svg'};
+    case ("audio/x-mpeg"): return {mime, general: 'audio', short: 'MPEG', icon: 'music.svg'};
+    case ("audio/webm"): return {mime, general: 'audio', short: 'Web Audio', icon: 'music.svg'}; // Traffic Cone Icon
     // == Video
-    case ("video/mpeg"): converted = "Mpeg"; break;
-    case ("video/mp4"): converted = "MP4"; break;
-    case ("video/ogg"): converted = "OGG Video"; break;
-    case ("video/quicktime"): converted = "Quicktime"; break;
-    case ("video/x-sgi-movie"): converted = "Quicktime"; break;
-    case ("video/msvideo"): converted = "Windows_Video"; break;
-    case ("video/vdo"): converted = "folder"; break;
-    case ("video/vivo"): converted = "Vivo"; break;
-    case ("video/webm"): converted = "WEBM Video"; break;
+    case ("video/mpeg"): return {mime, general: 'video', short: 'MPEG', icon: 'video.svg'};
+    case ("video/mp4"): return {mime, general: 'video', short: 'MP4', icon: 'video.svg'};
+    case ("video/ogg"): return {mime, general: 'video', short: 'OGG Video', icon: 'video.svg'};
+    case ("video/quicktime"): return {mime, general: 'video', short: 'Quicktime', icon: 'video.svg'};
+    case ("video/webm"): return {mime, general: 'video', short: 'Web Video', icon: 'video.svg'};
     // == Text
-    case ("text/plain"): converted = "Plain_Text"; break;
-    case ("application/rtf"): converted = "Rich_Text_Format"; break;
-    case ("text/richtext"): converted = "Rich_Text"; break;
-    case ("text/csv"): converted = "Comma_Serparated"; break;
-    case ("text/webviewhtml"): converted = "Hypertext"; break;
+    case ("text/plain"): return {mime, general: 'text', short: 'Plain Text', icon: 'text.svg'};
+    case ("text/csv"): return {mime, general: 'text', short: 'CSV', icon: 'text.svg'};
+    case ("text/webviewhtml"): return {mime, general: 'text', short: 'Hypertext', icon: 'text.svg'};
+    case ("application/xml"): return {mime, general: 'text', short: 'XML', icon: 'text.svg'}; // Missing sketch
     // == Code
-    case ("text/css"): converted = "CSS"; break;
-    case ("text/html"): converted = "HTML"; break;
-    case ("application/hta"): converted = "HTML"; break;
-    case ("application/xhtml+xml"): converted = "xHTML"; break;
-    case ("application/jsont"): converted = "JSON"; break;
-    case ("application/x-javascript"): converted = "Javascript"; break;
-    case ("application/java-archive"): converted = "Java_Archive"; break;
-    case ("application/x-httpd-php"): converted = "PHP"; break;
+    case ("text/css"): return {mime, general: 'code', short: 'CSS', icon: 'css.svg'};
+    case ("text/html"): return {mime, general: 'code', short: 'HTML', icon: 'code.svg'};
+    case ("text/javascript"): case ("application/x-javascript"):
+      return {mime, eneral: 'code', short: 'Javascript', icon: 'javascript.svg'};
+    case ("text/x-python"): case ("application/x-python-code"):
+      return {mime, general: 'code', short: 'Python', icon: 'python.svg'};
+    case ("text/x-typescript"): case ("application/x-typescript"):
+      return {mime, general: 'code', short: 'TypeScript', icon: 'typescript.svg'};
+    case ("text/x-c"): return {mime, general: 'code', short: 'C', icon: 'c.svg'};
+    case ("application/jsont"): return {mime, general: 'code', short: 'JSON', icon: 'code.svg'};
+    case ("application/x-httpd-php"): return {mime, general: 'code', short: 'PHP', icon: 'php.svg'};
     // == Microsoft
-    case ("application/vnd.ms-excel"): converted = "Excel"; break;
-    case ("application/vnd.ms-powerpoint"): converted = "Powerpoint"; break;
-    case ("application/msword"): converted = "Word"; break;
-    case ("application/msaccess"): converted = "Access"; break;
-    case ("application/msexcel"): converted = "Excel"; break;
-    case ("application/mspowerpoint"): converted = "Powerpoint"; break;
-    case ("application/msproject"): converted = "Project"; break;
-    case ("application/mswrite"): converted = "Write"; break;
+    case ("application/excel"): case ("application/x-excel"): case ("application/msexcel"):
+      return {mime, general: 'microsoft', short: 'Excel', icon: 'microsoft-excel.svg'};
+    case ("application/powerpoint"): case ("application/x-powerpoint"): case ("application/mspowerpoint"): 
+      return {mime, general: 'microsoft', short: 'Powerpoint', icon: 'microsoft-powerpoint.svg'};
+    case ("application/word"): case ("application/x-word"): case ("application/msword"): 
+      return {mime, general: 'microsoft', short: 'Word', icon: 'microsoft-word.svg'}; // Missing: onenote, publisher
     // == Adobe
-    case ("application/psd"): converted = "Photoshop"; break;
-    case ("application/x-photoshop"): converted = "Photoshop"; break;
-    case ("application/photoshop"): converted = "Photoshop"; break;
-    case ("application/postscript"): converted = "Illustrator"; break;
-    case ("application/pdf"): converted = "PDF"; break;
+    case ("application/psd"): case ("application/x-photoshop"): case ("application/photoshop"):
+      return {mime, general: 'adobe', short: 'Photoshop', icon: 'adobe-photoshop.svg'};
+    case ("application/postscript"): return {mime, general: 'adobe', short: 'Illustrator', icon: 'adobe-illustrator.svg'};
+    case ("application/pdf"): return {mime, general: 'adobe', short: 'PDF', icon: 'pdf.svg'}; // Missing: XD, bridge?, indesign, lightroom, premiere-pro
     // == 3D
-    case ("application/x-troff-ms"): converted = "3DS_Max"; break;
-    case ("application/aca"): converted = "AutoCAD"; break;
+    case ("application/x-troff-ms"): return {mime, general: 'cad', short: '3DS Max', icon: 'blank.svg'}; // 3d file types icons needed
+    case ("application/aca"): return {mime, general: 'cad', short: 'Auto CAD', icon: 'blank.svg'};
     // == Compressed
-    case ("application/x-gzip"): converted = "GZip"; break;
-    case ("application/zip"): converted = "Zip"; break;
-    case ("multipart/x-gzip"): converted = "gZip"; break;
-    case ("application/vnd.rar"): converted = "RAR"; break;
-    case ("application/x-7z-compressed"): converted = "7-Zip"; break;
-    // == MISC
-    case ("application/octet-stream"): converted = "Executable"; break;
-    case ("application/xml"): converted = "XML"; break;
-    case ("font/otf"): converted = "Font"; break;
-    case ("font/woff"): converted = "Woff"; break;
-    case ("font/woff2"): converted = "Woff"; break;
+    case ("application/java-archive"): return {mime, general: 'compressed', short: 'Archive', icon: 'zip.svg'};
+    case ("application/zip"): return {mime, general: 'compressed', short: 'Zip', icon: 'zip.svg'};
+    case ("application/x-gzip"): return {mime, general: 'compressed', short: 'gZip', icon: 'zip.svg'};
+    case ("application/vnd.rar"): return {mime, general: 'compressed', short: 'RAR', icon: 'zip.svg'};
+    case ("application/x-7z-compressed"): return {mime, general: 'compressed', short: '7-Zip', icon: 'zip.svg'};
+    // == MISC Executable
+    case ("application/octet-stream"): return {mime, general: 'cad', short: 'Executable', icon: 'blank.svg'}; // Executable file icon needed
+    // == Font
+    case ("font/otf"): return {mime, general: 'font', short: 'OpenType', icon: 'font.svg'};
+    case ("font/woff"): return {mime, general: 'font', short: 'Woff', icon: 'font.svg'};
+    case ("font/woff2"): return {mime, general: 'font', short: 'Woff2', icon: 'font.svg'};
 
-    default: converted = "Unknown";
+    default: return {mime, general: 'unknown', short: 'Unknown', icon: 'blank.svg'};
   }
 
-  return trim ? converted.replaceAll('_', ' ') : converted;
 }
-const N_ItemImage = (params) => { // Used Twice outside Tools
-  const {type, oID, section, h, w} = params;
-
-  if (type == "FOLDER")               return "/assets/drive/file_icons/folder.svg";
-  else if (type.includes('image'))    return `/storage/${oID}?h=${h}&w=${w}&s=${section}`;
-
-  let file_type = N_ItemChecker(type)
-  if (file_type == "unknown")     return "/assets/drive/file_icons/file.svg";
-  else                            return "/assets/drive/file_icons/"+file_type+".svg";
-}
-const N_ItemChecker = (item_Type) => { // Used Once outside Tools
-  item_Type = item_Type.mime || item_Type;
-  if (item_Type == "FOLDER") { return "folder" }
-  if (item_Type.includes("image")) { return "image" }
-  if (item_Type.includes("video")) { return "video" }
-  if (item_Type.includes("audio")) { return "audio" }
-  if (item_Type.includes("text")) { return "text" }
-  if (item_Type.includes("font")) { return "font" }
-  return "unknown";
+const N_FileIcon = (nodeData, h, w, section) => {
+  return nodeData.type.general == 'image' ? `/storage/${nodeData.id}?h=${h}&w=${w}&s=${section}` : `/assets/drive/programs/${nodeData.type.icon}`;
 }
 
 // Time
@@ -148,8 +114,9 @@ const N_TextMultiple = (num, string) => { // Used Four times
 // Convert
 const N_RGBtoHex = (rgb) => { // Used Four times
   if (!rgb) {return '';}
+  if (Array.isArray(rgb)) { rgb = rgb[0] }
   let RGBColor = rgb.replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
-  return  RGBColor.length >= 2 ? ("#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2)) : (RGBColor);
+  return RGBColor.length >= 2 ? ("#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2)) : (RGBColor);
 }
 const N_ConvertSize = (InputSize) => { // Used Twelve Times
   if (!InputSize) { return '-' }
@@ -178,6 +145,14 @@ const N_InfoPopup = (parent, info, displayTime) => {
       popup.classList.remove('display');
     });
   }, displayTime)
+}
+const N_Error = (err) => {
+  console.log(`An Error Occured: ${err}`)
+}
+const N_Find = (identifier, multi=false, parentEle) => {
+  return multi
+    ? (parentEle || document).querySelectorAll(identifier)
+    : (parentEle || document).querySelector(identifier);
 }
 
 // Status / Waiting

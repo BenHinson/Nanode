@@ -1,8 +1,9 @@
 <script>$.ajaxPrefilter(function(options) { options.async = true; });</script>
 
-<script defer async type="text/javascript" src="/JS/drive/main/listeners.js"></script>
-<script defer async type="text/javascript" src="/JS/drive/main/viewer.js"></script>
-<script defer async type="text/javascript" src="/JS/drive/main/navigate.js"></script>
+<script defer type="text/javascript" src="/JS/drive/main/main.js"></script>
+<script defer type="text/javascript" src="/JS/drive/main/listeners.js"></script>
+<script defer type="text/javascript" src="/JS/drive/main/viewer.js"></script>
+<script defer type="text/javascript" src="/JS/drive/main/navigate.js"></script>
 
 
 
@@ -65,6 +66,6 @@
 <div class='PageInformation'>
   <span class="PIHeader flex-between-cent">
     <button onclick="PopUp_Upload()" class="NO_Upload flex-even-cent"><i class="fas fa-cloud-upload-alt"></i>Upload</button>
-    <button onclick="PopUp_New_Folder()" class="NO_Folder flex-even-cent"><i class="fas fa-folder-plus"></i>Folder</button>
+    <button onclick="NEWPopup('NewFolder')" class="NO_Folder flex-even-cent"><i class="fas fa-folder-plus"></i>Folder</button>
   </span>
 </div>

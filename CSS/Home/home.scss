@@ -81,15 +81,23 @@ header {
   backdrop-filter: blur(5px);
   background: #0e0f1166;
 
-  
-  > a {
+  .nanode {
     display: flex;
     flex-wrap: nowrap;
+  
+    width: 155px;
     font-weight: 100;
     font-size: 20px;
     letter-spacing: 0.5em;
-
-    img { width: 1em; margin-right: 0.5em; }
+    transition: all 200ms;
+    > img {
+      position: relative;
+      height: 20px;
+      left: 0;
+      margin-right: 0.5em;
+      transition: all 300ms;
+    }
+    &:hover { color: transparent; > img {left: 50%; transform: rotate(180deg); } }
   }
 
   .header_links {

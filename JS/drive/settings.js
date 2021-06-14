@@ -4,7 +4,7 @@ let UserSettings = {};
 
 async function sessionSettings(settings={}) {  // Call API_Fetch({url: '/account/settings'}) if needed and send settings updates.
   settings['user'] = readSettings('user') || await API_Fetch({url: '/account/settings'});
-  settings['local'] = readSettings('local') || {'theme': 0, 'layout': 0};
+  settings['local'] = readSettings('local') || {'theme': 0, 'layout': 0, 'recents': 0};
 
   if ((new Date().getTime() - new Date(settings.user.accessed || 0).getTime()) > 5*60*1000) {
     settings['user'] = await API_Fetch({url: '/account/settings'}) || {'accessed': new Date().toISOString(), 'date': 0, 'plan': {'max': 10 * 1024 * 1024 * 1024}, 'used': 0};
@@ -30,7 +30,7 @@ function writeSettings(location, setting, value) {
 
 function updateSettings(settings, location, set=true) { // Edit local settings and push to server
   if (location == 'local') { // Set local settings. Else Push to server settings. (server)
-    settings.user.accessed = new Date().toISOString();
+    settings.user.accessed = new Date().toISOString(); // The server knows when we accessed, no need to set it here or send it to the server.
     localStorage.setItem('local-settings', JSON.stringify(settings.local));
     localStorage.setItem('user-settings', JSON.stringify(settings.user));
   }
@@ -69,5 +69,10 @@ function ToggleTheme(theme, set) {
 function ToggleView() {
   writeSettings('local', 'layout', 'toggle');
   document.querySelector('.Slider.SL_View').style.transform = `translateX(${UserSettings.local.layout ? 28 : 0}px)`;
-  HomeCall({"Folder":NodeID, "Reload":false});
+  NodeCall({"Folder":NodeID, "Reload":false});
+}
+
+function ToggleRecents() {
+  writeSettings('local', 'recents', 'toggle');
+  renderRecents();
 }

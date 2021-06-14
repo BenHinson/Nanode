@@ -2,7 +2,6 @@
 
 Main:
   Improve Mobile View
-  Update the Dev Portal
 
 New:
   Search
@@ -29,18 +28,10 @@ Ideas:
 
 // ========================
 
-// Socket IO Removal - Why? Although very useful.
-//    Have to load code and Connect everytime.
-//    A loss of connection requires manually reconnecting.
-//    If a socket request is the first event after a cookie has ran out, you cant set the new cookie on the server.
-
-// Fix of Navigation
-
   // File Move for Block.
 
   // The Multiple Update:
       // Selection Box - Shows Selection Data at the bottom. Narrow Bar like VSCode blue bar.
-      // Multi-Move
 
   // The Right-Click Update:
       // Security. Including removal.
@@ -49,89 +40,13 @@ Ideas:
       // Create Shortcut
       // Share
 
-  // Settings Review, JS, Functions and Page Revision.
-
-  // Icons for Different File types.
-
   // Search Implementation - Remember to check the previous names settings too for items.
 
 
-
-
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
-///////////// MAY /////////////////
-Upload Improvements, notifications, storage checks, queue removal, pause/continue
-Settings rewrite and purge
-Added multi file move. API fully supports multi edits.
-Homepage improvements and new elements. Full mobile support for Homepage.
-Compression and cleaning up of scss files to reduce file sizes.
-Added 'main folders' section to the top of the file homepage. - Will be able to add recents soon to this too.
-
-
-
-////////////// FEBRUARY //////////////////
-Turned 'Pages' into html docs to render in centre and reduce inital load.
-
-
-////////////// JANUARY //////////////////
-Continued implementation of new API's and Storage Engine.
-Account Storage - Allocated & Used
-Updated colours of the right click
-Download Update to work with new engine and Additional Features
-Updated Selection and De-selection of items, allowing for multi-in-one actions.
-Multiple Delete, Download
-List Item and Span Rename tweaks.
-Colour Palette for Dark & Light Theme
-Design Alterations and Work towards a design standard.
-Custom Tools Rework
-
-
-////////////// DECEMBER //////////////////
-Final Tweeks and Bug Fixes to the Upload System
-Small Design Tweeks
-Improved Mobile View
-Image, Text & Video views Improved
-Changes to Security to improve performance and reliability
-Further Rewrites to Various Code
-Fixed 
-Removal of Old / Legacy Code
-Entire Rewrite of Storage Engine and API's. 
-
-
-////////////// NOVEMBER //////////////////
-Account Authentication with Nord
-Design Overhall
-Move away from socketio for frequent, essential tasks
-Socket Try Reconnect Button
-Upload Overhall, Chunking, Pausing 
-
-
-////////////// OCTOBER //////////////////
-Drag Files and Folders into and out of directories, between Spans, and navigate through directories by hovering over folders. (List Only atm)
-Complete Rework of the Directory Path System, Adding Forward / Backward / Home / Path Buttons, with multiple layers so you can get back to where you were.
-Long hold over a folder opens it. So you can move files deep into folders in one go.
-Item information TOTAL rework. Server api support to return file object. -> drive.nanode.one/user/ x / x / x eg: codex/text/home
-Mobile Rework of navigation bar. Can now access left bar.
-Server change of time-saving. now full string. And logging more times.
-Server change of return clipped image. now accepts null.   storage/ ObjectID ?h=128&w=null. Will scale to fit.
-Now using nodemon on the server to help with restarts. bless nodemon.
-New helpfully functions on client: RGBtoHEX && Date/Time Converter.
-Calling file Information is now consistent with the sidebar. (opens side-bar is called).
-Rework and condense of the file display system. No longer two different functions for homepage and non homepage.
-New global functions: capFirstLetter (capatalize first letter), ItemImage. and Refining of ItemChecker (The Items Type).
-Dragging and Dropping Non-Files while over the client doest run the upload code that subsequently errors as its not a file.
-Along With File Information Rework, download has been reworked, improved, and code shortened. Also No longer calling user file for each item.
-Generating a link for items has been developed, with each link looking like so in the database:
-   {"_id": {"url": `the url path pointer. 16 character nanoid.`}, {"owner:" `uuid`}, {"object": `object id in users database`}, {"file": `name of item`}, {"mime": `mime-type of item`}}
-Easier Method on server end to read and write account information, reducing development time for account info related features.
 
 
 

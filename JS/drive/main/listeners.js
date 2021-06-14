@@ -10,7 +10,7 @@ let paramListenersCalled = false
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? fileContainer.querySelectorAll('div[node-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tr[node-id]:not(.tableHeader), .baseFolders > div'));
+  let Items = (View == 0 ? fileContainer.querySelectorAll('div[node-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div'));
 
   Items.forEach(item => {
     item.addEventListener('click', function(selected) {
@@ -63,8 +63,9 @@ function ItemActions(selected) {
   let clicked = selected.getAttribute("node-id");
   let type = selected.getAttribute("type");
 
-  if (type == "folder") { HomeCall({"Folder":selected.getAttribute('node-id')}); }
-  else if (type.match(/image|text|video/g)) { ViewItem(type, clicked) }
+  if (type == "folder") { NodeCall({"Folder":selected.getAttribute('node-id')}); }
+  else { ViewItem(type, clicked) }
+  // else if (type.match(/image|text|video/g)) { ViewItem(type, clicked) }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,8 +141,20 @@ search.addEventListener('change', async(e) => { // Search
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+// FILTER
+// console.log(Object.values(Nodes).filter(node => {
+//   return Object.values(node.data).some(s => s.toString().toLowerCase().includes('nanode'))
+// }))
+
+    // $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
+    //   $(folder).insertAfter( Table.children[0]);
+    // })
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 function collapseSpan(span, expand=false) {
-  span = span ? (UserSettings.local.layout == 0 ? span.parentNode : span.parentNode.parentNode.parentNode) : RCElement;
+  span = span ? (UserSettings.local.layout == 0 ? span.parentNode : span.closest('table')) : RCElement;
   if (UserSettings.local.layout == 0) {
     expand = span.hasAttribute('collapsed') ? true : false;
     expand == true ? span.removeAttribute('collapsed') : span.setAttribute('collapsed', true)
@@ -173,7 +186,11 @@ function createLocation(RCE) {
   return  NodeName == "homepage" 
     ? `value= '${RCE == 'RCE' ? N_PareAttr(RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
     : `value='${NodeID}'><p>Current</p>`;
-  function spanList() { let HTML_Spans = ""; for (let [id,data] of Object.entries(Directory_Content)) { HTML_Spans += `<a value='${id}'>${data.name}</a>` }; return HTML_Spans; }
+  function spanList() {
+    let HTML_Spans = "";
+    for (let [id,data] of Object.entries(Spans)) { if (id=='_MAIN_') {continue};
+    HTML_Spans += `<a value='${id}'>${data.name}</a>` };
+    return HTML_Spans; }
 }
 
 function renameItem(e) {

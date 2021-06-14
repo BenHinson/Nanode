@@ -1,6 +1,155 @@
 <div class="ContentWrapper">
   <h1>Change Log</h1>
 
+  <section> <!-- JUNE 2021 -->
+    <h2>June 2021</h2>
+
+    <h4>Homepage Folders</h4>
+    <ul>
+      <li><h5>Base Folders</h5> - The initial starting folders of 'Documents, Games, Media, Music and Notes', now have their own section and design to distinguish them.</li>
+      <li><h5>Recent Files</h5> - A new API has been built to fetch, view and go to recently opened files. <h6 style="font-style: italic;">Folders could be added in the future.</h6> This is a local toggleable setting. <code>https://drive.nanode.one/activity/recent/main</code></li>
+    </ul>
+
+    <h4>Preview</h4>
+    <span>Simply click on a file to view it.</span>
+    <ul>
+      <li><h5>Font</h5> - Added a preview for fonts.</li>
+      <li><h5>Audio</h5> - Added a preview for audio files.</li>
+    </ul>
+
+    <h4>Styling</h4>
+    <ul>
+      <li><h5>Modes</h5> - Darkmode, and soon Lightmode, will use global :root colours instead of SCSS defined variables. This will allow for other Colour Styles to be optional in the future, and possibly cleaner, smaller CSS files too.</li>
+      <li><h5>Right-Bar</h5> - has been redesigned slightly to work in seperated segments.</li>
+      <li><h5>File Move</h5> - has recieved a 'hover over wait' loading animation to help show how long you must hover over a folder and wait, to load into it. Set to 2.5 seconds.</li>
+      <li><h5>Icons</h5> - a start on New File Icons has been done, with them soon to be added.</li>
+      <li><h5>Empty Folders</h5> - opening an empty folder now shows an image to prompt the user how to upload / create new items.</li>
+      <li><h5>Bin Usage</h5> - the bin page now features an updated Use-Breakdown and Use-Information.</li>
+    </ul>
+
+    <h4>JS Cleanup</h4>
+    <ul>
+      <li>New global API's handle traffic to the server, along with many other repetative code being converted to an seperate function.</li>
+      <li>Area's of code have been coverted to Classes, including: 'ColorPicker, Popups, Security Input and Rightclick'</li>
+      <li>Lots of code has been read through and reduced for legibility and optimisation.</li>
+      <li>The RightClick handler has had some changes to improve the way of adding new options and new rightclick elements.</li>
+    </ul>
+
+    <h4>Server</h4>
+    <span>A new function to handle replies to the client. <code>Send.Message(Response, statusCode, Data)</code></span>
+    <span>Cloudflare <h6 style="font-style: italic;">should</h6> now save static content to serve requests faster.</span>
+
+  </section>
+
+  <section> <!-- MAY 2021 -->
+    <h2>May 2021</h2>
+
+    <h4>Upload Improvements</h4>
+    <span>Further improved on upload.</span>
+    <ul>
+      <li><h5>Notifications</h5> - New notification popup for completed / successfull uploads, failed uploads and warnings.</li>
+      <li><h5>Storage Checks</h5> - Unlimited storage is no more! Client side (and server side) now use the account plan as a limiter to warn and prevent excessive upload.</li>
+      <li><h5>Queue Removal</h5> - Hover over an item in the upload queue and click to remove it. This updates against any storage limit warning to let you know when you are ready to go.</li>
+      <li><h5>Pause / Continue</h5> - Finally added the ability to Pause... Wait... Continue! uploading files. This only works in the same session. Closing the page will forget where you were.</li>
+    </ul>
+
+    <h4>Settings</h4>
+    <span>Cleaned out unused settings and updated the API to fetch them. <code>await API_Fetch({url: '/account/settings'})</code> Will request your settings from the server. View the <code>UserSettings</code> variable, in the console, to see your account and local settings.</span>
+
+    <h4>Multiples</h4>
+    <span>Updated the server API for 'edits' (which handles file moves, and Node data ie: name) to be able to process multiple items at once. Hold down <code>Shift</code> and click on files to select multiple, then drag and drop them to where you want!</span>
+
+    <h4>A Whole New... Homepage</h4>
+    <span>Updated and launched the Nanode homepage to the new design! This also includes full mobile support and some swanky animations.</span>
+
+    <h4>Files</h4>
+    <span>Client Side Styling in SCSS, JS and HTML have all been scowered and cleaned to reduce their size and make it easier to add new features. The layout of assets has also been changed slightly to differentiate between seperate areas.</span>
+    <span>The client side wasn't the only receiver of this frenzy, the server also went through major changes to its file/folder layout and sizing.</span>
+
+  </section>
+
+  <section> <!-- APRIL 2021 -->
+    <h2>April 2021</h2>
+    <!-- <span>Hired at Facebook</span> -->
+
+    <h4>SocketIO Removal</h4>
+    <span>SocketIO has been 90% removed, any presence of it is for <h6 style="font-style: italic;">possible</h6> future reference / implementation.</span>
+    <span>This also included a bit of a server cleanup and removal of legacy code.</span>
+
+    <h4>Nova Search</h4>
+    <span>Parameters dropdown has had some initial styling added to it.</span>
+
+    <h4>Pages & Homepage</h4>
+    <ul>
+      <li>New Homepage has had continued work, in styling and content.</li>
+      <li>Homepage: Many new custom SVG Icons have been created. (Features, Files & Future and Servers)</li>
+      <li>Homepage API call to <code>https://nanode.one/check</code> in order to recieve if a user is logged in or not.</li>
+      <li>Development Pages have had some styling and visual improvements. This is very needed, but low on the list of important focus.</li>
+    </ul>
+
+    <h4>Server</h4>
+    <ul>
+      <li><h5>Activity Log</h5> - To help find issues, an activity log Middleware has been added.</li>
+      <li><h5>Account</h5> - An improved method to read and write account information has been added to reduce development time of new features.</li>
+    </ul>
+  </section>
+
+  <section> <!-- MARCH 2021 -->
+    <h2>March 2021</h2>
+    <!-- <span>Prep for Facebook</span> -->
+    <h4>SocketIO Removal</h4>
+    <span>SocketIO has been very useful, but it is now being phased out of Nanode as our current uses of it can be done without. Saving on initial load times by not needing to download the package and initiate a connection. SocketIO also caused issues with Nord Auth, due to SocketIO not being able to assign new cookies from the server reliably, meaning if a cookie runs out while using Nanode and the clients next request to the server is through SocketIO (ie: Calling an item's information) The server would update the database but the client wouldn't recieve the new session and log the client out on the next request. A loss of connction to the server would also require the client pressing a button to reconnect. Bad user experience.</span>
+    <span>The Socket API's have been re-written and added to the drive subdomain. Including: '/share', '/edit', '/create'</span>
+
+    <h4>Navigation</h4>
+    <span>Navigation has been reworked to be more reliable. This includes new API handlers to accurately request and handle directory information.</span>
+
+    <h4>Bin</h4>
+    <span>API work and processing of the clients Bin Size has been added, with an initial loading animation.</span>
+
+    <h4>Nova Search</h4>
+    <span>The long awaited search functionality has been implemented, well... some of it. The start of it. Really just the bare bones. But its happening!</span>
+    <span>Nova Search will allow for returning Nodes (folders and files) that meet certain parameters. Learn More at <a onclick="SwitchPage('nova', document.querySelector('#nova'))">Nova</a></span>
+
+    <h4>Misc</h4>
+    <ul>
+      <li>More work has been done on the new homepage, content and styling.</li>
+      <li>Visit <a href='https://speech.nanode.one/'>Nanode Speech</a> to see a currently useless page utilising the inbuilt speech API. Currently only works on Google Chrome. Maybe for Search???</li>
+    </ul>
+
+  </section>
+
+  <section> <!-- FEBRUARY 2021 -->
+    <h2>February 2021</h2>
+
+    <h4>Pages Return</h4>
+    <span>Converted drive pages into seperate HTML documents to reduce initial load and help segregate unrelated code.</span>
+    <span>The pages contain: PageContainer (Header + Center), PageInformation (Right Bar)</span>
+    <span>The Bin Page has been further developed, and added.</span>
+
+    <h4>New Pages</h4>
+    <span>Starting work on a new nanode.one homepage.</span>
+    <span>Account Page small Improvements</span>
+    <span>/design page addition. REMOVED(11/06/2021)</span>
+
+    <h4>Assets</h4>
+    <ul>
+      <li>Poster Image</li>
+      <li>Github Preview Image</li>
+      <li>Nanode Circle Logo</li>
+    </ul>
+
+    <h4>Server</h4>
+    <ul>
+      <li>Global Error Page response fallback across the site</li>
+      <li>BUG FIX: Nord Middleware moved from being global to on the required APIs due to ALL static content requests also running through Authentication.</li>
+      <li>Clean up and imrpovement of Nord Auth Middleware to be more reliable and easier to debug.</li>
+      <li>Added additional Account options for future use. 'Photo', 'Password Length' (USED AS AN ASSISTANCE ON THE ACCOUNT PAGE TO HELP REMEMBER A FORGOTTEN PASSWORD. Google does this.)</li>
+      <li>New functions to handle database requests and formatting.</li>
+    </ul>
+
+  </section>
+
   <section> <!-- JANUARY 2021 -->
     <h2>January 2021</h2>
     <h4>API</h4>

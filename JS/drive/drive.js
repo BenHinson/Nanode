@@ -3,7 +3,8 @@ let currentPage = 'main';
 let Section = 'main';
 
 let NodeName = 'home';
-let Directory_Content = '';
+let Spans = {};
+let Nodes = {};
 let NodeSelected = []; // Items that are currently selected
 
 // @ == Initial Load
@@ -14,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async(event) => {
 
 
 // @ == API Caller
-API_Fetch = async(fetchdata, response) => { // await API_Fetch({url: `drive.nanode.one/`})
+API_Fetch = async(fetchdata, response) => { // await API_Fetch({url: `/example/test`})
   const {url, conv} = fetchdata;
   N_ClientStatus(4, 'Wait');
   let req = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`);
@@ -27,7 +28,7 @@ API_Fetch = async(fetchdata, response) => { // await API_Fetch({url: `drive.nano
   return req.Error ? false : req;
 }
 
-API_Post = async(senddata, response) => { // await API_Post({url: `drive.nanode.one/`})
+API_Post = async(senddata) => { // await API_Post({url: `drive.nanode.one/`})
   const {url, body} = senddata;
   let req = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`, {
     method: 'POST',
@@ -38,8 +39,17 @@ API_Post = async(senddata, response) => { // await API_Post({url: `drive.nanode.
   return await req.json();
 }
 
-// @ == Change Pages
+// @ = Nodes Creator
+class Node {
+  constructor(data, id, parent) {
+    this.data = data;
+    this.data.id = this.data.id || id;
+    this.data.parent = this.data.parent || parent;
+    this.data.type = N_TypeManager(data.mime || data.type.mime);
+  }
+}
 
+// @ == Change Pages
 pageSwitch = async(pageName) => {
   let pageToSwitch = document.querySelector(`.Pages .${pageName}_Page`);
   document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
@@ -74,8 +84,6 @@ onkeydown = function(e) { keyMap[e.key] = true; }
 onkeyup = function(e) { keyMap[e.key] = false; }
 
 // @ == Global Element Functions
-
-function ColorPicker(caller, callback) { new CreateColorPicker(caller, callback) }
 
 class CreateColorPicker {
   constructor(caller, callback) {

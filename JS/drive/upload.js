@@ -15,12 +15,30 @@ const DragDropOverlay = document.querySelector('.DragDropOverlay');
 
 const UC_Info = document.querySelector('.UC_Info');
 
-const Upload_Control = document.getElementsByClassName('Upload_Control')[0]
+const Upload_Control = document.getElementsByClassName('Upload_Control')[0];
 const Upload_Values = document.querySelectorAll('.UC_Bottom p');
 const Progress_Div = document.getElementsByClassName('Upload_Progress')[0];
 const Queue_Toggle = document.getElementById('queue_toggle');
 
 // ========================================
+
+// class Upload_ {
+//   constructor(elements) {
+//     [this.Item_Count, this.Total_Size, this.Queue, this.Visual_Items, this.Status, this.Held] = [0, 0, [], {}, 'Choose', []]
+//     // define elements from the elements
+//     this._Initalise();
+//   }
+
+//   _Initalise() {
+//     console.log(34);
+//     // this.RenderPicker_();
+//   }
+//   Queue_() { }
+// }
+// new Upload_({});
+
+
+
 
 Upload_Listeners = async () => {
   
@@ -64,7 +82,6 @@ Upload_Listeners = async () => {
 Upload_Actions = function() {
 
   Looper = async(files, drop) => {
-    console.log(files);
     if (drop) {
       await Get_All_Files(files).then(function(files) {
         for (let i=0; i<files.length; i++) {
@@ -151,7 +168,7 @@ Upload_Actions = function() {
     return {
       "section": Section,
       "relative_path": file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
-      "parent": NodeID == "homepage" ? uploadDirectory : NodeID,
+      "parent": NodeID == "homepage" ? "_GENERAL_" : NodeID,
       "name": file.name,
       "type": file.type,
       "size": file.size,
@@ -214,7 +231,7 @@ Upload = async () => {
       Upload_Visuals.Status("Choose", "Choose Items");
       Notify('success', 'finished', 'Items Successfully Uploaded to Nanode.');
       fetch('https://drive.nanode.one/upload', { method:'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"message":"Queue_Empty"})} )
-      HomeCall({"Folder":NodeID, "Reload": false});
+      NodeCall({"Folder":NodeID, "Reload": false});
       Upload_Actions.Reset_Upload();
       return;
     }
@@ -350,6 +367,10 @@ Upload_Visuals = async() => {
   },
 
   Progress = function(total_chunks, chunk_num, total_size, id) {
+    // Upload_Size > Total size of all files to be uploaded.
+    // Define global 'Uploaded_Size'
+    // (Uploaded_Size / (Uploaded + completed_Size)) * 100
+
     let completed_Size = total_chunks == 1 ? total_size : ((chunk_num+1) * Chunk_Size);
     let item_percentage = ((completed_Size / total_size) * 100)
     Progress_Div.querySelector('progress').value = item_percentage;

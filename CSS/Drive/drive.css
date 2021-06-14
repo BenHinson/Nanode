@@ -5,6 +5,7 @@
   --rich-blue-faded: #4285f433;
   --folder: #ffca28;
   --red: #ff453a;
+  --green: #0bc30b;
   --black: #080a0e;
   --background: #191b1e;
   --frame: #1e2126;
@@ -42,6 +43,7 @@ body {
   overflow: hidden;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
 }
 
 .Frame {
@@ -753,79 +755,10 @@ body {
   display: none;
 }
 
-.Pages > .main_Page .fileContainer .baseFolders {
-  height: 130px;
+.Pages > .main_Page .fileContainer .SpanMain {
+  position: relative;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--component);
-}
-
-.Pages > .main_Page .fileContainer .baseFolders > div {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  width: calc(80% / 5);
-  padding: 0 10px 10px 10px;
-  cursor: pointer;
-  color: #080a0e;
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
-}
-
-.dark-theme .Pages > .main_Page .fileContainer .baseFolders > div {
-  color: var(--text-bright);
-}
-
-.Pages > .main_Page .fileContainer .baseFolders > div:hover > div, .Pages > .main_Page .fileContainer .baseFolders > div :focus > div {
-  height: 100%;
-  -webkit-transform: none;
-          transform: none;
-  -webkit-box-shadow: 0px 2px 4px 1px #cacccf;
-          box-shadow: 0px 2px 4px 1px #cacccf;
-}
-
-.dark-theme .Pages > .main_Page .fileContainer .baseFolders > div:hover > div, .dark-theme .Pages > .main_Page .fileContainer .baseFolders > div :focus > div {
-  -webkit-box-shadow: none;
-          box-shadow: none;
-}
-
-.Pages > .main_Page .fileContainer .baseFolders > div *:not(div) {
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  z-index: 2;
-}
-
-.Pages > .main_Page .fileContainer .baseFolders > div img {
-  place-content: center;
-}
-
-.Pages > .main_Page .fileContainer .baseFolders > div p {
-  font-size: 15px;
-}
-
-.Pages > .main_Page .fileContainer .baseFolders > div div {
-  position: absolute;
-  height: 60px;
-  width: 100%;
-  border-radius: 5px;
-  -webkit-transform: translateY(28px);
-          transform: translateY(28px);
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
-  background: #e8e9eb;
-}
-
-.dark-theme .Pages > .main_Page .fileContainer .baseFolders > div div {
-  background: var(--component);
 }
 
 .Pages > .main_Page .fileContainer .ContentContainer {
@@ -943,8 +876,8 @@ body {
 .Pages > .main_Page .fileContainer .ContentContainer > div img {
   width: 100%;
   max-height: 120px;
-  -o-object-fit: cover;
-     object-fit: cover;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .Pages > .main_Page .fileContainer table {
@@ -1009,6 +942,26 @@ body {
 
 .dark-theme .Pages > .main_Page .fileContainer .NewSpan:hover {
   background: var(--feature);
+}
+
+.Pages > .main_Page .fileContainer .emptyFolder {
+  height: 350px;
+  width: 350px;
+  border-radius: 50%;
+  place-content: center;
+  gap: 10px;
+  color: var(--text-dull);
+  background: var(--frame);
+  pointer-events: none;
+}
+
+.Pages > .main_Page .fileContainer .emptyFolder > div {
+  padding: 0 10px;
+}
+
+.Pages > .main_Page .fileContainer .emptyFolder > div > p:nth-child(1) {
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .Pages > .main_Page .PageInformation {
@@ -1303,12 +1256,37 @@ body {
 }
 
 .Pages > .bin_Page .PageInformation > .binInfo .binUsage > div {
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
   border-radius: 50%;
   background: #fbfbfd;
 }
 
 .dark-theme .Pages > .bin_Page .PageInformation > .binInfo .binUsage > div {
   background: var(--component);
+}
+
+.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span {
+  padding: 0.25em;
+  word-spacing: 5px;
+  cursor: pointer;
+}
+
+.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span:hover > p:nth-child(1) {
+  display: none;
+}
+
+.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span:hover > p:nth-child(2) {
+  display: block;
+}
+
+.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span > p {
+  font-size: 13px;
+}
+
+.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span > p:nth-child(2) {
+  display: none;
 }
 
 .Pages > .bin_Page .PageInformation > .binInfo .binItemData {
@@ -1371,6 +1349,7 @@ body {
 }
 
 .BlockOut {
+  display: none;
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -1428,7 +1407,7 @@ body {
 }
 
 .dark-theme .BlockOut .Popup_Container .Popup_Main > p {
-  border-color: #282c32;
+  border-color: var(--highlight);
 }
 
 .BlockOut .Popup_Container .Popup_Main > span {
@@ -1454,7 +1433,7 @@ body {
 }
 
 .BlockOut .Popup_Container .Popup_Main > span > button.Popup_Accept.PUA_Red {
-  background: #ff453a;
+  background: var(--red);
 }
 
 .BlockOut .Popup_Container .Popup_Main > span > button.Popup_Reject:hover {
@@ -1644,6 +1623,36 @@ body {
   font-family: monospace;
   white-space: pre-wrap;
   overflow-y: scroll;
+}
+
+.BlockOut .Preview .ViewFont {
+  max-width: 420px;
+  padding: 20px;
+  text-align: center;
+  color: black;
+}
+
+.dark-theme .BlockOut .Preview .ViewFont {
+  color: var(--text-bright);
+}
+
+.BlockOut .Preview .ViewFont > p {
+  display: -ms-grid;
+  display: grid;
+  gap: 20px;
+  font-size: 36px;
+  line-height: 1.5em;
+  letter-spacing: 0.5em;
+  word-break: break-all;
+  font-family: fetched-font;
+}
+
+.BlockOut .Preview .ViewFont > p::before {
+  text-transform: uppercase;
+}
+
+.BlockOut .Preview .ViewFont > p::after, .BlockOut .Preview .ViewFont > p::before {
+  content: 'abcdefghijklmnopqrstuvwxyz';
 }
 
 .listItem-Placeholder {
