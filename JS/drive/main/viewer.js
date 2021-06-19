@@ -16,13 +16,13 @@ const makeReplaceElem = (parent, target, base) => {
   return parent.querySelector(target);
 }
 
-////////////////////////////   VIEW   //////////////////////////////////
 
+// @ == VIEW
 function renderContent(content=``) {
   fileContainer.innerHTML = N_Loading();
   let layout = UserSettings.local.layout; // 0=block, 1=list
   let homepage = NodeID == 'homepage';
-  let titles = false;
+  let titles = true;
 
   Object.values(Spans).forEach(span => {
     if (span.id == '_MAIN_') { content += renderBaseFolders(span); return; }
@@ -39,13 +39,16 @@ function renderContent(content=``) {
 
     N_Find('.NewSpan').addEventListener('click', () => {
       new Popup('NewSpan', null, 'NewSpan', {title: 'New Span', reject: 'Cancel', accept: 'Create', color: ''})
-    })
+    });
 
     N_Find('input[spanName]', true, fileContainer).forEach(name => {
       name.addEventListener('change', (e) => {
-        NodeAPI('edit', {"action": "DATA", "section": "main", "id": e.target.defaultValue, "data": { "name": e.target.value }, "path": NodeID});
+        let nodeID = e.target.parentNode.parentNode.getAttribute('node-id');
+        NodeAPI('edit', {"action": "DATA", "section": "main", "id": nodeID, "data": { "name": e.target.value }, "path": NodeID});
       })
     })
+  } else {
+    Filter(fileContainer.querySelector('.Filter'), fileContainer);
   }
 
   ItemClickListener(layout);
@@ -62,7 +65,7 @@ function renderContent(content=``) {
             <td><img loading='lazy' height='32' width='32' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img></td>
             <td><input rcPar='2' value='${N_CapFirstLetter(nodeData.name)}' disabled style='pointer-events:none;'></input></td>
             <td>${nodeData.type.short}</td>
-            <td>${N_DateFormater(nodeData.time.modified || nodeData.time.created)}</td>
+            <td>${N_DateFormatter(nodeData.time.modified || nodeData.time.created)}</td>
             <td>${nodeData.size > 1 ? N_ConvertSize(nodeData.size) : "-"}</td>
           </tr>
         `;
@@ -75,12 +78,12 @@ function renderContent(content=``) {
           <thead>
             <tr ${homepage ? 'rcPar=3' : ''} node-id='${span.id}'>
               <th><input value='${span.name}' ${homepage ? 'spanName' : 'spanName=disabled disabled '}></th>
-              <th></th>
+              <th>${homepage ? '' : '<div class="Filter"><i class="fas fa-filter"></i><input type="text" placeholder="Filter..."></div>'}</th>
               ${titles ? '<th>Type</th> <th>Modified</th> <th>Size</th>' : '<th></th> <th></th> <th></th>'}
             </tr>
           </thead>
 
-          <tbody>
+          <tbody dir-nodes>
             ${listNode(span.name, span.nodes)}
           </tbody>
         </table>
@@ -103,7 +106,7 @@ function renderContent(content=``) {
 
 
     return `
-      <div node-id='${span.id}' class='ContentContainer' ${homepage ? `Home-Span='${span.name}' rc='Homepage_Span'` : '' }>
+      <div node-id='${span.id}' class='ContentContainer' dir-nodes ${homepage && `Home-Span='${span.name}' rc='Homepage_Span'`}>
         <input value='${span.name}' ${homepage ? 'spanName' : 'spanName=disabled disabled '}>
         ${blockNode(span.name, span.nodes)}
       </div>
@@ -112,7 +115,7 @@ function renderContent(content=``) {
 
   function emptyContainer() {
     return `
-      <div class='emptyFolder grid-items-center transform-center'>
+      <div class='section_Empty grid-items-center transform-center'>
         <img src='/assets/nanode/files.svg' alt='This Folder is Empty.'>
         <div class='flex-column-cent'>
           <p>Drop files here</p>
@@ -122,6 +125,7 @@ function renderContent(content=``) {
     `;
   }
 }
+
 
 
 function renderBaseFolders(span) {
@@ -155,85 +159,35 @@ async function renderRecents(content=``) {
 
         content += `
           <div parent-node='${item.parent}' type='${nodeData.data.type.general}' node-id='${object}' rc='Recent_Node' rcosp='P,IMG'>
-            <img loading='lazy' height='55' width='55' src='${N_FileIcon(nodeData.data, 55, 55, 'main')}'></img>
+            <img loading='lazy' height='48' width='48' src='${N_FileIcon(nodeData.data, 48, 48, 'main')}'></img>
             <p>${N_CapFirstLetter(item.name)}</p>
           </div>`
       };
     }).catch(err => { N_Error('Failed to Fetch Recents: '+err) })
   }
-  fileContainer.querySelector('recents').innerHTML =
-    content += `<button class='toggleRecent trans300' onclick='ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>`;
+  fileContainer.querySelector('recents').innerHTML = (
+    content += `<button class='toggleRecent trans300' onclick='ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>`);
 
   fileContainer.querySelectorAll('recents > div').forEach(item => {
     item.addEventListener('click', (e) => { ItemActions(e.currentTarget) })
   })
 }
-//////////////////////////     MISC    ///////////////////////////////
 
+
+// @ == MISC
 function HighlightNode(nodeID) {
-  SelectItem( N_Find(`[node-id=${nodeID}]`), "force" );
+  SelectItem( N_Find(`[dir-nodes] > [node-id='${nodeID}']`), "force" );
 }
 
-/////////////////////////     SEARCH    //////////////////////////////
-
-function renderSearch(results) {
-  searchResults.parentNode.classList.add('display');
-
-  if (results.Found.length == 0) {
-    searchResults.innerHTML = `<button class='searchInfoBtn searchNoMatch notif-btn'>No Matches Found</button>`
-  } else {
-    let content = ``;
-
-    results.Found.slice(0, 5).forEach((item) => {
-      let itemTypeData = N_TypeManager(item.type.mime);
-
-      content += `
-        <tr type='${itemTypeData.general}' node-id='${item.id}' rc='Bin_Item' rcOSP='TD'>
-          <td><img loading='lazy' height='38' width='38' src='${N_FileIcon(itemTypeData, 38, 38, 'main')}'></img></td>
-          <td>${N_CapFirstLetter(item.name)}</td>
-          <td>${itemTypeData.short}</td>
-          <td>${N_DateFormater(item.time?.modified?.stamp || item.time?.created?.stamp)}</td>
-          <td>${item.size > 1 ? N_ConvertSize(item.size) : "-"}</td>
-        </tr>
-      `;
-    })
-    if (results.Found.length > 5) {
-      content += `<button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button>`;
-    }
-
-    searchResults.innerHTML = content;
-  }
-
+function ExternalTab(nodeID) {
+  let nt_btn = document.createElement('a');
+  nt_btn.href = `/storage/${nodeID}`;
+  nt_btn.target = '_blank';
+  nt_btn.click();
 }
 
-function paramListeners() {
-  document.querySelectorAll('.searchBy input').forEach(input => {
-    input.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        let option = e.target.value;
-        if (option == 'size') {
-          // Set Min Max Input 
-        }
-      }
-    })
-  })
-}
 
-getSearchParams = () => {
-  searchParamsContainer.querySelectorAll('input:checked').forEach((option) => {
-    console.log(option.value)
-  })
-}
-
-visitSearch = () => {
-  // View in Directory
-  // <i class="fas fa-external-link-alt"></i>  //  > Opens in a new tab
-  // <i class="fas fa-info"></i>  //  > Calls item info  >  FetchItemInformation(THE NODE ID, true)
-  // <i class="fas fa-location-arrow"></i>  //  > Shortcuts to the parent directory.
-}
-
-/////////////////////////   RIGHT BAR   //////////////////////////////
-
+// @ == Right-bar
 async function FetchItemInformation (selected, node=false) {
   N_ClientStatus(2, "True", 500); N_ClientStatus(4, "Wait", 400);
   N_ClientStatus(5, "Wait", 300); N_ClientStatus(7, "Wait", 300);
@@ -279,14 +233,14 @@ renderItemInfo = (ItemInfo, RequestInfo) => {
       <input class='ItemInfo_Share_Input' type='text' placeholder='Enter username or email'>
 
       <sub>LINK - view only</sub>
-      <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true value='${RequestInfo.share ? 'https://link.nanode.one/'+ RequestInfo.share.link.url : ''}'>
+      <input class='ItemInfo_Link_Input' type='text' placeholder='Click to create link' readonly=true value='${RequestInfo.share ? 'https://link.nanode.one/'+RequestInfo.share.link.url : ''}'>
     </section>
   `
 
   const ItemInfoTable = ItemInfo.querySelector('tbody');
 
   for (let key in RequestInfo.time) {
-    ItemInfoTable.innerHTML += `<tr><td>${N_CapFirstLetter(key)}</td><td title='${new Date(RequestInfo.time[key].stamp).toGMTString()}'>${N_DateFormater(RequestInfo.time[key].stamp)}</td></tr>`
+    ItemInfoTable.innerHTML += `<tr><td>${N_CapFirstLetter(key)}</td><td title='${new Date(RequestInfo.time[key].stamp).toGMTString()}'>${N_DateFormatter(RequestInfo.time[key].stamp)}</td></tr>`
   }
   ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${RequestInfo.color ? "value="+N_RGBtoHex(RequestInfo.color) : ""}></td></tr>`
 
@@ -300,12 +254,7 @@ ItemInfoListeners = (ItemRequest) => {
   })
 
   N_Find('.ItemInfo_Tab').addEventListener('click', () => {
-    if (ItemRequest.type.file) {
-      let nt_btn = document.createElement('a');
-      nt_btn.href = `/storage/${ItemRequest.id}`;
-      nt_btn.target = '_blank';
-      nt_btn.click();
-    }
+    if (ItemRequest.type.file) ExternalTab(ItemRequest.id);
   })
 
   N_Find('.ItemInfo_Download').addEventListener('click', () => {
@@ -348,10 +297,10 @@ class SecurityInputContainer {
       "Password": " 'placeholder='Password' inputType='pass' type='password'' ",
       "Pin": " 'placeholder='Pin Code • 1-9' inputType='pin' type='password'' "
     }
-    this._Initalise();
+    this._Initialise();
   }
 
-  _Initalise() {
+  _Initialise() {
     N_ClientStatus(5, "User");
     this.container = makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
     this.RenderContents_();
@@ -403,16 +352,16 @@ class SecurityInputContainer {
   }
 }
 
-//////////////////////////   POP UPS   /////////////////////////////////
 
+// @ == Popups
 class Popup {
   constructor(PopupType, Target, Action, DATA) {
     [this.PopupType, this.Target, this.Action, this.DATA] = [PopupType, Target, Action, DATA];
     this.ButtonColor = {'warning': 'PUA_Red'}
-    this._Initalise();
+    this._Initialise();
   }
 
-  _Initalise() {
+  _Initialise() {
     this.LoadBase_();
     this.RenderContent_();
     this.SetListeners_();
@@ -423,7 +372,9 @@ class Popup {
     BlockOut.addEventListener('mousedown', (e) => { e.stopImmediatePropagation(); if (e.target == BlockOut) {this.ToggleBase_()} })
   }
   ToggleBase_() {
-    BlockOut.classList.toggle('grid-items-center') ? N_ClientStatus(8, "User") : N_ClientStatus(8, "Off");
+    if (BlockOut.classList.toggle('grid-items-center'))
+    { N_ClientStatus(8, "User"); document.removeEventListener('keydown', this.EscBtn); document.addEventListener('keydown', this.EscBtn); } 
+    else {N_ClientStatus(8, "Off"); document.removeEventListener('keydown', this.EscBtn); };
   }
 
   RenderContent_() {
@@ -587,6 +538,7 @@ class Popup {
       })
     }
   }
+  EscBtn(e=window.event) { if (e.keyCode == 27) { Popup.prototype.ToggleBase_() } } // this.ToggleBase_() wont work.. NO idea why.
 }
 
 async function PopUp_Download(Item, Caller) {
@@ -629,8 +581,9 @@ function PopUp_Upload() {
   };
 }
 
+
 async function ViewItem(Type, NodeID) {
-  if (Type == 'unknown') { return }
+  if (Type == 'unknown') { return };
 
   Popup.prototype.LoadBase_();
   Popup.prototype.ToggleBase_();
@@ -657,7 +610,15 @@ async function ViewItem(Type, NodeID) {
     `;
   }
   else if (Type == 'audio') {
-    document.querySelector('.Preview').innerHTML = `<audio controls><source src='/storage/${NodeID}' type='${Nodes[NodeID].data.mime}'></audio>`
+    document.querySelector('.Preview').innerHTML = `
+      <audio controls><source src='/storage/${NodeID}' type='${Nodes[NodeID].data.mime}'></audio>`;
   }
-  else {console.log(Type)}
+  else {console.log(Type);}
+}
+
+
+// <i class='miniPreviewBtn fas fa-compress' title='Show in MiniPlayer' onclick='miniPreview(this)'></i>
+// color: var(--text-dull); font-size: 18px; place-self: end; padding: 10px; cursor: pointer;
+function miniPreview(e) {
+  console.log(e);
 }

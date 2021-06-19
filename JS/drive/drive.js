@@ -102,10 +102,10 @@ class CreateColorPicker {
       "#ff7500", "#ff9133", "#a34b00", "#69370b", "#401e00",
     ]
 
-    this._Initalise();
+    this._Initialise();
   }
 
-  _Initalise() {
+  _Initialise() {
     N_ClientStatus(8, "User");
     document.querySelector(".colorContainer")?.remove();
     this.RenderPicker_();

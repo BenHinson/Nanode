@@ -9,21 +9,25 @@ NodeCall({"Folder":NodeName});
 // ====================================
 
 async function NodeCall(CallData, res) {
-  const {Folder=NodeName || NodeID, Reload=true, Skip=false} = CallData;
+  // const {Folder=NodeName || NodeID, Reload=true, Skip=false} = CallData;
+  const {Folder=NodeID || NodeName, Reload=true, Skip=false} = CallData;
 
   FolderCall = Reload;
 
-  if (Skip === false) { res = await API_Fetch({url:`/folder/${Folder.toLowerCase()}?s=main`}) }
+  // if (Skip === false) { res = await API_Fetch({url:`/folder/${Folder.toLowerCase()}?s=main`}) }
+  if (Skip === false) { res = await API_Fetch({url:`/folder/${Folder}?s=main`}) }
 
-  if (res.Auth) { new SecurityInputContainer(res); } //  RightBar_Security_Inputs(res);
+  if (res.Auth) { new SecurityInputContainer(res); }
   else if (res.Parent) {
     NodeName = res.Parent.id == "homepage" ? "homepage" : res.Parent.name;
     NodeID = res.Parent.id;
     
     Spans = {}, Nodes = {}, NodeSelected = [];
 
-    // Create Nodes   >   SET ORDER HERE TO GET IE FOLDERS AT THE TOP. DONT CHANGE IT IN RENDERING. WASTES TIME
-    for (const [span, contents] of Object.entries(res.Contents)) {
+    if (res.Contents.name) { NodeID=Folder; NodeName=res.Contents.name; // In the scenario of viewing a homepage span as a folder. We need to rejig the content.
+      res.Contents = {[res.Contents.name]: res.Contents}; }
+
+    for (let [span, contents] of Object.entries(res.Contents)) {
       Spans[span] = {"id": span, "name": contents.name, "nodes": Object.keys(contents.contents)};
       for (const [id, data] of Object.entries(contents.contents)) {
         Nodes[id] = new Node(data, id, span);

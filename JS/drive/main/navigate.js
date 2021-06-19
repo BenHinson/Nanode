@@ -11,10 +11,13 @@ let Tree_Steps = 0; // Current Index in Tree
 // ====================================
 
 // @ = Shortcut Request
-async function Shortcut(selected) {
-  if (typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
-  await NodeCall({"Folder":selected.getAttribute('parent-node')});
-  HighlightNode(selected.getAttribute('node-id'));
+async function Shortcut(parentID, nodeID) {
+  if (typeof RCElement !== 'undefined' && parentID == "RCElement") {
+    parentID = RCElement.getAttribute('parent-node');
+    nodeID = RCElement.getAttribute('node-id');
+  }
+  await NodeCall({"Folder": parentID});
+  if (nodeID) HighlightNode(nodeID);
 }
 
 
@@ -162,7 +165,7 @@ function setupFileMove(Caller) {
   else if (UserSettings.local.layout == 1) {
     let hoveringOver;
 
-    $("tbody tr[node-id]").draggable({
+    $("[dir-nodes] tr[node-id]").draggable({
       appendTo: '.homePageContainer',
       containment: '.homePageContainer',
       connectToSortable: '.ListContentTable',

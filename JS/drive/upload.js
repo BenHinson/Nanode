@@ -26,10 +26,10 @@ const Queue_Toggle = document.getElementById('queue_toggle');
 //   constructor(elements) {
 //     [this.Item_Count, this.Total_Size, this.Queue, this.Visual_Items, this.Status, this.Held] = [0, 0, [], {}, 'Choose', []]
 //     // define elements from the elements
-//     this._Initalise();
+//     this._Initialise();
 //   }
 
-//   _Initalise() {
+//   _Initialise() {
 //     console.log(34);
 //     // this.RenderPicker_();
 //   }

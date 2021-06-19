@@ -58,9 +58,14 @@ function SetStorage(plan=UserSettings.user.plan) {
 
 function ToggleTheme(theme, set) {
   if (set) {
-    document.body.classList[theme ? 'remove' : 'add']('dark-theme');
+    // document.body.setAttribute('data-theme', (theme ? 'light' : 'dark'));
+          document.body.classList[theme ? 'remove' : 'add']('dark-theme');
   } else {
-    document.body.classList.toggle('dark-theme');
+    document.body.getAttribute('data-theme') == 'light'
+      ? document.body.setAttribute('data-theme', 'dark')
+      : document.body.setAttribute('data-theme', 'light');
+
+          // document.body.classList.toggle('dark-theme');
     writeSettings('local', 'theme', 'toggle');
   }
   document.querySelector('#colorTheme i').classList = UserSettings.local.theme ? 'fas fa-sun' : 'fas fa-moon';

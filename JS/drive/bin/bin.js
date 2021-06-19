@@ -81,11 +81,13 @@ async function BinItemCall() {
 }
 
 
+
+// @ == Render Content
+
 RenderBinList = function(data) {
   const binContainer = binPageContainer.querySelector('.binContainer');
 
   if (typeof data.Contents == 'object' && Object.entries(data.Contents).length) { // Check if Data has been Returned and render
-    document.querySelector('.binIsEmpty').classList.remove('display-opacity');
 
     renderNodes = (content=``) => {      
       for (const [nodeID, nodeData] of Object.entries(Bin_Nodes)) {
@@ -94,7 +96,7 @@ RenderBinList = function(data) {
             <td><img loading='lazy' height='38' width='38' src='${N_FileIcon(nodeData.data, 38, 38, 'bin')}'></img></td>
             <td>${N_CapFirstLetter(nodeData.data.name)}</td>
             <td>${nodeData.data.type.short}</td>
-            <td>${N_DateFormater(nodeData.data.deleted.stamp)}</td>
+            <td>${N_DateFormatter(nodeData.data.deleted.stamp)}</td>
             <td>${nodeData.data.size > 1 ? N_ConvertSize(nodeData.data.size) : "-"}</td>
           </tr>
         `;
@@ -113,10 +115,22 @@ RenderBinList = function(data) {
     binReminderPopup();
     
   } else {
-    document.querySelector('.binIsEmpty').classList.add('display-opacity');
-    binContainer.innerHTML = ``;
+    binContainer.innerHTML = emptyBin();
   }
 }
+
+function emptyBin() {
+  return `
+    <div class='section_Empty grid-items-center transform-center'>
+      <img src='/assets/nanode/logo/logo.svg' alt='This Bin Section is Empty.'>
+      <div class='flex-column-cent'>
+        <p>Bin section empty</p>
+        <p class='italic-small'>Deleted items will show here<br>for 30 days</p>
+      </div>
+    </div>
+  `;
+}
+
 
 
 // @ == Item Listeners
@@ -163,7 +177,7 @@ renderBinItemInfo = (binItemData, RequestInfo) => {
         <tr><td>Contents</td> <td>${N_TextMultiple(RequestInfo.count, 'Item')}</td></tr>
         <tr><td>Size</td> <td>${N_ConvertSize(RequestInfo.size)}</td></tr>
         <tr><td>Type</td> <td>${RequestInfo.type.short}</td></tr>
-        <tr><td>Deleted</td> <td>${N_DateFormater(RequestInfo.deleted.stamp)}</td></tr>
+        <tr><td>Deleted</td> <td>${N_DateFormatter(RequestInfo.deleted.stamp)}</td></tr>
       </tbody>
     </table>
 
@@ -171,6 +185,8 @@ renderBinItemInfo = (binItemData, RequestInfo) => {
     <button class='rb-btn-full red-light binDeleteBtn'>Delete</button>
   `;
 }
+
+
 
 // @ == Page Interactivity
 

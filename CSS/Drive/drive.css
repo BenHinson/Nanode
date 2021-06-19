@@ -6,7 +6,11 @@
   --folder: #ffca28;
   --red: #ff453a;
   --green: #0bc30b;
-  --black: #080a0e;
+  --text-white: #f5f6f7;
+}
+
+[data-theme='dark'] {
+  --theme: #080a0e;
   --background: #191b1e;
   --frame: #1e2126;
   --component: #282c32;
@@ -14,7 +18,19 @@
   --highlight: #565b61;
   --selected: #83898f;
   --text-dull: #cacccf;
-  --text-bright: #f5f6f7;
+  --text-strong: #f5f6f7;
+}
+
+[data-theme='light'] {
+  --theme: #fefefe;
+  --background: #fbfbfd;
+  --frame: #f5f5f7;
+  --component: #eeeff1;
+  --feature: #e8e9eb;
+  --highlight: #e1e2e4;
+  --selected: #cacccf;
+  --text-dull: #191b1e;
+  --text-strong: #080a0e;
 }
 
 * {
@@ -70,7 +86,7 @@ body {
 
 .Frame button:hover {
   opacity: 1;
-  color: var(--text-bright);
+  color: var(--text-strong);
   background: var(--highlight-color);
 }
 
@@ -208,7 +224,7 @@ body {
 }
 
 .dark-theme .PageList div .SelectedPage {
-  color: var(--text-bright);
+  color: var(--text-strong);
   background: var(--highlight);
 }
 
@@ -259,7 +275,7 @@ body {
 }
 
 .dark-theme .PageHeader {
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .PageHeader .PageControls {
@@ -295,11 +311,11 @@ body {
 }
 
 .PageHeader .PageControls span:hover:not(.notActive) {
-  color: var(--black);
+  color: var(--theme);
 }
 
 .dark-theme .PageHeader .PageControls span:hover:not(.notActive) {
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .PageHeader .directoryLocation {
@@ -353,290 +369,6 @@ body {
   background: url(https://nanode.one/assets/drive/svg/arrow_right_white.svg) center;
 }
 
-.PageHeader .searchContainer {
-  position: absolute;
-  height: 36px;
-  width: calc(100% - 15px);
-}
-
-.PageHeader .searchContainer.searchActive .search {
-  width: 100%;
-  padding: 0 60px 0 5%;
-}
-
-.PageHeader .searchContainer.searchActive .searchParams {
-  width: 50px;
-  padding: 9px 0;
-  opacity: 1;
-  pointer-events: all !important;
-}
-
-.PageHeader .searchContainer .search {
-  width: 140px;
-  background: #f5f5f7;
-  border: 1px solid #e1e2e4;
-  z-index: 5;
-}
-
-.dark-theme .PageHeader .searchContainer .search {
-  border: none;
-  color: var(--text-bright);
-  background: var(--feature);
-}
-
-.PageHeader .searchContainer .searchParams {
-  width: 30px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background: #e1e2e4;
-  opacity: 0;
-  z-index: 6;
-  pointer-events: none;
-}
-
-.dark-theme .PageHeader .searchContainer .searchParams {
-  color: #cacccf;
-  background: var(--highlight-color);
-}
-
-.PageHeader .searchContainer .searchParams:hover i {
-  -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
-}
-
-.PageHeader .searchContainer > .search, .PageHeader .searchContainer .searchParams {
-  position: absolute;
-  height: 36px;
-  right: 0;
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
-}
-
-.PageHeader .searchContainer .searchDropdown {
-  display: none;
-  position: absolute;
-  width: 100%;
-  top: 42px;
-  border-radius: 5px;
-  z-index: 3;
-  background: #e8e9eb;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown {
-  background: var(--feature);
-}
-
-.PageHeader .searchContainer .searchDropdown.display {
-  display: -ms-grid;
-  display: grid;
-  padding: 10px 10px 30px 10px;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer {
-  position: relative;
-  height: 0;
-  width: 50px;
-  border-radius: 5px;
-  overflow: hidden;
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
-  background: #f5f5f7;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer {
-  background: var(--highlight);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer.display {
-  position: relative;
-  height: 120px;
-  width: 100%;
-  margin-bottom: 5px;
-  padding: 5px 10px;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  width: 25%;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form p {
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
-  margin-bottom: 5px;
-  font-size: 15px;
-  letter-spacing: 1.2px;
-  font-variant: all-petite-caps;
-  color: #080a0e;
-  border-bottom: 1px solid var(--selected);
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form p {
-  color: var(--text-bright);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span {
-  margin: 1px 0;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span label {
-  position: absolute;
-  font-size: 14px;
-  margin: 0 0 4px 6px;
-  color: #080a0e;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span label {
-  color: var(--text-dull);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio] {
-  padding: 4px;
-  border-radius: 10px;
-  background-color: #cacccf;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio] {
-  background-color: var(--component);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:after {
-  display: block;
-  position: relative;
-  height: 7px;
-  width: 7px;
-  border-radius: 50%;
-  background-color: #e8e9eb;
-  content: '';
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:after {
-  background-color: var(--feature);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:checked:after {
-  background-color: var(--feature);
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=radio]:checked:after {
-  background-color: var(--highlight-color);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox] {
-  height: 15px;
-  width: 15px;
-  font-size: 14px;
-  text-align: center;
-  background-color: #cacccf;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox] {
-  background-color: var(--component);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox]:checked:after {
-  position: relative;
-  top: -3px;
-  content: '\2714';
-  color: var(--feature);
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchSelectors form span input[type=checkbox]:checked:after {
-  color: var(--highlight-color);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchOptionInput {
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  height: 30px;
-  width: 100%;
-  margin: 9px 0;
-  border-radius: 5px;
-  background: #e8e9eb;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchParamsContainer > .searchOptionInput {
-  background: var(--feature);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchResultsContainer {
-  max-height: 90vh;
-  overflow-y: initial;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults {
-  display: none;
-  max-height: 300px;
-  padding: 0;
-  border-spacing: 0 1px;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr {
-  opacity: 1;
-  background: #f5f5f7;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr {
-  background: var(--component);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr:hover:not(.noHover) {
-  background: #cacccf;
-}
-
-.dark-theme .PageHeader .searchContainer .searchDropdown .searchResultsContainer .searchResults tr:hover:not(.noHover) {
-  background: var(--highlight);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchInfoBtn {
-  position: absolute;
-  left: 50%;
-  -webkit-transform: translate(-50%, 4px);
-          transform: translate(-50%, 4px);
-}
-
-.PageHeader .searchContainer .searchDropdown .searchInfoBtn.searchLoadMore {
-  background: #4285f433;
-  color: #4285f4;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchInfoBtn.searchLoadMore:hover {
-  color: #f5f6f7;
-  background: #4285f4;
-}
-
-.PageHeader .searchContainer .searchDropdown .searchInfoBtn.searchNoMatch {
-  background: #e5332933;
-  color: #e53329;
-  cursor: default;
-}
-
 .Pages {
   background-color: #f5f5f7;
 }
@@ -676,8 +408,8 @@ body {
 
 .dark-theme .Pages > section .PageData {
   background: var(--background);
-  -webkit-box-shadow: inset 6px 6px 6px -6px var(--black);
-          box-shadow: inset 6px 6px 6px -6px var(--black);
+  -webkit-box-shadow: inset 6px 6px 6px -6px var(--theme);
+          box-shadow: inset 6px 6px 6px -6px var(--theme);
 }
 
 .Pages > section .PageInformation {
@@ -711,10 +443,10 @@ body {
 }
 
 .dark-theme .Pages > section .PageInformation > * {
-  color: var(--text-bright);
+  color: var(--text-strong);
   background: var(--component);
-  -webkit-box-shadow: 0 0 5px 0 var(--black);
-          box-shadow: 0 0 5px 0 var(--black);
+  -webkit-box-shadow: 0 0 5px 0 var(--theme);
+          box-shadow: 0 0 5px 0 var(--theme);
 }
 
 .Pages > section .PageContainer {
@@ -944,26 +676,6 @@ body {
   background: var(--feature);
 }
 
-.Pages > .main_Page .fileContainer .emptyFolder {
-  height: 350px;
-  width: 350px;
-  border-radius: 50%;
-  place-content: center;
-  gap: 10px;
-  color: var(--text-dull);
-  background: var(--frame);
-  pointer-events: none;
-}
-
-.Pages > .main_Page .fileContainer .emptyFolder > div {
-  padding: 0 10px;
-}
-
-.Pages > .main_Page .fileContainer .emptyFolder > div > p:nth-child(1) {
-  font-size: 18px;
-  font-weight: 600;
-}
-
 .Pages > .main_Page .PageInformation {
   -webkit-transition: all 600ms;
   transition: all 600ms;
@@ -991,7 +703,7 @@ body {
   -webkit-box-shadow: none;
           box-shadow: none;
   padding: 0 0 10px 0;
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .Pages > .main_Page .PageInformation .PIHeader button {
@@ -1185,40 +897,17 @@ body {
           box-shadow: 0 0 0px 4px #e7623033;
 }
 
-.Pages > .bin_Page .PageData .binContainer > table {
+.Pages > .bin_Page .PageData > .binContainer .section_Empty {
+  height: 280px;
+  width: 280px;
+}
+
+.Pages > .bin_Page .PageData > .binContainer .section_Empty > img {
+  max-height: 120px;
+}
+
+.Pages > .bin_Page .PageData > .binContainer > table {
   max-width: 750px;
-}
-
-.Pages > .bin_Page .PageData .binIsEmpty {
-  gap: 20px;
-  width: 200px;
-  text-align: center;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  pointer-events: none;
-  opacity: 0;
-  -webkit-transition: opacity 300ms;
-  transition: opacity 300ms;
-}
-
-.Pages > .bin_Page .PageData .binIsEmpty > img {
-  -o-object-fit: contain;
-     object-fit: contain;
-  height: 140px;
-  -webkit-filter: brightness(0.9);
-          filter: brightness(0.9);
-}
-
-.dark-theme .Pages > .bin_Page .PageData .binIsEmpty > img {
-  -webkit-filter: brightness(0.2);
-          filter: brightness(0.2);
-}
-
-.Pages > .bin_Page .PageData .binIsEmpty > p {
-  font-size: 15px;
-  color: var(--selected);
 }
 
 .Pages > .bin_Page .PageInformation > .binInfo {
@@ -1309,7 +998,7 @@ body {
 
 .dark-theme .Pages > .bin_Page .PageInformation > .binInfo .binItemData p {
   border-bottom: 1px solid var(--feature);
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .Pages > .bin_Page .PageInformation > .binInfo .binItemData table {
@@ -1365,7 +1054,7 @@ body {
 }
 
 .dark-theme .BlockOut .Popup_Container {
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .BlockOut .Popup_Container > div {
@@ -1423,7 +1112,7 @@ body {
 }
 
 .BlockOut .Popup_Container .Popup_Main > span > button.Popup_Accept {
-  color: var(--text-bright);
+  color: var(--text-strong);
   background: var(--highlight-color);
 }
 
@@ -1571,11 +1260,6 @@ body {
 
 .BlockOut .Preview {
   max-width: 96%;
-  background: white;
-}
-
-.dark-theme .BlockOut .Preview {
-  background: black;
 }
 
 .BlockOut .Preview .ViewImage {
@@ -1612,7 +1296,7 @@ body {
 .dark-theme .BlockOut .Preview .ViewText {
   border: 1px solid var(--feature);
   background: var(--frame);
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .BlockOut .Preview .ViewText > pre {
@@ -1633,7 +1317,7 @@ body {
 }
 
 .dark-theme .BlockOut .Preview .ViewFont {
-  color: var(--text-bright);
+  color: var(--text-strong);
 }
 
 .BlockOut .Preview .ViewFont > p {
@@ -1671,7 +1355,7 @@ body {
   min-width: 200px;
   padding: 0 5px;
   z-index: 990;
-  color: var(--text-bright);
+  color: var(--text-strong);
   -webkit-box-shadow: 0 1px 3px 0px var(--feature);
           box-shadow: 0 1px 3px 0px var(--feature);
   background: var(--highlight-color);
@@ -1744,6 +1428,10 @@ body {
 
 .dark-theme .ItemSelected:hover {
   background: var(--selected) !important;
+}
+
+.ItemHidden {
+  display: none;
 }
 
 @media only screen and (min-width: 1200px) {

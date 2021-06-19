@@ -84,10 +84,10 @@ class RightClickContainer {
   constructor(menu, event, element) {
     [this.menu, this.event, this.target] = [menu, event, element];
     this.container = document.querySelector('.RightClickContainer');
-    this._Initalise();
+    this._Initialise();
   }
 
-  _Initalise() {
+  _Initialise() {
     this.RenderMenu_();
     this.PositionMenu_();
     this.SetListeners_();

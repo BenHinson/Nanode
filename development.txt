@@ -6,7 +6,6 @@ Main:
 New:
   Search
   Key Shortcuts. Key up & down, left & right to navigate
-  Recents
   Accounts Page + Log Storage Usage
 
 Reworks:
