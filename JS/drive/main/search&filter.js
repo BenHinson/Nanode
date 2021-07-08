@@ -9,47 +9,47 @@
 
 let SearchNodes = {};
 
-// TODO  Searching for a homepage span item and Shortcutting to it doesnt work. the data doesnt load.
+
+// searchControls
+//    searchParams
+//    searchSubmit
+
 
 Search = async() => {
   const ele_search = document.querySelector('input.search');
-  const ele_searchContainer = document.getElementsByClassName('searchContainer')[0];
-  const ele_searchDropdown = document.getElementsByClassName('searchDropdown')[0];
-  const ele_searchResults = document.querySelector('.searchResults tbody');
-  const ele_searchParams = document.getElementsByClassName('searchParams')[0];
-  const ele_searchParamsContainer = document.getElementsByClassName('searchParamsContainer')[0];
+  const ele_Controls = document.getElementsByClassName('searchControls')[0];
+
+  const ele_Container = document.getElementsByClassName('searchContainer')[0];
+  const ele_Dropdown = document.getElementsByClassName('searchDropdown')[0];
+  const ele_ParamsContainer = document.getElementsByClassName('searchParamsContainer')[0];
+
+  const ele_Results = document.querySelector('.searchResults tbody');
+  const ele_Suggested = document.getElementsByClassName('searchSuggested')[0];
 
   let searchNodeElements, searchNodeSelected, arrowCycleIndex = 0;
+  parameters = {input: '', dir: '', desc: true, preName: true, for: ''};
 
   // @ == Listeners
   Listeners = () => {
     ele_search.addEventListener('click', (e) => {
-      if (!ele_searchContainer.classList.contains('searchActive')) Open();
+      if (!ele_Container.classList.contains('searchActive')) Open();
     })
 
     ele_search.addEventListener('keydown', async(e) => { // Search
-      if (e.keyCode === 13) {
-        e.preventDefault();
-        let ele_searchParams = {"input": e.target.value}
-      
-        //   ele_searchParamsContainer.querySelectorAll('input:checked').forEach((option) => {
-        //     console.log(option.value)
-        //   })
-
-        if (ele_searchParams.input) {
-          FetchSearch(ele_searchParams)
-        }
-      }
+      if (e.keyCode === 13) { e.preventDefault(); FetchSearch(e.target.value) }
+      else if (e.keyCode === 8 && e.target.value.length === 1) { Suggested() }
     })
+    N_Find('.searchSubmit', false, ele_Controls).addEventListener('click', () => FetchSearch(ele_search.value))
 
-    ele_searchParams.addEventListener('click', (e) => {
-      ele_searchParamsContainer.classList.toggle('display');
+    N_Find('.searchParams', false, ele_Controls).addEventListener('click', (e) => {
+      e.target.classList.toggle('active');
+      ele_ParamsContainer.classList.toggle('display');
     })
   }
 
   ResultListeners = () => {
 
-    N_Find('tr > [sNode-event]', true, ele_searchResults).forEach(el => el.addEventListener('click', (e) => {
+    N_Find('tr > [sNode-event]', true, ele_Results).forEach(el => el.addEventListener('click', (e) => {
       e.stopPropagation();
       let nodeID = el.parentNode.getAttribute('node-id');
       let searchEvent = el.getAttribute('sNode-event');
@@ -102,15 +102,34 @@ Search = async() => {
     })
   }
 
-  FetchSearch = async(params) => {
-    let req = await API_Post({url: `/search`, body: params});
+  FetchSearch = async(search, parameters=true) => {
+    let params = {"input": search}
     
-    SearchNodes = {};
-    req.Found.forEach((item) => {
-      SearchNodes[item.id] = new Node(item);
-    })
+    if (parameters) {
+      ele_ParamsContainer.querySelectorAll('input:checked').forEach((option) => {
+        console.log(option.value)
+      })
+    }
 
-    Render();
+    // dir: XXXX | homepage
+    // include: description | names
+    // for: folders | files
+    // 
+
+    // return;// @@@@@@@@@@@@@@@@@@@
+      
+    if (params.input) {
+      let req = await API_Post({url: `/search`, body: params});
+      SearchCache('WRITE', params.input);
+      
+      SearchNodes = {};
+      req.Found.forEach((item) => {
+        SearchNodes[item.id] = new Node(item);
+      })
+  
+      Render();
+    }
+
   }
 
   SearchItemSelected = async(el) => {
@@ -124,7 +143,7 @@ Search = async() => {
 
   // @ == Visuals
   Render = (content=``) => {
-    Open('FORCE');
+    Open('RESULTS');
   
     Object.values(SearchNodes).slice(0, 5).forEach(node => {
       content += `
@@ -142,28 +161,55 @@ Search = async() => {
       content += `<button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button>`;
     }
   
-    ele_searchResults.innerHTML = // If the content is empty (no items returned, shows no matches button)
+    ele_Results.innerHTML = // If the content is empty (no items returned, shows no matches button)
       content || `<button class='searchInfoBtn searchNoMatch notif-btn'>No Matches Found</button>`;
   
-    searchNodeElements = ele_searchResults.querySelectorAll('[search-nodes] tr');
+    searchNodeElements = ele_Results.querySelectorAll('[search-nodes] tr');
     arrowCycleIndex = -1;
     ResultListeners();
   }
+  Suggested = (RESULTS=false) => {
+    if (RESULTS) {
+      ele_Suggested.classList.remove('display');
+    } else if (!ele_Results.parentNode.classList.contains('display')) {
+      ele_Suggested.classList.add('display');
+      ele_Suggested.children[1].innerHTML = SearchCache('READ').reduce((a, b) => a + `<li>${b}</li>`, ``);
+
+      N_Find('li', true, ele_Suggested).forEach(e => e.addEventListener('click', (e) => {
+        let savedSearch = e.target.innerText;
+        ele_search.value = savedSearch;
+        FetchSearch(savedSearch, false);
+      }))
+    }
+  }
+
+  // @ == Recent Search Cache
+  SearchCache = (action, search) => { // READ|WRITE, 'example.png'
+    let searches = JSON.parse(localStorage.getItem('recent-searches')) || ['Documents'];
+    if (action == 'WRITE' && !searches.includes(search)) { // write to the recent searches
+      if (searches.length > 4) searches.shift();
+      searches.push(search)
+      localStorage.setItem('recent-searches', JSON.stringify(searches));
+    } else if (action == 'READ') { // Read recent searches
+      return JSON.parse(localStorage.getItem('recent-searches')) || ['Documents'];
+    }
+  }
 
 
-  Open = (FORCE) => {
-    ele_searchContainer.classList.add('searchActive');
-    ele_searchDropdown.classList.add('display');
-    FORCE || ele_searchResults.innerHTML.length ? ele_searchResults.parentNode.classList.add('display') : ele_searchResults.parentNode.classList.remove('display');
+  Open = (RESULTS) => {
+    ele_Container.classList.add('searchActive');
+    ele_Dropdown.classList.add('display');
+    RESULTS || ele_Results.innerHTML.length ? ele_Results.parentNode.classList.add('display') : ele_Results.parentNode.classList.remove('display');
+    Suggested(RESULTS);
 
     document.addEventListener('mousedown', Close);
     document.addEventListener('keydown', ArrowCycle);
   }
   Close = (e) => {
-    if (!e || !ele_searchContainer.contains(e.target)) {
-      ele_searchContainer.classList.remove('searchActive');
-      ele_searchDropdown.classList.remove('display');
-      if (!ele_search.value) ele_searchResults.innerHTML = '';
+    if (!e || !ele_Container.contains(e.target)) {
+      ele_Container.classList.remove('searchActive');
+      ele_Dropdown.classList.remove('display');
+      if (!ele_search.value) ele_Results.innerHTML = '';
       document.removeEventListener('mousedown', Close);
       document.removeEventListener('keydown', ArrowCycle);
     }
@@ -171,21 +217,13 @@ Search = async() => {
 
   Search.Close = Close;
 
-  
   Listeners();
   Params();
 }
 
-Search();
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// $($("tr[type='folder']", Table).get().reverse()).each(function(i, folder) {
-//   $(folder).insertAfter( Table.children[0]);
-// })
-
-Filter = (elem, container) => {
+Filter = (layout, elem, container) => {
+  if (!layout) { return; }
   elem.addEventListener('keyup', e => {
     Object.values(Nodes).forEach(node => {
       if (!Object.values(node.data).some(s => s.toString().toLowerCase().includes(e.target.value))) {
@@ -198,38 +236,95 @@ Filter = (elem, container) => {
 }
 
 
-// TODO   Move folders to the top of the directory.
-// TODO   Add the functionality to sort and order table rows.
+Order = () => {
+
+  // @ == Listeners
+  Listeners = (layout, container) => {
+    if (!layout) { return; }
+    N_Find('[order]', true, container.children[0]).forEach(el => el.addEventListener('click', (e) => {
+      let orderType = el.getAttribute('order');
+  
+      if (!OrderCache[NodeID]) //?   0 == initial. 1 == highest first. 2 == lowest first.
+        OrderCache[NodeID] = {'type': orderType, 'pos': 1}
+      else if (OrderCache[NodeID].type !== orderType)
+        OrderCache[NodeID] = {'type': orderType, 'pos': 1}
+      else
+        OrderCache[NodeID] = {'type': orderType, 'pos': (OrderCache[NodeID].pos + 1) % 3} // % 3 sets 2 as limit, if 2 + 1 == 3, sets to 0.
+  
+      this.SetOrderVisuals();
+  
+      container.children[1].innerHTML = renderContent.listNode({"nodeIDs": Nodes})
+      
+      ItemClickListener(layout);
+    }))
+  }
+
+
+  this.OrderNodes = (nodes={}) => {
+    if (!OrderCache[NodeID]) { return; }
+    const {type, pos} = OrderCache[NodeID];
+
+    if (pos === 0) { return Object.keys(nodes) }
+    nodes = Object.values(nodes);
+
+    if (type === 'size') {
+      nodes.sort((a, b) => pos === 1
+        ? b.data["size"] - a.data["size"]
+        : a.data["size"] - b.data["size"])
+    } else if (type === 'modified') {
+      nodes.sort((a, b) => pos === 1
+        ? new Date(b.data.time?.modified?.stamp || b.data.time?.created?.stamp) - new Date(a.data.time?.modified?.stamp || a.data.time?.created?.stamp)
+        : new Date(a.data.time?.modified?.stamp || a.data.time?.created?.stamp) - new Date(b.data.time?.modified?.stamp || b.data.time?.created?.stamp));
+    }
+
+    return nodes.map(n => n.data.id);
+  }
+
+  this.SetOrderVisuals = () => {
+    if (!OrderCache[NodeID]) { return }
+    const {type, pos} = OrderCache[NodeID];
+
+    let curIcon = N_Find('[order] > i.fas');
+    if (curIcon) curIcon.classList = '';
+
+    if (pos === 0) { return; }
+
+    N_Find(`[order='${type}'] > i`).classList.add('fas', 
+      pos === 1
+        ? 'fa-chevron-up'
+        : 'fa-chevron-down'
+    )
+  }
+
+  Order.Listeners = Listeners;
+  Order.OrderNodes = OrderNodes;
+  Order.SetOrderVisuals = SetOrderVisuals;
+}
+
+
+
+Order();
+Search();
 
 
 
 
-
-
-
-
-// Stretch search to whole top-bar.
-//      Add Search Icon
-//      Add X Icon to close search
-//      Add below the search input a box with options.
-//      Changing Options requests the search again with new params?
-//      ONLY show first 5 items when in dropdown search mode. Have 'show more' button for full request.  View All Results
-//      Full request loads the items into the directory instead.
-
-// Save dropdown search results on client so when user 'off-clicks' and clicks back on, the results are loaded.
-
-// Go to directory button.
-//      Gets parent and loads directory. If a span... ?
-//      Loading spans does work: https://drive.nanode.one/folder/_GENERAL_?s=main
-
-// Save the current directory?
-// Load the new items just like a normal directory.
-// Change nav path to being the search query?
-// Back button moves you to the normal directory you were in.
-
-// Show Max 50 per Page.
-//      Save id of last item of 50 finds (server)
-//      On 'request another 50' start search from last item.
-
-// ALTERNATIVE:
-// Load requests in real time and display in a dropdown menu from the search
+/**
+ * Design:
+ *      Add Search Icon to submit search
+ *      Add X Icon to close search
+ * 
+ * Results:
+ *      Button to show All Results in a custom directory.
+ *      Save dropdown search results on client so when user 'off-clicks' and clicks back on, the results are loaded.
+ *      Save the current directory?
+ *      Load the new items just like a normal directory.
+ * 
+ * Change nav path to being the search query?
+ * Back button moves you to the original directory you were in.
+ * It is not added to that path. cannot return back into search results.
+ * 
+ * Show Max 50 per Page.
+ *      Save id of last item of 50 finds (server)
+ *      On 'request another 50' start search from last item.
+*/

@@ -20,22 +20,17 @@ function SelectItem(item, force) {
   if (!item) {return;}
   $(document.body).off("click");
 
-
   if (item.hasAttribute('selected') && !force) { // Remove from Selected
-    item.removeAttribute('selected');
-    item.classList.remove('ItemSelected');
-    NodeSelected = NodeSelected.filter(id => id !== item.getAttribute('node-id'));
+    DragSelection.deselect(item);
   } else if (item.hasAttribute('node-id')) { // Add to Selected
-    item.setAttribute('selected', true);
-    item.classList.add('ItemSelected');
-    !NodeSelected.includes(item.getAttribute('node-id')) && NodeSelected.push(item.getAttribute('node-id'));
+    DragSelection.select(item);
   }
 
-  if (NodeSelected.length) { // Add Listener to Document for Off-Clicks
+  if (NodeSelected.size) { // Add Listener to Document for Off-Clicks
     setTimeout(function() {
       $(document.body).on("click",function(e) {
         if (!$(e.target).parents('.fileContainer').length && !$(e.target).parents('.RightClickContainer').length) {
-          NodeSelected = [];
+          NodeSelected.clear();
           $('[selected=true]').each((index, item) => {
             $(item).removeAttr('selected');
             $(item).removeClass('ItemSelected');

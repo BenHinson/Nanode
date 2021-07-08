@@ -22,7 +22,7 @@ async function NodeCall(CallData, res) {
     NodeName = res.Parent.id == "homepage" ? "homepage" : res.Parent.name;
     NodeID = res.Parent.id;
     
-    Spans = {}, Nodes = {}, NodeSelected = [];
+    Spans = {}, Nodes = {}, NodeSelected.clear();
 
     if (res.Contents.name) { NodeID=Folder; NodeName=res.Contents.name; // In the scenario of viewing a homepage span as a folder. We need to rejig the content.
       res.Contents = {[res.Contents.name]: res.Contents}; }
@@ -43,6 +43,9 @@ async function NodeCall(CallData, res) {
 NodeAPI = async(Location, Form, Skip=true) => { // For Creating or Editing Nodes
   // Skip Etiquette: IF Path GIVEN in Form. Skip must be TRUE or BLANK.
   // Only False if Path NOT given, but call must happen. (IN which case... just give path..?)
+
+  Form.id ? Form.id = Array.from(Form.id) : '';
+
   let res = await API_Post({url: `/${Location}`, body: Form});
   N_ClientStatus(2, "True", 400); N_ClientStatus(8, "Off");
   if (res.Error) { return N_Error(res.Error); }

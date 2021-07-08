@@ -1,18 +1,31 @@
 $colors: (
   // Colours
-    PC_0: #99ccff, // Logo
-    PC_1: #4285f4, // Blue
-    PC_2: #1199bb, // Blue Green
-    PC_3: #033860, // Indigo
-    PC_4: #33c357, // Green
-    PC_5: #ff453a, // Red
-    PC_6: #f0e800, // Yellow
-    PC_7: #3e4f5f, // Dull Blue (Dark RC Hover)
-    PC_8: #c8dce6, // Light Blue (White RC Hover)
-    PC_9: #a266ee, // Dev Purple,
-    PC_10: #e53329, // Rich Red
-    PC_11: #ff9800,
+  PC_0: #99ccff, // Logo
+  PC_1: #4285f4, // Blue
+  PC_2: #1199bb, // Blue Green
+  PC_3: #033860, // Indigo
+  PC_4: #33c357, // Green
+  PC_5: #ff453a, // Red
+  PC_6: #f0e800, // Yellow
+  PC_7: #3e4f5f, // Dull Blue (Dark RC Hover)
+  PC_8: #c8dce6, // Light Blue (White RC Hover)
+  PC_9: #a266ee, // Dev Purple,
+  PC_10: #e53329, // Rich Red
+  PC_11: #ff9800,
 );
+
+// CHECK Colours:
+[data-theme = check] {
+  --theme: #e11010;
+  --background: #1f1fe1;
+  --frame: #bdae1d;
+  --component: #8b331d;
+  --feature: #c919c0;
+  --highlight: #05e6f5;
+  --selected: #e80c6d;
+  --text-dull: #106fff;
+  --text-strong: #fff;
+}
 
 ////////////////// Base Elements //////////////////
 
@@ -21,8 +34,8 @@ input:not(.searchSelectors *) {
   padding: 6px 10px;
   background: transparent;
   border-radius: 5px;
-  &::placeholder { color: map-get($colors, PD_5); .dark-theme & { color: var(--text-dull); opacity: 0.8; } }
-  &:focus { background: map-get($colors, PL_6); .dark-theme & { background: var(--highlight); } }
+  &::placeholder { color: var(--text-dull); opacity: 0.8; }
+  &:focus { background: var(--highlight); }
 }
 button {
   padding: 6px 10px;
@@ -42,7 +55,7 @@ textarea {
   color: inherit;
   padding: 0.5em;
   background: transparent;
-  &::placeholder { color: map-get($colors, PD_5); .dark-theme & { color: var(--text-dull); opacity: 0.8; } }
+  &::placeholder { color: var(--text-dull); opacity: 0.8; }
 }
 
 ///////////////////////// ELEMENTS /////////////////////////
@@ -122,8 +135,7 @@ textarea {
   width: 100%;
   padding: 0 24px;
   border-spacing: 0px 14px;
-  color: map-get($colors, PL_8);
-  .dark-theme & { color: var(--text-strong); }
+  color: var(--text-strong);
 
   & thead > tr {
     height: 32px;
@@ -133,12 +145,21 @@ textarea {
     &:hover { opacity: 1; transform: none; box-shadow: none; }
 
     & >th:nth-child(1) {max-width: 50px;}
-    & >th:nth-child(2) {max-width: 0; width: auto; min-width: 160px; overflow: hidden; position: relative;}
+    & >th:nth-child(2) {max-width: 0; width: auto; min-width: 160px; overflow: hidden;}
 
-    & >th:nth-child(n+3) { font-weight: 400; opacity: 1; font-size: 14px; font-variant: all-petite-caps; .dark-theme & {opacity:0.6;} }
+    & >th:nth-child(n+3) { font-weight: 400; opacity: 0.6; font-size: 14px; font-variant: all-petite-caps; }
     & >th:nth-child(3) {width: 80px; min-width: 60px;}
     & >th:nth-child(4) {width: 100px;}
     & >th:nth-child(5) {width: 80px;}
+  }
+
+  & thead > tr > th[order] {
+    cursor: pointer;
+    &:hover { opacity: 1; }
+    > i {
+      display: none; padding-left: 8px; font-size: 11px;
+      &.fas { display: initial; }
+    }
   }
 
   & tbody > tr {
@@ -148,18 +169,17 @@ textarea {
     font-size: 12px;
     cursor: pointer;
     transition: background-color 100ms;
-    background: map-get($colors, PL_2);
-    .dark-theme & { background: var(--component); }
+    background: var(--component);
+    user-select: none;
 
     &:hover:not(.noHover) {
-      background: map-get($colors, PL_6);
-      .dark-theme & { background: var(--highlight); }
+      background: var(--highlight);
     }
 
     & >td:nth-child(1) { width: 50px; padding-top: 4px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
     & >td:nth-child(2) { text-align: left; padding: 0 20px; font-size: 14px; line-break: anywhere; }
 
-    & >td:nth-child(n+3) { font-size: 13px; width: 80px; opacity: 0.8; .dark-theme & {opacity:0.6;} }
+    & >td:nth-child(n+3) { font-size: 13px; width: 80px; opacity: 0.6; }
     & >td:nth-child(4) { width: 100px; }
     & >td:nth-child(5) { border-top-right-radius: 5px; border-bottom-right-radius: 5px; } 
   }
@@ -188,16 +208,13 @@ folders.baseFolders {
     padding: 0 10px 10px 10px;
     border-radius: 8px;
     cursor: pointer;
-    color: map-get($colors, PL_8);
+    color: var(--text-strong);
     transition: all 200ms;
-    .dark-theme & { color: var(--text-strong); }
 
     &:hover, :focus {
       >div {
         height: 100%;
         transform: none;
-        box-shadow: 0px 2px 4px 1px map-get($colors, PL_6);
-        .dark-theme & { box-shadow: none; }
       }
     }
 
@@ -216,8 +233,7 @@ folders.baseFolders {
       transform: translateY(28px);
       transition: all 300ms;
 
-      background: map-get($colors, PL_4); 
-      .dark-theme & { background: var(--component); }
+      background: var(--component);
     }
   }
 }
@@ -254,10 +270,9 @@ recents.recentFiles {
     border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
-    color: map-get($colors, PL_8);
+    color: var(--text-strong);
     background: var(--frame);
     transition: all 200ms;
-    .dark-theme & { color: var(--text-strong); }
 
     &:hover, :focus { background: var(--feature); }
     img { max-width: 50px; }
@@ -283,46 +298,68 @@ recents.recentFiles {
     // ~ .searchParams { }
     .search {
       width: 100%;
-      padding: 0 60px 0 5%;
+      padding: 1px 60px 0 5%;
     }
-    .searchParams {
+    .searchControls {
       width: 50px;
-      padding: 9px 0;
-      opacity: 1;
       pointer-events: all !important;
+      >i.searchSubmit {
+        opacity: 1;
+        background: var(--highlight-color);
+      }
+      >i.searchParams {
+        opacity: 0.6;
+        right: 60px;
+        
+        &.active { background: var(--selected); opacity: 1; }
+        &:hover { opacity: 1; }
+      }
     }
   }
 
-  .search {
+  input.search {
     width: 140px;
-    background: map-get($colors, PL_2);
-    border: 1px solid map-get($colors, PL_5);
+    color: var(--text-strong);
+    background: var(--feature);
     z-index: 5;
-    
-    .dark-theme & {
-      border: none;
-      color: var(--text-strong);
-      background: var(--feature);
-    }
   }
 
-  .searchParams {
-    width: 30px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background: map-get($colors, PL_5);
-    opacity: 0;
+  button.searchControls {
+    width: 40px;
+    padding: 0;
     z-index: 6;
     pointer-events: none;
 
-    .dark-theme & {
-      color: map-get($colors, PD_7);
-      background: var(--highlight-color);
+    color: var(--text-white);
+    fill: var(--text-white);
+    background: transparent;
+
+    >i {
+      font-size: 15px;
+      display: grid;
+      place-items: center;
+      
+      &.searchParams {
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        top: 3px;
+        right: 20px;
+        border-radius: 5px;
+        opacity: 0;
+        >svg {pointer-events: none;}
+      }
+      &.searchSubmit {
+        height: inherit;
+        width: inherit;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        opacity: 0.4;
+      }
     }
-    &:hover i { transform: rotate(90deg); }
   }
 
-  > .search, .searchParams {
+  > .search, .searchControls {
     position: absolute;
     height: 36px;
     right: 0;
@@ -330,6 +367,7 @@ recents.recentFiles {
   }
 
 
+  
   .searchDropdown {
     display: none;
     position: absolute;
@@ -337,156 +375,11 @@ recents.recentFiles {
     top: 42px;
     border-radius: 5px;
     z-index: 3;
-    background: map-get($colors, PL_4);
-    .dark-theme & { background: var(--feature); }
+    background: var(--feature);
 
     &.display {
       display: grid;
       padding: 10px 10px 30px 10px;
-    }
-
-    .searchParamsContainer {
-      position: relative;
-      height: 0;
-      width: 50px;
-      border-radius: 5px;
-      overflow: hidden;
-      transition: all 300ms;
-      background: map-get($colors, PL_2);
-      .dark-theme & { background: var(--highlight); }
-
-      &.display {
-        position: relative;
-        height: 120px;
-        width: 100%;
-        margin-bottom: 5px;
-        padding: 5px 10px;
-      }
-
-      >.searchSelectors {
-        display: flex;
-        flex-direction: row;
-
-        form {
-          display: flex;
-          flex-direction: column;
-          width: 25%;
-          p {
-            width: fit-content;
-            margin-bottom: 5px;
-            font-size: 15px;
-            letter-spacing: 1.2px;
-            font-variant: all-petite-caps;
-            color: map-get($colors, PL_8);
-            border-bottom: 1px solid var(--selected);
-            user-select: none;
-            .dark-theme & {
-              color: var(--text-strong);
-            }
-          }
-          span {
-            margin: 1px 0;
-            label {
-              position: absolute;
-              font-size: 14px;
-              margin: 0 0 4px 6px;
-              color: map-get($colors, PL_8);
-              .dark-theme & { color: var(--text-dull); }
-            }
-            input[type=radio] {
-              padding: 4px;
-              border-radius: 10px;
-              background-color: map-get($colors, PL_6);
-              .dark-theme & { background-color: var(--component); }
-              -webkit-appearance: none;
-              cursor: pointer;
-              &:after {
-                display: block;
-                position: relative;
-                height: 7px;
-                width: 7px;
-                border-radius: 50%;
-                background-color: map-get($colors, PL_4);
-                .dark-theme & { background-color: var(--feature); }
-                content: '';
-              }
-              &:checked:after {
-                background-color: var(--feature);
-                .dark-theme & { background-color: var(--highlight-color); }
-              }
-            }
-            input[type=checkbox] {
-              height: 15px;
-              width: 15px;
-              font-size: 14px;
-              text-align: center;
-              background-color: map-get($colors, PL_6);
-              .dark-theme & { background-color: var(--component); }
-              -webkit-appearance: none;
-              cursor: pointer;
-              &:checked:after {
-                position: relative;
-                top: -3px;
-                content: '\2714';
-                color: var(--feature);
-                .dark-theme & { color: var(--highlight-color); }
-              }
-            }
-          }
-        }
-      }
-
-      >.searchOptionInput {
-        display: inline-flex;
-        height: 30px;
-        width: 100%;
-        margin: 9px 0;
-        border-radius: 5px;
-        background: map-get($colors, PL_4);
-        .dark-theme & { background: var(--feature); }
-      }
-
-    }
-
-    .searchResultsContainer {
-      max-height: 90vh;
-      overflow-y: initial;
-
-      .searchResults {
-        display: none;
-        max-height: 300px;
-        padding: 0;
-        border-spacing: 0 1px;
-        & tbody > tr {
-          opacity: 1;
-          background: map-get($colors, PL_2);
-          .dark-theme & { background: var(--component); }
-          &:hover:not(.noHover) {
-            background: map-get($colors, PL_6);
-            .dark-theme & { background: var(--highlight); }
-            >td:nth-child(n+3) { opacity: 1; >i {opacity: 1;}}
-          }
-
-          >td:nth-child(n+3) {
-            width: 50px;
-            transition: opacity 200ms;
-            >i {
-              height: 36px;
-              width: 36px;
-              background: var(--frame);
-              border-radius: 5px;
-              padding: 11px;
-              font-size: 14px;
-              opacity: 0;
-              transition: background-color 200ms;
-              &:hover {
-                background: var(--rich-blue);
-              }
-            }
-          }
-
-        }
-      }
     }
     
     .searchInfoBtn {
@@ -506,6 +399,164 @@ recents.recentFiles {
         background: #e5332933;
         color: #e53329;
         cursor: default;
+      }
+    }
+  }
+
+  .searchParamsContainer {
+    position: relative;
+    height: 0;
+    width: 50px;
+    float: right;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 300ms;
+    background: var(--highlight);
+
+    &.display {
+      position: relative;
+      height: 120px;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 5px 10px;
+      z-index: 2;
+    }
+
+    >.searchSelectors {
+      display: flex;
+      flex-direction: row;
+
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 25%;
+        p {
+          width: fit-content;
+          margin-bottom: 5px;
+          font-size: 15px;
+          letter-spacing: 1.2px;
+          font-variant: all-petite-caps;
+          color: var(--text-strong);
+          border-bottom: 1px solid var(--selected);
+          user-select: none;
+        }
+        span {
+          margin: 1px 0;
+          label {
+            position: absolute;
+            font-size: 14px;
+            margin: 0 0 4px 6px;
+            color: var(--text-dull);
+          }
+          input[type=radio] {
+            padding: 4px;
+            border-radius: 10px;
+            background-color: var(--component);
+            -webkit-appearance: none;
+            cursor: pointer;
+            &:after {
+              display: block;
+              position: relative;
+              height: 7px;
+              width: 7px;
+              border-radius: 50%;
+              background-color: var(--feature);
+              content: '';
+            }
+            &:checked:after {
+              background-color: var(--highlight-color);
+            }
+          }
+          input[type=checkbox] {
+            height: 15px;
+            width: 15px;
+            font-size: 14px;
+            text-align: center;
+            background-color: var(--component);
+            -webkit-appearance: none;
+            cursor: pointer;
+            &:checked:after {
+              position: relative;
+              top: -3px;
+              content: '\2714';
+              color: var(--highlight-color);
+            }
+          }
+        }
+      }
+    }
+
+    >.searchOptionInput {
+      display: inline-flex;
+      height: 30px;
+      width: 100%;
+      margin: 9px 0;
+      border-radius: 5px;
+      background: var(--feature);
+    }
+
+  }
+
+  .searchResultsContainer {
+    max-height: 90vh;
+    overflow-y: initial;
+
+    .searchResults {
+      display: none;
+      max-height: 300px;
+      padding: 0;
+      border-spacing: 0 1px;
+      & tbody > tr {
+        opacity: 1;
+        background: var(--component);
+        &:hover:not(.noHover) {
+          background: var(--highlight);
+          >td:nth-child(n+3) { opacity: 1; >i {opacity: 1;}}
+        }
+
+        >td:nth-child(n+3) {
+          width: 50px;
+          transition: opacity 200ms;
+          >i {
+            height: 36px;
+            width: 36px;
+            background: var(--frame);
+            border-radius: 5px;
+            padding: 11px;
+            font-size: 14px;
+            opacity: 0;
+            transition: background-color 200ms;
+            &:hover {
+              background: var(--rich-blue);
+              color: var(--text-white);
+            }
+          }
+        }
+
+      }
+    }
+  }
+
+  .searchSuggested {
+    display: none;
+    >p {
+      color: var(--text-dull);
+      padding: 0 0 8px 10px;
+      width: fit-content;
+      font-size: 13px;
+    }
+    >ul {
+      list-style: none;
+      >li {
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        color: var(--text-strong);
+        border-bottom: 1px solid var(--highlight);
+        cursor: pointer;
+        &:hover, &:focus {
+          background: var(--highlight);
+        }
       }
     }
   }
@@ -552,14 +603,9 @@ recents.recentFiles {
     width: 100%;
     border-radius: 5px;
 
-    color: map-get($colors, PL_8);
-    background: map-get($colors, PL_1);
-    box-shadow: 1px 2px 3px 1px map-get($colors, PL_6);
-    .dark-theme & { 
-      color: var(--text-strong);
-      background: var(--feature);
-      box-shadow: 1px 2px 3px 1px var(--theme);
-    }
+    color: var(--text-strong);
+    background: var(--feature);
+    box-shadow: 1px 2px 3px 1px var(--theme);
   }
 
   .UC_Queue {
@@ -571,7 +617,7 @@ recents.recentFiles {
     overflow-y: scroll;
 
     &::-webkit-scrollbar-track { background: transparent; }
-    &::-webkit-scrollbar-thumb { .dark-theme & {background: var(--highlight);} }
+    &::-webkit-scrollbar-thumb { background: var(--highlight); }
 
     table {
       width: 100%;
@@ -581,16 +627,13 @@ recents.recentFiles {
         transition: all 100ms ease-in-out;
 
         &:nth-child(n+2) {
-          border-top: 1px solid map-get($colors, PL_4);
-          .dark-theme & { border-color: var(--highlight); }}
+          border-top: 1px solid var(--highlight);
+        }
       
         &.waiting_upload:hover:not(.active_upload) {
-          background: map-get($colors, PL_5);
+          background: var(--highlight);
           box-shadow: -5px 0px 0 0px var(--red);
           transform: translateX(5px);
-          .dark-theme & {
-            background: var(--highlight);
-          }
         }
 
         td {
@@ -602,8 +645,7 @@ recents.recentFiles {
           }
         }
         &.active_upload {
-          background: map-get($colors, PL_3);
-          .dark-theme & {background: map-get($colors, PD_5);}
+          background: var(--highlight);
         }
         &.paused_upload { border: 2px solid #ff8d00; }
         
@@ -657,6 +699,7 @@ recents.recentFiles {
         border-radius: 4px;
         font-weight: 400;
         background: var(--rich-blue);
+        color: var(--text-white);
       }
       span {
         width: 100px;
@@ -677,8 +720,7 @@ recents.recentFiles {
     .UC_Bottom {
       button {
         width: 80px;
-        background: map-get($colors, PL_5);
-        .dark-theme & { background: var(--highlight); }
+        background: var(--highlight);
         &:hover { background: var(--selected); }
       }
       p { font-size: 15px; }
@@ -695,8 +737,7 @@ recents.recentFiles {
         width: 100%;
         padding: 0 20px;
         text-align: center;
-        background: map-get($colors, PL_1);
-        .dark-theme & {background: var(--feature);}
+        background: var(--feature);
   
         > progress {
           height: 6px;
@@ -705,8 +746,7 @@ recents.recentFiles {
   
           &::-webkit-progress-bar {
             border-radius: 5px;
-            background-color: map-get($colors, PL_4);
-            .dark-theme & { background-color: map-get($colors, PD_1); }
+            background-color: var(--selected);
           }
           &::-webkit-progress-value {
             background-color: var(--highlight-color);
@@ -732,14 +772,9 @@ recents.recentFiles {
   border-radius: 4px;
   z-index: 999;
   user-select: none;
-  box-shadow: 1px 2px 3px 0px map-get($colors, PL_6);
-  background: map-get($colors, PL_3);
-  color: map-get($colors, PL_7);
-  .dark-theme & {
-    box-shadow: 1px 2px 3px 0px var(--theme);
-    background: var(--component);
-    color: var(--text-dull);
-  }
+  box-shadow: 1px 2px 3px 0px var(--theme);
+  background: var(--component);
+  color: var(--text-dull);
 
   > button {
     height: 32px;
@@ -748,12 +783,9 @@ recents.recentFiles {
     text-align: left;
 
     &:hover {
-      background: map-get($colors, PC_8);
-      .dark-theme & {
-        box-shadow: 0 0 0 1px var(--rich-blue);
-        background: var(--rich-blue-faded);
-        color: var(--text-strong);
-      }
+      box-shadow: 0 0 0 1px var(--rich-blue);
+      background: var(--rich-blue-faded);
+      color: var(--text-strong);
     }
   }
 
@@ -772,17 +804,12 @@ recents.recentFiles {
   left: calc(50vw - 100px);
   padding: 6px;
   border-radius: 5px;
-  color: map-get($colors, PL_7);
-  box-shadow: 1px 1px 3px 0px map-get($colors, PL_4);
-  background: map-get($colors, PL_2);
+  color: var(--text-strong);
+  box-shadow: 1px 1px 3px 0px var(--theme);
+  background: var(--feature);
   border-top: 15px solid var(--component);
   z-index: 999;
   cursor: all-scroll;
-  .dark-theme & {
-    color: var(--text-strong);
-    box-shadow: 1px 1px 3px 0px var(--theme);
-    background: var(--feature);
-  }
 
   > span {
     text-align: center;
@@ -797,10 +824,7 @@ recents.recentFiles {
       text-align: center;
       border-bottom: 2px solid;
       border-radius: 0;
-      color: map-get($colors, PL_7);
-      .dark-theme & {
-        color: var(--text-strong);
-      }
+      color: var(--text-strong);
     }
 
   }
@@ -837,13 +861,8 @@ recents.recentFiles {
   text-align: center;
   cursor: pointer;
   overflow: hidden;
-  color: map-get($colors, PL_8);
-  background: red;
-
-  .dark-theme & {
-    color: var(--text-strong);
-    background: var(--feature);
-  }
+  color: var(--text-strong);
+  background: var(--feature);
 
   >div {
     width: 50px;
@@ -865,11 +884,10 @@ recents.recentFiles {
   }
   &.SW_View {
     width: 62px;
-    color: map-get($colors, PC_1);
-    .SL_View { width: 28px; background: map-get($colors, PL_6);}
+    color: var(--text-strong);
+    .SL_View { width: 28px; background: var(--highlight-color);}
     >div { padding: 3px; }
     i { font-size: 15px; }
-    .dark-theme & { color: var(--text-strong); .SL_View{background: var(--highlight-color);} }
   }
   &.SW_Bin {
     position: relative;
@@ -883,16 +901,14 @@ recents.recentFiles {
       padding: 4px;
     }
     .SL_Bin {
-      background: map-get($colors, PL_6);
-      .dark-theme & { background: var(--selected); }
+      background: var(--selected);
     }
   }
 }
 
 .ExpandSpan {
   font-size: 15px;
-  background: map-get($colors, PL_4);
-  .dark-theme & { background: var(--feature); }
+  background: var(--feature);
   &:hover { opacity: 0.7; }
 
   &.VT_Block {
@@ -956,13 +972,12 @@ recents.recentFiles {
     animation: 1.4s ease-in-out infinite both circle-animation;
     display: block;
     fill: transparent;
-    stroke: map-get($colors, PL_7);
+    stroke: var(--text-strong);
     stroke-linecap: round;
     stroke-dasharray: 283;
     stroke-dashoffset: 280;
     stroke-width: 10px;
     transform-origin: 50% 50%;
-    .dark-theme & { stroke: map-get($colors, PD_8); }
 
     @keyframes circle-animation {
       0%, 25% { stroke-dashoffset: 280; transform: rotate(0); }
@@ -1004,8 +1019,30 @@ recents.recentFiles {
 }
 
 .selected {
-  background: map-get($colors, PL_5);
-  .dark-theme & { background: var(--selected); }
+  background: var(--selected);
+}
+
+.ItemSelected {
+  background: var(--rich-blue-faded) !important;
+  box-shadow: 0 0 0 2px var(--rich-blue) !important;
+  box-shadow: inset 0 0 0 1px var(--rich-blue) !important;
+  transition: none !important;
+  &:hover {
+    background: var(--rich-blue) !important;
+  }
+}
+.ItemHidden {
+  display: none;
+}
+
+.no-select {
+  user-select: none !important;
+}
+
+.selection-area {
+  background: var(--rich-blue-faded);
+  border: 1px solid var(--highlight-color);
+  border-radius: 3px;
 }
 
 //////////////////// Colours /////////////////

@@ -1,4 +1,5 @@
 const SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
+let OrderCache = {}; // Caches the order of directories. Is also used for re-ordering.
 
 const fileContainer = document.getElementsByClassName('fileContainer')[0];
 const PageInfo = document.getElementsByClassName('PageInformation')[0];
@@ -48,7 +49,9 @@ function renderContent(content=``) {
       })
     })
   } else {
-    Filter(fileContainer.querySelector('.Filter'), fileContainer);
+    Filter(layout, fileContainer.querySelector('.Filter'), fileContainer);
+    Order.Listeners(layout, fileContainer.querySelector('table'));
+    Order.SetOrderVisuals();
   }
 
   ItemClickListener(layout);
@@ -57,21 +60,6 @@ function renderContent(content=``) {
   /////////////////////////////////////////////////
 
   function listContainer(span) {
-    listNode = (parent, nodes, content=``) => {
-      if (nodes.length === 0 && !homepage) { return emptyContainer(); }
-      nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
-        content += `
-          <tr directory='${N_ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${N_ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: "+nodeData.color+" -3px 0' " : ""}>
-            <td><img loading='lazy' height='32' width='32' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img></td>
-            <td><input rcPar='2' value='${N_CapFirstLetter(nodeData.name)}' disabled style='pointer-events:none;'></input></td>
-            <td>${nodeData.type.short}</td>
-            <td>${N_DateFormatter(nodeData.time.modified || nodeData.time.created)}</td>
-            <td>${nodeData.size > 1 ? N_ConvertSize(nodeData.size) : "-"}</td>
-          </tr>
-        `;
-      }); return content;
-    };
-
     return `
       <div node-id='${span.id}' ${homepage ? `Home-Span='${span.name}'` : "" }>
         <table class='tableTemplate' ${homepage ? `rc='Homepage_Span'` : ``} >
@@ -79,12 +67,12 @@ function renderContent(content=``) {
             <tr ${homepage ? 'rcPar=3' : ''} node-id='${span.id}'>
               <th><input value='${span.name}' ${homepage ? 'spanName' : 'spanName=disabled disabled '}></th>
               <th>${homepage ? '' : '<div class="Filter"><i class="fas fa-filter"></i><input type="text" placeholder="Filter..."></div>'}</th>
-              ${titles ? '<th>Type</th> <th>Modified</th> <th>Size</th>' : '<th></th> <th></th> <th></th>'}
+              ${titles ? '<th>Type</th> <th order="modified">Modified<i></i></th> <th order="size">Size<i></i></th>' : '<th></th> <th></th> <th></th>'}
             </tr>
           </thead>
 
           <tbody dir-nodes>
-            ${listNode(span.name, span.nodes)}
+            ${listNode({"parent": span.name, "nodeIDs": span.nodes})}
           </tbody>
         </table>
       </div>
@@ -92,26 +80,50 @@ function renderContent(content=``) {
   };
 
   function blockContainer(span) {
-    blockNode = (parent, nodes, content=``) => {
-      if (nodes.length === 0 && !homepage) { return emptyContainer(); }
-      nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
-        content += `
-          <div class='Item' directory='${N_ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TEXTAREA,IMG' title='${N_ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='border-bottom: 2px solid "+nodeData.color+"'" : ""}>
-            <img loading='lazy' height='90' width='${!nodeData.mime == "FOLDER" ? 90 : 120}' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img>
-            <textarea rcpar='1' disabled style='pointer-events:none;'>${N_CapFirstLetter(nodeData.name)}</textarea>
-          </div>
-        `;
-      }); return content;
-    };
-
-
     return `
       <div node-id='${span.id}' class='ContentContainer' dir-nodes ${homepage && `Home-Span='${span.name}' rc='Homepage_Span'`}>
         <input value='${span.name}' ${homepage ? 'spanName' : 'spanName=disabled disabled '}>
-        ${blockNode(span.name, span.nodes)}
+        ${blockNode({"parent": span.name, "nodes": span.nodes})}
       </div>
     `;
   };
+
+  /////////////////////////////////////////////////
+
+  function listNode (data={}, content=``) {
+    let {parent=NodeName, nodeIDs=[], skipOrder=false} = data;
+
+    nodeIDs = Order.OrderNodes(Nodes) || nodeIDs;
+
+    if (nodeIDs.length === 0 && !homepage) { return emptyContainer(); }
+    nodeIDs.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+      content += `
+        <tr directory='${N_ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${N_ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: "+nodeData.color+" -3px 0' " : ""}>
+          <td><img loading='lazy' height='32' width='32' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img></td>
+          <td><input rcPar='2' value='${N_CapFirstLetter(nodeData.name)}' disabled style='pointer-events:none;'></input></td>
+          <td>${nodeData.type.short}</td>
+          <td>${N_DateFormatter(nodeData.time.modified || nodeData.time.created)}</td>
+          <td>${nodeData.size > 1 ? N_ConvertSize(nodeData.size) : "-"}</td>
+        </tr>
+      `;
+    }); return content;
+  };
+
+  function blockNode (data={}, content=``) {
+    const {parent=NodeName, nodes} = data;
+
+    if (nodes.length === 0 && !homepage) { return emptyContainer(); }
+    nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+      content += `
+        <div class='Item' directory='${N_ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TEXTAREA,IMG' title='${N_ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='border-bottom: 2px solid "+nodeData.color+"'" : ""}>
+          <img loading='lazy' height='90' width='${!nodeData.mime == "FOLDER" ? 90 : 120}' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img>
+          <textarea rcpar='1' disabled style='pointer-events:none;'>${N_CapFirstLetter(nodeData.name)}</textarea>
+        </div>
+      `;
+    }); return content;
+  };
+
+  /////////////////////////////////////////////////
 
   function emptyContainer() {
     return `
@@ -124,6 +136,8 @@ function renderContent(content=``) {
       </div>
     `;
   }
+
+  renderContent.listNode = listNode;
 }
 
 
@@ -457,7 +471,7 @@ class Popup {
           if (Spans[selectedItem.parentNode.getAttribute('node-id')]) {selectedItem = selectedItem.parentNode}
           else {console.log('Invalid Span ID'); return;}
         }
-        let forDeletion = NodeSelected.length ? NodeSelected : [selectedItemID];
+        let forDeletion = NodeSelected.size ? Array.from(NodeSelected) : [selectedItemID];
         NodeAPI('edit', {"action": "DELETE", "section": Section, "id": forDeletion, "path": NodeID});
       }
       else if (this.Action == 'NewSpan') {
@@ -547,7 +561,7 @@ async function PopUp_Download(Item, Caller) {
   if (Item.id && Caller == 'ItemInfo') { // Item Info
     [DownloadIDs, DownloadName, Zipping] = [[Item.id], Item.name, !Item.type.file];
   } else if (Caller == 'ContextMenu') { // ContextMenu
-    DownloadIDs = NodeSelected;
+    DownloadIDs = Array.from(NodeSelected);
     DownloadName = DownloadIDs.length > 1 ? 'Drive_Download' : Nodes[DownloadIDs[0]].data.name;
     Zipping = DownloadIDs.length === 1 ? (Nodes[DownloadIDs[0]].data.mime == 'FOLDER' ? true : false) : true;
   } else { return; }
@@ -593,7 +607,7 @@ async function ViewItem(Type, NodeID) {
     </div>`;
 
   if (Type == "image") {
-    document.querySelector('.Preview').innerHTML = `<img class='ViewImage' src='/storage/${NodeID}'></img>`;
+    document.querySelector('.Preview').innerHTML = `<img class='ViewImage' rc='Preview_Image' node-id='${NodeID}' src='/storage/${NodeID}'></img>`;
   }
   else if (Type == "video") {
     document.querySelector('.Preview').innerHTML = `<video class='ViewImage' controls name='video' src='/storage/${NodeID}'></video`;
@@ -620,5 +634,5 @@ async function ViewItem(Type, NodeID) {
 // <i class='miniPreviewBtn fas fa-compress' title='Show in MiniPlayer' onclick='miniPreview(this)'></i>
 // color: var(--text-dull); font-size: 18px; place-self: end; padding: 10px; cursor: pointer;
 function miniPreview(e) {
-  console.log(e);
+  console.log(e || 'RC Call ?');
 }

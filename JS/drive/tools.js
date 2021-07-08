@@ -151,7 +151,7 @@ const N_Error = (err) => {
 const N_Find = (identifier, multi=false, parentEle) => {
   return multi
     ? (parentEle || document).querySelectorAll(identifier)
-    : (parentEle || document).querySelector(identifier);
+    : (parentEle || document).querySelector(identifier) || undefined; // JS is dumb. returning 'null' here counts as an object and runs code when we dont want it to.
 }
 
 // Status / Waiting

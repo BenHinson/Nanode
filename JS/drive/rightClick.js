@@ -52,13 +52,19 @@ const RightClickObjectMenu = {
     {_id: '2', title: 'View Details', CMD: 'FetchItemInformation', VAR: ["RCElement"]},
     {split: true},
     {_id: '3', title: 'Go to', CMD: 'Shortcut', VAR: ["RCElement"]},
+  ],
+
+  "Preview_Image": [
+    {_id: '1', title: 'Open in New Tab', CMD: 'ExternalTab', CUS_VAR: "NODEID", VAR: []},
+    {_id: '2', title: 'Open in Mini Preview', class: 'disabled-text', CMD: 'miniPreview', VAR: []},
+    {split: true},
+    {_id: '3', title: 'Close', CMD: 'PROTO_ToggleBase_', VAR: []},
   ]
 }
 
 // ========================================
 
 document.addEventListener("contextmenu", function(e) {
-  
   if (e.target.getAttribute('noRC') != null) { return; }
   
   e.stopPropagation();
@@ -84,6 +90,7 @@ class RightClickContainer {
   constructor(menu, event, element) {
     [this.menu, this.event, this.target] = [menu, event, element];
     this.container = document.querySelector('.RightClickContainer');
+    console.log('DOUBLE CLICK TEST');
     this._Initialise();
   }
 
@@ -116,8 +123,10 @@ class RightClickContainer {
       option.addEventListener('click', (e) => {
         let RC_ID = e.currentTarget.getAttribute('RC_ID');
         let func = this.menu.find(e => e._id == RC_ID);
-        window[func.CMD](func.VAR[0], func.VAR[1], func.VAR[2], func.VAR[3], func.VAR[4])
-        if (NodeSelected.length == 1) { SelectItem(RCElement); }
+        let variableOne = func.CUS_VAR ? CUSTOM_Var(func.CUS_VAR, this.target) : func.VAR[0] || null;
+        if (func.CUS_VAR) {}
+        window[func.CMD](variableOne, func.VAR?.[1], func.VAR?.[2], func.VAR?.[3], func.VAR?.[4]) // ?. after the object name checks if it exists first.
+        if (NodeSelected.size == 1) { SelectItem(RCElement); }
       })
     })
   }
@@ -136,6 +145,12 @@ function startFocusOut() {  // Called from PositionMenu_ in RightClickContainer.
 
 // ========================================
 
+CUSTOM_Var = (variableName, target) => {
+  if (variableName == 'NODEID') {
+    return target.getAttribute('node-id');
+  }
+}
+
 RC_Var = async() => {
   function Collapse(e) { return (N_PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
   function Layout(e) { return UserSettings.local.layout == 0 ? "List View" : "Block View"; }
@@ -146,12 +161,17 @@ RC_Var = async() => {
   RC_Var.Change_Theme = Change_Theme;
 }
 
+// ========================================
+
+function PROTO_ToggleBase_() { Popup.prototype.ToggleBase_(); }
+
 function NEWColorPicker(caller, callback) { new CreateColorPicker(caller, callback) }
 
 function NEWPopup(type, caller, action, data) {
-  if (type == 'NewFolder') {new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create', color: '', RCE: '', secondary: true})}
-  else {new Popup(type, RCElement, action, data)}
+  if (type == 'NewFolder') { new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create', color: '', RCE: '', secondary: true}); }
+  else { new Popup(type, RCElement, action, data); }
 }
+
 
 
 RC_Var();

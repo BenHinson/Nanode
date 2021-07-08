@@ -5,7 +5,7 @@ let Section = 'main';
 let NodeName = 'home';
 let Spans = {};
 let Nodes = {};
-let NodeSelected = []; // Items that are currently selected
+let NodeSelected = new Set(); // Items that are currently selected
 
 // @ == Initial Load
 document.addEventListener("DOMContentLoaded", async(event) => {

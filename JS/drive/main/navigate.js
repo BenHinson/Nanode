@@ -21,7 +21,7 @@ async function Shortcut(parentID, nodeID) {
 }
 
 
-// Directory Path
+// @ = Directory Path
 function Route(Node_Path, Text_Path) {
   if (FolderCall == true) {
     if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Node == Node_Path) {
@@ -72,7 +72,7 @@ function Route(Node_Path, Text_Path) {
 }
 
 
-// Navigation Buttons
+// @ = Navigation Buttons
 navigateForward.addEventListener('click', () => {
   if (Directory_Tree[Tree_Number].Route[Tree_Steps]) {
     Directory_Route = Directory_Tree[Tree_Number].Route.slice(0, Tree_Steps + 1);
@@ -98,8 +98,7 @@ navigateBackward.addEventListener('click', () => {
   NodeCall({"Folder":Directory_Route[Tree_Steps - 1].Node, "Reload": false});
 })
 
-
-// Movement
+// @ = Movement
 function setupFileMove(Caller) {
   if (Caller == "Codex") {
     $(".codexWrapper").sortable({
@@ -182,8 +181,8 @@ function setupFileMove(Caller) {
         SelectItem(e.currentTarget, true);
         return `
           <div class='listItem-Placeholder'>
-            <img src='${NodeSelected.length > 1 ? '/assets/drive/file_icons/multiple.svg' : e.currentTarget.children[0].children[0].src}'></img>
-            <h5>${NodeSelected.length > 1 ? 'Moving '+NodeSelected.length+' items' : e.currentTarget.children[1].children[0].value }</h5>
+            <img src='${NodeSelected.size > 1 ? '/assets/drive/file_icons/multiple.svg' : e.currentTarget.children[0].children[0].src}'></img>
+            <h5>${NodeSelected.size > 1 ? 'Moving '+NodeSelected.size+' items' : e.currentTarget.children[1].children[0].value }</h5>
           </div>
         `;
       },
@@ -235,16 +234,50 @@ function setupFileMove(Caller) {
   }
 }
 
-let moveToTarget = function(drop, item, type='table') {
+const moveToTarget = function(drop, item, type='table') {
   let targetID = drop.target.getAttribute('node-id');
-  if (!NodeSelected.includes(targetID) && targetID !== NodeID && targetID) {
+  if (!NodeSelected.has(targetID) && targetID !== NodeID && targetID) {
     NodeAPI('edit', {"action": "MOVE", "section": Section, "id": NodeSelected, "to": targetID, "path": false})
     
     NodeSelected.forEach(itemID => {
       N_Find(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove();
     })
     
-    NodeSelected = [];
+    NodeSelected.clear();
     N_Find('.listItem-Placeholder').remove();
   }
 }
+
+// @ = Click & Drag Select
+const DragSelection = new SelectionArea({
+  selectables: ['[dir-nodes] > tr'],
+  boundaries: ['.main_Page'],
+  startThreshold: 10,
+}).on('beforestart', ({event}) => {
+  N_Find('.main_Page').classList.add('no-select');
+  return !event.target.tagName.match(/TD|INPUT/);
+}).on('start', ({store, event}) => {
+  if (!event.ctrlKey && !event.metaKey) {
+    for (const el of store.stored) {
+      el.classList.remove('ItemSelected');
+      el.removeAttribute('selected');
+      NodeSelected.delete(el.getAttribute('node-id'));
+    }
+    NodeSelected.clear();
+    DragSelection.clearSelection();
+  }
+}).on('move', ({store: {changed: {added, removed}}}) => {
+  for (const el of added) {
+    NodeSelected.add(el.getAttribute('node-id'));
+    el.setAttribute('selected', true);
+    el.classList.add('ItemSelected');
+  }
+  for (const el of removed) {
+    NodeSelected.delete(el.getAttribute('node-id'));
+    el.removeAttribute('selected');
+    el.classList.remove('ItemSelected');
+  }
+}).on('stop', () => {
+  N_Find('.main_Page').classList.remove('no-select');
+  DragSelection.keepSelection();
+});

@@ -11,6 +11,7 @@
 <div class='PageContainer homePageContainer'>
   
   <div class='PageHeader flex-even-cent'>
+
     <div class='PageControls'>
       <span class="navigateBackward" title="Back"><i class="fas fa-chevron-left"></i></span>
       <span class="navigateForward" title="Forward"><i class="fas fa-chevron-right"></i></span>
@@ -20,7 +21,15 @@
 
     <span class='searchContainer'>
       <input class='search' type="text" placeholder="Search...">
-      <button class='searchParams'><i class="fas fa-cog trans300"></i></button>
+      <button class='searchControls'>
+        <i class="searchParams">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" class="active"></path>
+          </svg>
+        </i>
+        <i class="searchSubmit fas fa-search"></i>
+      </button>
+
       <div class='searchDropdown'>
         <div class='searchParamsContainer'>
           <div class='searchSelectors'>
@@ -52,11 +61,16 @@
           </div>
           <span class='searchOptionInput'></span>
         </div>
+        <div class='searchSuggested'>
+          <p>Suggested</p>
+          <ul></ul>
+        </div>
         <div class='searchResultsContainer'>
           <table class='searchResults tableTemplate'><tbody search-nodes></tbody></table>
         </div>
       </div>
     </span>
+
   </div>
 
   <div class='PageData' rc='File_Container'>
