@@ -1,117 +1,128 @@
-function elem(id) { return document.getElementById(id) }
-const container = document.getElementsByClassName('mainLoginContainer')[0];
-
-let currentLoginPage = 'login';
-
-const reponseMap = {
-  "Incorrect_Cred": "wrong email or password </i>",
-  "Invalid_Email" : "enter a valid email</i>",
-  "Already_Exists" : "account already exists</i>"
-}
-
-listenToBtn();
-function listenToBtn() {
-  elem('loginBtn').addEventListener("click", async(e) => {
-    e.preventDefault();
-
-    const email = elem('email'); const emailTitle = elem('TitleEmail')
-    const pwd = elem('pwd'); const pwdTitle = elem('TitlePwd');
-    const form = elem('loginForm');
-
-    if ( !email.value ) { 
-      email.style.border = "1px solid #f04747";
-      emailTitle.innerHTML = "Email <i> - field required</i>";
-    } else {
-      email.style.border = "";
-      emailTitle.innerHTML = "Email"; 
-    }
-  
-    if ( !pwd.value ) { 
-      pwd.style.border = "1px solid #f04747";
-      pwdTitle.innerHTML = "Password <i> - field required</i><p style='display:none;'></p>";
-    } else {
-      pwd.style.border = "";
-      pwdTitle.innerHTML = ( currentLoginPage == 'login') ? "Password" : "Password<p>Min: 8 Long | Number | Uppercase | Lowercase | Special Character</p>"; 
-    }
-  
-    if (form.getAttribute('action')) {
-      try { 
-        const response = await fetch( form.getAttribute('action'), { method: 'POST', body: new URLSearchParams(new FormData(form)) })
-        const responseData = await response.json();
-
-        if (responseData.Acc_Server == "_Login") {
-          location = '//nanode.one';
-        } else if (responseData.Acc_Server == "_Registered") {
-          loginSignupFormSwitch();
-        } else if (responseData.Acc_Server) {
-          elem("email").style.border = "1px solid #f04747";
-          elem("TitleEmail").innerHTML = "Email <i> - "+reponseMap[responseData.Acc_Server];
-
-          if (responseData.Acc_Server == "Incorrect_Cred") {
-            elem("pwd").style.border = "1px solid #f04747"; elem('TitlePwd').innerHTML = "Password <i> - wrong email or password</i>";
-          }
-        }
-
-      } catch(error) {console.log(error)}
-    }
-  })
-}
 
 
-function loginSignupFormSwitch() {
-  if (currentLoginPage == "login") { currentLoginPage = "signup"
-    container.innerHTML = `
-    <h1 class="MainTitle">Signup</h1>
-    <h2 class="SecondaryTitle">Signup for Nanode Storage</h2>
-
-    <form id="loginForm" method="POST">
-      <div id="TitleEmail" class="InputTitle">Email</div>
-      <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required title='Please enter your Email'>
-  
-      <div id="TitlePwd" class="InputTitle">Password<p>Min: 8 Long | Number | Uppercase | Lowercase | Special Character</p></div>
-      <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required title='Please enter your Password'>
-  
-      <input id="loginBtn" class="ButtonInput" type="submit" value="Signup" onsubmit="return false">
-    </form>
-
-    <span id="accountStatus">Already have an account?</span>
-    <button onclick="loginSignupFormSwitch()">Login</button>
-    `
-    inputChecker();
-  } else { currentLoginPage = "login"
-    container.innerHTML = `
-    <h1 class="MainTitle">Welcome</h1>
-    <h2 class="SecondaryTitle">Login to Nanode</h2>
-
-    <form id="loginForm" method="POST" action="/login">
-      <div id="TitleEmail" class="InputTitle">Email</div>
-      <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required title='Please enter your Email'>
-
-      <div id="TitlePwd" class="InputTitle">Password</div>
-      <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required title='Please enter a Password'>
-
-      <input id="loginBtn" class="ButtonInput" type="submit" value="Login" onsubmit="return false">
-    </form>
-
-    <span id="accountStatus">Dont have an account?</span>
-    <button onclick="loginSignupFormSwitch()">Signup</button>
-    `
+nanodeLogin = () => {
+  let currentLoginPage = 'login';
+  const sufficient = (/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);
+  const reponseMap = {
+    "Incorrect_Cred": "wrong email or password </i>",
+    "Invalid_Email" : "enter a valid email</i>",
+    "Already_Exists" : "account already exists</i>"
   }
-  listenToBtn();
+
+  const loginElem = {
+    form: document.querySelector('form'),
+    email: document.querySelector('input[type=text]'),
+    pwd: document.querySelector('input[type=password]'),
+    emailTitle: document.querySelector('.emailTitle'),
+    pwdTitle: document.querySelector('.pwdTitle'),
+    submitBtn: document.querySelector('input[type=submit]'),
+    formSwitchBtn: document.querySelector('#formSwitch'),
+  }
+
+  // ======================
+  
+
+  Listen = () => {
+    loginElem.submitBtn.addEventListener("click", async(e) => {
+      e.preventDefault();
+
+      loginElem.email.style.border = !loginElem.email.value ? '1px solid var(--color_red)' : '';
+      loginElem.pwd.style.border = !loginElem.pwd.value ? '1px solid #f04747' : '';
+
+      if (currentLoginPage == 'signup') {
+        loginElem.pwdTitle.innerHTML = loginElem.pwd.value.match(sufficient)
+          ? 'Password'
+          : 'Password<i> - Please improve your password</i>'
+      }
+
+      // loginElem.pwdTitle.innerHTML = 'Password<span><p>8 Long</p><p>Uppercase</p><p>Lowercase</p><p>Number</p><p>Special</p></span>';
+    
+      if (loginElem.form.getAttribute('action') && loginElem.email.value && loginElem.pwd.value) {
+        try {
+          const responseData = await(
+            await fetch( loginElem.form.getAttribute('action'), { method: 'POST', body: new URLSearchParams(new FormData(loginElem.form)) })
+          ).json();
+  
+          if (responseData.Acc_Server == "_Login") {
+            location = '//nanode.one';
+          } else if (responseData.Acc_Server == "_Registered") {
+            formSwitch();
+          } else if (responseData.Acc_Server) {
+            loginElem.email.style.border = "1px solid #f04747";
+            loginElem.emailTitle.innerHTML = "Email <i> - "+reponseMap[responseData.Acc_Server];
+  
+            if (responseData.Acc_Server == "Incorrect_Cred") {
+              loginElem.pwd.style.border = "1px solid #f04747";
+              loginElem.pwdTitle.innerHTML = "Password <i> - wrong email or password</i>";
+            }
+          }
+  
+        } catch(error) {console.log(error)}
+      }
+    })
+  }
+
+
+  Checker = () => {
+    loginElem.pwd.addEventListener('input', (e) => {
+      loginElem.pwdTitle.style.color = e.target.value.match(sufficient) ? 'var(--color_green)' : 'var(--color_red)';
+
+      if (e.target.value.match(sufficient)) loginElem.pwdTitle.innerHTML = 'Password';
+
+      loginElem.form.action = sufficient ? '/signup' : '';
+    })
+
+  }
+
+
+  formSwitch = () => {
+    if (currentLoginPage == "login") { currentLoginPage = "signup";
+
+      document.querySelector('.MainTitle').innerText = 'Signup';
+      document.querySelector('.SecondaryTitle').innerText = 'Signup for Nanode Storage';
+
+      loginElem.form.removeAttribute('action');
+      [loginElem.emailTitle.innerHTML, loginElem.pwdTitle.innerHTML] = ['Email', 'Password'];
+      [loginElem.pwdTitle.style, loginElem.email.style, loginElem.pwd.style] = ['', '', ''];
+      loginElem.submitBtn.value = 'Signup';
+      loginElem.submitBtn.setAttribute('onsubmit', 'return false')
+
+      document.querySelector('#accountStatus').innerText = 'Already have an account?';
+      loginElem.formSwitchBtn.innerText = 'Login';
+
+      // <span><p>8 Long</p><p>Uppercase</p><p>Lowercase</p><p>Number</p><p>Special</p></span>
+
+      this.Checker();
+    } else { currentLoginPage = "login";
+      document.querySelector('.MainTitle').innerText = 'Welcome';
+      document.querySelector('.SecondaryTitle').innerText = 'Enter into your Nanode Account';
+
+      loginElem.form.setAttribute('action', '/login');
+      [loginElem.emailTitle.innerHTML, loginElem.pwdTitle.innerHTML] = ['Email', 'Password'];
+      [loginElem.pwdTitle.style, loginElem.email.style, loginElem.pwd.style] = ['', '', ''];
+      loginElem.submitBtn.value = 'Login';
+      
+      document.querySelector('#accountStatus').innerText = "Don't have an account?";
+      loginElem.formSwitchBtn.innerText = 'Signup';
+    } 
+    this.Listen();
+  }
+
+
+  // ======================
+
+  this.Listen();
+
+  nanodeLogin.formSwitch = formSwitch;
 }
 
-function inputChecker() {
-  elem('pwd').addEventListener('input', function(e) {
-    let sufficient = e.target.value.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)
-    if (sufficient) {
-      document.getElementsByTagName('p')[0].style.color = "#00d610"
-      elem('loginForm').action = "/signup";
-    } else { 
-      elem('loginForm').action = "";
-      document.getElementsByTagName('p')[0].style.color = "#d60000";
-    }
-  })
-}
+nanodeLogin();
+
+
+
+
+
+
 
 // background-image: url(//drive.nanode.one/assets/nanode/system.svg);
 // background-repeat: no-repeat;

@@ -39,6 +39,11 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300');
+@font-face {
+  font-family: "gr-bold";
+  src: url("/assets/fonts/gr-bold.woff2") format("woff2");
+  font-display: swap;
+}
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -50,18 +55,22 @@
   box-sizing: border-box;
   outline: none;
   font-family: 'Roboto', 'Segoe UI', 'monospace';
+  -webkit-font-smoothing: antialiased;
   letter-spacing: 0.5px;
   color: inherit;
   font-size: 16px;
 }
-html { overflow: hidden; }
+html {
+  position: fixed;
+  overflow: hidden;
+  min-height: 100vh;
+  min-width: 100vw;
+}
 body {
   display: grid;
   grid-template-columns: 220px auto;
   grid-template-rows: 100vh;
   overflow: hidden;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
 }
 
 ///////////////////////////////////////////////
@@ -110,24 +119,28 @@ body {
 
   .nanode {
     display: flex;
-    flex-wrap: nowrap;
-    height: 20px;
-    width: 155px;
-    margin: 25px 0 20px 20px;
-    font-size: 18px;
-    letter-spacing: 0.5em;
+    align-items: center;
+    gap: 0.5em;
+    margin: 25px 20px;
+    font-family: 'gr-bold';
+    font-size: 19px;
+    letter-spacing: 1.5px;
     text-decoration: none;
-    filter: brightness(0);
+    z-index: 3;
     transition: all 200ms;
-    > img {
+    color: var(--text-strong);
+    
+    > div {
+      height: 30px;
+      width: 30px;
+      border-radius: 5px;
+      background: url('https://nanode.one/assets/nanode/logo/logo.svg') no-repeat center #0e0f11;
+      background-size: 20px;
+      filter: invert(1);
       transition: all 300ms;
-      margin-right: 0.5em;
-      height: 20px;
-      left: 0;
+      body[data-theme=light] & { filter: none; }
     }
-    body[data-theme=dark] & { filter: none; }
-
-    &:hover { color: transparent; > img {left: 50%; transform: rotate(180deg); } }
+    &:hover { color: transparent; > div {transform: translateX(70px); } }
   }
 
   div {
@@ -243,10 +256,10 @@ body {
         opacity: 1;
         background: var(--highlight);
       }
-    }
-    .currentDirBtn {
-      opacity: 1;
-      background: var(--feature);
+      &:last-child {
+        opacity: 1;
+        background: var(--feature);
+      }
     }
 
     i {
@@ -341,9 +354,9 @@ body {
       .ContentContainer { // Block Layout
         display: grid;
         margin-bottom: 1em;
-        grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         grid-auto-rows: auto 1fr;
-        grid-gap: 12px 6px;
+        grid-gap: 12px;
         
         &>input {
           grid-column: 1/-1;
@@ -353,26 +366,40 @@ body {
         }
       
         &>div {
+          position: relative;
           display: flex;
           align-items: center;
           flex-direction: column;
 
           flex: 1;
           min-height: 120px;
+          padding: 5px;
           border-radius: 5px;
           cursor: pointer;
           user-select: none;
-          background: var(--component);
-          &:hover {
-            background: var(--highlight);
+          // background: var(--component);
+          border: 1px solid var(--component);
+          &:hover { background: var(--highlight); }
+
+          >color {
+            position: absolute;
+            height: 15px;
+            width: 15px;
+            top: 5px;
+            right: 5px;
+            border-radius: 50%;
+            z-index: 2;
           }
+          
+          // & >img { max-height: 120px; }
+          >img { max-height: 70px; height: auto; }
       
-          & textarea {
+          >textarea {
             min-height: 30px;
             max-height: 60px;
             width: 100%;
             padding: 2px;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -387,8 +414,12 @@ body {
             }
             &:disabled { cursor: pointer; }
           }
-      
-          & img { max-height: 120px; }
+
+          >p {
+            margin: 10px 0;
+            font-size: 12px;
+            color: var(--text-dull);
+          }
         }
       }
 
@@ -958,35 +989,25 @@ body {
   .PageList {
     width: 80px;
     > div {
-      > a {
-        height: 30px;
-        width: 30px;
-        margin: 25px 0 10px 25px;
-        filter: none;
-        background: url('/assets/nanode/logo/blue_light.svg');
-        .dark-theme & { background: url('/assets/nanode/logo/blue_dark.svg'); }
-      }
-      > span > p {
-        display: none;
+      &.PagesTwo {margin: 20px 0;}
+      > .nanode {font-size: 0;}
+      > span {
+        padding: 4px 20px 4px 30px;
+        justify-content: center;
+        > p {
+          display: none;
+        }
       }
     }
-    .Storage {
-      h3 {display: none;}
-      p {display: none;}
-      progress {
-        transform: rotate(90deg);
-        top: 45px;
-      }
-    }
+    .Storage { display: none; }
   }
 }
 
 @media only screen and (max-width: 900px) {
-  .ListContentTable {
+  .tableTemplate {
     & th:nth-child(4) { display: none !important;}
     & td:nth-child(4) { display: none !important;}
   }
-  .PageHeader > .search { width: 80px; }
 }
 
 @media only screen and (max-width: 800px) {

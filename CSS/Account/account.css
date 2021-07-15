@@ -1,7 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
 :root {
-  --highlight-color:  #18ec58;
+  --color_red: #ff453a;
+  --color_green: #0bc30b;
+  --color_highlight: #99ccff;
+  --color_blue: #4285f4;
+  --background: #0e0f11;
+  --background_2: #141517;
+  --comp_dark: #191b1e;
+  --component: #282c32;
+  --comp_highlight: #83898f;
+  --text_dull: #cacccf;
+  --text: #f5f6f7;
+}
+
+@font-face {
+  font-family: "gr-bold";
+  src: url("/assets/fonts/gr-bold.woff2") format("woff2");
+  font-display: swap;
 }
 
 * {
@@ -10,7 +25,9 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   outline: none;
-  font-family: 'Segoe UI';
+  font-family: 'Inter', 'Segoe UI', 'monospace';
+  letter-spacing: 0.3px;
+  color: var(--text);
 }
 
 html {
@@ -22,7 +39,7 @@ html {
 
 body {
   height: 100%;
-  background: #0e0f11;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar {
@@ -31,15 +48,15 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0e0f11;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #282c32;
+  background: var(--component);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(40deg, #a9d2fb, #74afe2, #31648b);
+  background: var(--comp_highlight);
 }
 
 .loginBackground {
@@ -48,154 +65,193 @@ body {
   place-content: center;
   height: 100%;
   width: 100%;
-  background-color: #121214;
-  background-image: url(https://drive.nanode.one/assets/homepage/lines.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  -o-object-fit: contain;
-     object-fit: contain;
+  background-color: var(--background);
+}
+
+.loginBackground > img {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+}
+
+.loginBackground > img:nth-child(1) {
+  left: 0;
+  height: 45vh;
+}
+
+.loginBackground > img:nth-child(2) {
+  right: 0;
+  height: 60vh;
+}
+
+.nanode {
+  top: calc((50% - 190px) / 2);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  left: calc(50% - 60px);
+  gap: 0.5em;
+  font-family: 'gr-bold';
+  font-size: 19px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  z-index: 3;
+}
+
+.nanode > div {
+  height: 30px;
+  width: 30px;
+  border-radius: 5px;
+  background: url("https://nanode.one/assets/nanode/logo/logo.svg") no-repeat center #0e0f11;
+  background-size: 20px;
+  -webkit-filter: invert(1);
+          filter: invert(1);
 }
 
 .mainLoginContainer {
-  height: 380px;
-  width: 500px;
+  height: auto;
+  width: 90vw;
+  max-width: 400px;
+  padding: 2em;
   border-radius: 5px;
   text-align: center;
-  color: #fff;
-  background-color: #141517;
-  -webkit-box-shadow: 4px 4px 20px -2px #0e0f11;
-          box-shadow: 4px 4px 20px -2px #0e0f11;
+  background: #161a1e;
+  z-index: 2;
 }
 
 .mainLoginContainer .MainTitle {
   font-size: 24px;
-  font-weight: 600;
-  line-height: 30px;
-  color: #f5f6f7;
-  margin-top: 1rem;
 }
 
 .mainLoginContainer .SecondaryTitle {
-  color: #cacccf;
-  font-size: 15px;
+  color: var(--text_dull);
+  font-size: 13px;
   font-weight: 400;
-  line-height: 20px;
   margin: 0.5rem;
 }
 
-.mainLoginContainer span {
-  margin-right: 3px;
+.mainLoginContainer form {
+  position: relative;
+  margin: 2em 0 1em 0;
+}
+
+.mainLoginContainer form input {
+  height: 43px;
+  width: 100%;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  line-height: 32px;
+  -webkit-transition: all 300ms;
+  transition: all 300ms;
+}
+
+.mainLoginContainer form > div {
+  position: relative;
+}
+
+.mainLoginContainer form > div > label {
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  margin: 0.5em 0;
+  padding: 0 0.5em;
+  font-size: 15px;
+  text-align: left;
+  font-family: 'gr-bold';
+  color: var(--text_dull);
+  background: #161a1e;
+  pointer-events: none;
+  -webkit-transition: top 200ms, font-size 200ms;
+  transition: top 200ms, font-size 200ms;
+}
+
+.mainLoginContainer form > div > label > i {
+  font-size: 12px;
+  color: var(--color_red);
+}
+
+.mainLoginContainer form > div > input[type=text], .mainLoginContainer form > div input[type=password] {
+  padding: 1em;
+  margin-bottom: 1em;
+  color: var(--text);
+  border: 1px solid var(--component);
+  background: transparent;
+}
+
+.mainLoginContainer form > div > input[type=text]:hover, .mainLoginContainer form > div > input[type=text]:active, .mainLoginContainer form > div > input[type=text]:focus, .mainLoginContainer form > div input[type=password]:hover, .mainLoginContainer form > div input[type=password]:active, .mainLoginContainer form > div input[type=password]:focus {
+  border: 1px solid var(--text) !important;
+}
+
+.mainLoginContainer form > div > input[type=text]:focus + label,
+.mainLoginContainer form > div > input[type=text]:not(:placeholder-shown) + label, .mainLoginContainer form > div input[type=password]:focus + label,
+.mainLoginContainer form > div input[type=password]:not(:placeholder-shown) + label {
+  top: -14px;
+  font-size: 12px;
+}
+
+.mainLoginContainer form > div > span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding-top: 5px;
+}
+
+.mainLoginContainer form > div > span > p {
+  height: 20px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  background: var(--color_red);
+}
+
+.mainLoginContainer form > input[type=submit] {
+  height: 38px;
+  margin: 1em 0;
+  border: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+  color: var(--text);
+  border-bottom: 2px solid #31927f;
+  background: var(--component);
+}
+
+.mainLoginContainer form > input[type=submit]:hover, .mainLoginContainer form > input[type=submit]:active, .mainLoginContainer form > input[type=submit]:focus {
+  color: var(--background);
+  background: var(--text);
+}
+
+.mainLoginContainer > span {
+  margin-right: 0.25em;
   font-size: 13px;
   font-weight: 100;
   opacity: 0.5;
 }
 
 .mainLoginContainer button {
-  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 10px;
   border: none;
-  color: #99ccff;
-  background: transparent;
+  font-size: 12px;
+  text-align: center;
+  background: var(--component);
   cursor: pointer;
 }
 
 .mainLoginContainer button:hover {
-  text-decoration: underline;
-}
-
-.mainLoginContainer form {
-  width: 90%;
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
-  margin: 0.25rem 5%;
-  font-size: 12px;
-  color: #fff;
-}
-
-.mainLoginContainer form .InputTitle {
-  color: #c5c5c5;
-  margin: 6px 0;
-  font-size: 16px;
-  text-align: left;
-}
-
-.mainLoginContainer form .InputTitle p {
-  display: inline-block;
-  font-size: 12px;
-  padding: 0 1rem;
-  color: #d60000;
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
-}
-
-.mainLoginContainer form .InputTitle i {
-  font-size: 12px;
-  color: #f04747;
-}
-
-.mainLoginContainer form .TextInput {
-  height: 44px;
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 1rem;
-  font-size: 15px;
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  -webkit-transition: border-color 200ms ease-in-out;
-  transition: border-color 200ms ease-in-out;
-  border-bottom: 1px solid #99ccff;
-  border-radius: 3px;
-}
-
-.mainLoginContainer form .TextInput::-webkit-input-placeholder {
-  font-size: 15px;
-  opacity: 0.6;
-}
-
-.mainLoginContainer form .TextInput:-ms-input-placeholder {
-  font-size: 15px;
-  opacity: 0.6;
-}
-
-.mainLoginContainer form .TextInput::-ms-input-placeholder {
-  font-size: 15px;
-  opacity: 0.6;
-}
-
-.mainLoginContainer form .TextInput::placeholder {
-  font-size: 15px;
-  opacity: 0.6;
-}
-
-.mainLoginContainer form .TextInput:focus {
-  border: 1px solid #99ccff;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.mainLoginContainer form .ButtonInput {
-  height: 40px;
-  width: 100%;
-  margin: 1rem 0;
-  font-size: 15px;
-  font-weight: 400;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  border: none;
-  border-radius: 5px;
-  color: #eeeeee;
-  background-color: transparent;
-  border: 1px solid #99ccff;
-  cursor: pointer;
-  -webkit-transition: background-color 200ms ease-in-out;
-  transition: background-color 200ms ease-in-out;
-}
-
-.mainLoginContainer form .ButtonInput:hover {
-  background-color: #99ccff2e;
+  background: var(--comp_highlight);
 }
 
 .accountBackground {
@@ -203,27 +259,38 @@ body {
   display: grid;
   height: 100%;
   width: 100%;
-  background: #131618;
+  background: var(--background);
 }
 
-a {
+.accountBackground > .nanode {
+  top: 30px;
+}
+
+.accountBackground > img {
   position: absolute;
-  width: 150px;
-  top: 40px;
-  left: 35px;
-  text-decoration: none;
-  color: #f0e800;
-  font-weight: 600;
-  font-size: 14px;
+  top: 0;
+  pointer-events: none;
+}
+
+.accountBackground > img:nth-child(1) {
+  left: 0;
+  height: 45vh;
+}
+
+.accountBackground > img:nth-child(2) {
+  right: 0;
+  height: 60vh;
 }
 
 .infoContainer {
+  display: -ms-grid;
+  display: grid;
   place-self: center;
   height: 100%;
   max-width: 800px;
-  width: 60%;
-  min-width: 300px;
-  padding: 40px;
+  width: 100%;
+  padding: 80px 40px 40px 40px;
+  gap: 25px;
 }
 
 .infoContainer section {
@@ -237,14 +304,9 @@ a {
           justify-content: space-between;
   gap: 12px;
   position: relative;
-  margin-bottom: 40px;
   padding: 20px;
-  color: #ccc;
-  font-family: 'Inter';
-  letter-spacing: 0.3px;
   border-radius: 5px;
-  background: #1f2227;
-  border: 1px solid #36393d;
+  background: #161a1e;
 }
 
 .infoContainer section * {
@@ -258,7 +320,6 @@ a {
   border: none;
   padding: 10px;
   background: transparent;
-  margin-bottom: 20px;
 }
 
 .infoContainer section.userProfile img {
@@ -300,7 +361,7 @@ a {
   padding: 2px 10px;
   font-size: 13px;
   border-radius: 4px;
-  background: #1f2227;
+  background: #161a1e;
   opacity: 0.8;
 }
 
@@ -336,7 +397,7 @@ a {
   padding: 2px 10px;
   font-size: 13px;
   border-radius: 4px;
-  background: #1f2227;
+  background: #161a1e;
   opacity: 0.8;
   cursor: pointer;
 }
@@ -510,14 +571,41 @@ a {
 }
 
 .infoContainer section.userInformation {
-  border: none;
-  padding: 10px;
+  border-top: 1px solid var(--component);
+  padding: 1em;
   background: transparent;
 }
 
+.infoContainer section.userInformation > h2 {
+  font-size: 14px;
+  color: #31927f;
+}
+
 .infoContainer section.userInformation p {
+  font-weight: 100;
   font-size: 12px;
   opacity: 0.6;
+}
+
+.infoContainer section.userInformation p:hover {
+  opacity: 1;
+}
+
+.infoContainer section.userInformation span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid var(--component);
+}
+
+.infoContainer section.userInformation span > p {
+  opacity: 0.8;
 }
 
 .infoContainer section:nth-last-child(2) {
@@ -573,17 +661,5 @@ a {
   border: 1px solid #a266ee;
   background: #a266ee33;
   color: #a266ee;
-}
-
-@media only screen and (max-width: 600px) {
-  .mainLoginContainer {
-    height: 380px;
-    width: 90%;
-    top: calc(50% - 190px);
-    left: 5%;
-  }
-  .loginSecondaryTitle {
-    margin-bottom: 16px;
-  }
 }
 /*# sourceMappingURL=account.css.map */

@@ -17,24 +17,32 @@
   <body class="dark-theme">
 
     <div class="loginBackground">
+      <img src='/assets/homepage/login_left.svg'>
+      <img src='/assets/homepage/login_right.svg'>
+
+      <a href="https://nanode.one" class="nanode"><div></div>Nanode</a>
+
       <div class="mainLoginContainer">
         <h1 class="MainTitle">Welcome</h1>
-        <h2 class="SecondaryTitle">Login to Nanode</h2>
-        
+        <h2 class="SecondaryTitle">Enter into your Nanode Account</h2>
 
-        <form id="loginForm" method="POST" action='/login'>
-          <div id="TitleEmail" class="InputTitle">Email</div>
-          <input id="email" class='TextInput' type="text" autocomplete="off" name="email" placeholder='Enter email address' maxlength="128" spellcheck="false" required title='Please enter your Email'>
+        <form method="POST" action='/login'>
+          <div>
+            <input type="text" autocomplete="off" name="email" maxlength="128" spellcheck="false" required title='Please enter your Email' placeholder=" ">
+            <label class="emailTitle">Email</label>
+          </div>
 
-          <div id="TitlePwd" class="InputTitle">Password</div>
-          <input id="pwd" class='TextInput' type="password" autocomplete="new-password"  name="password" placeholder="Enter your password" maxlength="128" spellcheck="false" required title='Please enter your Password'>
+          <div>
+            <input type="password" autocomplete="new-password" name="password" maxlength="128" spellcheck="false" required title='Please enter your Password' placeholder=" ">
+            <label class="pwdTitle">Password</label>
+          </div>
 
-          <!-- <button>Forgot your password?</button> -->
-          <input id="loginBtn" class="ButtonInput" type="submit" value="Login">
+          <input type="submit" value="Login">
         </form>
 
-        <span id="accountStatus">Dont have an account?</span>
-        <button onclick="loginSignupFormSwitch()">Signup</button>
+        <span id="accountStatus">Don't have an account?</span>
+        <button id='formSwitch' onclick='formSwitch()'>Signup</button>
+
       </div>
     </div>
 

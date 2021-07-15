@@ -822,8 +822,22 @@ recents.recentFiles > div p {
   cursor: pointer;
 }
 
+.searchContainer .searchSuggested > ul > li > i {
+  font-size: 13px;
+  color: var(--selected);
+}
+
+.searchContainer .searchSuggested > ul > li > i:hover {
+  color: var(--text-strong) !important;
+  font-size: 15px;
+}
+
 .searchContainer .searchSuggested > ul > li:hover, .searchContainer .searchSuggested > ul > li:focus {
   background: var(--highlight);
+}
+
+.searchContainer .searchSuggested > ul > li:hover > i, .searchContainer .searchSuggested > ul > li:focus > i {
+  color: var(--text-dull);
 }
 
 .DragDropOverlay {
@@ -970,6 +984,10 @@ recents.recentFiles > div p {
   transition: -webkit-transform 300ms;
   transition: transform 300ms;
   transition: transform 300ms, -webkit-transform 300ms;
+}
+
+.Upload_Container .UC_Info > p {
+  font-size: 14px;
 }
 
 .Upload_Container .UC_Info.notification {
@@ -1443,6 +1461,10 @@ recents.recentFiles > div p {
           transform-origin: 50% 50%;
   -webkit-transition: stroke-dashoffset ease-in-out 1s 500ms;
   transition: stroke-dashoffset ease-in-out 1s 500ms;
+}
+
+.visible {
+  visibility: visible !important;
 }
 
 .display {

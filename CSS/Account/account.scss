@@ -1,38 +1,31 @@
-$colors: (
-  // Colours
-    PC_0: #99ccff, // Logo
-    PC_1: #4285f4, // Blue
-    PC_2: #1199bb, // Blue Green
-    PC_3: #033860, // Indigo
-    PC_4: #33c357, // Green
-    PC_5: #ff453a, // Red
-    PC_6: #f0e800, // Yellow
-    PC_7: #3e4f5f, // Dull Blue (Dark RC Hover)
-    PC_8: #c8dce6, // Light Blue (White RC Hover)
-    PC_9: #a266ee, // Dev Purple
-    PC_10: #fb8c00,
-
-  // Palette_Dark - https://coolors.co/080a0e-0e0f11-141517-191b1e-282c32-565b61-83898f-cacccf-f5f6f7
-  // OLDER = https://coolors.co/010b14-171b21-282c32-383c42-5c5f64-919396-cacccf-f5f6f7
-    PD_0: #080a0e, // Black
-    PD_1: #0e0f11, // Basically Black
-    PD_2: #141517, // Component_1
-    PD_3: #191b1e, // Component_2
-    PD_4: #282c32, // Border_1 | Selected_1
-    PD_5: #565b61, // Border_2 | Selected_2
-    PD_6: #83898f, // Highlighted
-    PD_7: #cacccf, // Text Secondary
-    PD_8: #f5f6f7, // Text
-);
-
 // #1a1d21
-// #1f2227
+// #161a1e
 // #36393d
+// #1c1f23  - dark blue grey
 
-:root { --highlight-color:  #18ec58; }
+:root {
+  --color_red: #ff453a; // #f04747
+  --color_green: #0bc30b;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+  --color_highlight: #99ccff;
+  --color_blue: #4285f4;
+  
+  --background: #0e0f11;
+  --background_2: #141517;
+  --comp_dark: #191b1e;
+  --component: #282c32;
+  --comp_highlight: #83898f;
+  --text_dull: #cacccf;
+  --text: #f5f6f7;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+@font-face {
+  font-family: "gr-bold";
+  src: url("/assets/fonts/gr-bold.woff2") format("woff2");
+  font-display: swap;
+}
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -43,7 +36,9 @@ $colors: (
   margin: 0;
   box-sizing: border-box;
   outline: none;
-  font-family: 'Segoe UI';
+  font-family: 'Inter', 'Segoe UI', 'monospace';
+  letter-spacing: 0.3px;
+  color: var(--text);
 }
 
 html {
@@ -55,15 +50,16 @@ html {
 
 body {
   height: 100%;
-  background: map-get($colors, PD_1);
+  background: var(--background);
 }
 
 ///////////////////////////////////////////////
 
 ::-webkit-scrollbar { height: 5px; width: 5px; }
-::-webkit-scrollbar-track {background: map-get($colors, PD_1);}
-::-webkit-scrollbar-thumb { background: map-get($colors, PD_4);}
-::-webkit-scrollbar-thumb:hover { background: linear-gradient(40deg, #a9d2fb, #74afe2, #31648b); }
+::-webkit-scrollbar-track {background: var(--background);}
+::-webkit-scrollbar-thumb { background: var(--component);}
+// ::-webkit-scrollbar-thumb:hover { background: linear-gradient(40deg, #a9d2fb, #74afe2, #31648b); }
+::-webkit-scrollbar-thumb:hover { background: var(--comp_highlight); }
 
 ///////////////////////////////////////////////////////////////// LOGIN
 
@@ -73,122 +69,181 @@ body {
   height: 100%;
   width: 100%;
   
-  background-color: #121214;
-  background-image: url(https://drive.nanode.one/assets/homepage/lines.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  object-fit: contain;
+  background-color: var(--background);
+  // background-image: url(https://drive.nanode.one/assets/homepage/lines.svg);
+  // background-repeat: no-repeat;
+  // background-position: center;
+  // object-fit: contain;
 
+  >img {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    &:nth-child(1) { left: 0; height: 45vh; }
+    &:nth-child(2) { right: 0; height: 60vh; }
+  }
+}
+
+.nanode {
+  // top: 40px;
+  top: calc((50% - 190px) / 2);
+
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: calc(50% - 60px);
+  gap: 0.5em;
+  font-family: 'gr-bold';
+  font-size: 19px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  z-index: 3;
+
+  > div {
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background: url('https://nanode.one/assets/nanode/logo/logo.svg') no-repeat center #0e0f11;
+    background-size: 20px;
+    filter: invert(1);
+  }
 }
 
 .mainLoginContainer {
-  height: 380px;
-  width: 500px;
+  height: auto;
+  width: 90vw;
+  max-width: 400px;
+  padding: 2em;
+
   border-radius: 5px;
   text-align: center;
-  color: #fff;
-  background-color: map-get($colors, PD_2);
-  box-shadow: 4px 4px 20px -2px map-get($colors, PD_1);
+  // background: #151a21; // var(--background_2);
+  background: #161a1e;
+  z-index: 2;
 
   & .MainTitle {
     font-size: 24px;
-    font-weight: 600;
-    line-height: 30px;
-    color: map-get($colors, PD_8);
-    margin-top: 1rem;
   }
   & .SecondaryTitle {
-    color: map-get($colors, PD_7);;
-    font-size: 15px;
+    color: var(--text_dull);;
+    font-size: 13px;
     font-weight: 400;
-    line-height: 20px;
     margin: 0.5rem;
   }
 
-  & span {
-    margin-right: 3px;
+
+  & form {
+    position: relative;
+    margin: 2em 0 1em 0;
+
+    input {
+      height: 43px;
+      width: 100%;
+      border-radius: 5px;
+
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+      line-height: 32px;
+      
+      transition: all 300ms;
+    }
+
+    >div {
+      position: relative;
+
+      >label {
+        position: absolute;
+        top: 5px;
+        left: 15px;
+        margin: 0.5em 0;
+        padding: 0 0.5em;
+
+        font-size: 15px;
+        text-align: left;
+        font-family: 'gr-bold';
+        color: var(--text_dull);
+        background: #161a1e;
+        
+        pointer-events: none;
+        transition: top 200ms, font-size 200ms;
+
+        >i {
+          font-size: 12px;
+          color: var(--color_red);
+        }
+      }
+      
+      >input[type=text], input[type=password] {
+        padding: 1em;
+        margin-bottom: 1em;
+  
+        color: var(--text);
+        border: 1px solid var(--component);
+        background: transparent;
+  
+        &:hover, &:active, &:focus {
+          border: 1px solid var(--text) !important;
+        }
+
+        &:focus + label,
+        &:not(:placeholder-shown) + label {
+          // transform: translate3d(-5px,-21px,0px) scale(0.8);
+          top: -14px;
+          font-size: 12px;
+        }
+
+      }
+
+      >span {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 5px;
+        > p {
+          height: 20px;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-size: 12px;
+          text-align: center;
+          background: var(--color_red);
+        }
+      }
+    }
+
+    >input[type=submit] {
+      height: 38px;
+      margin: 1em 0;
+      border: none;
+      user-select: none;
+      cursor: pointer;
+
+      color: var(--text);
+      border-bottom: 2px solid #31927f;
+      background: var(--component);
+
+      &:hover, &:active, &:focus {
+        color: var(--background);
+        background: var(--text);
+      }
+    }  
+  }
+
+
+  > span {
+    margin-right: 0.25em;
     font-size: 13px;
     font-weight: 100;
     opacity: 0.5;
   }
   & button {
-    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 10px;
     border: none;
-    color: map-get($colors, PC_0);
-    background: transparent;
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  & form {
-    width: 90%;
-    height: fit-content;
-    margin: 0.25rem 5%;
     font-size: 12px;
-    color: #fff;
-  
-    & .InputTitle {
-      color: #c5c5c5;
-      margin: 6px 0;
-      font-size: 16px;
-      text-align: left;
-      & p {
-        display: inline-block;
-        font-size: 12px;
-        padding: 0 1rem;
-        color: #d60000;
-        width: max-content;
-      }
-      & i {
-        font-size: 12px;
-        color: #f04747;
-      }
-    }
-    & .TextInput {
-      height: 44px;
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 1rem;
-      font-size: 15px;
-      color: #fff;
-      background-color: rgba(0,0,0,0.08);
-      border: 1px solid rgba(0,0,0,0.4);
-      transition: border-color 200ms ease-in-out;
-      border-bottom: 1px solid map-get($colors, PC_0);
-      border-radius: 3px;
-  
-      &::placeholder {
-        font-size: 15px;
-        opacity: 0.6;
-      }
-  
-      &:focus {
-        border: 1px solid map-get($colors, PC_0);
-        background-color: rgba(0,0,0,0.2);
-      }
-    }
-  
-    & .ButtonInput {
-      height: 40px;
-      width: 100%;
-      margin: 1rem 0;
-      font-size: 15px;
-      font-weight: 400;
-      user-select: none;
-      border: none;
-      border-radius: 5px;
-      color: #eeeeee;
-      background-color: transparent;
-      border: 1px solid map-get($colors, PC_0);
-      cursor: pointer;
-      transition: background-color 200ms ease-in-out;
-  
-      &:hover {
-        background-color: #99ccff2e;
-      }
-    }
+    text-align: center;
+    background: var(--component);
+    cursor: pointer;
+    &:hover { background: var(--comp_highlight); }
   }
 }
 
@@ -199,29 +254,30 @@ body {
   display: grid;
   height: 100%;
   width: 100%;
-  // background: #1a1d21; // #080a0e
-  background: #131618;
-}
+  
+  // background-color: var(--background_2);
+  background: var(--background);
+  // background: #1a1d21; // #080a0e // #131618; // #4285f4;
 
-a {
-  position: absolute;
-  width: 150px;
-  top: 40px;
-  left: 35px;
-  text-decoration: none;
-  color: #f0e800;
-  font-weight: 600;
-  font-size: 14px;
+  >.nanode { top: 30px; }
+
+  >img {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    &:nth-child(1) { left: 0; height: 45vh; }
+    &:nth-child(2) { right: 0; height: 60vh; }
+  }
 }
 
 .infoContainer {
+  display: grid;
   place-self: center;
   height: 100%;
   max-width: 800px;
-  width: 60%;
-  min-width: 300px;
-  padding: 40px;
-  // background: #141517;
+  width: 100%;
+  padding: 80px 40px 40px 40px;
+  gap: 25px;
 
   section {
     display: flex;
@@ -229,15 +285,9 @@ a {
     justify-content: space-between;
     gap: 12px;
     position: relative;
-    margin-bottom: 40px;
     padding: 20px;
-    color: #ccc;
-    font-family: 'Inter';
-    letter-spacing: 0.3px;
     border-radius: 5px;
-    background: #1f2227;
-    border: 1px solid #36393d;
-
+    background: #161a1e;
     
     & * { color: #eee; }
 
@@ -247,7 +297,6 @@ a {
       border: none;
       padding: 10px;
       background: transparent;
-      margin-bottom: 20px;
       img {
         place-self: center;
         width: 100px;
@@ -277,7 +326,7 @@ a {
           padding: 2px 10px;
           font-size: 13px;
           border-radius: 4px;
-          background: #1f2227;
+          background: #161a1e;
           opacity: 0.8;
         }
         input {
@@ -308,7 +357,7 @@ a {
           padding: 2px 10px;
           font-size: 13px;
           border-radius: 4px;
-          background: #1f2227;
+          background: #161a1e;
           opacity: 0.8;
           cursor: pointer;
           &:hover {
@@ -432,17 +481,30 @@ a {
     }
 
     &.userInformation {
-      border: none;
-      padding: 10px;
+      border-top: 1px solid var(--component);
+      padding: 1em;
       background: transparent;
+      >h2 { font-size: 14px; color: #31927f; }
       p {
+        font-weight: 100;
         font-size: 12px;
         opacity: 0.6;
+        &:hover { opacity: 1; }
+      }
+      span {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 1em;
+        padding-top: 1em;
+        border-top: 1px solid var(--component);
+        >p { opacity: 0.8; }
       }
     }
-  }
-  section:nth-last-child(2) {
-    margin-bottom: 0;
+
+    &:nth-last-child(2) {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -471,18 +533,5 @@ a {
     &.lockAccount { border: 1px solid #a266ee; background: #a266ee33; color: #a266ee; }
   }
 }
-// 4285f4
 
 ///////////////////////////////////////////////
-
-@media only screen and (max-width: 600px) {
-  .mainLoginContainer {
-    height: 380px;;
-    width: 90%;
-    top: calc(50% - 190px);
-    left: 5%;
-  }
-  .loginSecondaryTitle {
-    margin-bottom: 16px;
-  }
-}

@@ -10,88 +10,70 @@
 let SearchNodes = {};
 
 
-// searchControls
-//    searchParams
-//    searchSubmit
+Search = () => {
+  const searchConfig = {
+    searchNodeElements: 0,
+    searchNodeSelected: 0,
+    arrowCycleIndex: 0,
+    // parameters: {input: '', dir: '', desc: true, preName: true, for: ''},
+  }
+  const searchElem = {
+    search: document.querySelector('input.search'),
+    Controls: document.getElementsByClassName('searchControls')[0],
 
+    Container: document.getElementsByClassName('searchContainer')[0],
+    Dropdown: document.getElementsByClassName('searchDropdown')[0],
+    ParamsContainer: document.getElementsByClassName('searchParamsContainer')[0],
 
-Search = async() => {
-  const ele_search = document.querySelector('input.search');
-  const ele_Controls = document.getElementsByClassName('searchControls')[0];
-
-  const ele_Container = document.getElementsByClassName('searchContainer')[0];
-  const ele_Dropdown = document.getElementsByClassName('searchDropdown')[0];
-  const ele_ParamsContainer = document.getElementsByClassName('searchParamsContainer')[0];
-
-  const ele_Results = document.querySelector('.searchResults tbody');
-  const ele_Suggested = document.getElementsByClassName('searchSuggested')[0];
-
-  let searchNodeElements, searchNodeSelected, arrowCycleIndex = 0;
-  parameters = {input: '', dir: '', desc: true, preName: true, for: ''};
-
-  // @ == Listeners
-  Listeners = () => {
-    ele_search.addEventListener('click', (e) => {
-      if (!ele_Container.classList.contains('searchActive')) Open();
-    })
-
-    ele_search.addEventListener('keydown', async(e) => { // Search
-      if (e.keyCode === 13) { e.preventDefault(); FetchSearch(e.target.value) }
-      else if (e.keyCode === 8 && e.target.value.length === 1) { Suggested() }
-    })
-    N_Find('.searchSubmit', false, ele_Controls).addEventListener('click', () => FetchSearch(ele_search.value))
-
-    N_Find('.searchParams', false, ele_Controls).addEventListener('click', (e) => {
-      e.target.classList.toggle('active');
-      ele_ParamsContainer.classList.toggle('display');
-    })
+    Results: document.querySelector('.searchResults tbody'),
+    Suggested: document.getElementsByClassName('searchSuggested')[0],
   }
 
-  ResultListeners = () => {
+  SetListeners_ = () => { Listeners(); Params(); }
+  SetEvents_ = () => {  }
 
-    N_Find('tr > [sNode-event]', true, ele_Results).forEach(el => el.addEventListener('click', (e) => {
+  // ====================================
+
+  // Listeners
+  Listeners = () => {
+    searchElem.search.addEventListener('click', (e) => {
+      if (!searchElem.Container.classList.contains('searchActive')) Open();
+    })
+
+    searchElem.search.addEventListener('keydown', async(e) => { // Search
+      if (e.keyCode === 13) { e.preventDefault(); this.FetchSearch(e.target.value) }
+      else if (e.keyCode === 8 && e.target.value.length === 1) { this.Suggested() }
+    })
+    N_.Find('.searchSubmit', false, searchElem.Controls).addEventListener('click', () => this.FetchSearch(searchElem.search.value))
+
+    N_.Find('.searchParams', false, searchElem.Controls).addEventListener('click', (e) => {
+      e.target.classList.toggle('active');
+      searchElem.ParamsContainer.classList.toggle('display');
+    })
+  }
+  ResultListeners = () => {
+    N_.Find('tr > [sNode-event]', true, searchElem.Results).forEach(el => el.addEventListener('click', (e) => {
       e.stopPropagation();
       let nodeID = el.parentNode.getAttribute('node-id');
       let searchEvent = el.getAttribute('sNode-event');
 
       if (searchEvent == 'visit-loc') {
-        Shortcut(SearchNodes[nodeID].data.parent, nodeID);
-        Close();
+        Navigate.Shortcut(SearchNodes[nodeID].data.parent, nodeID);
+        this.Close();
       } else if (searchEvent == 'view-info') {
         FetchItemInformation(nodeID, true)
       } else if (searchEvent == 'ext-link') {
-        ExternalTab(nodeID);
+        N_.ExternalTab(nodeID);
       }
     }));
 
-    searchNodeElements.forEach(el => el.addEventListener('click', e => SearchItemSelected(el)))
+    searchConfig.searchNodeElements.forEach(el => el.addEventListener('click', e => this.SearchItemSelected(el)))
 
     document.removeEventListener('keydown', ArrowCycle);
     document.addEventListener('keydown', ArrowCycle);
   };
-
-  ArrowCycle = (e=window.event) => {
-    CycleNodes = (index) => {
-      searchNodeSelected && searchNodeSelected.classList.remove('ItemSelected')
-      searchNodeSelected = searchNodeElements[arrowCycleIndex];
-      searchNodeSelected.classList.add('ItemSelected');
-    }
-
-    if (e.keyCode === 38) {
-      CycleNodes(arrowCycleIndex = --arrowCycleIndex <= -1 ? searchNodeElements.length-1 : arrowCycleIndex--);
-    } else if (e.keyCode === 40) {
-      CycleNodes(arrowCycleIndex = arrowCycleIndex++ >= searchNodeElements.length-1 ? 0 : arrowCycleIndex++);
-    } else if (e.keyCode === 39) { // ! Triggers the recalling of the search with enter. this uses right arrow.
-      // TODO Could add a 'ItemSelected' feature to show a right arrow to let users know.
-      // TODO Could also just show the popups, and use left/right arrow keys to switch through them.
-      SearchItemSelected(searchNodeSelected);
-    } else {return};
-  }
-
-
-  // @ == Request
   Params = () => {
-    N_Find('.searchBy input', true).forEach(input => {
+    N_.Find('.searchBy input', true).forEach(input => {
       input.addEventListener('change', (e) => {
         if (e.target.checked) {
           let option = e.target.value;
@@ -102,54 +84,70 @@ Search = async() => {
     })
   }
 
-  FetchSearch = async(search, parameters=true) => {
-    let params = {"input": search}
-    
-    if (parameters) {
-      ele_ParamsContainer.querySelectorAll('input:checked').forEach((option) => {
-        console.log(option.value)
-      })
-    }
-
-    // dir: XXXX | homepage
-    // include: description | names
-    // for: folders | files
-    // 
-
-    // return;// @@@@@@@@@@@@@@@@@@@
-      
-    if (params.input) {
-      let req = await API_Post({url: `/search`, body: params});
-      SearchCache('WRITE', params.input);
-      
-      SearchNodes = {};
-      req.Found.forEach((item) => {
-        SearchNodes[item.id] = new Node(item);
-      })
   
-      Render();
+  // Events
+  ArrowCycle = (e=window.event) => {
+    CycleNodes = (index) => {
+      searchConfig.searchNodeSelected && searchConfig.searchNodeSelected.classList.remove('ItemSelected')
+      searchConfig.searchNodeSelected = searchConfig.searchNodeElements[searchConfig.arrowCycleIndex];
+      searchConfig.searchNodeSelected.classList.add('ItemSelected');
     }
 
+    if (e.keyCode === 38) {
+      CycleNodes(searchConfig.arrowCycleIndex = --searchConfig.arrowCycleIndex <= -1 ? searchConfig.searchNodeElements.length-1 : searchConfig.arrowCycleIndex--);
+    } else if (e.keyCode === 40) {
+      CycleNodes(searchConfig.arrowCycleIndex = searchConfig.arrowCycleIndex++ >= searchConfig.searchNodeElements.length-1 ? 0 : searchConfig.arrowCycleIndex++);
+    } else if (e.keyCode === 39) { // ! Triggers the recalling of the search with enter. this uses right arrow.
+      // TODO Could add a 'ItemSelected' feature to show a right arrow to let users know.
+      // TODO Could also just show the popups, and use left/right arrow keys to switch through them.
+      SearchItemSelected(searchConfig.searchNodeSelected);
+    } else {return};
   }
-
-  SearchItemSelected = async(el) => {
+  SearchItemSelected = (el) => {
     let nodeID = el.getAttribute('node-id')
     SearchNodes[nodeID].data.type.file
-      ? Shortcut(SearchNodes[nodeID].data.parent, nodeID)
+      ? Navigate.Shortcut(SearchNodes[nodeID].data.parent, nodeID)
       : NodeCall({"Folder": nodeID});
-    Close();
+      this.Close();
+  }
+  Search.RemoveSuggestedResult = (e) => {
+    let searches = JSON.parse(localStorage.getItem('recent-searches')) || ['Documents'];
+    let suggested = e.parentNode.getAttribute('sugRes');
+    if (searches.includes(suggested)) searches.splice(searches.indexOf(suggested), 1);
+
+    localStorage.setItem('recent-searches', JSON.stringify(searches));
+    e.parentNode.remove();
+  }
+  // Render Events
+  Open = (RESULTS) => {
+    searchElem.Container.classList.add('searchActive');
+    searchElem.Dropdown.classList.add('display');
+    RESULTS || searchElem.Results.innerHTML.length ? searchElem.Results.parentNode.classList.add('display') : searchElem.Results.parentNode.classList.remove('display');
+    this.Suggested(RESULTS);
+
+    document.addEventListener('mousedown', Close);
+    document.addEventListener('keydown', ArrowCycle);
+  }
+  Close = (e) => {
+    if (!e || !searchElem.Container.contains(e.target)) {
+      searchElem.Container.classList.remove('searchActive');
+      searchElem.Dropdown.classList.remove('display');
+      if (!searchElem.search.value) searchElem.Results.innerHTML = '';
+      document.removeEventListener('mousedown', Close);
+      document.removeEventListener('keydown', ArrowCycle);
+    }
   }
 
 
-  // @ == Visuals
+  // Render
   Render = (content=``) => {
-    Open('RESULTS');
+    this.Open('RESULTS');
   
     Object.values(SearchNodes).slice(0, 5).forEach(node => {
       content += `
         <tr type='${node.data.type.general}' node-id='${node.data.id}'>
-          <td><img loading='lazy' height='38' width='38' src='${N_FileIcon(node.data, 38, 38, 'main')}'></img></td>
-          <td>${N_CapFirstLetter(node.data.name)}</td>
+          <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(node.data, 38, 38, 'main')}'></img></td>
+          <td>${N_.CapFirstLetter(node.data.name)}</td>
           <td ${node.data.type.file && "sNode-event='ext-link' title='Open Externally'><i class='fas fa-external-link-alt'></i>"}</td>
           <td sNode-event='view-info' title='View Information'><i class="fas fa-info"></i></td>
           <td sNode-event='visit-loc' title='Visit Location'><i class="fas fa-location-arrow"></i></td>
@@ -161,29 +159,31 @@ Search = async() => {
       content += `<button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button>`;
     }
   
-    ele_Results.innerHTML = // If the content is empty (no items returned, shows no matches button)
+    searchElem.Results.innerHTML = // If the content is empty (no items returned, shows no matches button)
       content || `<button class='searchInfoBtn searchNoMatch notif-btn'>No Matches Found</button>`;
   
-    searchNodeElements = ele_Results.querySelectorAll('[search-nodes] tr');
-    arrowCycleIndex = -1;
-    ResultListeners();
+    searchConfig.searchNodeElements = searchElem.Results.querySelectorAll('[search-nodes] tr');
+    searchConfig.arrowCycleIndex = -1;
+    this.ResultListeners();
   }
   Suggested = (RESULTS=false) => {
     if (RESULTS) {
-      ele_Suggested.classList.remove('display');
-    } else if (!ele_Results.parentNode.classList.contains('display')) {
-      ele_Suggested.classList.add('display');
-      ele_Suggested.children[1].innerHTML = SearchCache('READ').reduce((a, b) => a + `<li>${b}</li>`, ``);
+      searchElem.Suggested.classList.remove('display');
+    } else if (!searchElem.Results.parentNode.classList.contains('display')) {
+      searchElem.Suggested.classList.add('display');
+      searchElem.Suggested.children[1].innerHTML = this.SearchCache('READ').reduce((a, b) => a + `
+        <li class='flex-between-cent' sugRes='${b}'>${b}<i onclick='Search.RemoveSuggestedResult(this)' class="fas fa-times"></i></li>`, ``);
 
-      N_Find('li', true, ele_Suggested).forEach(e => e.addEventListener('click', (e) => {
+      N_.Find('li', true, searchElem.Suggested).forEach(e => e.addEventListener('click', (e) => {
         let savedSearch = e.target.innerText;
-        ele_search.value = savedSearch;
-        FetchSearch(savedSearch, false);
+        searchElem.search.value = savedSearch;
+        this.FetchSearch(savedSearch, false);
       }))
     }
   }
 
-  // @ == Recent Search Cache
+
+  // Recent Search Cache
   SearchCache = (action, search) => { // READ|WRITE, 'example.png'
     let searches = JSON.parse(localStorage.getItem('recent-searches')) || ['Documents'];
     if (action == 'WRITE' && !searches.includes(search)) { // write to the recent searches
@@ -195,38 +195,51 @@ Search = async() => {
     }
   }
 
+  
+  // API
+  FetchSearch = async(search, parameters=true) => {
+    let params = {"input": search}
+    
+    if (parameters) {
+      searchElem.ParamsContainer.querySelectorAll('input:checked').forEach((option) => {
+        console.log(option.value)
+      })
+    }
 
-  Open = (RESULTS) => {
-    ele_Container.classList.add('searchActive');
-    ele_Dropdown.classList.add('display');
-    RESULTS || ele_Results.innerHTML.length ? ele_Results.parentNode.classList.add('display') : ele_Results.parentNode.classList.remove('display');
-    Suggested(RESULTS);
+    // dir: XXXX | homepage
+    // include: description | names
+    // for: folders | files
 
-    document.addEventListener('mousedown', Close);
-    document.addEventListener('keydown', ArrowCycle);
-  }
-  Close = (e) => {
-    if (!e || !ele_Container.contains(e.target)) {
-      ele_Container.classList.remove('searchActive');
-      ele_Dropdown.classList.remove('display');
-      if (!ele_search.value) ele_Results.innerHTML = '';
-      document.removeEventListener('mousedown', Close);
-      document.removeEventListener('keydown', ArrowCycle);
+    // return;
+      
+    if (params.input) {
+      let req = await API_Post({url: `/search`, body: params});
+      this.SearchCache('WRITE', params.input);
+      
+      SearchNodes = {};
+      req.Found.forEach((item) => {
+        SearchNodes[item.id] = new Node(item);
+      })
+  
+      this.Render();
     }
   }
 
-  Search.Close = Close;
 
-  Listeners();
-  Params();
+  // ====================================
+
+  this.SetListeners_(), this.SetEvents_();
+
+  Search.Close = Close;
 }
 
 
 Filter = (layout, elem, container) => {
   if (!layout) { return; }
   elem.addEventListener('keyup', e => {
+    let searchVal = e.target.value.toString().toLowerCase();
     Object.values(Nodes).forEach(node => {
-      if (!Object.values(node.data).some(s => s.toString().toLowerCase().includes(e.target.value))) {
+      if (!Object.values(node.data).some(s => s.toString().toLowerCase().includes(searchVal))) {
         container.querySelector(`[node-id='${node.data.id}']`).classList.add('ItemHidden')
       } else {
         container.querySelector(`[node-id='${node.data.id}']`).classList.remove('ItemHidden')
@@ -237,11 +250,9 @@ Filter = (layout, elem, container) => {
 
 
 Order = () => {
-
-  // @ == Listeners
-  Listeners = (layout, container) => {
+  Order.Listeners = (layout, container) => {
     if (!layout) { return; }
-    N_Find('[order]', true, container.children[0]).forEach(el => el.addEventListener('click', (e) => {
+    N_.Find('[order]', true, container.children[0]).forEach(el => el.addEventListener('click', (e) => {
       let orderType = el.getAttribute('order');
   
       if (!OrderCache[NodeID]) //?   0 == initial. 1 == highest first. 2 == lowest first.
@@ -251,7 +262,7 @@ Order = () => {
       else
         OrderCache[NodeID] = {'type': orderType, 'pos': (OrderCache[NodeID].pos + 1) % 3} // % 3 sets 2 as limit, if 2 + 1 == 3, sets to 0.
   
-      this.SetOrderVisuals();
+      Order.SetOrderVisuals();
   
       container.children[1].innerHTML = renderContent.listNode({"nodeIDs": Nodes})
       
@@ -259,8 +270,7 @@ Order = () => {
     }))
   }
 
-
-  this.OrderNodes = (nodes={}) => {
+  Order.OrderNodes = (nodes={}) => {
     if (!OrderCache[NodeID]) { return; }
     const {type, pos} = OrderCache[NodeID];
 
@@ -280,25 +290,21 @@ Order = () => {
     return nodes.map(n => n.data.id);
   }
 
-  this.SetOrderVisuals = () => {
+  Order.SetOrderVisuals = () => {
     if (!OrderCache[NodeID]) { return }
     const {type, pos} = OrderCache[NodeID];
 
-    let curIcon = N_Find('[order] > i.fas');
+    let curIcon = N_.Find('[order] > i.fas');
     if (curIcon) curIcon.classList = '';
 
     if (pos === 0) { return; }
 
-    N_Find(`[order='${type}'] > i`).classList.add('fas', 
+    N_.Find(`[order='${type}'] > i`).classList.add('fas', 
       pos === 1
         ? 'fa-chevron-up'
         : 'fa-chevron-down'
     )
   }
-
-  Order.Listeners = Listeners;
-  Order.OrderNodes = OrderNodes;
-  Order.SetOrderVisuals = SetOrderVisuals;
 }
 
 
@@ -310,9 +316,6 @@ Search();
 
 
 /**
- * Design:
- *      Add Search Icon to submit search
- *      Add X Icon to close search
  * 
  * Results:
  *      Button to show All Results in a custom directory.

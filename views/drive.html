@@ -38,16 +38,17 @@
       <div class="clientStatus flex-even-cent">
         <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
       </div>
-      <div class='Switch SW_View' onclick="ToggleView()"  style="display: none;">
+      <div class='Switch SW_View' onclick="SettingsController.ToggleView()"  style="display: none;">
         <div class='Slider SL_View'></div> <div><i class="fas fa-bars"></i></div> <div><i class="fas fa-th-large"></i></div>
       </div>
-      <button id="colorTheme" onclick="ToggleTheme()" title="Change Theme"><i></i></button>
+      <button id="colorTheme" onclick="SettingsController.ToggleTheme()" title="Change Theme"><i></i></button>
     </div>
 
 
     <div class='PageList'>
       <div>
-        <a class='nanode' href='https://nanode.one'><img src='/assets/nanode/logo/logo.svg' alt='Nanode'>NΛNODE</a>
+        <!-- <a class='nanode' href='https://nanode.one'><img src='/assets/nanode/logo/logo.svg' alt='Nanode'>NΛNODE</a> -->
+        <a href="https://nanode.one" class="nanode"><div></div>Nanode</a>
         <!-- <a title="Nanode" id="NanodeRtn" href="//nanode.one" width="130" height="30"></a> -->
         <span drvPage="main" title="Home" class="SelectedPage"><i class="fas fa-user"></i><p>Home</p></span>
         <span drvPage="share" title="Share"><i class="fas fa-users"></i><p>Share</p></span>
@@ -123,3 +124,10 @@
 
   </body>
 </html>
+
+
+<!-- <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script> -->
+<!-- <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script> -->
+
+<!-- <script src="https://unpkg.com/react@17.0.2/umd/react.development.min.js" crossorigin></script> -->
+<!-- <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script> -->

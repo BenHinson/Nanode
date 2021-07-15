@@ -28,7 +28,9 @@
   <body>
 
     <header class="flex-wrap">
-      <a href='https://nanode.one' class='nanode'><img src='/assets/nanode/logo/logo.svg' alt='Nanode Logo'>NΛNODE</a> <!-- NΛNODE Ω ⇌ ∞ ZΞN -->
+      <!--<a href='https://nanode.one' class='nanode'><img src='/assets/nanode/logo/logo.svg' alt='Nanode Logo'>NΛNODE</a> -->
+      <a href="https://nanode.one" class="nanode"><div></div>Nanode</a> <!-- NΛNODE Ω ⇌ ∞ ZΞN -->
+
       <span class="flex-wrap header_links">
         <a href='https://dev.nanode.one'>Development</a>
         <a href='https://nanode.one/plans'>Plans</a>
@@ -72,7 +74,7 @@
       </span>
 
 
-      <h6 class='Build'>Alpha 3.5.0</h6>
+      <h6 class='Build'>Alpha 3.6.0</h6>
     </section>
 
     <section class='S_Spotlight flex-row'>
@@ -234,7 +236,7 @@
           <h5><a class='novaPowered'href="https://dev.nanode.one/#nova" target="_blank">Powered by Nova</a></h5>
         </div>
         <div class='card dev_card'>
-          <h4>Recognision</h4>
+          <h4>Recognition</h4>
           <p>Use built-in object detection and classification to label images, filter files and organize your content.</p>
           <h5><a class='tensorflowPowered' href="https://www.tensorflow.org/" target="_blank">Powered by Tensorflow</a></h5>
         </div>
@@ -282,8 +284,7 @@
 
 <script>
   (async() => {
-    const Request = await fetch('https://nanode.one/check');
-    let RequestInfo = await Request.json();
+    const RequestInfo = await( await fetch('https://nanode.one/check') ).json();
     const loggedIn = RequestInfo?.loggedIn == true;
 
     const acc_btn = document.getElementsByClassName('MV_Account')[0];

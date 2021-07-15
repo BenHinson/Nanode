@@ -11,6 +11,11 @@ $colors: (
 );
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@font-face {
+  font-family: "gr-bold";
+  src: url("/assets/fonts/gr-bold.woff2") format("woff2");
+  font-display: swap;
+}
 
 * {
   padding: 0;
@@ -40,16 +45,39 @@ body {
 //////////////////////////// DEV PORTAL ////////////////////////////
 //////////////////////////// DEV PORTAL ////////////////////////////
 
-.NanodeLogo {
-  position: absolute;
-  width: 150px;
-  top: 40px;
-  left: 35px;
+.nanode {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 25px 40px;
   text-decoration: none;
-  color: #a266ee;
-  font-weight: 600;
-  font-size: 14px;
+  z-index: 3;
+  
+  >span {
+    font-family: 'gr-bold';
+    font-size: 19px;
+    letter-spacing: 1.5px;
+    color: #f5f6f7;
+    >p {
+      font-size: 13px;
+      line-height: 14px;
+      font-family: 'gr-bold';
+      color: #a266ee;
+    }
+  }
+  
+  > div {
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background: url('https://nanode.one/assets/nanode/logo/logo.svg') no-repeat center #0e0f11;
+    background-size: 20px;
+    filter: invert(1);
+  }
 }
+
+
+
 .DevSelector {
   position: fixed;
   min-height: 100%;
@@ -59,7 +87,7 @@ body {
 }
 .DevList {
   position: absolute;
-  top: 100px;
+  top: 77px;
   height: 100%;
   width: 97%;
   padding: 0 30px;

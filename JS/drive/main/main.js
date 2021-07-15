@@ -34,7 +34,7 @@ async function NodeCall(CallData, res) {
       }
     }
 
-    Route(NodeID, NodeName);
+    Navigate.Route(NodeID, NodeName);
     renderContent();
     setupFileMove();
   }
@@ -47,8 +47,8 @@ NodeAPI = async(Location, Form, Skip=true) => { // For Creating or Editing Nodes
   Form.id ? Form.id = Array.from(Form.id) : '';
 
   let res = await API_Post({url: `/${Location}`, body: Form});
-  N_ClientStatus(2, "True", 400); N_ClientStatus(8, "Off");
-  if (res.Error) { return N_Error(res.Error); }
+  N_.ClientStatus(2, "True", 400); N_.ClientStatus(8, "Off");
+  if (res.Error) { return N_.Error(res.Error); }
   NodeCall({Skip, 'Reload': false}, res);
   return {};
 }

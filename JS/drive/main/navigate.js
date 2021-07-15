@@ -1,102 +1,120 @@
-const navigateForward = document.querySelector('.navigateForward');
-const navigateBackward = document.querySelector('.navigateBackward');
-const directoryLocation = document.querySelector('.directoryLocation');
-
-
-let Directory_Tree = [];  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
-let Directory_Route = []; // The Current Route, is whats used for the dir btns. Doesnt Store Forward
-let Tree_Number = 0; // Current Tree Index
-let Tree_Steps = 0; // Current Index in Tree
-
-// ====================================
-
-// @ = Shortcut Request
-async function Shortcut(parentID, nodeID) {
-  if (typeof RCElement !== 'undefined' && parentID == "RCElement") {
-    parentID = RCElement.getAttribute('parent-node');
-    nodeID = RCElement.getAttribute('node-id');
+Navigate = () => {
+  const navConfig = {
+    Directory_Tree: [],  // Array of Trees, Uses Last Tree, New Tree on More than 1 Step. ie: Home / dirBtn. Saves Forward/Backward
+    Directory_Route: [], // The Current Route, is whats used for the dir btns. Doesnt Store Forward
+    Tree_Number: 0, // Current Tree Index
+    Tree_Steps: 0, // Current Index in Tree
   }
-  await NodeCall({"Folder": parentID});
-  if (nodeID) HighlightNode(nodeID);
-}
-
-
-// @ = Directory Path
-function Route(Node_Path, Text_Path) {
-  if (FolderCall == true) {
-    if (Directory_Route.length && Directory_Route[Directory_Route.length - 1].Node == Node_Path) {
-      // This was a return statement, but that breaks going forward into a locked folder.
-    } else {
-      Directory_Route.push({"Node": Node_Path, "Text": Text_Path})
-      if (Directory_Tree.length > 1 && Directory_Tree[Tree_Number].Route[Tree_Steps + 1] != ({"Node": Node_Path, "Text": Text_Path})) {
-        Directory_Tree = Directory_Tree.slice(0, Tree_Number + 1);
-      }
-      if (!Directory_Tree[Tree_Number]) { Directory_Tree[Tree_Number] = {"Start": 1, "Route": []} }
-      Directory_Tree[Tree_Number].Route = Directory_Route;
-      Tree_Steps++;
-    }
+  const navElem = {
+    navigateForward: document.querySelector('.navigateForward'),
+    navigateBackward: document.querySelector('.navigateBackward'),
+    directoryLocation: document.querySelector('.directoryLocation'),
   }
-  FolderCall = true;
 
+  SetListeners_ = () => { this.NavigationArrows(); }
 
-  let contents = '';
-  for (i=0; i<Tree_Steps; i++) { // Iterates through the steps, doesn't place an arrow before 'homepage'
-    contents += `
-      ${i!=0 ? '<i></i>' : ''}
-      <button class='dirBtn ${i==Tree_Steps-1 ? "currentDirBtn" : ""}' node-id='${Directory_Route[i].Node}' title='${Directory_Route[i].Text}'>${Directory_Route[i].Text}</button>
-    `;
-  }
-  directoryLocation.innerHTML = contents;
+  // ====================================
 
-
-  N_Find('.dirBtn', true, directoryLocation).forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      let NodeID = e.target.getAttribute("node-id");
-      let Route_Obj = Directory_Route.find(o => o.Node === NodeID); // Find Object with Node=NodeID in Directory_Route
-      Directory_Route = Directory_Route.slice(0, Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
+  // Listeners
+  NavigationArrows = () => {
+    navElem.navigateForward.addEventListener('click', () => {
+      if (navConfig.Directory_Tree[navConfig.Tree_Number].Route[navConfig.Tree_Steps]) {
+        navConfig.Directory_Route = navConfig.Directory_Tree[navConfig.Tree_Number].Route.slice(0, navConfig.Tree_Steps + 1);
+        navConfig.Tree_Steps = navConfig.Directory_Route.length;
+      } else if (navConfig.Directory_Tree[navConfig.Tree_Number + 1]) {
+        navConfig.Directory_Route = navConfig.Directory_Tree[navConfig.Tree_Number + 1].Route;
+        navConfig.Tree_Number++;
+        navConfig.Tree_Steps = navConfig.Directory_Tree[navConfig.Tree_Number].Start;
+      } else { return; }
       
-      if (JSON.stringify(Directory_Tree[Tree_Number].Route) !== JSON.stringify(Directory_Route))
-      {Tree_Number++;   Tree_Steps = Directory_Route.length;   Directory_Tree.push({"Start":Tree_Steps, "Route": Directory_Route});}
-    
-      NodeCall({"Folder":NodeID, "Reload":false});
+      NodeCall({"Folder":navConfig.Directory_Tree[navConfig.Tree_Number].Route[ navConfig.Tree_Steps - 1 ].Node, "Reload": false});
     })
-  })
+    navElem.navigateBackward.addEventListener('click', () => {
+      if ( navConfig.Tree_Steps > navConfig.Directory_Tree[navConfig.Tree_Number].Start) {
+        navConfig.Directory_Route = navConfig.Directory_Route.slice(0, navConfig.Tree_Steps - 1 );
+      } else if (navConfig.Directory_Tree[navConfig.Tree_Number - 1]) {
+        navConfig.Directory_Route = navConfig.Directory_Tree[navConfig.Tree_Number - 1].Route;
+        navConfig.Tree_Number--;
+      } else { return; }
+      
+      navConfig.Tree_Steps = navConfig.Directory_Route.length;
+    
+      NodeCall({"Folder":navConfig.Directory_Route[navConfig.Tree_Steps - 1].Node, "Reload": false});
+    })
+  }
+  DirButtons = () => {
+    N_.Find('.dirBtn', true, navElem.directoryLocation).forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        let NodeID = e.target.getAttribute("node-id");
+        let Route_Obj = navConfig.Directory_Route.find(o => o.Node === NodeID); // Find Object with Node=NodeID in navConfig.Directory_Route
+        navConfig.Directory_Route = navConfig.Directory_Route.slice(0, navConfig.Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
+        
+        if (JSON.stringify(navConfig.Directory_Tree[navConfig.Tree_Number].Route) !== JSON.stringify(navConfig.Directory_Route))
+        {navConfig.Tree_Number++;   navConfig.Tree_Steps = navConfig.Directory_Route.length;   navConfig.Directory_Tree.push({"Start":navConfig.Tree_Steps, "Route": navConfig.Directory_Route});}
+      
+        NodeCall({"Folder":NodeID, "Reload":false});
+      })
+    })
+  }
 
-  Directory_Tree[Tree_Number].Route[Tree_Steps] || Directory_Tree[Tree_Number + 1]
-    ? navigateForward.classList.remove('notActive')
-    : navigateForward.classList.add('notActive');
+  // Events
+  Navigate.Shortcut = async(parentID, nodeID) => {
+    if (typeof RCElement !== 'undefined' && parentID == "RCElement") {
+      parentID = RCElement.getAttribute('parent-node');
+      nodeID = RCElement.getAttribute('node-id');
+    }
+    if (parentID !== NodeID) await NodeCall({"Folder": parentID});
+    if (nodeID) HighlightNode(nodeID);
+  }
 
-  Directory_Route.length > 1 || Directory_Tree[Tree_Number - 1]
-    ? navigateBackward.classList.remove('notActive')
-    : navigateBackward.classList.add('notActive');
+  // Helper
+  Navigate.ItemsPath = (Parent, Name) => {
+    return NodeName == 'homepage' ? `${Parent} > ${Name}` : navConfig.Directory_Route.reduce((a,b) => a + `${b.Text} > `, `` ) + Name;
+  }
+
+  // Render
+  Navigate.Route = (Node_Path, Text_Path) => {
+    if (FolderCall == true) {
+      if (navConfig.Directory_Route.length && navConfig.Directory_Route[navConfig.Directory_Route.length - 1].Node == Node_Path) {
+        // This was a return statement, but that breaks going forward into a locked folder.
+      } else {
+        navConfig.Directory_Route.push({"Node": Node_Path, "Text": Text_Path})
+        if (navConfig.Directory_Tree.length > 1 && navConfig.Directory_Tree[navConfig.Tree_Number].Route[navConfig.Tree_Steps + 1] != ({"Node": Node_Path, "Text": Text_Path})) {
+          navConfig.Directory_Tree = navConfig.Directory_Tree.slice(0, navConfig.Tree_Number + 1);
+        }
+        if (!navConfig.Directory_Tree[navConfig.Tree_Number]) { navConfig.Directory_Tree[navConfig.Tree_Number] = {"Start": 1, "Route": []} }
+        navConfig.Directory_Tree[navConfig.Tree_Number].Route = navConfig.Directory_Route;
+        navConfig.Tree_Steps++;
+      }
+    }
+    FolderCall = true;
+  
+    this.RenderDirPath();
+
+    this.DirButtons();
+  }
+  
+  RenderDirPath = () => {
+    navElem.directoryLocation.innerHTML =
+    navConfig.Directory_Route.map(e => `<button class='dirBtn' node-id='${e.Node}' title='${e.Text}'>${e.Text}</button>`).toString().replaceAll(',', '<i></i>');
+
+    navConfig.Directory_Tree[navConfig.Tree_Number].Route[navConfig.Tree_Steps] || navConfig.Directory_Tree[navConfig.Tree_Number + 1]
+      ? navElem.navigateForward.classList.remove('notActive')
+      : navElem.navigateForward.classList.add('notActive');
+  
+    navConfig.Directory_Route.length > 1 || navConfig.Directory_Tree[navConfig.Tree_Number - 1]
+      ? navElem.navigateBackward.classList.remove('notActive')
+      : navElem.navigateBackward.classList.add('notActive');
+  }
+
+  // ====================================
+
+  this.SetListeners_();
 }
 
+Navigate();
 
-// @ = Navigation Buttons
-navigateForward.addEventListener('click', () => {
-  if (Directory_Tree[Tree_Number].Route[Tree_Steps]) {
-    Directory_Route = Directory_Tree[Tree_Number].Route.slice(0, Tree_Steps + 1);
-    Tree_Steps = Directory_Route.length;
-  } else if (Directory_Tree[Tree_Number + 1]) {
-    Directory_Route = Directory_Tree[Tree_Number + 1].Route;
-    Tree_Number++;
-    Tree_Steps = Directory_Tree[Tree_Number].Start;
-  } else { return; }
-  
-  NodeCall({"Folder":Directory_Tree[Tree_Number].Route[ Tree_Steps - 1 ].Node, "Reload": false});
-})
-navigateBackward.addEventListener('click', () => {
-  if ( Tree_Steps > Directory_Tree[Tree_Number].Start) {
-    Directory_Route = Directory_Route.slice(0, Tree_Steps - 1 );
-  } else if (Directory_Tree[Tree_Number - 1]) {
-    Directory_Route = Directory_Tree[Tree_Number - 1].Route;
-    Tree_Number--;
-  } else { return; }
-  
-  Tree_Steps = Directory_Route.length;
 
-  NodeCall({"Folder":Directory_Route[Tree_Steps - 1].Node, "Reload": false});
-})
 
 // @ = Movement
 function setupFileMove(Caller) {
@@ -231,7 +249,7 @@ function setupFileMove(Caller) {
       drop: moveToTarget,
     })
 
-  }
+  } 
 }
 
 const moveToTarget = function(drop, item, type='table') {
@@ -239,23 +257,24 @@ const moveToTarget = function(drop, item, type='table') {
   if (!NodeSelected.has(targetID) && targetID !== NodeID && targetID) {
     NodeAPI('edit', {"action": "MOVE", "section": Section, "id": NodeSelected, "to": targetID, "path": false})
     
-    NodeSelected.forEach(itemID => {
-      N_Find(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove();
-    })
+    NodeSelected.forEach(itemID => N_.Find(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove())
     
     NodeSelected.clear();
-    N_Find('.listItem-Placeholder').remove();
+    N_.Find('.listItem-Placeholder').remove();
   }
 }
 
 // @ = Click & Drag Select
 const DragSelection = new SelectionArea({
   selectables: ['[dir-nodes] > tr'],
-  boundaries: ['.main_Page'],
+  startareas: ['.PageData', '.PageInformation'],
+  // boundaries: ['.PageInformation'],
+  // boundaries: ['.PageData', '.PageInformation'],
+  boundaries: ['.PageData'],
   startThreshold: 10,
 }).on('beforestart', ({event}) => {
-  N_Find('.main_Page').classList.add('no-select');
-  return !event.target.tagName.match(/TD|INPUT/);
+  N_.Find('.main_Page').classList.add('no-select');
+  return !event.target.tagName.match(/TD|INPUT|BUTTON/);
 }).on('start', ({store, event}) => {
   if (!event.ctrlKey && !event.metaKey) {
     for (const el of store.stored) {
@@ -278,6 +297,6 @@ const DragSelection = new SelectionArea({
     el.classList.remove('ItemSelected');
   }
 }).on('stop', () => {
-  N_Find('.main_Page').classList.remove('no-select');
+  N_.Find('.main_Page').classList.remove('no-select');
   DragSelection.keepSelection();
 });

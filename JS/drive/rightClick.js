@@ -5,8 +5,8 @@ const RightClickObjectMenu = {
     {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
     {_id: '2', title: 'Refresh', CMD: 'NodeCall', VAR: [{"Reload":false}]},
     {split: true},
-    {_id: '3', rc_var: 'Layout', CMD: 'ToggleView', VAR :[]},
-    {_id: '4', rc_var: 'Change_Theme', CMD: 'ToggleTheme', VAR :[]},
+    {_id: '3', rc_var: 'Layout', CMD: 'PARENT_ToggleView', VAR :[]},
+    {_id: '4', rc_var: 'Change_Theme', CMD: 'PARENT_ToggleTheme', VAR :[]},
     {split: true},
     {_id: '5', title: 'Upload', CMD: 'PopUp_Upload', VAR: ['Upload']},
   ],
@@ -51,11 +51,11 @@ const RightClickObjectMenu = {
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
     {_id: '2', title: 'View Details', CMD: 'FetchItemInformation', VAR: ["RCElement"]},
     {split: true},
-    {_id: '3', title: 'Go to', CMD: 'Shortcut', VAR: ["RCElement"]},
+    {_id: '3', title: 'Go to', CMD: 'PARENT_Shortcut', VAR: ["RCElement"]},
   ],
 
   "Preview_Image": [
-    {_id: '1', title: 'Open in New Tab', CMD: 'ExternalTab', CUS_VAR: "NODEID", VAR: []},
+    {_id: '1', title: 'Open in New Tab', CMD: 'PARENT_ExternalTab', CUS_VAR: "NODEID", VAR: []},
     {_id: '2', title: 'Open in Mini Preview', class: 'disabled-text', CMD: 'miniPreview', VAR: []},
     {split: true},
     {_id: '3', title: 'Close', CMD: 'PROTO_ToggleBase_', VAR: []},
@@ -90,7 +90,6 @@ class RightClickContainer {
   constructor(menu, event, element) {
     [this.menu, this.event, this.target] = [menu, event, element];
     this.container = document.querySelector('.RightClickContainer');
-    console.log('DOUBLE CLICK TEST');
     this._Initialise();
   }
 
@@ -116,7 +115,7 @@ class RightClickContainer {
       top: ${(document.body.offsetHeight < (targetPosY + menuHeight) ? targetPosY - menuHeight : targetPosY) - 5}px;
       left: ${(document.body.offsetWidth < (targetPosX + 185) ? targetPosX - 185 : targetPosX - 5)}px;`;
 
-    $(this.container).fadeIn(100, startFocusOut());
+    FadeInOut(this.container, 300)
   }
   SetListeners_() {
     this.container.querySelectorAll('button:not(divide)').forEach((option) => {
@@ -133,14 +132,19 @@ class RightClickContainer {
 }
 
 
-function startFocusOut() {  // Called from PositionMenu_ in RightClickContainer. Needs replacing with non jquery version.
-  setTimeout(function() {
-    $(document).on("click", () => {
-      $('.RightClickContainer').empty();
-      $(".RightClickContainer").hide();
-      $(document).off("click");
-    });
-  }, 20)
+function FadeInOut(elem, ms=300) {  // Called from PositionMenu_ in RightClickContainer.
+  elem.style.display = 'table';
+  elem.style.transition = `opacity ${ms}ms`;
+  elem.style.opacity = '1';
+
+  setTimeout(() => {document.addEventListener('click', HideElement)}, 20)
+
+  function HideElement() {
+    elem.style.opacity = '0';
+    elem.innerHTML = '';
+    elem.style.display = 'none';
+    document.removeEventListener('click', HideElement);
+  }
 }
 
 // ========================================
@@ -152,7 +156,7 @@ CUSTOM_Var = (variableName, target) => {
 }
 
 RC_Var = async() => {
-  function Collapse(e) { return (N_PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+  function Collapse(e) { return (N_.PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
   function Layout(e) { return UserSettings.local.layout == 0 ? "List View" : "Block View"; }
   function Change_Theme(e) { return UserSettings.local.theme == 0 ? "Light Theme" : "Dark Theme"; }
 
@@ -166,11 +170,14 @@ RC_Var = async() => {
 function PROTO_ToggleBase_() { Popup.prototype.ToggleBase_(); }
 
 function NEWColorPicker(caller, callback) { new CreateColorPicker(caller, callback) }
-
 function NEWPopup(type, caller, action, data) {
   if (type == 'NewFolder') { new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create', color: '', RCE: '', secondary: true}); }
   else { new Popup(type, RCElement, action, data); }
 }
+function PARENT_ToggleTheme() { SettingsController.ToggleTheme() }
+function PARENT_ToggleView() { SettingsController.ToggleView() }
+function PARENT_ExternalTab(nodeID) { N_.ExternalTab(nodeID); }
+function PARENT_Shortcut(rc_elem) { Navigate.Shortcut(rc_elem) }
 
 
 

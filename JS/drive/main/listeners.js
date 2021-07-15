@@ -1,6 +1,6 @@
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? fileContainer.querySelectorAll('div[node-id]:not([home-span]):not([Sub-Span])') : fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div'));
+  let Items = (View == 0 ? fileContainer.querySelectorAll('div.Item[node-id]:not([home-span]):not([Sub-Span]), .baseFolders > div') : fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div'));
 
   Items.forEach(item => {
     item.addEventListener('click', function(selected) {
@@ -10,7 +10,7 @@ function ItemClickListener(View) {
 
       if (!selected.currentTarget.classList.contains('noOpen')) {
         ItemActions(selected.currentTarget);
-        N_ClientStatus(5, "Ok", 500);
+        N_.ClientStatus(5, "Ok", 500);
       }
     })
   })
@@ -87,7 +87,7 @@ function collapseSpan(span, expand=false) {
 
 function createLocation(RCE) {
   return  NodeName == "homepage" 
-    ? `value= '${RCE == 'RCE' ? N_PareAttr(RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
+    ? `value= '${RCE == 'RCE' ? N_.PareAttr(RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_.PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
     : `value='${NodeID}'><p>Current</p>`;
   function spanList() {
     let HTML_Spans = "";
@@ -112,7 +112,7 @@ function renameItem(e) {
 
   targetInput.addEventListener('change', function() {
     ReturnItemState();
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": focusedElement.getAttribute('node-id'), "data": { "name": targetInput.value }, "path": NodeID}, true)
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [focusedElement.getAttribute('node-id')], "data": { "name": targetInput.value }, "path": NodeID}, true)
   });
 
   setTimeout(function() {

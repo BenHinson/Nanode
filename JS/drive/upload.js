@@ -1,94 +1,80 @@
-Upload_Item_Count = 0;
-Upload_Size = 0;
-Upload_Queue = [];
-Visual_Items = {};
-Upload_Status = 'Choose'; // Paused, Start, Complete, Choose, Limit
-Held_Upload = [];
-Time_Difference = '';
-Queue_Showing = false;
+const uploadConfig = {
+  // Chunk_Size: (1 * 1024 * 1024), // 1 MB
+  Chunk_Size: (3 * 1024 * 1024), // 3 MB
+  // Chunk_Size: (5 * 1024 * 1024), // 5 MB
+  // Chunk_Size: (20 * 1024 * 1024), // 20 MB
 
-const Chunk_Size = (1 * 1024 * 1024) // (1mb)
-
-const Upload_Buttons = document.querySelectorAll('.UploadBtns > input');
-const Drop_Area = document.querySelector('.Pages');
-const DragDropOverlay = document.querySelector('.DragDropOverlay');
-
-const UC_Info = document.querySelector('.UC_Info');
-
-const Upload_Control = document.getElementsByClassName('Upload_Control')[0];
-const Upload_Values = document.querySelectorAll('.UC_Bottom p');
-const Progress_Div = document.getElementsByClassName('Upload_Progress')[0];
-const Queue_Toggle = document.getElementById('queue_toggle');
+  Item_Count: 0,
+  Size: 0,
+  Queue: [],
+  Visual_Items: {},
+  Status: 'Choose', // Paused, Start, Complete, Choose, Limit
+  Held: [],
+  Time_Difference: '',
+  Queue_Showing: false,
+}
+const uploadElem = {
+  // Referenced in viewer.js and upload.js
+  Upload_Values: document.querySelectorAll('.UC_Bottom p'),
+  Progress_Div: document.getElementsByClassName('Upload_Progress')[0],
+  // Referenced only in upload.js
+  Upload_Buttons: document.querySelectorAll('.UploadBtns > input'),
+  Drop_Area: document.querySelector('.Pages'),
+  DragDropOverlay: document.querySelector('.DragDropOverlay'),
+  UC_Info: document.querySelector('.UC_Info'),
+  Upload_Control: document.getElementsByClassName('Upload_Control')[0],
+  Queue_Toggle: document.getElementById('queue_toggle'),
+}
 
 // ========================================
 
-// class Upload_ {
-//   constructor(elements) {
-//     [this.Item_Count, this.Total_Size, this.Queue, this.Visual_Items, this.Status, this.Held] = [0, 0, [], {}, 'Choose', []]
-//     // define elements from the elements
-//     this._Initialise();
-//   }
-
-//   _Initialise() {
-//     console.log(34);
-//     // this.RenderPicker_();
-//   }
-//   Queue_() { }
-// }
-// new Upload_({});
-
-
-
-
-Upload_Listeners = async () => {
+Upload_Listeners = () => {
   
-  Upload_Buttons.forEach((ele) => ele.addEventListener('change', (e) => Upload_Actions.Looper(e.target.files) ) );
+  uploadElem.Upload_Buttons.forEach((ele) => ele.addEventListener('change', (e) => Upload_Actions.Looper(e.target.files) ) );
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
-    Drop_Area.addEventListener(event, preventDefaults, false)   
-    DragDropOverlay.addEventListener(event, preventDefaults, false);
+    uploadElem.Drop_Area.addEventListener(event, preventDefaults, false)   
+    uploadElem.DragDropOverlay.addEventListener(event, preventDefaults, false);
     document.body.addEventListener(event, preventDefaults, false);
     function preventDefaults(e) {e.preventDefault(); e.stopPropagation();}
   });
   ['dragenter', "dragover"].forEach(event => {
-    Drop_Area.addEventListener(event, highlight, false)
-    function highlight(e) { if (e.dataTransfer.types[0] == "Files") {DragDropOverlay.classList.add('display_Overlay')} }
+    uploadElem.Drop_Area.addEventListener(event, highlight, false)
+    function highlight(e) { if (e.dataTransfer.types[0] == "Files") {uploadElem.DragDropOverlay.classList.add('display_Overlay')} }
   });
   ['dragleave', 'drop'].forEach(event => {
-    Drop_Area.addEventListener(event, unhighlight, false)
-    function unhighlight(e) { DragDropOverlay.classList.remove('display_Overlay'); }
+    uploadElem.Drop_Area.addEventListener(event, unhighlight, false)
+    function unhighlight(e) { uploadElem.DragDropOverlay.classList.remove('display_Overlay'); }
   });
 
-  Drop_Area.addEventListener("drop", function(e) {
+  uploadElem.Drop_Area.addEventListener("drop", function(e) {
     if (!e.dataTransfer.files.length) { return; }
     PopUp_Upload();
     Upload_Actions.Looper(e.dataTransfer.items, true)
   })
 
-  Control = function(e) {
+  Upload_Listeners.Control = (e) => {
     switch (e.getAttribute('action')) {
-      case 'Choose' : { document.querySelectorAll('.UC_Bottom button').forEach(e => e.classList.add('highlight')); break;}
+      case 'Choose': { document.querySelectorAll('.UC_Bottom button').forEach(e => e.classList.add('highlight')); break;}
       case 'Start': { Upload.Iterate(); break; }
       case 'Pause': { Upload_Visuals.Status('Paused', 'Continue'); break;}
       case 'Paused': { Upload_Visuals.Status('Pause', 'Pause');
-        if (Held_Upload.length) { let Held = Held_Upload.shift();  Upload.Manager(Held.Chunks, Held.Info, Held.Meta)} 
+        if (uploadConfig.Held.length) {let Held = uploadConfig.Held.shift();  Upload.Manager(Held.Chunks, Held.Info, Held.Meta)} 
         else {Upload.Iterate()}; break;}
     }
   }
-
-  Upload_Listeners.Control = Control;
 }
 
-Upload_Actions = function() {
+Upload_Actions = () => {
 
-  Looper = async(files, drop) => {
+  Upload_Actions.Looper = async(files, drop) => {
     if (drop) {
-      await Get_All_Files(files).then(function(files) {
+      await this.Get_All_Files(files).then(function(files) {
         for (let i=0; i<files.length; i++) {
           files[i].file(file => {
-            Upload_Size += file.size;
-            Upload_Item_Count++;
-            Queue_Add(file, files[i]);
+            uploadConfig.Size += file.size;
+            uploadConfig.Item_Count++;
+            Upload_Actions.Queue_Add(file, files[i]);
             
             if (i === files.length - 1) { Loop_Complete(); }
           })
@@ -96,9 +82,9 @@ Upload_Actions = function() {
       });
     } else {
       Array.from(files).forEach(function(file) {
-        Upload_Size += file.size;
-        Upload_Item_Count++;
-        Queue_Add(file);
+        uploadConfig.Size += file.size;
+        uploadConfig.Item_Count++;
+        Upload_Actions.Queue_Add(file);
       })
       Loop_Complete();
     }
@@ -116,16 +102,16 @@ Upload_Actions = function() {
     while (queue.length > 0) {
       let entry = queue.shift();
       if (entry.isFile) { Uploaded_Files.push(entry); } 
-      else if (entry.isDirectory) { queue.push(...await Get_Dir_Entries(entry.createReader())); }
+      else if (entry.isDirectory) { queue.push(...await this.Get_Dir_Entries(entry.createReader())); }
     }
     return Uploaded_Files;
   }
   Get_Dir_Entries = async(directory) => {
     let entries = [];
-    let readEntries = await readEntriesPromise(directory);
+    let readEntries = await this.readEntriesPromise(directory);
     while (readEntries.length > 0) {
       entries.push(...readEntries);
-      readEntries = await readEntriesPromise(directory);
+      readEntries = await this.readEntriesPromise(directory);
     }
     return entries;
   }
@@ -138,33 +124,33 @@ Upload_Actions = function() {
   }
 
 
-  Queue_Add = function(file, path) {
-    if (Upload_Queue.length < 1001) {
-      Upload_Queue.push( {"Meta": Item_Meta(file, path), "Data": file, "Status": 'Waiting'} )
+  Upload_Actions.Queue_Add = (file, path) => {
+    if (uploadConfig.Queue.length < 1001) {
+      uploadConfig.Queue.push( {"Meta": this.Item_Meta(file, path), "Data": file, "Status": 'Waiting'} )
     } else {
-      Upload_Values[0].style.color = 'crimson';
+      uploadElem.Upload_Values[0].style.color = 'crimson';
     }
   }
 
-  Queue_Remove = function(e) {
+  Upload_Actions.Queue_Remove = (e) => {
     const up_id = e.getAttribute('upload_id');
-    const item = Visual_Items[up_id];
+    const item = uploadConfig.Visual_Items[up_id];
 
     if (!item || item.Status != 'Waiting') { e.remove(); return; }
 
-    delete Visual_Items[up_id];
-    Upload_Queue.splice(Upload_Queue.findIndex(e => e.Meta.id == up_id), 1);
-    Upload_Size -= item.Meta.size;
-    Plan_Check();
-    Upload_Item_Count -= 1;
-    Upload_Values[0].innerText = N_TextMultiple(Upload_Item_Count, "Item");
-    Upload_Values[1].innerText = N_ConvertSize(Upload_Size);
+    delete uploadConfig.Visual_Items[up_id];
+    uploadConfig.Queue.splice(uploadConfig.Queue.findIndex(e => e.Meta.id == up_id), 1);
+    uploadConfig.Size -= item.Meta.size;
+    this.Plan_Check();
+    uploadConfig.Item_Count -= 1;
+    uploadElem.Upload_Values[0].innerText = N_.TextMultiple(uploadConfig.Item_Count, "Item");
+    uploadElem.Upload_Values[1].innerText = N_.ConvertSize(uploadConfig.Size);
     e.remove(); // Remove the element.
 
-    if (Upload_Queue.length == 0 && Held_Upload.length == 0) {Upload_Visuals.Status("Choose", "Choose Items");}
+    if (uploadConfig.Queue.length == 0 && uploadConfig.Held.length == 0) {Upload_Visuals.Status("Choose", "Choose Items");}
   }
 
-  Item_Meta = function(file, dir='') {
+  Item_Meta = (file, dir='') => {
     return {
       "section": Section,
       "relative_path": file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
@@ -179,26 +165,26 @@ Upload_Actions = function() {
     }
   }
 
-  Loop_Complete = function() {
-    if (Upload_Queue.length >= 1) {
+  Loop_Complete = () => {
+    if (uploadConfig.Queue.length >= 1) {
     
-      for (let i=0; i<Upload_Queue.length; i++) { // Make Duplicate for Visual Purposes. (No file Data) As Upload_Queue gets Shifted
-        Visual_Items[Upload_Queue[i].Meta.id] = {"Order": i, "Meta": Upload_Queue[i].Meta, "Status": Upload_Queue[i].Status}
+      for (let i=0; i<uploadConfig.Queue.length; i++) { // Make Duplicate for Visual Purposes. (No file Data) As uploadConfig.Queue gets Shifted
+        uploadConfig.Visual_Items[uploadConfig.Queue[i].Meta.id] = {"Order": i, "Meta": uploadConfig.Queue[i].Meta, "Status": uploadConfig.Queue[i].Status}
       }
 
-      Upload_Values[0].innerText = N_TextMultiple(Upload_Item_Count, "Item");
-      Upload_Values[1].innerText = N_ConvertSize(Upload_Size);
+      uploadElem.Upload_Values[0].innerText = N_.TextMultiple(uploadConfig.Item_Count, "Item");
+      uploadElem.Upload_Values[1].innerText = N_.ConvertSize(uploadConfig.Size);
       Upload_Visuals.Queue('update');
 
-      Plan_Check();
+      this.Plan_Check();
     }
   }
 
-  Plan_Check = function() {
+  Plan_Check = () => {
     let accountPlan = UserSettings.user.plan;
     let accountStorageLeft = accountPlan.max - accountPlan.used;
-    if (Upload_Size > accountStorageLeft) {
-      Upload_Visuals.Notify('notification', 'limit', `Cannot exceed current plan! (${N_ConvertSize(Upload_Size - accountStorageLeft)} over)`);
+    if (uploadConfig.Size > accountStorageLeft) {
+      Upload_Visuals.Notify('notification', 'limit', `Cannot exceed current plan! (${N_.ConvertSize(uploadConfig.Size - accountStorageLeft)} over)`);
       Upload_Visuals.Status("Limit", "Exceeding Plan");
     } else {
       Upload_Visuals.Notify('hide');
@@ -206,131 +192,135 @@ Upload_Actions = function() {
     }
   }
 
-  Reset_Upload = function() {
-    Upload_Item_Count = 0;
-    Upload_Size = 0;
-    Upload_Queue = [];
-    Visual_Items = {};
-    Upload_Status = 'Choose';
-    Held_Upload = [];
+  Upload_Actions.Reset_Upload = () => {
+    uploadConfig.Item_Count = 0;
+    uploadConfig.Size = 0;
+    uploadConfig.Queue = [];
+    uploadConfig.Visual_Items = {};
+    uploadConfig.Status = 'Choose';
+    uploadConfig.Held = [];
 
-    Upload_Values[0].innerText = "0 Items";
-    Upload_Values[1].innerText = "0 B";
+    uploadElem.Upload_Values[0].innerText = "0 Items";
+    uploadElem.Upload_Values[1].innerText = "0 B";
   }
-
-  Upload_Actions.Looper = Looper;
-  Upload_Actions.Queue_Add = Queue_Add;
-  Upload_Actions.Queue_Remove = Queue_Remove;
-  Upload_Actions.Reset_Upload = Reset_Upload;
 }
 
-Upload = async () => {
+Upload = () => {
 
-  Iterate = function() { // Search for next File to Upload.
-    if (Upload_Queue.length == 0) { // Queue is empty.
+  Iterate = () => { // Search for next File to Upload.
+    if (uploadConfig.Queue.length == 0) { // Queue is empty.
       Upload_Visuals.Status("Choose", "Choose Items");
-      Notify('success', 'finished', 'Items Successfully Uploaded to Nanode.');
-      fetch('https://drive.nanode.one/upload', { method:'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"message":"Queue_Empty"})} )
+      Upload_Visuals.Notify('success', 'finished', 'Items Successfully Uploaded.');
+      fetch('https://drive.nanode.one/upload', { ...defConfig, body: JSON.stringify({"message":"Queue_Empty"})} )
       NodeCall({"Folder":NodeID, "Reload": false});
       Upload_Actions.Reset_Upload();
       return;
     }
-    let File = Upload_Queue.shift();
+    let File = uploadConfig.Queue.shift();
     if (File) {
-      Chunker(File);
-      Visual_Items[File.Meta.id].Status = "Uploading";
-      Upload_Visuals.Start(File);
+      this.Chunker(File);
+      uploadConfig.Visual_Items[File.Meta.id].Status = "Uploading";
+      Upload_Visuals.Start(File.Data.size);
     }
   }
 
-  Chunker = async(File) => { // Chunks up the File, sets data and works out each chunk size
+  Chunker = (File) => { // Chunks up the File, sets data and works out each chunk size
     let Chunks = [];
 
-    for (let start = 0; start < File.Data.size; start += Chunk_Size + 1) {
-      const Chunk = File.Data.slice(start, start + Chunk_Size + 1)
+    for (let start = 0; start < File.Data.size; start += uploadConfig.Chunk_Size + 1) {
+      const Chunk = File.Data.slice(start, start + uploadConfig.Chunk_Size + 1)
       Chunks.push({"Data":Chunk, "Num": Chunks.length });
     }
     let Info = {"total_chunks": Chunks.length, "total_size": File.Data.size};
 
     Upload_Visuals.Status("Pause", "Pause")
-    await Manager(Chunks, Info, File.Meta);
+    this.Manager(Chunks, Info, File.Meta);
   }
 
-  Manager = async(Chunks, Info, Meta) => { // Pushes Chunk to Post if all OK
-    if (Upload_Status == "Paused") {
+  Manager = (Chunks, Info, Meta) => { // Pushes Chunk to Post if all OK
+    if (uploadConfig.Status == "Paused") {
       console.log('Pause Detected');
-      Held_Upload.push({"Chunks": Chunks, "Info": Info, "Meta": Meta});
-      Visual_Items[Meta.id].Status = "Paused";
+      uploadConfig.Held.push({"Chunks": Chunks, "Info": Info, "Meta": Meta});
+      uploadConfig.Visual_Items[Meta.id].Status = "Paused";
       return;
     }
 
+    if (uploadConfig.Status == 'Limit') { return; }
+
     if (Chunks.length) {
       let Upload = Chunks.shift();
-      Post(Chunks, Upload, Info, Meta)
+      this.Post(Chunks, Upload, Info, Meta) // Upload the chunk to the server
+      uploadConfig.Visual_Items[Meta.id].Status = "Uploading";
     } else {
-      console.log("No More Chunks"); Iterate();
+      this.Iterate(); // All chunks of the file are uploaded. Move onto next item.
     }
   }
 
-  Post = async(Chunks, Upload, Info, Meta) => { // Sends the Chunk and Handles Reply
-    if (Upload_Status == 'Paused' || Upload_Status == 'Limit') { return; }
+  // Post = async (Chunks, Upload, Info, Meta) => { // ! THIS IS TEST CODE PLEASE REMOVE ===== This code is 5 Times faster at uploading files.
+  //   const formData = new FormData();
+  //   formData.append('files', Upload.Data)
 
-    const Form = {
+  //   const Reply = await( await fetch('https://drive.nanode.one/test_upload', {
+  //     method: 'POST',
+  //     body: formData,
+  //   }) ).json();
+  // }
+
+
+  Post = (Chunks, Upload, Info, Meta) => { // Sends the Chunk and Handles Reply
+    N_.ClientStatus(1, "True");
+
+    let Form = {
       'meta': Meta,
       'chunk_info': {"index": Upload.Num, "total_chunks": Info.total_chunks, "total_size": Info.total_size}
     }
 
-    Visual_Items[Meta.id].Status = "Uploading";
-
-    Read_Chunk(Upload.Data, async(e) => {
+    this.Read_Chunk(Upload.Data, async(e) => {
       Form.file = Array.from(new Uint8Array(e.target.result)); // Fastest and Easiest to Convert on the Server
 
-      N_ClientStatus(1, "True");
-      Time_Difference = Date.now();
+      uploadConfig.Time_Difference = Date.now();
 
-      let res = await fetch('https://drive.nanode.one/upload', {
-        method:'POST',
-        headers: {'Content-Type': 'application/json'},
+      const Reply = await( await fetch('https://drive.nanode.one/upload', {
+        ...defConfig,
         body: new Blob( [ JSON.stringify(Form) ], { type: 'text/plain' } ),
-      })
+      }) ).json();
 
-      let Reply = await res.json();
-      N_ClientStatus(1, "Off");
+      N_.ClientStatus(1, "Off");
 
-      Item_Status(Reply, {Meta, "upload_num": Upload.Num, "total_chunks": Info.total_chunks, "total_size": Info.total_size}, {Chunks, Info});
+      this.Item_Status(Reply, {Meta, "upload_num": Upload.Num, "total_chunks": Info.total_chunks, "total_size": Info.total_size}, {Chunks, Info});
     })
   }
 
-  Read_Chunk = async(File, onLoadCallback) => { // Reads the Files Data as an ArrayBuffer
+  Read_Chunk = (File, onLoadCallback) => { // Reads the Files Data as an ArrayBuffer
     let reader = new FileReader();
     reader.onload = onLoadCallback;
     reader.readAsArrayBuffer(File);
   }
 
-  Item_Status = function(Reply, Data, Next) {
+  Item_Status = (Reply, Data, Next) => {
     switch (Reply.status) {
       case 'Success': { // Send the next chunk or file.
-        Manager(Next.Chunks, Next.Info, Data.Meta); break; 
+        this.Manager(Next.Chunks, Next.Info, Data.Meta); break; 
       }
       case 'Limit': { console.log('Exceeding Account Size Limit');
-        Upload_Status = 'Limit';
+        uploadConfig.Status = 'Limit';
         Upload_Visuals.Notify('error', 'limit', 'You have ran out of storage on this plan.')
         break;
       }
       case 'Failed': { console.log('Failed to write chunk');
-        Visual_Items[Data.Meta.id].Status = "Failed";
-        Notify('error', 'failed', 'An Item has Failed to Upload. Please Try Again.');
+        uploadConfig.Visual_Items[Data.Meta.id].Status = "Failed";
+        Upload_Visuals.Notify('error', 'failed', 'An Item has Failed to Upload. Please Try Again.');
         break;
       }
       case 'Incomplete': { console.log('Missing Data');
-        Visual_Items[Data.Meta.id].Status = "Incomplete";
-        Notify('error', 'incomplete', 'The data provided is incomplete or incorrect.');
+        uploadConfig.Visual_Items[Data.Meta.id].Status = "Incomplete";
+        Upload_Visuals.Notify('error', 'incomplete', 'The data provided is incomplete or incorrect.');
         break;
       }
       case 'Complete': {
-        Visual_Items[Data.Meta.id].Status = "Complete";
-        SetStorage(Reply.plan);
-        Iterate();
+        uploadConfig.Visual_Items[Data.Meta.id].Status = "Complete";
+        SettingsController.SetStorage(Reply.plan);
+        this.Iterate();
         break;
       }
     }
@@ -341,89 +331,89 @@ Upload = async () => {
   Upload.Manager = Manager;
 }
 
-Upload_Visuals = async() => {
+Upload_Visuals = () => {
 
-  Status = function(action, text) {
-    Upload_Status = action;
-    Upload_Control.setAttribute('action', action);
-    Upload_Control.innerText = text;
+  Status = (action, text) => {
+    uploadConfig.Status = action;
+    uploadElem.Upload_Control.setAttribute('action', action);
+    uploadElem.Upload_Control.innerText = text;
 
-    if (Upload_Status == "Complete") { setTimeout(function() { Progress_Div.classList.remove('UC_Showing') }, 5000) }
+    if (uploadConfig.Status == "Complete" || uploadConfig.Status == 'Choose') { setTimeout(() => uploadElem.Progress_Div.classList.remove('visible'), 3000) }
   }
 
-  Notify = function(type, notif, message) {
-    if (type == 'hide') { return UC_Info.classList = `UC_Info`; }
-    UC_Info.classList = `UC_Info ${type} display`;
-    UC_Info.children[0].innerText = message;
+  Notify = (type, notif, message) => {
+    if (type == 'hide') { return uploadElem.UC_Info.classList = `UC_Info`; }
+    uploadElem.UC_Info.classList = `UC_Info ${type} display`;
+    uploadElem.UC_Info.children[0].innerText = message;
   }
 
-  Start = function(File) {
-    Progress_Div.classList.add('UC_Showing');
-    Progress_Div.querySelector('progress').value = 0;
-    Queue();
+  Start = (Size) => {
+    uploadElem.Progress_Div.classList.add('visible');
+    uploadElem.Progress_Div.querySelector('progress').value = 0;
+    this.Queue();
 
-    let upload_time = parseInt(File.Data.size / (512*1024)) // In Seconds (Assuming 0.5MB / sec = ~4Mb/s upload)
-    Progress_Div.querySelector('p').innerText = upload_time < 60 ? (upload_time+1)+"s" : N_TextMultiple( (parseInt(upload_time / 60)+1), "min" );
+    let upload_time = parseInt(Size / (512*1024)) // In Seconds (Assuming 0.5MB / sec = ~4Mb/s upload)
+    uploadElem.Progress_Div.querySelector('p').innerText = upload_time < 60 ? (upload_time+1)+"s" : N_.TextMultiple( (parseInt(upload_time / 60)+1), "min" );
   },
 
-  Progress = function(total_chunks, chunk_num, total_size, id) {
-    // Upload_Size > Total size of all files to be uploaded.
+  Progress = (total_chunks, chunk_num, total_size, id) => {
+    // uploadConfig.Size > Total size of all files to be uploaded.
     // Define global 'Uploaded_Size'
     // (Uploaded_Size / (Uploaded + completed_Size)) * 100
 
-    let completed_Size = total_chunks == 1 ? total_size : ((chunk_num+1) * Chunk_Size);
+    let completed_Size = total_chunks == 1 ? total_size : ((chunk_num+1) * uploadConfig.Chunk_Size);
     let item_percentage = ((completed_Size / total_size) * 100)
-    Progress_Div.querySelector('progress').value = item_percentage;
+    uploadElem.Progress_Div.querySelector('progress').value = item_percentage;
 
-    let time_till_upload = total_chunks == 1 ? 0 : parseInt((total_size - completed_Size) / Chunk_Size) * ((Date.now() - Time_Difference) / 1000)
-    Progress_Div.querySelector('p').innerText = time_till_upload < 60 ? (time_till_upload+1).toFixed()+"s" : N_TextMultiple( (parseInt(time_till_upload / 60)+1).toFixed(), "min") 
+    let time_till_upload = total_chunks == 1 ? 0 : parseInt((total_size - completed_Size) / uploadConfig.Chunk_Size) * ((Date.now() - uploadConfig.Time_Difference) / 1000)
+    uploadElem.Progress_Div.querySelector('p').innerText = time_till_upload < 60 ? (time_till_upload+1).toFixed()+"s" : N_.TextMultiple( (parseInt(time_till_upload / 60)+1).toFixed(), "min") 
 
-    if (Queue_Showing) {
+    if (uploadConfig.Queue_Showing) {
       let uploaded_item = UC_Queue_Table.querySelectorAll("tr[upload_id='"+id+"']")[0];
       uploaded_item.removeAttribute('onclick');
-      uploaded_item.children[2].innerHTML = Visual_Items[id] ? Status_Icon(Visual_Items[id].Status) : Status_Icon("Complete");
+      uploaded_item.children[2].innerHTML = uploadConfig.Visual_Items[id] ? this.Status_Icon(uploadConfig.Visual_Items[id].Status) : this.Status_Icon("Complete");
     }
   }
 
-  Queue = function(action) {
+  Queue = (action) => {
     if (action == 'toggle') {
       UC_Queue.classList.toggle('display');
-      if (!Queue_Showing) {
+      if (!uploadConfig.Queue_Showing) {
         UC_Queue_Table.innerHTML = '';
-        Queue_Toggle.classList = 'fas fa-chevron-down';
-        Queue_Showing = true;
+        uploadElem.Queue_Toggle.classList = 'fas fa-chevron-down';
+        uploadConfig.Queue_Showing = true;
       } else {
-        Queue_Toggle.classList = 'fas fa-chevron-up';
-        Queue_Showing = false;
+        uploadElem.Queue_Toggle.classList = 'fas fa-chevron-up';
+        uploadConfig.Queue_Showing = false;
         return;
       }
     } else if (action == 'update') {
       UC_Queue.classList.add('display');
-      Queue_Toggle.classList = 'fas fa-chevron-down';
-      Queue_Showing = true;
+      uploadElem.Queue_Toggle.classList = 'fas fa-chevron-down';
+      uploadConfig.Queue_Showing = true;
     }
 
     UC_Queue_Table.innerHTML = '';
 
-    for (const [id, info] of Object.entries(Visual_Items)) {
+    for (const [id, info] of Object.entries(uploadConfig.Visual_Items)) {
       UC_Queue_Table.innerHTML += `
-        <tr upload_id='${id}' class='${Status_Class(info['Status'])}' onclick='${info['Status'] == 'Waiting' ? 'Upload_Actions.Queue_Remove(this)' : ''}'> <td>${info['Meta'].name}</td> <td>${N_ConvertSize(info['Meta'].size)}</td> <td>${Status_Icon(info['Status'])}</td> </tr>
+        <tr upload_id='${id}' class='${this.Status_Class(info['Status'])}' onclick='${info['Status'] == 'Waiting' ? 'Upload_Actions.Queue_Remove(this)' : ''}'> <td>${info['Meta'].name}</td> <td>${N_.ConvertSize(info['Meta'].size)}</td> <td>${this.Status_Icon(info['Status'])}</td> </tr>
       `
     } 
   }
 
-  function Status_Icon(status) {
+  Status_Icon = (status) => {
     return {
       Paused: "<i class='far fa-pause-circle yellow' title='Paused'></i>",
       Complete: "<i class='far fa-check-circle green' title='Complete'></i>",
       Incomplete: "<i class='far fa-times-circle dark_red' title='Form Error'></i>",
       Failed: "<i class='far fa-times-circle red' title='Failed'></i>",
-      Uploading: N_Loading('small upload', 'Uploading'),
+      Uploading: N_.Loading('small upload', 'Uploading'),
       Waiting: "<i class='far fa-clock' title='Waiting'></i>",
     }[status] ?? "<i class='far fa-question-circle' title='Eh? No Status from Server... big yikes.'></i>"
   }
 
-  function Status_Class(status) {
+  Status_Class = (status) => {
     return {
       Uploading: "active_upload",
       Waiting: "waiting_upload",
@@ -447,3 +437,14 @@ Upload_Visuals();
 // Dropbox - 26s
 // Google - 40s
 // Nanode - 54s
+
+/**
+ * 
+ * Uploading a 11.75MB file.
+ * (1mb)    // 29.103  Upload  1.590 Read     (seconds)     (11 Chunks)
+ * (5mb)    // 22.640  Upload  0.405 Read     (seconds)     (3 Chunks)
+ * (20mb)   // 22.790  Upload  0.160 Read     (seconds)     (1 Chunk)
+ * 
+ *  USING 'express-fileupload' with form encType="multipart/form-data". Upload takes 6.00s Same with npm package 'formidable'
+ * 
+*/

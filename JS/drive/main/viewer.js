@@ -12,120 +12,106 @@ const UC_Queue_Table = document.querySelector('.UC_Queue table tbody');
 
 // ========================
 
-const makeReplaceElem = (parent, target, base) => {
-  if (!parent.querySelector(target)) { parent.innerHTML += base }
-  return parent.querySelector(target);
-}
 
+// const RenderNodes = () => {
+//   const binConfig = {}
+//   const binElem = {}
 
-// @ == VIEW
-function renderContent(content=``) {
-  fileContainer.innerHTML = N_Loading();
-  let layout = UserSettings.local.layout; // 0=block, 1=list
-  let homepage = NodeID == 'homepage';
-  let titles = true;
-
-  Object.values(Spans).forEach(span => {
-    if (span.id == '_MAIN_') { content += renderBaseFolders(span); return; }
-    content += `${layout ? listContainer(span) : blockContainer(span)}`;
-    titles = false;
-  })
+  // SetEvents_ = () => { ReminderPopup(); }
   
-  if (homepage) content += `<button class='NewSpan'>New Span</button>`;
+  // ====================================
 
-  fileContainer.innerHTML = content;
+  // Events
 
-  if (NodeID == 'homepage') {
-    renderRecents();
+  // ====================================
 
-    N_Find('.NewSpan').addEventListener('click', () => {
-      new Popup('NewSpan', null, 'NewSpan', {title: 'New Span', reject: 'Cancel', accept: 'Create', color: ''})
-    });
+  // this.SetListeners_(), this.SetEvents_();
+  // this.DataCall(), this.ItemCall();
+// }
 
-    N_Find('input[spanName]', true, fileContainer).forEach(name => {
-      name.addEventListener('change', (e) => {
-        let nodeID = e.target.parentNode.parentNode.getAttribute('node-id');
-        NodeAPI('edit', {"action": "DATA", "section": "main", "id": nodeID, "data": { "name": e.target.value }, "path": NodeID});
-      })
-    })
-  } else {
-    Filter(layout, fileContainer.querySelector('.Filter'), fileContainer);
-    Order.Listeners(layout, fileContainer.querySelector('table'));
-    Order.SetOrderVisuals();
+
+const renderContent = () => {
+  const renderConfig = {
+    layout: UserSettings.local.layout, // 0=block, 1=list
+    homepage: NodeID == 'homepage',
+    titles: true,
+  };
+
+  SetListeners_ = () => {
+    if (NodeID == 'homepage') {
+      renderContent.renderRecents();
+      this.NewSpan();
+      this.SpanName();
+    } else {
+      Filter(renderConfig.layout, fileContainer.querySelector('.Filter'), fileContainer);
+      Order.Listeners(renderConfig.layout, fileContainer.querySelector('table'));
+      Order.SetOrderVisuals();
+    }
+    if (renderConfig.layout === 0) ColorChange();
+    ItemClickListener(renderConfig.layout);
   }
 
-  ItemClickListener(layout);
-  N_ClientStatus(7, "Ok", 400);
+  // ====================================
 
-  /////////////////////////////////////////////////
+  // Render
+  Content = (content=``) => {
+    fileContainer.innerHTML = N_.Loading();
+    
+    Object.values(Spans).forEach(span => {
+      if (span.id == '_MAIN_') { content += this.renderBaseFolders(span); return; }
+      content += `${renderConfig.layout ? this.listContainer(span) : this.blockContainer(span)}`;
+      renderConfig.titles = false;
+    })
+    if (renderConfig.homepage) content += `<button class='NewSpan'>New Span</button>`;
 
-  function listContainer(span) {
+    fileContainer.innerHTML = content;
+    
+    this.SetListeners_();
+    
+    N_.ClientStatus(7, "Ok", 400);
+  }
+  renderBaseFolders = (span) => {
+    renderFolders = (nodes, content=``) => {
+      nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+        content += `
+          <div directory='${Navigate.ItemsPath('Main', nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeData.id}'>
+            <img loading='lazy' height='60' width='60' src='${N_.FileIcon(nodeData, 90, 120, 'main')}'></img>
+            <p title='${Navigate.ItemsPath('Main', nodeData.name)}'>${N_.CapFirstLetter(nodeData.name)}</p>
+            <div></div>
+          </div>
+        `
+      }); return content;
+    };
+  
     return `
-      <div node-id='${span.id}' ${homepage ? `Home-Span='${span.name}'` : "" }>
-        <table class='tableTemplate' ${homepage ? `rc='Homepage_Span'` : ``} >
-          <thead>
-            <tr ${homepage ? 'rcPar=3' : ''} node-id='${span.id}'>
-              <th><input value='${span.name}' ${homepage ? 'spanName' : 'spanName=disabled disabled '}></th>
-              <th>${homepage ? '' : '<div class="Filter"><i class="fas fa-filter"></i><input type="text" placeholder="Filter..."></div>'}</th>
-              ${titles ? '<th>Type</th> <th order="modified">Modified<i></i></th> <th order="size">Size<i></i></th>' : '<th></th> <th></th> <th></th>'}
-            </tr>
-          </thead>
-
-          <tbody dir-nodes>
-            ${listNode({"parent": span.name, "nodeIDs": span.nodes})}
-          </tbody>
-        </table>
+      <div node-id='${span.id}' class='SpanMain'>
+        <folders class='baseFolders flex-even-cent'> ${renderFolders(span.nodes)} </folders>
+        <recents class='recentFiles flex-even-cent'></recents>
       </div>
     `;
-  };
-
-  function blockContainer(span) {
-    return `
-      <div node-id='${span.id}' class='ContentContainer' dir-nodes ${homepage && `Home-Span='${span.name}' rc='Homepage_Span'`}>
-        <input value='${span.name}' ${homepage ? 'spanName' : 'spanName=disabled disabled '}>
-        ${blockNode({"parent": span.name, "nodes": span.nodes})}
-      </div>
+  }
+  renderContent.renderRecents = async(content=``) => {
+    if (UserSettings.local.recents) {
+      await this.RecentNodesCall().then(res => {
+        for (const [object, item] of Object.entries(res.recent)) {
+          item.mime = item.type.mime;
+          let nodeData = Nodes[object] = new Node(item, object, item.parent);
+  
+          content += `
+            <div parent-node='${item.parent}' type='${nodeData.data.type.general}' node-id='${object}' rc='Recent_Node' rcosp='P,IMG'>
+              <img loading='lazy' height='48' width='48' src='${N_.FileIcon(nodeData.data, 48, 48, 'main')}'></img>
+              <p>${N_.CapFirstLetter(item.name)}</p>
+            </div>`;
+        };
+      }).catch(err => { N_.Error('Failed to Fetch Recents: '+err) })
+    }
+    fileContainer.querySelector('recents').innerHTML = content += `
+      <button class='toggleRecent trans300' onclick='SettingsController.ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>
     `;
-  };
-
-  /////////////////////////////////////////////////
-
-  function listNode (data={}, content=``) {
-    let {parent=NodeName, nodeIDs=[], skipOrder=false} = data;
-
-    nodeIDs = Order.OrderNodes(Nodes) || nodeIDs;
-
-    if (nodeIDs.length === 0 && !homepage) { return emptyContainer(); }
-    nodeIDs.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
-      content += `
-        <tr directory='${N_ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${N_ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: "+nodeData.color+" -3px 0' " : ""}>
-          <td><img loading='lazy' height='32' width='32' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img></td>
-          <td><input rcPar='2' value='${N_CapFirstLetter(nodeData.name)}' disabled style='pointer-events:none;'></input></td>
-          <td>${nodeData.type.short}</td>
-          <td>${N_DateFormatter(nodeData.time.modified || nodeData.time.created)}</td>
-          <td>${nodeData.size > 1 ? N_ConvertSize(nodeData.size) : "-"}</td>
-        </tr>
-      `;
-    }); return content;
-  };
-
-  function blockNode (data={}, content=``) {
-    const {parent=NodeName, nodes} = data;
-
-    if (nodes.length === 0 && !homepage) { return emptyContainer(); }
-    nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
-      content += `
-        <div class='Item' directory='${N_ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TEXTAREA,IMG' title='${N_ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='border-bottom: 2px solid "+nodeData.color+"'" : ""}>
-          <img loading='lazy' height='90' width='${!nodeData.mime == "FOLDER" ? 90 : 120}' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img>
-          <textarea rcpar='1' disabled style='pointer-events:none;'>${N_CapFirstLetter(nodeData.name)}</textarea>
-        </div>
-      `;
-    }); return content;
-  };
-
-  /////////////////////////////////////////////////
-
-  function emptyContainer() {
+  
+    this.RecentNodesListener();
+  }
+  DirectoryEmpty = () => {
     return `
       <div class='section_Empty grid-items-center transform-center'>
         <img src='/assets/nanode/files.svg' alt='This Folder is Empty.'>
@@ -137,80 +123,136 @@ function renderContent(content=``) {
     `;
   }
 
-  renderContent.listNode = listNode;
-}
+  
+  // Listeners
+  NewSpan = () => {
+    N_.Find('.NewSpan').addEventListener('click', () => {
+      new Popup('NewSpan', null, 'NewSpan', {title: 'New Span', reject: 'Cancel', accept: 'Create', color: ''})
+    });
+  }
+  SpanName = () => {
+    N_.Find('input[spanName]', true, fileContainer).forEach(name => {
+      name.addEventListener('change', (e) => {
+        let nodeID = e.target.parentNode.parentNode.getAttribute('node-id');
+        NodeAPI('edit', {"action": "DATA", "section": "main", "id": [nodeID], "data": { "name": e.target.value }, "path": NodeID});
+      })
+    })
+  }
+  RecentNodesListener = () => {
+    fileContainer.querySelectorAll('recents > div').forEach(item => {
+      item.addEventListener('click', (e) => ItemActions(e.currentTarget))
+    })
+  }
+  ColorChange = () => {
+    fileContainer.querySelectorAll('color').forEach(e => {
+      e.addEventListener('click', (e) => {
+        e.stopImmediatePropagation();
+        new CreateColorPicker(e.target.parentNode);
+      })
+    })
+  }
 
+  
+  // API
+  RecentNodesCall = async () => {
+    return await API_Fetch({url: `/activity/recent/main`})
+  }
+  
+  
 
+  // File Render
 
-function renderBaseFolders(span) {
-  renderFolders = (nodes, content=``) => {
+  listContainer = (span) => {
+    return `
+      <div node-id='${span.id}' ${renderConfig.homepage ? `Home-Span='${span.name}'` : "" }>
+        <table class='tableTemplate' ${renderConfig.homepage ? `rc='Homepage_Span'` : ``} >
+          <thead>
+            <tr ${renderConfig.homepage ? 'rcPar=3' : ''} node-id='${span.id}'>
+              <th><input value='${span.name}' ${renderConfig.homepage ? 'spanName' : 'spanName=disabled disabled '}></th>
+              <th>${renderConfig.homepage ? '' : '<div class="Filter"><i class="fas fa-filter"></i><input type="text" placeholder="Filter..."></div>'}</th>
+              ${renderConfig.titles ? '<th>Type</th> <th order="modified">Modified<i></i></th> <th order="size">Size<i></i></th>' : '<th></th> <th></th> <th></th>'}
+            </tr>
+          </thead>
+
+          <tbody dir-nodes>
+            ${renderContent.listNode({"parent": span.name, "nodeIDs": span.nodes})}
+          </tbody>
+        </table>
+      </div>
+    `;
+  };
+  blockContainer = (span) => {
+    return `
+      <div node-id='${span.id}' class='ContentContainer' dir-nodes ${renderConfig.homepage && `Home-Span='${span.name}' rc='Homepage_Span'`}>
+        <input value='${span.name}' ${renderConfig.homepage ? 'spanName' : 'spanName=disabled disabled '}>
+        ${renderContent.blockNode({"parent": span.name, "nodes": span.nodes})}
+      </div>
+    `;
+  };
+
+  renderContent.listNode = (data={}, content=``) => {
+    let {parent=NodeName, nodeIDs=[], skipOrder=false} = data;
+
+    nodeIDs = Order.OrderNodes(Nodes) || nodeIDs;
+
+    if (nodeIDs.length === 0 && !renderConfig.homepage) { return this.DirectoryEmpty(); }
+    nodeIDs.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+      content += `
+        <tr directory='${Navigate.ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${Navigate.ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: "+nodeData.color+" -3px 0' " : ""}  color='${nodeData.color || ''}'>
+          <td><img loading='lazy' height='32' width='32' src='${N_.FileIcon(nodeData, 90, 120, 'main')}'></img></td>
+          <td><input rcPar='2' value='${N_.CapFirstLetter(nodeData.name)}' disabled style='pointer-events:none;'></input></td>
+          <td>${nodeData.type.short}</td>
+          <td>${N_.DateFormatter(nodeData.time.modified || nodeData.time.created)}</td>
+          <td>${nodeData.size > 1 ? N_.ConvertSize(nodeData.size) : "-"}</td>
+        </tr>
+      `;
+    }); return content;
+  };
+  renderContent.blockNode = (data={}, content=``) => {
+    const {parent=NodeName, nodes} = data;
+
+    if (nodes.length === 0 && !renderConfig.homepage) { return this.DirectoryEmpty(); }
     nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
       content += `
-        <div directory='${N_ItemsPath('Main', nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeData.id}'>
-          <img loading='lazy' height='60' width='60' src='${N_FileIcon(nodeData, 90, 120, 'main')}'></img>
-          <p title='${N_ItemsPath('Main', nodeData.name)}'>${N_CapFirstLetter(nodeData.name)}</p>
-          <div></div>
+        <div class='Item' directory='${Navigate.ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TEXTAREA,IMG,P' title='${Navigate.ItemsPath(parent, nodeData.name)}' color='${nodeData.color || ''}'>
+          ${nodeData.color ? "<color style='background:"+nodeData.color+"'></color>" : ''}
+          <img loading='lazy' height='90' width='${!nodeData.mime == "FOLDER" ? 90 : 120}' src='${N_.FileIcon(nodeData, 90, 120, 'main')}'></img>
+          <textarea rcpar='1' disabled style='pointer-events:none;'>${N_.CapFirstLetter(nodeData.name)}</textarea>
+          <p>${N_.CapFirstLetter(nodeData.type.general)}${nodeData.size > 1 ? ' - '+N_.ConvertSize(nodeData.size) : ''}</p>
         </div>
-      `
+      `;
     }); return content;
   };
 
+  // ====================================
 
-  return `
-    <div node-id='${span.id}' class='SpanMain'>
-      <folders class='baseFolders flex-even-cent'> ${renderFolders(span.nodes)} </folders>
-      <recents class='recentFiles flex-even-cent'></recents>
-    </div>
-  `;
+  this.Content();
+  
 }
 
-async function renderRecents(content=``) {
-  if (UserSettings.local.recents) {
-    await API_Fetch({url: `/activity/recent/main`}).then(res => {
-      for (const [object, item] of Object.entries(res.recent)) {
-        item.mime = item.type.mime;
-        let nodeData = Nodes[object] = new Node(item, object, item.parent);
 
-        content += `
-          <div parent-node='${item.parent}' type='${nodeData.data.type.general}' node-id='${object}' rc='Recent_Node' rcosp='P,IMG'>
-            <img loading='lazy' height='48' width='48' src='${N_FileIcon(nodeData.data, 48, 48, 'main')}'></img>
-            <p>${N_CapFirstLetter(item.name)}</p>
-          </div>`
-      };
-    }).catch(err => { N_Error('Failed to Fetch Recents: '+err) })
-  }
-  fileContainer.querySelector('recents').innerHTML = (
-    content += `<button class='toggleRecent trans300' onclick='ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>`);
 
-  fileContainer.querySelectorAll('recents > div').forEach(item => {
-    item.addEventListener('click', (e) => { ItemActions(e.currentTarget) })
-  })
-}
+
 
 
 // @ == MISC
 function HighlightNode(nodeID) {
-  SelectItem( N_Find(`[dir-nodes] > [node-id='${nodeID}']`), "force" );
-}
-
-function ExternalTab(nodeID) {
-  let nt_btn = document.createElement('a');
-  nt_btn.href = `/storage/${nodeID}`;
-  nt_btn.target = '_blank';
-  nt_btn.click();
+  let targetNode = N_.Find(`[dir-nodes] > [node-id='${nodeID}']`);
+  SelectItem( targetNode, "force" );
+  targetNode.scrollIntoView({behavior: 'smooth'})
 }
 
 
 // @ == Right-bar
 async function FetchItemInformation (selected, node=false) {
-  N_ClientStatus(2, "True", 500); N_ClientStatus(4, "Wait", 400);
-  N_ClientStatus(5, "Wait", 300); N_ClientStatus(7, "Wait", 300);
+  N_.ClientStatus(2, "True", 500); N_.ClientStatus(4, "Wait", 400);
+  N_.ClientStatus(5, "Wait", 300); N_.ClientStatus(7, "Wait", 300);
 
   if (!node && typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
   const SelectedID = node ? selected : selected.getAttribute('node-id');
 
-  const ItemInfo = makeReplaceElem(PageInfo, '.ItemInfo', '<div class="ItemInfo"></div>');
-  ItemInfo.innerHTML = N_Loading('small');
+  const ItemInfo = N_.makeReplaceElem(PageInfo, '.ItemInfo', '<div class="ItemInfo"></div>');
+  ItemInfo.innerHTML = N_.Loading('small');
 
   let req = await API_Fetch({url: `/user/files/${SelectedID}`})
   let NodeInfo = new Node(req[SelectedID]);
@@ -232,7 +274,7 @@ renderItemInfo = (ItemInfo, RequestInfo) => {
 
       <table>
         <tbody>
-          <tr><td>Size</td><td title='${RequestInfo.size} bytes'>${N_ConvertSize(RequestInfo.size)}</td></tr>
+          <tr><td>Size</td><td title='${RequestInfo.size} bytes'>${N_.ConvertSize(RequestInfo.size)}</td></tr>
           <tr><td>Type</td><td title=${RequestInfo.type.mime}>${RequestInfo.type.short}</td></tr>
           <tr><td>Secured</td><td>${SecureKey[RequestInfo.security]}</td></tr>
         </tbody>
@@ -254,40 +296,40 @@ renderItemInfo = (ItemInfo, RequestInfo) => {
   const ItemInfoTable = ItemInfo.querySelector('tbody');
 
   for (let key in RequestInfo.time) {
-    ItemInfoTable.innerHTML += `<tr><td>${N_CapFirstLetter(key)}</td><td title='${new Date(RequestInfo.time[key].stamp).toGMTString()}'>${N_DateFormatter(RequestInfo.time[key].stamp)}</td></tr>`
+    ItemInfoTable.innerHTML += `<tr><td>${N_.CapFirstLetter(key)}</td><td title='${new Date(RequestInfo.time[key].stamp).toGMTString()}'>${N_.DateFormatter(RequestInfo.time[key].stamp)}</td></tr>`
   }
-  ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${RequestInfo.color ? "value="+N_RGBtoHex(RequestInfo.color) : ""}></td></tr>`
+  ItemInfoTable.innerHTML += `<tr><td>Colour</td><td><input class='ItemInfo_Color' type='color' ${RequestInfo.color ? "value="+N_.RGBtoHex(RequestInfo.color) : ""}></td></tr>`
 
   ItemInfoListeners(RequestInfo);
 }
 
 ItemInfoListeners = (ItemRequest) => {
 
-  N_Find('.ItemInfo_Name').addEventListener('change', (e) => {
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "name": e.target.value }, "path": NodeID})
+  N_.Find('.ItemInfo_Name').addEventListener('change', (e) => {
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [ItemRequest.id], "data": { "name": e.target.value }, "path": NodeID})
   })
 
-  N_Find('.ItemInfo_Tab').addEventListener('click', () => {
-    if (ItemRequest.type.file) ExternalTab(ItemRequest.id);
+  N_.Find('.ItemInfo_Tab').addEventListener('click', () => {
+    if (ItemRequest.type.file) N_.ExternalTab(ItemRequest.id);
   })
 
-  N_Find('.ItemInfo_Download').addEventListener('click', () => {
+  N_.Find('.ItemInfo_Download').addEventListener('click', () => {
     PopUp_Download(ItemRequest, "ItemInfo");
   })
 
-  N_Find('.ItemInfo_Color').addEventListener('change', (e) => {
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "color": e.target.value }, "path": NodeID})
+  N_.Find('.ItemInfo_Color').addEventListener('change', (e) => {
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [ItemRequest.id], "data": { "color": e.target.value }, "path": NodeID})
   })
 
-  N_Find('.ItemInfo_Description').addEventListener('change', (e) => {
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": ItemRequest.id, "data": { "description": e.target.value }});
+  N_.Find('.ItemInfo_Description').addEventListener('change', (e) => {
+    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [ItemRequest.id], "data": { "description": e.target.value }});
   })
 
-  N_Find('.ItemInfo_Share_Input').addEventListener('click', (e) => {
+  N_.Find('.ItemInfo_Share_Input').addEventListener('click', (e) => {
     console.log("Call server for account with that username / email and return their profile image and display below the input.")
   })
 
-  N_Find('.ItemInfo_Link_Input').addEventListener('click', async (e) => { // Link
+  N_.Find('.ItemInfo_Link_Input').addEventListener('click', async (e) => { // Link
     if (!e.target.value) {
       let res = await API_Post({url: `/share`, body: {
         "ACTION": "LINK",
@@ -315,8 +357,8 @@ class SecurityInputContainer {
   }
 
   _Initialise() {
-    N_ClientStatus(5, "User");
-    this.container = makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
+    N_.ClientStatus(5, "User");
+    this.container = N_.makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
     this.RenderContents_();
     this.SetListeners_();
   }
@@ -367,6 +409,82 @@ class SecurityInputContainer {
 }
 
 
+
+class CreateColorPicker {
+  constructor(caller, callback) {
+    this.callback = callback;
+    this.element = caller == 'RC' && typeof RCElement !== 'undefined' ? RCElement : caller;
+    // this.originColor = this.element?.hasAttribute('style')
+    // ? N_.RGBtoHex(getComputedStyle(this.element)[ UserSettings.local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
+    // : '';
+    this.originColor = this.element?.getAttribute('color');
+    this.colorOptions = [
+      "#ffffff", "#d2d2d2", "#ababab", "#464646", "#000000", 
+      "#ff0000", "#cc7575", "#c83939", "#720000", "#460000",
+      "#f000ff", "#f4bdf7", "#f99aff", "#9c2ba3", "#630169",
+      "#66cfd4", "#6ec5e7", "#6697d4", "#4e4cb3", "#2825ca",
+      "#00ff4f", "#bdf7cf", "#60b179", "#148a39", "#004816",
+      "#f9fd00", "#fdff93", "#a8a95c", "#8e9000", "#474800",
+      "#ff7500", "#ff9133", "#a34b00", "#69370b", "#401e00",
+    ]
+
+    this._Initialise();
+  }
+
+  _Initialise() {
+    N_.ClientStatus(8, "User");
+    document.querySelector(".colorContainer")?.remove();
+    this.RenderPicker_();
+  }
+
+  RenderPicker_() {
+    this.container = document.createElement('div');
+    this.container.classList.add('colorContainer');
+    this.container.innerHTML = `
+      <span class='flex-around-cent'>
+        <i id='closeColorPicker' class='fas fa-times' title='Close Picker'></i>
+        <input type='text' class='colorPickEntry' placeholder='#000000'></input>
+        <i id='acceptColorPicked' class='fas fa-check' title='Accept Colour'></i>
+      </span>
+      <div class='colorOptionsContainer'>${this.colorOptions.reduce((a, b) => a + `<div style='background: ${b};'></div>`, ``)}</div>
+    `;
+    document.body.appendChild(this.container);
+
+    this.colorEntry = this.container.querySelector('input');
+    this.UpdateColor_();
+    this.SetListeners_();
+    dragElement(this.container);
+  }
+
+  SetListeners_() {
+    document.getElementById('closeColorPicker').onclick = () => {this.container?.remove()}
+    document.getElementById('acceptColorPicked').onclick = () => {
+      if (this.callback) {this.callback(this.colorEntry.value)}
+      else {NodeAPI('edit', {'action': 'DATA', 'section': Section, 'id': [this.element.getAttribute('node-id')], 'data': {'color': this.colorEntry.value}, 'path': NodeID})}
+      this.container?.remove();
+    }
+    this.colorEntry.addEventListener('keypress', (e) => { // For some reason this can make the thing lag badly.
+      this.container.querySelector('.selected')?.classList.remove('selected');
+      if (e.target.value.length > 6 && e.key !== 'Backspace') {e.preventDefault()}
+      e.target.style.color = e.target.value;
+    })
+    this.container.querySelectorAll('.colorOptionsContainer div').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        this.UpdateColor_(N_.RGBtoHex(e.target.style.background))
+        this.container.querySelector('.selected')?.classList.remove('selected');
+        e.target.classList.add('selected');
+      })
+    })
+  }
+
+  UpdateColor_(newColor) {
+    this.colorEntry.value = newColor || this.originColor;
+    this.colorEntry.style.color = newColor || this.originColor;
+  }
+}
+
+
+
 // @ == Popups
 class Popup {
   constructor(PopupType, Target, Action, DATA) {
@@ -387,8 +505,8 @@ class Popup {
   }
   ToggleBase_() {
     if (BlockOut.classList.toggle('grid-items-center'))
-    { N_ClientStatus(8, "User"); document.removeEventListener('keydown', this.EscBtn); document.addEventListener('keydown', this.EscBtn); } 
-    else {N_ClientStatus(8, "Off"); document.removeEventListener('keydown', this.EscBtn); };
+    { N_.ClientStatus(8, "User"); document.removeEventListener('keydown', this.EscBtn); document.addEventListener('keydown', this.EscBtn); } 
+    else {N_.ClientStatus(8, "Off"); document.removeEventListener('keydown', this.EscBtn); };
   }
 
   RenderContent_() {
@@ -425,7 +543,7 @@ class Popup {
       }
       case('Download') : {
         content = `
-          <h5> - ${N_TextMultiple(this.DATA.download.length, "Item")}</h5>
+          <h5> - ${N_.TextMultiple(this.DATA.download.length, "Item")}</h5>
 
           <div class='Switch SW_DL' style='top: 11px;right: 15px;'>
             <div class='Slider SL_DL'></div>
@@ -492,7 +610,7 @@ class Popup {
           "name": this.Base.querySelector('.Popup_Input_Name').value || 'New Folder',
           "options": {
             "description": this.Base.querySelector('.Popup_Option_Desc').value,
-            "color": N_RGBtoHex(this.Base.querySelector('.Popup_Option_Colour').value),
+            "color": N_.RGBtoHex(this.Base.querySelector('.Popup_Option_Colour').value),
             "pass": this.Base.querySelector('.Popup_Option_Pass').value,
             "pin": this.Base.querySelector('.Popup_Option_Pin').value
           }
@@ -580,17 +698,17 @@ async function PopUp_Download(Item, Caller) {
 }
 
 function PopUp_Upload() {
-  N_ClientStatus(7, "Wait", 600);
+  N_.ClientStatus(7, "Wait", 600);
   Upload_Visuals.Status("Choose", "Choose Items");
-  Upload_Values[0].innerText = '0 Items';
-  Upload_Values[1].innerText = '0 B';
+  uploadElem.Upload_Values[0].innerText = '0 Items';
+  uploadElem.Upload_Values[1].innerText = '0 B';
   UploadContainer.style.visibility = "visible";
 
   PopUp_Upload.Close = function() {
     UploadContainer.style.visibility = 'hidden';
     UploadContainer.querySelectorAll('span i')[0].classList = 'fas fa-chevron-up'
     UC_Queue.classList.remove('UC_Showing');
-    Progress_Div.classList.remove('UC_Showing');
+    uploadElem.Progress_Div.classList.remove('visible');
     Upload_Actions.Reset_Upload();
   };
 }
@@ -603,7 +721,7 @@ async function ViewItem(Type, NodeID) {
   Popup.prototype.ToggleBase_();
   BlockOut.innerHTML = `
     <div class='Preview grid-items-center'>
-      ${N_Loading('medium')}
+      ${N_.Loading('medium')}
     </div>`;
 
   if (Type == "image") {

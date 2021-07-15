@@ -1,218 +1,205 @@
-let binSubSection = 'main';
-const binSections = {1: 'main', 2: 'blocks', 3: 'codex'}
-let binReminderTriggered = false;
-const binSizeColors = {'FOLDER': '#f3cc2d', 'image': '#2df377', 'text': '#b7c6d0'}
-
 const binPage = document.querySelector('.bin_Page');
 
-const binPageContainer = binPage.querySelector('.PageContainer');
-const binPageInfo = binPage.querySelector('.PageInformation');
-
-let Bin_Nodes = {};
-
 // ====================================
 
-// @ == Initialise Bin Page
-BinDataCall();
-BinItemCall();
-binSwitchController();
+const BinController = () => {
+  const binConfig = {
+    binSubSection: 'main',
+    binSections: {1: 'main', 2: 'blocks', 3: 'codex'},
+    binReminderTriggered: false,
+    binSizeColors: {'FOLDER': '#f3cc2d', 'image': '#2df377', 'text': '#b7c6d0', 'video': '#c8524c'},
+    Bin_Nodes: {},
+  }
+  const binElem = {
+    binPageContainer: binPage.querySelector('.PageContainer'),
+    binPageInfo: binPage.querySelector('.PageInformation'),
+    binSize: binPage.querySelector('.binSize'),
+    binUsage: binPage.querySelector('.binUsage'),
+  }
 
-// ====================================
+  SetListeners_ = () => { Switch(); }
+  SetEvents_ = () => { ReminderPopup(); }
+  
+  // ====================================
 
-async function BinDataCall() {
-  let req = await API_Fetch({url: `/account/bin`})
+  // Listeners
+  Switch = () => {
+    const switchElem = document.querySelector(`.Switch.SW_Bin`);
+    const sliderElem = document.querySelector(`.Slider.SL_Bin`);
+  
+    switchElem.querySelectorAll('div:not(.SL_Bin)').forEach((option) => {
+      option.addEventListener('click', function (e) {
+        if (!this.classList.contains('SwitchSelected')) {
+          let switchOptionPos = this.getAttribute('swOpPos');
+          let sliderWidth = (this.parentElement.clientWidth / 3);
+          switchElem.querySelector('.SwitchSelected').classList.remove('SwitchSelected');
+          this.classList.add('SwitchSelected');
+          binElem.binPageContainer.querySelector('.binContainer').innerHTML = N_.Loading('medium');
+          binConfig.binSubSection = binConfig.binSections[switchOptionPos];
+          ItemCall();
+          sliderElem.style.transform = `translateX(${(sliderWidth*(switchOptionPos - 1))}px)`
+        }
+      })
+    })
+  }
+  ItemClickListeners = (binContainer) => {
+    let currentlySelected;
+  
+    binContainer.querySelectorAll('tr[node-id]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        if (!e.currentTarget.classList.contains('ItemSelected')) {
+          currentlySelected ? currentlySelected.classList.remove('ItemSelected') : '';
+          currentlySelected = e.currentTarget;
+          ItemInfoCall(e.currentTarget.getAttribute('node-id'));
+        }
+        e.currentTarget.classList.toggle('ItemSelected');
+      })
+    })
+  }
 
-  const binSize = binPageInfo.querySelector('.binSize');
-  const binUsage = binPageInfo.querySelector('.binUsage');
 
-  if (req && req.size.bin) {
-    let totalSize = Object.values(req.size.bin).reduce((a, b) => a + b);
-    binSize.innerText = `Bin Size: ${N_ConvertSize(totalSize)}`
+  // Events
+  ReminderPopup = () => {
+    if (binConfig.binReminderTriggered === false) {
+      binConfig.binReminderTriggered = true;
+      N_.InfoPopup(binElem.binPageContainer, "Items left in the bin will be permanently deleted after 30 days.", 5000);
+    }
+  }
 
-    let sizeMap = new Map(Object.entries(req.size.bin))
-    sizeMap = new Map([...sizeMap].sort((a,b) => a[1] === b[1] ? b[0] - a[0] : a[1] - b[1]))  // Sorts the object values from lowest to highest
 
-    let rotation = 0, offset = [];
+  // Render
+  BinList = (data) => {
+    const binContainer = binElem.binPageContainer.querySelector('.binContainer');
+
+    if (typeof data.Contents == 'object' && Object.entries(data.Contents).length) { // Check if Data has been Returned and render
+  
+      renderNodes = (content=``) => {      
+        for (const [nodeID, nodeData] of Object.entries(binConfig.Bin_Nodes)) {
+          content += `
+            <tr type='${nodeData.data.type.general}' node-id='${nodeID}' rc='Bin_Item' rcOSP='TD'>
+              <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(nodeData.data, 38, 38, 'bin')}'></img></td>
+              <td>${N_.CapFirstLetter(nodeData.data.name)}</td>
+              <td>${nodeData.data.type.short}</td>
+              <td>${N_.DateFormatter(nodeData.data.deleted.stamp)}</td>
+              <td>${nodeData.data.size > 1 ? N_.ConvertSize(nodeData.data.size) : "-"}</td>
+            </tr>
+          `;
+        }; return content;
+      };
+    
+      binContainer.innerHTML = `
+        <table class='binTable tableTemplate'>
+          <tbody>${renderNodes()}</tbody>
+        </table>
+      `;
+
+      this.ItemClickListeners(binContainer);
       
-    for (const [type, size] of sizeMap) {
-      let sizePercentage = (size / totalSize);
-      if (sizePercentage < 0.01) {continue};
-
-      let typeColor = binSizeColors[type] || '#474d50';
-
-      binUsage.innerHTML += `
-        <svg class='binSize_SVG' viewBox='0 0 100 100'>
-          <circle cx='50' cy='50' r='45' style='stroke-dashoffset: 283; transform: rotate(${360 * rotation}deg); stroke: ${typeColor};'></circle>
-        </svg>`;
-
-      binUsage.children[0].innerHTML += `
-        <span style='color: ${typeColor};'>
-          <p>⬤ ${N_CapFirstLetter(type)}</p><p>${N_ConvertSize(size)} - ${(sizePercentage * 100).toFixed()}%</p>
-        </span>`;
-
-      offset.push( Math.floor(283 - (283 * sizePercentage)) );
-      rotation += sizePercentage;
+    } else {
+      binContainer.innerHTML = this.BinEmpty();
     }
-
-    setTimeout(() => { // Adds the transition to each element.
-      binUsage.querySelectorAll('svg > circle').forEach((e, i) => {
-        e.style.strokeDashoffset = offset[i];
-      });
-    }, 100)
-
-  } else {
-    binSize.innerText = `Bin is Empty`
   }
-}
-
-async function BinItemCall() {
-  let res = await API_Fetch({url:`/folder/home?s=bin&sub=${binSubSection.toLowerCase()}`});
-  if (res.Parent) {
-
-    Bin_Nodes = {};
-    if (typeof res.Contents == 'object') {
-      for (const [id, data] of Object.entries(res.Contents).reverse()) {
-        Bin_Nodes[id] = new Node(data, id, res.Parent.name);
-      }
-    }
-
-    RenderBinList(res);
-  }
-}
-
-
-
-// @ == Render Content
-
-RenderBinList = function(data) {
-  const binContainer = binPageContainer.querySelector('.binContainer');
-
-  if (typeof data.Contents == 'object' && Object.entries(data.Contents).length) { // Check if Data has been Returned and render
-
-    renderNodes = (content=``) => {      
-      for (const [nodeID, nodeData] of Object.entries(Bin_Nodes)) {
-        content += `
-          <tr type='${nodeData.data.type.general}' node-id='${nodeID}' rc='Bin_Item' rcOSP='TD'>
-            <td><img loading='lazy' height='38' width='38' src='${N_FileIcon(nodeData.data, 38, 38, 'bin')}'></img></td>
-            <td>${N_CapFirstLetter(nodeData.data.name)}</td>
-            <td>${nodeData.data.type.short}</td>
-            <td>${N_DateFormatter(nodeData.data.deleted.stamp)}</td>
-            <td>${nodeData.data.size > 1 ? N_ConvertSize(nodeData.data.size) : "-"}</td>
-          </tr>
-        `;
-      }; return content;
-    };
-  
-    binContainer.innerHTML = `
-      <table class='binTable tableTemplate'>
-        <tbody>${renderNodes()}</tbody>
-      </table>
-    `;
-    
-    // ====== Interactive Functions
-  
-    BinItemClickListeners(binContainer);
-    binReminderPopup();
-    
-  } else {
-    binContainer.innerHTML = emptyBin();
-  }
-}
-
-function emptyBin() {
-  return `
-    <div class='section_Empty grid-items-center transform-center'>
-      <img src='/assets/nanode/logo/logo.svg' alt='This Bin Section is Empty.'>
-      <div class='flex-column-cent'>
-        <p>Bin section empty</p>
-        <p class='italic-small'>Deleted items will show here<br>for 30 days</p>
+  BinEmpty = () => {
+    return `
+      <div class='section_Empty grid-items-center transform-center'>
+        <img src='/assets/nanode/logo/logo.svg' alt='This Bin Section is Empty.'>
+        <div class='flex-column-cent'>
+          <p>Bin section empty</p>
+          <p class='italic-small'>Deleted items will show here<br>for 30 days</p>
+        </div>
       </div>
-    </div>
   `;
-}
-
-
-
-// @ == Item Listeners
-
-function BinItemClickListeners(binContainer) {
-  let DeletedItems = binContainer.querySelectorAll('tr[node-id]');
-  let currentlySelected;
-
-  DeletedItems.forEach((item) => {
-    item.addEventListener('click', (selected) => {
-      selected = selected.currentTarget;
-      if (selected.classList.contains('ItemSelected')) {
-        selected.classList.remove('ItemSelected');
-      } else {
-        currentlySelected ? currentlySelected.classList.remove('ItemSelected') : '';
-        currentlySelected = selected;
-        selected.classList.add('ItemSelected');
-        FetchBinItemInformation(selected.getAttribute('node-id'));
-      }
-    })
-  })
-}
-
-
-async function FetchBinItemInformation(nodeID) {
-  const binItemData = binPageInfo.querySelector('.binItemData');
-
-  if (!binItemData.innerHTML.length) binItemData.innerHTML = N_Loading('small');
-
-  let FileRequest = await fetch(`https://drive.nanode.one/user/bin/${nodeID}`);
-  let RequestInfo = await FileRequest.json();
-
-  let NodeInfo = new Node(RequestInfo[nodeID]);
-  renderBinItemInfo(binItemData, NodeInfo.data);
-}
-
-renderBinItemInfo = (binItemData, RequestInfo) => {
-  binItemData.innerHTML = `
-    <p>${RequestInfo.name}</p>
-    
-    <table>
-      <tbody>
-        <tr><td>Parent</td> <td>${RequestInfo.parent.name}</td></tr>
-        <tr><td>Contents</td> <td>${N_TextMultiple(RequestInfo.count, 'Item')}</td></tr>
-        <tr><td>Size</td> <td>${N_ConvertSize(RequestInfo.size)}</td></tr>
-        <tr><td>Type</td> <td>${RequestInfo.type.short}</td></tr>
-        <tr><td>Deleted</td> <td>${N_DateFormatter(RequestInfo.deleted.stamp)}</td></tr>
-      </tbody>
-    </table>
-
-    <button class='rb-btn-full blue-light binRestoreBtn'>Restore</button>
-    <button class='rb-btn-full red-light binDeleteBtn'>Delete</button>
-  `;
-}
-
-
-
-// @ == Page Interactivity
-
-function binSwitchController(switchName) {
-  let switchElem = document.querySelector(`.Switch.SW_Bin`);
-  let sliderElem = document.querySelector(`.Slider.SL_Bin`);
-
-  switchElem.querySelectorAll('div:not(.SL_Bin)').forEach((option) => {
-    option.addEventListener('click', function (e) {
-      if (!this.classList.contains('SwitchSelected')) {
-        let switchOptionPos = this.getAttribute('swOpPos');
-        let sliderWidth = (this.parentElement.clientWidth / 3);
-        switchElem.querySelector('.SwitchSelected').classList.remove('SwitchSelected');
-        this.classList.add('SwitchSelected');
-        binPageContainer.querySelector('.binContainer').innerHTML = N_Loading('medium');
-        binSubSection = binSections[switchOptionPos];
-        BinItemCall()
-        sliderElem.style.transform = `translateX(${(sliderWidth*(switchOptionPos - 1))}px)`
-      }
-    })
-  })
-}
-
-binReminderPopup = () => {
-  if (binReminderTriggered === false) {
-    binReminderTriggered = true;
-    N_InfoPopup(binPageContainer, "Items left in the bin will be permanently deleted after 30 days.", 5000);
   }
+  ItemInfo = (binItemData, RequestInfo) => {
+    binItemData.innerHTML = `
+      <p>${RequestInfo.name}</p>
+      
+      <table>
+        <tbody>
+          <tr><td>Parent</td> <td>${RequestInfo.parent.name}</td></tr>
+          <tr><td>Contents</td> <td>${N_.TextMultiple(RequestInfo.count, 'Item')}</td></tr>
+          <tr><td>Size</td> <td>${N_.ConvertSize(RequestInfo.size)}</td></tr>
+          <tr><td>Type</td> <td>${RequestInfo.type.short}</td></tr>
+          <tr><td>Deleted</td> <td>${N_.DateFormatter(RequestInfo.deleted.stamp)}</td></tr>
+        </tbody>
+      </table>
+
+      <button class='rb-btn-full blue-light binRestoreBtn'>Restore</button>
+      <button class='rb-btn-full red-light binDeleteBtn'>Delete</button>
+    `;
+  }
+
+
+  // API
+  DataCall = async() => {
+    const req = await API_Fetch({url: `/account/bin`});
+    
+    if (req && req.size.bin) {
+      let totalSize = Object.values(req.size.bin).reduce((a, b) => a + b);
+      binElem.binSize.innerText = `Bin Size: ${N_.ConvertSize(totalSize)}`
+    
+      let sizeMap = new Map(Object.entries(req.size.bin))
+      sizeMap = new Map([...sizeMap].sort((a,b) => a[1] === b[1] ? b[0] - a[0] : a[1] - b[1]))  // Sorts the object values from lowest to highest
+    
+      let rotation = 0, offset = [];
+        
+      for (const [type, size] of sizeMap) {
+        let sizePercentage = (size / totalSize);
+        if (sizePercentage < 0.01) {continue};
+    
+        let typeColor = binConfig.binSizeColors[type] || '#474d50';
+    
+        binElem.binUsage.innerHTML += `
+          <svg class='binSize_SVG' viewBox='0 0 100 100'>
+            <circle cx='50' cy='50' r='45' style='stroke-dashoffset: 283; transform: rotate(${360 * rotation}deg); stroke: ${typeColor};'></circle>
+          </svg>`;
+    
+        binElem.binUsage.children[0].innerHTML += `
+          <span style='color: ${typeColor};'>
+            <p>⬤ ${N_.CapFirstLetter(type)}</p><p>${N_.ConvertSize(size)} - ${(sizePercentage * 100).toFixed()}%</p>
+          </span>`;
+    
+        offset.push( Math.floor(283 - (283 * sizePercentage)) );
+        rotation += sizePercentage;
+      }
+    
+      setTimeout(() => { // Adds the transition to each element.
+        binElem.binUsage.querySelectorAll('svg > circle').forEach((e, i) => {
+          e.style.strokeDashoffset = offset[i];
+        });
+      }, 100)
+    
+    } else {
+      binElem.binSize.innerText = `Bin is Empty`
+    }
+  }
+  ItemCall = async() => {
+    let res = await API_Fetch({url:`/folder/home?s=bin&sub=${binConfig.binSubSection.toLowerCase()}`});
+    if (res.Parent) {
+      binConfig.Bin_Nodes = {};
+      if (typeof res.Contents == 'object') {
+        for (const [id, data] of Object.entries(res.Contents).reverse()) {
+          binConfig.Bin_Nodes[id] = new Node(data, id, res.Parent.name);
+        }
+      }
+      this.BinList(res);
+    }
+  }
+  ItemInfoCall = async(nodeID) => {
+    const binItemData = binElem.binPageInfo.querySelector('.binItemData');
+
+    if (!binItemData.innerHTML.length) binItemData.innerHTML = N_.Loading('small');
+  
+    const RequestInfo = await( await fetch(`https://drive.nanode.one/user/bin/${nodeID}`) ).json();
+  
+    let NodeInfo = new Node(RequestInfo[nodeID]);
+    this.ItemInfo(binItemData, NodeInfo.data);
+  }
+
+  // ====================================
+
+  this.SetListeners_(), this.SetEvents_();
+  this.DataCall(), this.ItemCall();
 }
+
+BinController();
