@@ -5,6 +5,7 @@
 const N_ = () => {
   const nConfig = {
     lightColor: {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"},
+    icons: {'info': '<i class="fas fa-info-circle"></i>', 'success': '<i class="fas fa-check-circle"></i>', 'error': '<i class="fas fa-times-circle"></i>', 'warning': '<i class="fas fa-exclamation-circle"></i>'},
     statusBar: document.querySelector('.clientStatus'),
   }
 
@@ -37,9 +38,9 @@ const N_ = () => {
 
   // Text
   N_.CapFirstLetter = (string) => {
-    return typeof string !== 'string' ? '' : string.charAt(0).toUpperCase() + string.slice(1);
+    return typeof string !== 'string' ? '' : string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
   }
-  N_.TextMultiple = (num, string) => {
+  N_.TextMultiple = (num, string) => { // (500, 'item')
     return num === 1 ? num+" "+string : num+" "+string+'s';
   }
   
@@ -72,19 +73,19 @@ const N_ = () => {
     if (!parent.querySelector(target)) { parent.innerHTML += base }
     return parent.querySelector(target);
   }
-  N_.InfoPopup = (parent, info, displayTime) => {
+  N_.InfoPopup = (popupParams) => {
+    const {parent, type='info', text='', displayDelay=1000, displayTime=5000} = popupParams;
+
     // NOTE: we MUST use createElement here as using just innerHTML breaks the child elements of parent as they are repassed and loose their event listener references.
     let popup = document.createElement('div');
-    popup.classList = 'info-popup'
-    popup.innerHTML = `${info}<i class="fas fa-times"></i></div>`
+    popup.classList = `info-popup info-popup-${type}`
+    popup.innerHTML = `<span>${nConfig.icons[type] || ''}${text}</span><i class="fas fa-times" onclick='this.parentNode.remove()'></i></div>`
     parent.appendChild(popup);
   
     setTimeout(() => {
       popup.classList.add('display');
-      popup.querySelector('i').addEventListener('click', () => {
-        popup.classList.remove('display');
-      });
-    }, displayTime)
+      setTimeout(() => { popup.classList.remove('display'); setTimeout(() => {popup.remove()}, 300) }, displayTime);
+    }, displayDelay)
   }
   N_.Error = (err) => {
     console.log(`An Error Occured: ${err}`)

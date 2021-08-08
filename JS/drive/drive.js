@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", async(event) => {
 
 
 // @ == API Caller
-API_Fetch = async(fetchdata, response) => { // await API_Fetch({url: `/example/test`})
-  const {url, conv} = fetchdata;
+API_Fetch = async(fetch_data, response) => { // await API_Fetch({url: `/example/test`})
+  const {url, conv} = fetch_data;
 
   try {
     N_.ClientStatus(4, 'Wait');
@@ -34,8 +34,8 @@ API_Fetch = async(fetchdata, response) => { // await API_Fetch({url: `/example/t
   } catch(err) { console.log(err) }
 }
 
-API_Post = async(senddata) => { // await API_Post({url: `drive.nanode.one/`})
-  const {url, body} = senddata;
+API_Post = async(send_data) => { // await API_Post({url: `drive.nanode.one/`})
+  const {url, body} = send_data;
   try {
     let res = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`, {
       ...defConfig,
@@ -66,14 +66,15 @@ pageSwitch = async(pageName) => {
   }
   pageToSwitch.classList.add('PageDisplay');
   Section=pageName;
+
+  document.querySelector('.SelectedPage').classList.remove('SelectedPage');
+  document.querySelector(`span[drvpage='${pageName}']`).classList.add('SelectedPage');
+
+  return true;
 }
 
 document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
-  pageBtn.addEventListener('click', (e) => {
-    pageSwitch(e.currentTarget.getAttribute('drvpage'));
-    document.querySelector('.SelectedPage').classList.remove('SelectedPage')
-    e.currentTarget.classList.add('SelectedPage');
-  })
+  pageBtn.addEventListener('click', (e) => {pageSwitch(e.currentTarget.getAttribute('drvpage'));})
 })
 
 // =========================================== Button and Key Listeners

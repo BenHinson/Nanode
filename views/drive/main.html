@@ -22,7 +22,7 @@
     <span class='searchContainer'>
       <input class='search' type="text" placeholder="Search...">
       <button class='searchControls'>
-        <i class="searchParams">
+        <i class="searchParams" title='Search Options'>
           <svg width="24" height="24" viewBox="0 0 24 24">
             <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" class="active"></path>
           </svg>
@@ -35,7 +35,7 @@
           <div class='searchSelectors'>
             <form>
               <p>Within</p>
-              <span><input type="radio" name="searchWithin" value="withinAll" checked> <label>All</label></span>
+              <span><input type="radio" name="searchWithin" value="withinAll"> <label>All</label></span>
               <span><input type="radio" name="searchWithin" value="withinParent"> <label>Current</label></span>
             </form>
             <form>
@@ -49,14 +49,14 @@
               <span><input type="checkbox"name="Size" value="size" search='SizeRange'> <label>Size</label></span>
             </form>
             <form>
-              <p>Only For</p>
-              <span><input type="checkbox" name="searchFor" value="onlyFolders"> <label>Folders</label></span>
-              <span><input type="checkbox" name="searchFor" value="onlyFiles"> <label>Files</label></span>
+              <p>For</p>
+              <span><input type="checkbox" name="searchFor" value="forFolders"> <label>Folders</label></span>
+              <span><input type="checkbox" name="searchFor" value="forFiles"> <label>Files</label></span>
             </form>
             <form>
               <p>Include</p>
-              <span><input type="checkbox" name="Description" value="description" checked> <label>Description</label></span>
-              <span><input type="checkbox" name="Previous Names" value="prevNames" checked> <label>Previous Names</label></span>
+              <span><input type="checkbox" name="Description" value="description"> <label>Description</label></span>
+              <span><input type="checkbox" name="Previous Names" value="prevNames"> <label>Previous Names</label></span>
             </form>
           </div>
           <span class='searchOptionInput'></span>
@@ -74,13 +74,14 @@
   </div>
 
   <div class='PageData' rc='File_Container'>
-    <div class='fileContainer' rc='File_Container'></div>
+    <div class='Content fileContainer' rc='File_Container'></div>
+    
+    <div class='PageInformation'>
+      <span class="PIHeader flex-between-cent">
+        <button onclick="PopUp_Upload()" class="NO_Upload flex-even-cent"><i class="fas fa-cloud-upload-alt"></i>Upload</button>
+        <button onclick="NEWPopup('NewFolder')" class="NO_Folder flex-even-cent"><i class="fas fa-folder-plus"></i>Folder</button>
+      </span>
+    </div>
   </div>
-</div>
-
-<div class='PageInformation'>
-  <span class="PIHeader flex-between-cent">
-    <button onclick="PopUp_Upload()" class="NO_Upload flex-even-cent"><i class="fas fa-cloud-upload-alt"></i>Upload</button>
-    <button onclick="NEWPopup('NewFolder')" class="NO_Folder flex-even-cent"><i class="fas fa-folder-plus"></i>Folder</button>
-  </span>
+  
 </div>

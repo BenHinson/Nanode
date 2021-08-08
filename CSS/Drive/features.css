@@ -194,17 +194,17 @@ textarea::placeholder {
 
 .info-popup {
   position: absolute;
+  height: 1.5em;
   width: 80%;
   bottom: 10px;
   left: 50%;
   -webkit-transform: translate(-50%, 30px);
           transform: translate(-50%, 30px);
-  border-radius: 10px;
+  border-radius: 1em;
+  padding: 0.2em;
   text-align: center;
-  font-size: 13px;
-  line-height: 20px;
-  color: var(--text-strong);
-  background: var(--highlight-color);
+  color: var(--text-white);
+  background: var(--highlight);
   -webkit-transition: opacity 300ms, -webkit-transform 300ms;
   transition: opacity 300ms, -webkit-transform 300ms;
   transition: transform 300ms, opacity 300ms;
@@ -213,17 +213,40 @@ textarea::placeholder {
   z-index: 11;
 }
 
-.info-popup i {
+.info-popup > span {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-size: 14px;
+  gap: 1em;
+}
+
+.info-popup > i {
   position: absolute;
-  top: 2px;
-  right: 8px;
+  top: 0.25em;
+  right: 0.5em;
   cursor: pointer;
+}
+
+.info-popup.info-popup-info {
+  background: var(--highlight-color);
+}
+
+.info-popup.info-popup-success {
+  background: var(--light-green);
+}
+
+.info-popup.info-popup-error {
+  background: var(--red);
+}
+
+.info-popup.info-popup-warning {
+  background: var(--orange);
 }
 
 .tableTemplate {
   position: relative;
   width: 100%;
-  padding: 0 24px;
   border-spacing: 0px 14px;
   color: var(--text-strong);
 }
@@ -533,7 +556,7 @@ recents.recentFiles > div p {
 }
 
 .searchContainer input.search {
-  width: 140px;
+  width: 180px;
   color: var(--text-strong);
   background: var(--feature);
   z-index: 5;
@@ -1002,7 +1025,7 @@ recents.recentFiles > div p {
 
 .Upload_Container .UC_Info.success {
   background: #33c35733;
-  color: #33c357;
+  color: var(--light-green);
 }
 
 .Upload_Container .UC_Info i {
@@ -1366,6 +1389,12 @@ recents.recentFiles > div p {
 
 .Loading_SVG.small {
   max-width: 24px;
+}
+
+.Loading_SVG.button {
+  max-width: 18px;
+  top: calc(50% - 9px);
+  left: calc(50% - 9px);
 }
 
 .Loading_SVG.upload {

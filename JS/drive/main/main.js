@@ -21,6 +21,7 @@ async function NodeCall(CallData, res) {
   else if (res.Parent) {
     NodeName = res.Parent.id == "homepage" ? "homepage" : res.Parent.name;
     NodeID = res.Parent.id;
+    document.title = (NodeName !== 'homepage' ? NodeName : 'My Drive');
     
     Spans = {}, Nodes = {}, NodeSelected.clear();
 

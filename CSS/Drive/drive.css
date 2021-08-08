@@ -6,6 +6,8 @@
   --folder: #ffca28;
   --red: #ff453a;
   --green: #0bc30b;
+  --light-green: #33c357;
+  --orange: #d88a1e;
   --text-white: #f5f6f7;
 }
 
@@ -62,8 +64,8 @@ html {
 body {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 220px auto;
-      grid-template-columns: 220px auto;
+  -ms-grid-columns: 200px auto;
+      grid-template-columns: 200px auto;
   -ms-grid-rows: 100vh;
       grid-template-rows: 100vh;
   overflow: hidden;
@@ -120,7 +122,7 @@ body {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  max-width: 220px;
+  max-width: 200px;
   background: var(--frame);
   color: var(--text-dull);
 }
@@ -173,7 +175,7 @@ body[data-theme=light] .PageList .nanode > div {
 .PageList div {
   display: -ms-inline-grid;
   display: inline-grid;
-  grid-gap: 14px;
+  grid-gap: 12px;
 }
 
 .PageList div span {
@@ -200,17 +202,21 @@ body[data-theme=light] .PageList .nanode > div {
 
 .PageList div span:hover {
   opacity: 1;
-  background: var(--feature);
+  background: var(--highlight);
 }
 
 .PageList div span > * {
   padding: 5px;
 }
 
+.PageList div span > p {
+  font-size: 15px;
+}
+
 .PageList div .SelectedPage {
   opacity: 1;
   color: var(--text-strong);
-  background: var(--highlight);
+  background: var(--feature);
   -webkit-box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
           box-shadow: inset 5px 0px 0px 0px var(--highlight-color);
 }
@@ -223,7 +229,7 @@ body[data-theme=light] .PageList .nanode > div {
 }
 
 .PageList .Storage h3 {
-  font-size: 15px;
+  font-size: 14px;
   opacity: 0.8;
   font-weight: 400;
 }
@@ -249,6 +255,8 @@ body[data-theme=light] .PageList .nanode > div {
 }
 
 .PageHeader {
+  position: relative;
+  width: calc(100% - 280px);
   height: 57px;
   color: var(--text-strong);
 }
@@ -304,7 +312,7 @@ body[data-theme=light] .PageList .nanode > div {
   overflow: hidden;
 }
 
-.PageHeader .directoryLocation .dirBtn:hover {
+.PageHeader .directoryLocation .dirBtn:hover:not([node-id='SEARCH']) {
   opacity: 1;
   background: var(--highlight);
 }
@@ -331,10 +339,6 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 
 .Pages > section {
   display: none;
-  -ms-grid-columns: auto 280px;
-      grid-template-columns: auto 280px;
-  -ms-grid-rows: 100vh;
-      grid-template-rows: 100vh;
   position: relative;
   overflow: hidden;
   -webkit-box-sizing: border-box;
@@ -342,27 +346,75 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 }
 
 .Pages > section.PageDisplay {
-  display: -ms-grid !important;
-  display: grid !important;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
   height: 100%;
   width: 100%;
 }
 
-.Pages > section .PageData {
+.Pages > section > .PageContainer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  -webkit-transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
+  transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
+  background-size: cover;
+  background-color: var(--frame);
+  cursor: auto;
+}
+
+.Pages > section > .PageContainer > .PageData {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  gap: 30px;
   height: calc(100% - 57px);
+  padding: 0 24px;
   border-top-left-radius: 8px;
-  overflow-y: auto;
-  overflow-x: hidden;
   background: var(--background);
   -webkit-box-shadow: inset 6px 6px 6px -6px var(--theme);
           box-shadow: inset 6px 6px 6px -6px var(--theme);
 }
 
-.Pages > section .PageInformation {
+.Pages > section > .PageContainer > .PageData > .Content {
+  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  position: relative;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  max-width: 100%;
+  min-width: calc(100% - 270px);
+}
+
+.Pages > section > .PageContainer > .PageData > .Content > div {
+  overflow-x: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  grid-gap: 20px;
+  -webkit-transition: width 600ms;
+  transition: width 600ms;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 20px 15px 20px 3px;
+}
+
+.Pages > section > .PageContainer > .PageData > .PageInformation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -371,12 +423,18 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  max-height: calc(100% - 110px);
-  top: 85px;
-  margin: 0 20px;
+  max-height: 100%;
+  width: 240px;
+  min-width: 240px;
+  top: 28px;
+  padding: 24px 0;
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
 }
 
-.Pages > section .PageInformation > * {
+.Pages > section > .PageContainer > .PageData > .PageInformation > * {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
@@ -388,47 +446,78 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
           box-shadow: 0 0 5px 0 var(--theme);
 }
 
-.Pages > section .PageContainer {
-  position: relative;
-  height: 100%;
-  -webkit-transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  transition: width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms;
-  transition: box-shadow 0.3s, filter 0.3s, width 600ms, -webkit-box-shadow 0.3s, -webkit-filter 0.3s;
-  background-size: cover;
-  background-color: var(--frame);
-  cursor: auto;
-}
-
 .Pages > .Page_Loading {
   display: -ms-grid;
   display: grid;
   position: absolute;
+  height: 100%;
   width: calc(100% - 220px);
   -ms-grid-columns: auto;
       grid-template-columns: auto;
 }
 
-.Pages > .main_Page .fileContainer {
-  display: -ms-grid;
-  display: grid;
-  grid-gap: 20px;
-  padding: 24px 12px 24px 24px;
-  -webkit-transition: width 600ms;
-  transition: width 600ms;
-}
-
-.Pages > .main_Page .fileContainer::-webkit-scrollbar {
-  display: none;
-}
-
-.Pages > .main_Page .fileContainer .SpanMain {
+.Pages > .main_Page > .PageContainer .PageData > .Content > div > .SpanMain {
   position: relative;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--component);
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer {
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate {
+  border-radius: 5px;
+  border-spacing: 0 2px;
+  margin-bottom: 20px;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr {
+  opacity: 1;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr th:nth-child(1) input {
+  min-width: 200px;
+  left: 0;
+  font-size: 15px;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr th:nth-child(1) input:focus {
+  background: var(--highlight);
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr td:nth-child(2) input {
+  height: 30px;
+  width: 100%;
+  font-size: 14px;
+  padding: 0;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr td:nth-child(2) input:focus {
+  border-bottom: 1px solid;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr td:nth-child(2) input:disabled {
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div > .NewSpan {
+  line-height: 20px;
+  border-radius: 5px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-dull);
+  border: 1px solid var(--frame);
+  -webkit-transition: background-color 300ms;
+  transition: background-color 300ms;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content > div > .NewSpan:hover {
+  border: none;
+  background: var(--feature);
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer {
   display: -ms-grid;
   display: grid;
   margin-bottom: 1em;
@@ -438,14 +527,19 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   grid-gap: 12px;
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > input {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer.lout_grid {
+  display: -ms-grid;
+  display: grid;
+}
+
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > input {
   grid-column: 1/-1;
   width: 200px;
   font-size: 15px;
   color: var(--text-strong);
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div {
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -460,7 +554,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  min-height: 120px;
+  min-height: 150px;
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
@@ -471,11 +565,11 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   border: 1px solid var(--component);
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div:hover {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div:hover {
   background: var(--highlight);
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div > color {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div > color {
   position: absolute;
   height: 15px;
   width: 15px;
@@ -485,12 +579,12 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   z-index: 2;
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div > img {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div > img {
   max-height: 70px;
   height: auto;
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div > textarea {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div > textarea {
   min-height: 30px;
   max-height: 60px;
   width: 100%;
@@ -505,7 +599,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   color: var(--text-strong);
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div > textarea:focus {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div > textarea:focus {
   resize: vertical;
   max-height: -webkit-max-content;
   max-height: -moz-max-content;
@@ -513,136 +607,81 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   background: var(--highlight);
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div > textarea:disabled {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div > textarea:disabled {
   cursor: pointer;
 }
 
-.Pages > .main_Page .fileContainer .ContentContainer > div > p {
+.Pages > .main_Page > .PageContainer .PageData > .Content .ContentContainer > div > p {
   margin: 10px 0;
   font-size: 12px;
   color: var(--text-dull);
 }
 
-.Pages > .main_Page .fileContainer table {
-  padding: 0;
-  border-radius: 5px;
-  border-spacing: 0 2px;
-}
-
-.Pages > .main_Page .fileContainer table tr {
-  opacity: 1;
-}
-
-.Pages > .main_Page .fileContainer table tr th:nth-child(1) input {
-  min-width: 200px;
-  left: 0;
-  font-size: 15px;
-}
-
-.Pages > .main_Page .fileContainer table tr th:nth-child(1) input:focus {
-  background: var(--highlight);
-}
-
-.Pages > .main_Page .fileContainer table tr td:nth-child(2) input {
-  height: 30px;
-  width: 100%;
-  font-size: 14px;
-  padding: 0;
-}
-
-.Pages > .main_Page .fileContainer table tr td:nth-child(2) input:focus {
-  border-bottom: 1px solid;
-}
-
-.Pages > .main_Page .fileContainer table tr td:nth-child(2) input:disabled {
-  cursor: pointer;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.Pages > .main_Page .fileContainer .NewSpan {
-  line-height: 20px;
-  border-radius: 5px;
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: var(--text-dull);
-  border: 1px solid var(--frame);
-  -webkit-transition: background-color 300ms;
-  transition: background-color 300ms;
-}
-
-.Pages > .main_Page .fileContainer .NewSpan:hover {
-  border: none;
-  background: var(--feature);
-}
-
-.Pages > .main_Page .PageInformation {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation {
   -webkit-transition: all 600ms;
   transition: all 600ms;
 }
 
-.Pages > .main_Page .PageInformation input, .Pages > .main_Page .PageInformation textarea {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation input, .Pages > .main_Page > .PageContainer .PageData > .PageInformation textarea {
   border-radius: 5px;
   background: var(--feature);
 }
 
-.Pages > .main_Page .PageInformation input:focus, .Pages > .main_Page .PageInformation textarea:focus {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation input:focus, .Pages > .main_Page > .PageContainer .PageData > .PageInformation textarea:focus {
   background: var(--highlight);
 }
 
-.Pages > .main_Page .PageInformation .PIHeader {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader {
   background: transparent;
   -webkit-box-shadow: none;
           box-shadow: none;
-  padding: 0 0 10px 0;
+  padding: 0 !important;
   color: var(--text-white);
 }
 
-.Pages > .main_Page .PageInformation .PIHeader button {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader button {
   height: 34px;
   width: 115px;
   border-radius: 5px;
 }
 
-.Pages > .main_Page .PageInformation .PIHeader button:hover {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader button:hover {
   -webkit-transform: translateY(-1px);
           transform: translateY(-1px);
 }
 
-.Pages > .main_Page .PageInformation .PIHeader button.NO_Upload {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader button.NO_Upload {
   background: linear-gradient(40deg, #2993d8, #203ed3);
 }
 
-.Pages > .main_Page .PageInformation .PIHeader button.NO_Folder {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader button.NO_Folder {
   background: linear-gradient(40deg, #ddaa1f, #b2691d);
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
   overflow-y: auto;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo > svg {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo > svg {
   position: relative;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo > section > * {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo > section > * {
   width: 100%;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData {
   padding-bottom: 10px;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData .ItemInfo_Name {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData .ItemInfo_Name {
   font-size: 17px;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData .ItemInfo_UUID {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData .ItemInfo_UUID {
   padding: 6px 0px;
   text-align: center;
   font-size: 10px;
@@ -652,21 +691,21 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   border-bottom: 1px solid var(--highlight);
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData img {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData img {
   height: auto;
   width: auto;
   max-height: 128px;
   margin: 12px 0 0;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData > span {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData > span {
   margin: 16px 0;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData > span > button {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData > span > button {
   height: 36px;
   width: calc(50% - 4px);
   padding: 0;
@@ -674,125 +713,160 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   background: var(--feature);
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData > span > button > i {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData > span > button > i {
   color: var(--rich-blue);
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData > span > button:hover {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData > span > button:hover {
   background: var(--highlight);
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData table {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData table {
   padding: 0 10px;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData table tr {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData table tr {
   height: 28px;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData table tr td {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData table tr td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 50%;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData table tr td > input {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData table tr td > input {
   padding: 0;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData table tr td:nth-child(1) {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData table tr td:nth-child(1) {
   font-size: 12px;
   opacity: 0.8;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData table tr td:nth-child(2) {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData table tr td:nth-child(2) {
   font-size: 14px;
   text-align: right;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIData textarea {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData textarea {
   height: 50px;
   margin: 10px 0;
   resize: vertical;
   font-size: 13px;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIShare {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIShare {
   padding-top: 10px;
   border-top: 1px solid var(--highlight);
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIShare sub {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIShare sub {
   opacity: 0.8;
   font-size: 11px;
 }
 
-.Pages > .main_Page .PageInformation .ItemInfo .IIShare input {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIShare input {
   width: 100%;
   margin: 4px 0;
   font-size: 15px;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked > span {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked > span {
   margin: 8px 0;
   border-radius: 5px;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked .locked_title {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .locked_title {
   margin: 0 0 15px;
   padding: 8px 10px;
   border-radius: 20px;
   background: var(--feature);
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked .locked_title > h3 {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .locked_title > h3 {
   font-weight: 400;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked .locked_title > i {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .locked_title > i {
   font-size: 18px;
   opacity: 0.6;
   cursor: pointer;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked .locked_title > i:hover {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .locked_title > i:hover {
   opacity: 1;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked .security_option > i {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .security_option > i {
   padding: 0 10px;
   font-size: 16px;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked .security_option > input {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .security_option > input {
   width: 182px;
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked button {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked button {
   background: linear-gradient(40deg, #e8ae68, #e63811);
 }
 
-.Pages > .main_Page .PageInformation .ItemLocked button:hover {
+.Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked button:hover {
   background: #e76230;
   -webkit-box-shadow: 0 0 0px 4px #e7623033;
           box-shadow: 0 0 0px 4px #e7623033;
 }
 
-.Pages > .bin_Page .PageData > .binContainer .section_Empty {
+.Pages > .bin_Page > .PageContainer .PageData .Content > div {
+  width: 100%;
+  max-width: 750px;
+}
+
+.Pages > .bin_Page > .PageContainer .PageData .Content > div .section_Empty {
   height: 280px;
   width: 280px;
 }
 
-.Pages > .bin_Page .PageData > .binContainer .section_Empty > img {
+.Pages > .bin_Page > .PageContainer .PageData .Content > div .section_Empty > img {
   max-height: 120px;
 }
 
-.Pages > .bin_Page .PageData > .binContainer > table {
-  max-width: 750px;
+.Pages > .bin_Page > .PageContainer .PageData .Content > div thead > tr {
+  height: 0;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo {
+.Pages > .bin_Page > .PageContainer .PageData .Content > div thead > tr td > * {
+  position: absolute;
+  top: 0;
+}
+
+.Pages > .bin_Page > .PageContainer .PageData .Content > div thead > tr td > p {
+  left: 1em;
+  color: var(--text-dull);
+  font-size: 14px;
+}
+
+.Pages > .bin_Page > .PageContainer .PageData .Content > div thead > tr td > i {
+  right: 1em;
+  color: var(--selected);
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 600ms;
+  transition: -webkit-transform 600ms;
+  transition: transform 600ms;
+  transition: transform 600ms, -webkit-transform 600ms;
+}
+
+.Pages > .bin_Page > .PageContainer .PageData .Content > div thead > tr td > i:hover {
+  color: var(--text-dull);
+}
+
+.Pages > .bin_Page > .PageContainer .PageData .Content > div thead > tr td > i:active {
+  -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+}
+
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -801,13 +875,13 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   padding: 20px 0;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binSize {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binSize {
   height: 19px;
   text-align: center;
   color: var(--text-dull);
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage {
   display: -ms-grid;
   display: grid;
   position: relative;
@@ -818,7 +892,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   background: var(--feature);
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div {
   display: -ms-grid;
   display: grid;
   place-content: center;
@@ -826,29 +900,29 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   background: var(--component);
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div > span {
   padding: 0.25em;
   word-spacing: 5px;
   cursor: pointer;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span:hover > p:nth-child(1) {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div > span:hover > p:nth-child(1) {
   display: none;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span:hover > p:nth-child(2) {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div > span:hover > p:nth-child(2) {
   display: block;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span > p {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div > span > p {
   font-size: 13px;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binUsage > div > span > p:nth-child(2) {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div > span > p:nth-child(2) {
   display: none;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binItemData {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -860,36 +934,38 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   margin-top: 10px;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binItemData p {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData p {
   padding-bottom: 10px;
   border-bottom: 1px solid var(--feature);
   color: var(--text-strong);
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binItemData table {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData table {
   color: var(--text-dull);
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binItemData table tr {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData table tr {
   height: 24px;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binItemData table tr td {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData table tr td {
   font-size: 14px;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binItemData table tr > td:nth-child(2) {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData table tr > td:nth-child(2) {
   text-align: right;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo button {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo button {
+  position: relative;
+  height: 32px;
   width: 200px;
   margin: 0;
   -webkit-transition: background-color 300ms, color 300ms;
   transition: background-color 300ms, color 300ms;
 }
 
-.Pages > .bin_Page .PageInformation > .binInfo .binEmptyContainer {
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binEmptyContainer {
   padding-top: 20px;
   border-top: 1px solid var(--highlight);
 }
@@ -1209,6 +1285,16 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   -webkit-box-shadow: 0 0 0 1px var(--folder);
           box-shadow: 0 0 0 1px var(--folder);
   background: var(--highlight);
+}
+
+@media only screen and (min-width: 1500px) {
+  .Pages > section > .PageContainer > .PageData {
+    padding: 0 50px 0 40px;
+    gap: 50px;
+  }
+  .Pages > section > .PageContainer > .PageData > .Content {
+    min-width: calc(100% - 290px);
+  }
 }
 
 @media only screen and (min-width: 1200px) {

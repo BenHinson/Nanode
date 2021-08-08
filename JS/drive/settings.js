@@ -40,7 +40,12 @@ const SettingsController = async() => {
   // API
   Session = async(settings={}) => {  // Calls API_Fetch({url: '/account/settings'}) if needed and send settings updates.
     settings['user'] = this.Read('user') || await API_Fetch({url: '/account/settings'});
-    settings['local'] = this.Read('local') || {'theme': (window.matchMedia("(prefers-color-scheme: dark)").matches ? 0 : 1) || 0, 'layout': 0, 'recents': 0}; // Reads system theme
+    settings['local'] = this.Read('local') || {
+      'theme': (window.matchMedia("(prefers-color-scheme: dark)").matches ? 0 : 1) || 0,
+      'layout': 0,
+      'recents': 0,
+      'search_options': {'description': true, 'prevNames': true, 'withinAll': true, 'forFolders': true, 'forFiles': true}
+    }; // Reads system theme
   
     if ((new Date().getTime() - new Date(settings.user.accessed || 0).getTime()) > 5*60*1000) {
       settings['user'] = await API_Fetch({url: '/account/settings'}) || {'accessed': new Date().toISOString(), 'date': 0, 'plan': {'max': 10 * 1024 * 1024 * 1024, 'used': 0}};

@@ -15,6 +15,7 @@ Search = () => {
     searchNodeElements: 0,
     searchNodeSelected: 0,
     arrowCycleIndex: 0,
+    prevSearch: '',
     // parameters: {input: '', dir: '', desc: true, preName: true, for: ''},
   }
   const searchElem = {
@@ -30,7 +31,7 @@ Search = () => {
   }
 
   SetListeners_ = () => { Listeners(); Params(); }
-  SetEvents_ = () => {  }
+  SetEvents_ = () => { SetParams(); }
 
   // ====================================
 
@@ -67,21 +68,67 @@ Search = () => {
       }
     }));
 
+    if (searchConfig.loadMore === true) {
+      N_.Find('button.searchLoadMore').addEventListener('click', () => {
+        NodeCall({'Skip':true}, { // , 'Reload': false
+            Parent: {
+              id: 'SEARCH',
+              name: `Search: ${searchConfig.prevSearch}`
+            },
+            Contents: {
+              'SEARCH': {
+                contents: searchConfig.searchResults.reduce((obj, cur) => {return { ...obj, [cur.id]: cur };}, {}),
+                name: `Search: ${searchConfig.prevSearch}`
+              }
+            }
+          }
+        );
+
+        this.Close();
+        // Create a new directory + header. > 'Search: input'. Cannot move back into it -> If SearchNodes is empty. otherwise we can reload.
+      })
+    }
+
     searchConfig.searchNodeElements.forEach(el => el.addEventListener('click', e => this.SearchItemSelected(el)))
 
     document.removeEventListener('keydown', ArrowCycle);
     document.addEventListener('keydown', ArrowCycle);
   };
   Params = () => {
-    N_.Find('.searchBy input', true).forEach(input => {
+    N_.Find('.searchSelectors input', true).forEach(input => {
       input.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          let option = e.target.value;
-          if (option == 'size') { // Set Min Max Input
+        let targetValue = e.target.getAttribute('value')
+
+        if (targetValue.match(/withinAll|withinParent/)) {
+          let opposite = targetValue=='withinAll' ? 'withinParent' : 'withinAll';
+          UserSettings.local.search_options[opposite] = !e.target.checked;
+        } else if (targetValue.match(/forFolders|forFiles/) && e.target.checked == false) {
+          let opposite = targetValue=='forFolders' ? 'forFiles' : 'forFolders';
+          if (UserSettings.local.search_options[opposite] === false) {
+            N_.Find(`.searchSelectors input[value=${opposite}]`).checked = true;
+            UserSettings.local.search_options[opposite] = true;
           }
         }
+
+        UserSettings.local.search_options[e.target.getAttribute('value')] = e.target.checked;
+        localStorage.setItem('local-settings', JSON.stringify(UserSettings.local));
+
+        // if (e.target.checked) {
+        //   let option = e.target.value;
+          // if (option == 'size') { // Set Min Max Input
+          // }
+        // }
       })
     })
+  }
+
+
+  // Load
+  SetParams = () => {
+    // console.log(UserSettings.local.search_options);
+    for (const [key, val] of Object.entries(UserSettings.local.search_options)) {
+      if (val == true) N_.Find(`input[value=${key}]`).checked = true;
+    }
   }
 
   
@@ -156,6 +203,7 @@ Search = () => {
     });
   
     if (Object.keys(SearchNodes).length > 5) {
+      searchConfig.loadMore = true;
       content += `<button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button>`;
     }
   
@@ -185,6 +233,7 @@ Search = () => {
 
   // Recent Search Cache
   SearchCache = (action, search) => { // READ|WRITE, 'example.png'
+    // ? Idea: Save params for the searches.
     let searches = JSON.parse(localStorage.getItem('recent-searches')) || ['Documents'];
     if (action == 'WRITE' && !searches.includes(search)) { // write to the recent searches
       if (searches.length > 4) searches.shift();
@@ -198,13 +247,9 @@ Search = () => {
   
   // API
   FetchSearch = async(search, parameters=true) => {
-    let params = {"input": search}
-    
-    if (parameters) {
-      searchElem.ParamsContainer.querySelectorAll('input:checked').forEach((option) => {
-        console.log(option.value)
-      })
-    }
+    let params = {...UserSettings.local.search_options, ...{"input": search}}
+
+    if (params.withinParent && NodeID !== 'homepage') { params.withinParent = NodeID }
 
     // dir: XXXX | homepage
     // include: description | names
@@ -213,11 +258,14 @@ Search = () => {
     // return;
       
     if (params.input) {
-      let req = await API_Post({url: `/search`, body: params});
+      let res = await API_Post({url: `/search`, body: params});
       this.SearchCache('WRITE', params.input);
+
+      searchConfig.prevSearch = search;
+      searchConfig.searchResults = res.Found;
       
       SearchNodes = {};
-      req.Found.forEach((item) => {
+      res.Found.forEach((item) => {
         SearchNodes[item.id] = new Node(item);
       })
   
@@ -331,3 +379,25 @@ Search();
  *      Save id of last item of 50 finds (server)
  *      On 'request another 50' start search from last item.
 */
+
+
+// interface SearchQuery {
+//   user: User
+//   input: any
+//   inputTwo?: any
+//   params: {
+//     color?: boolean
+//     type?: boolean
+//     date?: boolean
+//     size?: boolean
+
+//     forFolders?: boolean
+//     forFiles?: boolean
+//     onlyShared?: boolean
+
+//     withinParent?: string
+
+//     description?: boolean
+//     prevNames?: boolean
+//   }
+// }

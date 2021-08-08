@@ -1,5 +1,3 @@
-
-
 nanodeLogin = () => {
   let currentLoginPage = 'login';
   const sufficient = (/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);
@@ -20,7 +18,16 @@ nanodeLogin = () => {
   }
 
   // ======================
-  
+
+  Url = () => {
+    const location = document.location;
+    if (location.hash == '#signup') {
+      formSwitch();
+    } else if (location.hash == '#login' && currentLoginPage !== 'login') {
+      formSwitch();
+    }
+  }
+
 
   Listen = () => {
     loginElem.submitBtn.addEventListener("click", async(e) => {
@@ -40,7 +47,9 @@ nanodeLogin = () => {
       if (loginElem.form.getAttribute('action') && loginElem.email.value && loginElem.pwd.value) {
         try {
           const responseData = await(
-            await fetch( loginElem.form.getAttribute('action'), { method: 'POST', body: new URLSearchParams(new FormData(loginElem.form)) })
+            await fetch( loginElem.form.getAttribute('action'), {
+              method: 'POST',
+              body: new URLSearchParams(new FormData(loginElem.form)) })
           ).json();
   
           if (responseData.Acc_Server == "_Login") {
@@ -56,7 +65,6 @@ nanodeLogin = () => {
               loginElem.pwdTitle.innerHTML = "Password <i> - wrong email or password</i>";
             }
           }
-  
         } catch(error) {console.log(error)}
       }
     })
@@ -77,6 +85,7 @@ nanodeLogin = () => {
 
   formSwitch = () => {
     if (currentLoginPage == "login") { currentLoginPage = "signup";
+      document.title = 'Signup to Nanode';
 
       document.querySelector('.MainTitle').innerText = 'Signup';
       document.querySelector('.SecondaryTitle').innerText = 'Signup for Nanode Storage';
@@ -91,9 +100,13 @@ nanodeLogin = () => {
       loginElem.formSwitchBtn.innerText = 'Login';
 
       // <span><p>8 Long</p><p>Uppercase</p><p>Lowercase</p><p>Number</p><p>Special</p></span>
-
+      
+      window.history.replaceState(null, 'Signup to Nanode', 'https://account.nanode.one/login#signup');
       this.Checker();
+
     } else { currentLoginPage = "login";
+      document.title = 'Login to Nanode';
+
       document.querySelector('.MainTitle').innerText = 'Welcome';
       document.querySelector('.SecondaryTitle').innerText = 'Enter into your Nanode Account';
 
@@ -104,6 +117,8 @@ nanodeLogin = () => {
       
       document.querySelector('#accountStatus').innerText = "Don't have an account?";
       loginElem.formSwitchBtn.innerText = 'Signup';
+      
+      window.history.replaceState(null, 'Login to Nanode', 'https://account.nanode.one/login');
     } 
     this.Listen();
   }
@@ -111,6 +126,7 @@ nanodeLogin = () => {
 
   // ======================
 
+  this.Url();
   this.Listen();
 
   nanodeLogin.formSwitch = formSwitch;

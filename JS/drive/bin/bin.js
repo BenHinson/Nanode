@@ -9,6 +9,8 @@ const BinController = () => {
     binReminderTriggered: false,
     binSizeColors: {'FOLDER': '#f3cc2d', 'image': '#2df377', 'text': '#b7c6d0', 'video': '#c8524c'},
     Bin_Nodes: {},
+    itemActionProcessed: [],
+    binSectionItemCount: 0
   }
   const binElem = {
     binPageContainer: binPage.querySelector('.PageContainer'),
@@ -34,7 +36,7 @@ const BinController = () => {
           let sliderWidth = (this.parentElement.clientWidth / 3);
           switchElem.querySelector('.SwitchSelected').classList.remove('SwitchSelected');
           this.classList.add('SwitchSelected');
-          binElem.binPageContainer.querySelector('.binContainer').innerHTML = N_.Loading('medium');
+          binElem.binPageContainer.querySelector('.binContainer > div').innerHTML = N_.Loading('medium');
           binConfig.binSubSection = binConfig.binSections[switchOptionPos];
           ItemCall();
           sliderElem.style.transform = `translateX(${(sliderWidth*(switchOptionPos - 1))}px)`
@@ -55,6 +57,20 @@ const BinController = () => {
         e.currentTarget.classList.toggle('ItemSelected');
       })
     })
+
+    N_.Find('.refreshBinBtn', false, binContainer).addEventListener('click', RefreshBin)
+    
+  }
+  RestoreDeleteListener = (binItemData, RequestInfo) => {
+    N_.Find('.binRestoreBtn', false, binItemData).addEventListener('click', (e) => {RestoreDeletePost(RequestInfo.id, 'RESTORE', e.target)})
+    N_.Find('.binDeleteBtn', false, binItemData).addEventListener('click', (e) => {RestoreDeletePost(RequestInfo.id, 'DELETE', e.target)})
+  }
+  VisitRestoredItem = (binItemData, nodeData) => {
+    N_.Find('.binVisitBtn', false, binItemData).addEventListener('click', () => {
+      pageSwitch(nodeData.parentSection).then(() => {
+        Navigate.Shortcut(nodeData.parentID, nodeData.nodeID);
+      });
+    })
   }
 
 
@@ -62,17 +78,17 @@ const BinController = () => {
   ReminderPopup = () => {
     if (binConfig.binReminderTriggered === false) {
       binConfig.binReminderTriggered = true;
-      N_.InfoPopup(binElem.binPageContainer, "Items left in the bin will be permanently deleted after 30 days.", 5000);
+      N_.InfoPopup({'parent':binElem.binPageContainer, 'type': 'info', 'text':"Items left in the bin will be permanently deleted after 30 days.", 'displayDelay':5000, 'displayTime':10000});
     }
   }
+  RefreshBin = () => {ItemCall(); DataCall();}
 
 
   // Render
   BinList = (data) => {
-    const binContainer = binElem.binPageContainer.querySelector('.binContainer');
+    const binContainer = binElem.binPageContainer.querySelector('.binContainer > div');
 
     if (typeof data.Contents == 'object' && Object.entries(data.Contents).length) { // Check if Data has been Returned and render
-  
       renderNodes = (content=``) => {      
         for (const [nodeID, nodeData] of Object.entries(binConfig.Bin_Nodes)) {
           content += `
@@ -89,6 +105,10 @@ const BinController = () => {
     
       binContainer.innerHTML = `
         <table class='binTable tableTemplate'>
+          <thead><tr>
+            <td><p class='binItemCount'>${N_.TextMultiple(binConfig.binSectionItemCount, 'item')}<p></td>
+            <td><i class="fas fa-sync-alt refreshBinBtn"></i></td> </tr>
+          </thead>
           <tbody>${renderNodes()}</tbody>
         </table>
       `;
@@ -127,6 +147,22 @@ const BinController = () => {
       <button class='rb-btn-full blue-light binRestoreBtn'>Restore</button>
       <button class='rb-btn-full red-light binDeleteBtn'>Delete</button>
     `;
+    RestoreDeleteListener(binItemData, RequestInfo);
+  }
+
+  RestoredItemInfo = (nodeData) => {
+    const {nodeName, parentID} = nodeData;
+    let binItemData = binElem.binPageInfo.querySelector('.binItemData');
+
+    binItemData.innerHTML = `
+      <p>${nodeName}</p>
+      <button class='rb-btn-full blue-light binVisitBtn'>Visit Restored Item</button>
+    `;
+    VisitRestoredItem(binItemData, nodeData);
+  }
+  DeletedItemInfo = (nodeData) => {
+    binElem.binPageInfo.querySelector('.binItemData').innerHTML = ``;
+    N_.InfoPopup({'parent':binElem.binPageContainer, 'type': 'success', 'text':`Successfully Deleted - ${nodeData.nodeName}`, 'displayDelay':500, 'displayTime':2000});
   }
 
 
@@ -142,6 +178,8 @@ const BinController = () => {
       sizeMap = new Map([...sizeMap].sort((a,b) => a[1] === b[1] ? b[0] - a[0] : a[1] - b[1]))  // Sorts the object values from lowest to highest
     
       let rotation = 0, offset = [];
+
+      binElem.binUsage.innerHTML = '<div></div>';
         
       for (const [type, size] of sizeMap) {
         let sizePercentage = (size / totalSize);
@@ -176,9 +214,12 @@ const BinController = () => {
   ItemCall = async() => {
     let res = await API_Fetch({url:`/folder/home?s=bin&sub=${binConfig.binSubSection.toLowerCase()}`});
     if (res.Parent) {
+      binConfig.itemActionProcessed = [];
       binConfig.Bin_Nodes = {};
       if (typeof res.Contents == 'object') {
+        binConfig.binSectionItemCount = 0;
         for (const [id, data] of Object.entries(res.Contents).reverse()) {
+          binConfig.binSectionItemCount++;
           binConfig.Bin_Nodes[id] = new Node(data, id, res.Parent.name);
         }
       }
@@ -192,8 +233,39 @@ const BinController = () => {
   
     const RequestInfo = await( await fetch(`https://drive.nanode.one/user/bin/${nodeID}`) ).json();
   
+    RequestInfo[nodeID].id = nodeID;
     let NodeInfo = new Node(RequestInfo[nodeID]);
     this.ItemInfo(binItemData, NodeInfo.data);
+  }
+  RestoreDeletePost = async(nodeID, action, btnElement) => {
+    if (binConfig.itemActionProcessed.includes(nodeID)) {return}
+    binConfig.itemActionProcessed.push(nodeID);
+    btnElement.innerHTML = N_.Loading('button');
+    
+    if (nodeID) {
+      let res = await API_Post({url: `/bin`, body: {'subSection': binConfig.binSubSection, action, 'id': nodeID}})
+
+      let nodeData = {'nodeName':binConfig.Bin_Nodes[nodeID].data.name, nodeID, 'parentSection': binConfig.binSubSection}
+
+      setTimeout(() => {
+        if (res.status == 'successful') {
+          binConfig.binSectionItemCount--; // Cannot place within TextMultiple, seems to do the calculation afterwards
+          N_.Find('td > p.binItemCount').innerText = N_.TextMultiple(binConfig.binSectionItemCount, 'item');
+          N_.Find(`tr[node-id='${nodeID}']`).remove(); // Add an animation here. Blue glow for restore, transforms right. Red glow for delete, transforms left.
+          delete binConfig.Bin_Nodes[nodeID];
+          DataCall();
+          
+          if (action == 'RESTORE' && res.parent) { RestoredItemInfo({...nodeData, ...{'parentID':res.parent}}); }
+          else if (action == 'DELETE') { DeletedItemInfo(nodeData)}
+          else {
+            btnElement.innerHTML = `${N_.CapFirstLetter(action)} Failed`;
+            N_.InfoPopup({'parent':binElem.binPageContainer, 'type': 'error', 'text':`Something went wrong during: ${N_.CapFirstLetter(action)}`, 'displayDelay':500, 'displayTime':5000});
+          }
+        } else {
+          btnElement.innerHTML = `${N_.CapFirstLetter(action)} Failed`;
+        }
+      }, 500)
+    }
   }
 
   // ====================================

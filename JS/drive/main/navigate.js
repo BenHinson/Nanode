@@ -43,15 +43,17 @@ Navigate = () => {
     })
   }
   DirButtons = () => {
-    N_.Find('.dirBtn', true, navElem.directoryLocation).forEach(btn => {
+    N_.Find('.dirBtn:not([node-id=SEARCH])', true, navElem.directoryLocation).forEach(btn => {
       btn.addEventListener('click', (e) => {
         let NodeID = e.target.getAttribute("node-id");
         let Route_Obj = navConfig.Directory_Route.find(o => o.Node === NodeID); // Find Object with Node=NodeID in navConfig.Directory_Route
         navConfig.Directory_Route = navConfig.Directory_Route.slice(0, navConfig.Directory_Route.indexOf(Route_Obj) + 1 ); // Remove objects after the Index
         
-        if (JSON.stringify(navConfig.Directory_Tree[navConfig.Tree_Number].Route) !== JSON.stringify(navConfig.Directory_Route))
-        {navConfig.Tree_Number++;   navConfig.Tree_Steps = navConfig.Directory_Route.length;   navConfig.Directory_Tree.push({"Start":navConfig.Tree_Steps, "Route": navConfig.Directory_Route});}
-      
+        if (JSON.stringify(navConfig.Directory_Tree[navConfig.Tree_Number].Route) !== JSON.stringify(navConfig.Directory_Route)) {
+          navConfig.Tree_Number++;
+          navConfig.Tree_Steps = navConfig.Directory_Route.length;
+          navConfig.Directory_Tree.push({"Start":navConfig.Tree_Steps, "Route": navConfig.Directory_Route});
+        }
         NodeCall({"Folder":NodeID, "Reload":false});
       })
     })
@@ -74,7 +76,22 @@ Navigate = () => {
 
   // Render
   Navigate.Route = (Node_Path, Text_Path) => {
-    if (FolderCall == true) {
+    if (NodeID=='SEARCH') { // NodeName
+      // ! Honestly. How tf, does one correctly implement this. Its a mess. Windows just creates its own branch, but allows you to go back into it.
+      // ! Do I cache the search results? What happens if you search within a search. 'Current Directory' param defaults to homepage via this. What about opening a folder within the search. Does it get added to the branch? What happens when you press back then? Back to the search results?
+      // ! A search within a search surely, just removes the previous search branch. Right? What about going through a search branch, clicking back (creating a new branch), then searching. What happens then. Does the second branch of the search get a param that says its a search branch, therefore is also removed upon search. What. A. Mess. Time for bed.
+      navConfig.Tree_Steps++; // ? Works by itself. But creates dupe steps when opening a folder within a search result. ie: search > documents. Back goes to documents. then documents again (where search is, then previous folder.)
+      // navConfig.Directory_Route.push({'Node': NodeID, 'Text': NodeName, 'Search': true})
+
+      // ? When opening a search directory. This Generates a new tree branch for that search. With param 'SEARCH'. You can not navigate out and back into this.
+      navConfig.Directory_Route = [{'Node': NodeID, 'Text': NodeName}];
+      navConfig.Tree_Number++;
+      navConfig.Tree_Steps = navConfig.Directory_Route.length;
+      navConfig.Directory_Tree.push({"Start":navConfig.Tree_Steps, "Route": navConfig.Directory_Route, 'SEARCH': true});
+
+
+
+    } else if (FolderCall == true) {
       if (navConfig.Directory_Route.length && navConfig.Directory_Route[navConfig.Directory_Route.length - 1].Node == Node_Path) {
         // This was a return statement, but that breaks going forward into a locked folder.
       } else {
@@ -90,13 +107,13 @@ Navigate = () => {
     FolderCall = true;
   
     this.RenderDirPath();
-
-    this.DirButtons();
   }
   
   RenderDirPath = () => {
-    navElem.directoryLocation.innerHTML =
-    navConfig.Directory_Route.map(e => `<button class='dirBtn' node-id='${e.Node}' title='${e.Text}'>${e.Text}</button>`).toString().replaceAll(',', '<i></i>');
+    navElem.directoryLocation.innerHTML = (
+      navConfig.Directory_Route.map(e => `<button class='dirBtn' node-id='${e.Node}' title='${e.Text}'>${e.Text}</button>`).toString().replaceAll(',', '<i></i>')
+      // + (NodeID == 'SEARCH' ? `<i></i> <button class='dirBtn' node-id='${NodeID}' title='${NodeName}'>${NodeName}` : '') // Add if going for ONLY navConfig.Tree_Steps++; method.
+    )
 
     navConfig.Directory_Tree[navConfig.Tree_Number].Route[navConfig.Tree_Steps] || navConfig.Directory_Tree[navConfig.Tree_Number + 1]
       ? navElem.navigateForward.classList.remove('notActive')
@@ -105,6 +122,8 @@ Navigate = () => {
     navConfig.Directory_Route.length > 1 || navConfig.Directory_Tree[navConfig.Tree_Number - 1]
       ? navElem.navigateBackward.classList.remove('notActive')
       : navElem.navigateBackward.classList.add('notActive');
+    
+    this.DirButtons();
   }
 
   // ====================================
@@ -267,14 +286,12 @@ const moveToTarget = function(drop, item, type='table') {
 // @ = Click & Drag Select
 const DragSelection = new SelectionArea({
   selectables: ['[dir-nodes] > tr'],
-  startareas: ['.PageData', '.PageInformation'],
-  // boundaries: ['.PageInformation'],
-  // boundaries: ['.PageData', '.PageInformation'],
-  boundaries: ['.PageData'],
+  boundaries: ['.main_Page .PageData'],
+  startareas: ['.main_Page .PageData'],
   startThreshold: 10,
 }).on('beforestart', ({event}) => {
   N_.Find('.main_Page').classList.add('no-select');
-  return !event.target.tagName.match(/TD|INPUT|BUTTON/);
+  return !event.target.tagName.match(/TD|INPUT|BUTTON/) && !PageInfo.contains(event.target);
 }).on('start', ({store, event}) => {
   if (!event.ctrlKey && !event.metaKey) {
     for (const el of store.stored) {

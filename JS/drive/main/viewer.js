@@ -30,7 +30,7 @@ const UC_Queue_Table = document.querySelector('.UC_Queue table tbody');
 // }
 
 
-const renderContent = () => {
+const renderContent = (renderNodes) => {
   const renderConfig = {
     layout: UserSettings.local.layout, // 0=block, 1=list
     homepage: NodeID == 'homepage',
@@ -64,7 +64,7 @@ const renderContent = () => {
     })
     if (renderConfig.homepage) content += `<button class='NewSpan'>New Span</button>`;
 
-    fileContainer.innerHTML = content;
+    fileContainer.innerHTML = renderConfig.homepage ? `<div rcpar='2'>${content}</div>` : content;
     
     this.SetListeners_();
     
@@ -105,9 +105,8 @@ const renderContent = () => {
         };
       }).catch(err => { N_.Error('Failed to Fetch Recents: '+err) })
     }
-    fileContainer.querySelector('recents').innerHTML = content += `
-      <button class='toggleRecent trans300' onclick='SettingsController.ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>
-    `;
+    fileContainer.querySelector('recents').innerHTML = 
+      (content += `<button class='toggleRecent trans300' onclick='SettingsController.ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>`);
   
     this.RecentNodesListener();
   }
@@ -164,7 +163,7 @@ const renderContent = () => {
 
   listContainer = (span) => {
     return `
-      <div node-id='${span.id}' ${renderConfig.homepage ? `Home-Span='${span.name}'` : "" }>
+      <div node-id='${span.id}' ${renderConfig.homepage ? `Home-Span='${span.name}'` : ""} rcpar='2'>
         <table class='tableTemplate' ${renderConfig.homepage ? `rc='Homepage_Span'` : ``} >
           <thead>
             <tr ${renderConfig.homepage ? 'rcPar=3' : ''} node-id='${span.id}'>
@@ -183,7 +182,7 @@ const renderContent = () => {
   };
   blockContainer = (span) => {
     return `
-      <div node-id='${span.id}' class='ContentContainer' dir-nodes ${renderConfig.homepage && `Home-Span='${span.name}' rc='Homepage_Span'`}>
+      <div node-id='${span.id}' class='ContentContainer ${!renderConfig.homepage && 'lout_grid'}' dir-nodes ${renderConfig.homepage && `Home-Span='${span.name}' rc='Homepage_Span'`}>
         <input value='${span.name}' ${renderConfig.homepage ? 'spanName' : 'spanName=disabled disabled '}>
         ${renderContent.blockNode({"parent": span.name, "nodes": span.nodes})}
       </div>
@@ -198,7 +197,7 @@ const renderContent = () => {
     if (nodeIDs.length === 0 && !renderConfig.homepage) { return this.DirectoryEmpty(); }
     nodeIDs.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
       content += `
-        <tr directory='${Navigate.ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${Navigate.ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: "+nodeData.color+" -3px 0' " : ""}  color='${nodeData.color || ''}'>
+        <tr directory='${Navigate.ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${Navigate.ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: inset "+nodeData.color+" 3px 0' " : ""}  color='${nodeData.color || ''}'>
           <td><img loading='lazy' height='32' width='32' src='${N_.FileIcon(nodeData, 90, 120, 'main')}'></img></td>
           <td><input rcPar='2' value='${N_.CapFirstLetter(nodeData.name)}' disabled style='pointer-events:none;'></input></td>
           <td>${nodeData.type.short}</td>
@@ -227,7 +226,6 @@ const renderContent = () => {
   // ====================================
 
   this.Content();
-  
 }
 
 
@@ -332,11 +330,10 @@ ItemInfoListeners = (ItemRequest) => {
   N_.Find('.ItemInfo_Link_Input').addEventListener('click', async (e) => { // Link
     if (!e.target.value) {
       let res = await API_Post({url: `/share`, body: {
-        "ACTION": "LINK",
+        "action": "LINK",
         "oID": ItemRequest.id,
-        "SECTION": Section,
+        "section": Section,
       }});
-
       res.link ? e.target.value = res.link : e.target.style.color = 'crimson';
     }
     e.target.select();
@@ -413,7 +410,7 @@ class SecurityInputContainer {
 class CreateColorPicker {
   constructor(caller, callback) {
     this.callback = callback;
-    this.element = caller == 'RC' && typeof RCElement !== 'undefined' ? RCElement : caller;
+    this.element = (caller == 'RC' && typeof RCElement !== 'undefined') ? RCElement : caller;
     // this.originColor = this.element?.hasAttribute('style')
     // ? N_.RGBtoHex(getComputedStyle(this.element)[ UserSettings.local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
     // : '';
@@ -590,7 +587,7 @@ class Popup {
           else {console.log('Invalid Span ID'); return;}
         }
         let forDeletion = NodeSelected.size ? Array.from(NodeSelected) : [selectedItemID];
-        NodeAPI('edit', {"action": "DELETE", "section": Section, "id": forDeletion, "path": NodeID});
+        NodeAPI('edit', {"action": "BIN", "section": Section, "id": forDeletion, "path": NodeID});
       }
       else if (this.Action == 'NewSpan') {
         NodeAPI('create', { 
@@ -623,10 +620,10 @@ class Popup {
           this.DATA.requestSent = true;
 
           let res = await API_Post({url: `/download`, body: {
-            "FOR": this.DATA.forShare ? "SHARE" : "SELF",
-            "NAME": centralInput.value,
-            "ITEMS": this.DATA.download,
-            "SECTION": Section,
+            "For": this.DATA.forShare ? "SHARE" : "SELF",
+            "name": centralInput.value,
+            "items": this.DATA.download,
+            "section": Section,
           }});
 
           centralInput.value = 'Zipping...';
@@ -650,7 +647,7 @@ class Popup {
 
     if (this.colorPicker) {
       this.Base.querySelector('.Popup_Option_Colour').addEventListener('click', (e) => {
-        new CreateColorPicker('ISC', function(chosenColor) { e.target.value = chosenColor; e.target.style.background = chosenColor; })
+        new CreateColorPicker(e.target, function(chosenColor) { e.target.value = chosenColor; e.target.style.background = chosenColor; e.target.setAttribute('color', chosenColor) })
       })
     }
     if (this.dropdown) {
