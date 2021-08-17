@@ -662,10 +662,10 @@ recents.recentFiles > div p {
 
 .searchContainer .searchParamsContainer.display {
   position: relative;
-  height: 120px;
+  height: inherit;
   width: 100%;
   margin-bottom: 15px;
-  padding: 5px 10px;
+  padding: 0.5em 1em;
   z-index: 2;
 }
 
@@ -691,15 +691,9 @@ recents.recentFiles > div p {
 }
 
 .searchContainer .searchParamsContainer > .searchSelectors form p {
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
   margin-bottom: 5px;
-  font-size: 15px;
   letter-spacing: 1.2px;
   font-variant: all-petite-caps;
-  color: var(--text-strong);
-  border-bottom: 1px solid var(--selected);
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -1056,6 +1050,10 @@ recents.recentFiles > div p {
   color: var(--text-white);
 }
 
+.Upload_Container .UC_Control .UC_Top .Upload_Control[action=Choose] {
+  cursor: initial;
+}
+
 .Upload_Container .UC_Control .UC_Top span {
   width: 100px;
   font-size: 20px;
@@ -1137,7 +1135,7 @@ recents.recentFiles > div p {
   position: fixed;
   width: 180px;
   padding: 6px 3px;
-  border-radius: 4px;
+  border-radius: 5px;
   z-index: 999;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -1150,17 +1148,25 @@ recents.recentFiles > div p {
 }
 
 .RightClickContainer > button {
-  height: 32px;
+  height: 30px;
   width: 100%;
   font-size: 14px;
   text-align: left;
 }
 
+.RightClickContainer > button.disabled-text {
+  background: none;
+}
+
 .RightClickContainer > button:hover {
-  -webkit-box-shadow: 0 0 0 1px var(--rich-blue);
-          box-shadow: 0 0 0 1px var(--rich-blue);
-  background: var(--rich-blue-faded);
+  -webkit-box-shadow: 0 0 0 1px var(--selected);
+          box-shadow: 0 0 0 1px var(--selected);
+  background: var(--feature);
   color: var(--text-strong);
+}
+
+.RightClickContainer > button:hover.red-text {
+  color: var(--text-white) !important;
 }
 
 .RightClickContainer > divide {
@@ -1226,7 +1232,7 @@ recents.recentFiles > div p {
 
 .colorContainer .colorOptionsContainer > div:hover {
   border: 2px solid;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .colorContainer .colorOptionsContainer > div.selected {
@@ -1313,6 +1319,7 @@ recents.recentFiles > div p {
 .ExpandSpan {
   font-size: 15px;
   background: var(--feature);
+  border-radius: 5px;
 }
 
 .ExpandSpan:hover {
@@ -1610,7 +1617,7 @@ recents.recentFiles > div p {
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 4px;
+  border-radius: 5px;
   background: var(--frame);
   border: 1px solid var(--feature);
   -webkit-transition: all 200ms ease-in-out;

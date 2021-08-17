@@ -1,6 +1,8 @@
 .OLD_JS/
+.vscode/
 JS/site
 CSS/Pages
+assets/nanode/logo/video/
 
 # Logs
 logs

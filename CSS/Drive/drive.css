@@ -881,6 +881,11 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   color: var(--text-dull);
 }
 
+.Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binSize > em {
+  font-family: 'gr-bold';
+  font-style: normal;
+}
+
 .Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage {
   display: -ms-grid;
   display: grid;

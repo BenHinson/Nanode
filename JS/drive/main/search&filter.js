@@ -7,11 +7,9 @@
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-let SearchNodes = {};
-
-
 Search = () => {
   const searchConfig = {
+    SearchNodes: {},
     searchNodeElements: 0,
     searchNodeSelected: 0,
     arrowCycleIndex: 0,
@@ -59,7 +57,7 @@ Search = () => {
       let searchEvent = el.getAttribute('sNode-event');
 
       if (searchEvent == 'visit-loc') {
-        Navigate.Shortcut(SearchNodes[nodeID].data.parent, nodeID);
+        Navigate.Shortcut(searchConfig.SearchNodes[nodeID].data.parent, nodeID);
         this.Close();
       } else if (searchEvent == 'view-info') {
         FetchItemInformation(nodeID, true)
@@ -152,8 +150,8 @@ Search = () => {
   }
   SearchItemSelected = (el) => {
     let nodeID = el.getAttribute('node-id')
-    SearchNodes[nodeID].data.type.file
-      ? Navigate.Shortcut(SearchNodes[nodeID].data.parent, nodeID)
+    searchConfig.SearchNodes[nodeID].data.type.file
+      ? Navigate.Shortcut(searchConfig.SearchNodes[nodeID].data.parent, nodeID)
       : NodeCall({"Folder": nodeID});
       this.Close();
   }
@@ -190,7 +188,7 @@ Search = () => {
   Render = (content=``) => {
     this.Open('RESULTS');
   
-    Object.values(SearchNodes).slice(0, 5).forEach(node => {
+    Object.values(searchConfig.SearchNodes).slice(0, 5).forEach(node => {
       content += `
         <tr type='${node.data.type.general}' node-id='${node.data.id}'>
           <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(node.data, 38, 38, 'main')}'></img></td>
@@ -202,7 +200,7 @@ Search = () => {
       `;
     });
   
-    if (Object.keys(SearchNodes).length > 5) {
+    if (Object.keys(searchConfig.SearchNodes).length > 5) {
       searchConfig.loadMore = true;
       content += `<button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button>`;
     }
@@ -264,9 +262,9 @@ Search = () => {
       searchConfig.prevSearch = search;
       searchConfig.searchResults = res.Found;
       
-      SearchNodes = {};
+      searchConfig.SearchNodes = {};
       res.Found.forEach((item) => {
-        SearchNodes[item.id] = new Node(item);
+        searchConfig.SearchNodes[item.id] = new Node(item);
       })
   
       this.Render();
@@ -287,13 +285,27 @@ Filter = (layout, elem, container) => {
   elem.addEventListener('keyup', e => {
     let searchVal = e.target.value.toString().toLowerCase();
     Object.values(Nodes).forEach(node => {
-      if (!Object.values(node.data).some(s => s.toString().toLowerCase().includes(searchVal))) {
+      // const x = (({ size, name }) => ({ size, name }))(Nodes["13b70350-b387-11eb-8dc3-a3f64cd6604e"].data);
+      if (!Filter.filterNodeValues(node.data).some(s => s.includes(searchVal))) {
+      // if (!Object.values(node.data).some(s => s.toString().toLowerCase().includes(searchVal))) {
         container.querySelector(`[node-id='${node.data.id}']`).classList.add('ItemHidden')
       } else {
         container.querySelector(`[node-id='${node.data.id}']`).classList.remove('ItemHidden')
       }
     })
   })
+
+  Filter.filterNodeValues = (nodeData) => {
+    return [
+      nodeData.color,
+      (nodeData.mime).toLowerCase(),
+      (nodeData.name).toLowerCase(),
+      N_.ConvertSize(nodeData.size).toLowerCase(),
+      nodeData.time?.modified?.stamp || '',
+      nodeData.time?.created?.stamp || '',
+      nodeData.type.file ? 'file' : 'folder',
+    ]
+  }
 }
 
 
@@ -362,9 +374,7 @@ Search();
 
 
 
-
 /**
- * 
  * Results:
  *      Button to show All Results in a custom directory.
  *      Save dropdown search results on client so when user 'off-clicks' and clicks back on, the results are loaded.
@@ -379,25 +389,3 @@ Search();
  *      Save id of last item of 50 finds (server)
  *      On 'request another 50' start search from last item.
 */
-
-
-// interface SearchQuery {
-//   user: User
-//   input: any
-//   inputTwo?: any
-//   params: {
-//     color?: boolean
-//     type?: boolean
-//     date?: boolean
-//     size?: boolean
-
-//     forFolders?: boolean
-//     forFiles?: boolean
-//     onlyShared?: boolean
-
-//     withinParent?: string
-
-//     description?: boolean
-//     prevNames?: boolean
-//   }
-// }

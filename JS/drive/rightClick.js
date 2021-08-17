@@ -1,12 +1,12 @@
 // HTML with attribute of 'rc-name' |  right-click-name of the object  |  rc-name="centralContentBox"   |   RCE = Right Click Element
-// NodeCall({"Folder":NodeID, "Reload":false});
+
 const RightClickObjectMenu = {
   "File_Container": [
     {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
     {_id: '2', title: 'Refresh', CMD: 'NodeCall', VAR: [{"Reload":false}]},
     {split: true},
-    {_id: '3', rc_var: 'Layout', CMD: 'PARENT_ToggleView', VAR :[]},
-    {_id: '4', rc_var: 'Change_Theme', CMD: 'PARENT_ToggleTheme', VAR :[]},
+    {_id: '3', rc_var: 'Layout', CMD: 'SubFunction', fName: 'ToggleView', VAR :[]},
+    {_id: '4', rc_var: 'Change_Theme', CMD: 'SubFunction', fName: 'ToggleTheme', VAR :[]},
     {split: true},
     {_id: '5', title: 'Upload', CMD: 'PopUp_Upload', VAR: ['Upload']},
   ],
@@ -25,7 +25,7 @@ const RightClickObjectMenu = {
     {_id: '4', title: 'Move To', class: 'disabled-text', CMD: '', VAR: []},
     {_id: '5', title: 'Create Shortcut', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
-    {_id: '6', title: 'Change Colour', CMD: 'NEWColorPicker', VAR: ["RC"]},
+    {_id: '6', title: 'Change Colour', CMD: 'SubFunction', fName: 'ColorPicker', VAR: ["RC"]},
     {_id: '7', title: 'Rename', CMD: 'renameItem', VAR: []},
     {_id: '8', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Send Folders and their contents to the Bin, where they can be reclaimed for 30 days.'}]},
     {split: true},
@@ -40,7 +40,7 @@ const RightClickObjectMenu = {
     {_id: '5', title: 'Move To', class: 'disabled-text', CMD: '', VAR: []},
     {_id: '6', title: 'Create Shortcut', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
-    {_id: '7', title: 'Change Colour', CMD: 'NEWColorPicker', VAR: ["RC"]},
+    {_id: '7', title: 'Change Colour', CMD: 'SubFunction', fName: 'ColorPicker', VAR: ["RC"]},
     {_id: '8', title: 'Rename', CMD: 'renameItem', VAR: []},
     {_id: '9', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Send Files to the Bin, where they can be reclaimed for 30 days.'}]},
     {split: true},
@@ -51,134 +51,130 @@ const RightClickObjectMenu = {
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
     {_id: '2', title: 'View Details', CMD: 'FetchItemInformation', VAR: ["RCElement"]},
     {split: true},
-    {_id: '3', title: 'Go to', CMD: 'PARENT_Shortcut', VAR: ["RCElement"]},
+    {_id: '3', title: 'Go to', CMD: 'SubFunction', fName: 'Shortcut', VAR: ["RCElement"]},
   ],
 
   "Preview_Image": [
-    {_id: '1', title: 'Open in New Tab', CMD: 'PARENT_ExternalTab', CUS_VAR: "NODEID", VAR: []},
+    {_id: '1', title: 'Open in New Tab', CMD: 'SubFunction', fName: 'ExternalTab', CUS_VAR: "NODEID", VAR: []},
     {_id: '2', title: 'Open in Mini Preview', class: 'disabled-text', CMD: 'miniPreview', VAR: []},
     {split: true},
-    {_id: '3', title: 'Close', CMD: 'PROTO_ToggleBase_', VAR: []},
+    {_id: '3', title: 'Close', CMD: 'SubFunction', fName: 'ToggleBase_', VAR: []},
   ]
 }
 
 // ========================================
 
-document.addEventListener("contextmenu", function(e) {
-  if (e.target.getAttribute('noRC') != null) { return; }
-  
-  e.stopPropagation();
-  e.preventDefault();
-  RCElement = '';
-
-  if (e.target.hasAttribute('rcPar') || e.target.parentNode.hasAttribute('rcPar')) { RCElement = e.path[ e.target.getAttribute('rcPar') || e.target.parentNode.getAttribute('rcPar') ] }
-  if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { RCElement = e.target.parentNode; }
-  if (e.target.hasAttribute('rc') && e.target.getAttribute('rc').match(/Node_Folder|Node_File/)) { RCElement = e.target; };
-
-  SelectItem(RCElement, "FORCE");
-
-  if (e.target.hasAttribute("rc") || RCElement) {    
-    if (!RCElement) { RCElement = e.target }
-
-    let menuName = RCElement.getAttribute("rc");  
-    new RightClickContainer(RightClickObjectMenu[menuName], e, RCElement);
-  }
-})
-
-
 class RightClickContainer {
-  constructor(menu, event, element) {
-    [this.menu, this.event, this.target] = [menu, event, element];
+  constructor() {
+    [this.menu, this.event, this.RCElement] = [undefined, undefined, undefined];
+    [this.menuHeight, this.posY, this.posX] = [0, 0, 0];
     this.container = document.querySelector('.RightClickContainer');
-    this._Initialise();
+    this._ContextListener();
   }
 
-  _Initialise() {
+  _ContextListener() {
+    document.addEventListener("contextmenu", (e) => {
+      // Return if the browser context menu should be shown.
+      if (e.target.getAttribute('noRC') != null || e.target.tagName == 'INPUT') { return; }
+    
+      e.stopPropagation();
+      e.preventDefault();
+    
+      // Sets the Right-click element to the correct target based on attributes
+      this.RCElement = FindTarget();
+    
+      if (this.RCElement && RightClickObjectMenu[this.RCElement.getAttribute('rc')]) {
+        SelectItem(this.RCElement, 'Force');
+        this._Initialise(RightClickObjectMenu[this.RCElement.getAttribute('rc')], e);
+      }
+    
+      
+      function FindTarget() {
+        if (e.target.hasAttribute('rcPar') || e.target.parentNode.hasAttribute('rcPar')) { return e.path[ e.target.getAttribute('rcPar') || e.target.parentNode.getAttribute('rcPar') ] }
+        else if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { return e.target.parentNode; }
+        else if (e.target.hasAttribute('rc')) { return e.target; }
+        else { return undefined }
+      }
+    })
+  }
+
+  _Initialise(menu, event) {
+    [this.menu, this.event] = [menu, event];
+    [this.posY, this.posX] = [event.pageY, event.pageX];
+    
     this.RenderMenu_();
     this.PositionMenu_();
     this.SetListeners_();
   }
+
+
   RenderMenu_() {
-    let elements = ``;
-    for (let item of this.menu) {
-      let menuText = item.rc_var ? RC_Var[item.rc_var](this.event) : item.title;
-      elements += item.split == true ? `<divide></divide>` : `<button class='${item.class || ''}'  RC_ID='${item._id+"'>"+menuText}</button>`;
-    }
-    this.container.innerHTML = elements;
+    this.container.innerHTML = this.menu.reduce((pre,item) => pre + (item.split === true
+      ? `<divide></divide>`
+      : `<button class='${item.class || ''}' RC_ID='${item._id}'>${item.rc_var ? RC_Var(item.rc_var, this.event) : item.title}</button>`
+    ), '');
     this.container.style.display = 'table';
+    this.menuHeight = this.container.offsetHeight;
   }
   PositionMenu_() {
-    let menuHeight = this.container.offsetHeight;
-    let [targetPosY, targetPosX] = [this.event.pageY, this.event.pageX]
-
     this.container.style.cssText = `
-      top: ${(document.body.offsetHeight < (targetPosY + menuHeight) ? targetPosY - menuHeight : targetPosY) - 5}px;
-      left: ${(document.body.offsetWidth < (targetPosX + 185) ? targetPosX - 185 : targetPosX - 5)}px;`;
+      top: ${(document.body.offsetHeight < (this.posY + this.menuHeight) ? (this.posY - (this.menuHeight+this.posY+30 - document.body.offsetHeight)) : this.posY) - 5}px;
+      left: ${(document.body.offsetWidth < (this.posX + 185) ? this.posX - 185 : this.posX - 5)}px;`;
 
-    FadeInOut(this.container, 300)
+    N_.FadeInOut(this.container, 300, 'table')
   }
   SetListeners_() {
     this.container.querySelectorAll('button:not(divide)').forEach((option) => {
       option.addEventListener('click', (e) => {
         let RC_ID = e.currentTarget.getAttribute('RC_ID');
         let func = this.menu.find(e => e._id == RC_ID);
-        let variableOne = func.CUS_VAR ? CUSTOM_Var(func.CUS_VAR, this.target) : func.VAR[0] || null;
-        if (func.CUS_VAR) {}
-        window[func.CMD](variableOne, func.VAR?.[1], func.VAR?.[2], func.VAR?.[3], func.VAR?.[4]) // ?. after the object name checks if it exists first.
-        if (NodeSelected.size == 1) { SelectItem(RCElement); }
+        let variableOne = func.CUS_VAR ? CUSTOM_Var(func.CUS_VAR, this.event.target) : func.VAR[0] || null;
+        if (func.CMD == 'SubFunction') {
+          SubFunction(func.fName, {[func.CUS_VAR || variableOne]: variableOne, [func.VAR?.[1]]:func.VAR?.[1], [func.VAR?.[2]]:func.VAR?.[2], [func.VAR?.[3]]:func.VAR?.[3], [func.VAR?.[4]]:func.VAR?.[4]})
+        } else {
+          window[func.CMD](variableOne, func.VAR?.[1], func.VAR?.[2], func.VAR?.[3], func.VAR?.[4]) // ?. after the object name checks if it exists first.
+          // Re-selects an item after an event is called ie: ColourPicker unselects the item and the user cannot see which item they are setting the colour for.
+        }
+        if (NodeSelected.size == 1) { SelectItem(this.RCElement); }
       })
     })
   }
 }
 
+const RCC = new RightClickContainer();
 
-function FadeInOut(elem, ms=300) {  // Called from PositionMenu_ in RightClickContainer.
-  elem.style.display = 'table';
-  elem.style.transition = `opacity ${ms}ms`;
-  elem.style.opacity = '1';
+// ========================================
 
-  setTimeout(() => {document.addEventListener('click', HideElement)}, 20)
+const CUSTOM_Var = (variableName, target) => {
+  switch(variableName) {
+    case ('NODEID'): { return target.getAttribute('node-id') }
+  }
+}
 
-  function HideElement() {
-    elem.style.opacity = '0';
-    elem.innerHTML = '';
-    elem.style.display = 'none';
-    document.removeEventListener('click', HideElement);
+const RC_Var = (variableName, e) => {
+  switch(variableName) {
+    case ('Collapse'): { return (N_.PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+    case ('Layout'): { return UserSettings.local.layout === 0 ? "List View" : "Block View"; }
+    case ('Change_Theme'): { return UserSettings.local.theme === 0 ? "Light Theme" : "Dark Theme"; }
   }
 }
 
 // ========================================
 
-CUSTOM_Var = (variableName, target) => {
-  if (variableName == 'NODEID') {
-    return target.getAttribute('node-id');
+const SubFunction = (funcName, params) => {
+  switch(funcName) {
+    case ('ToggleTheme'): {return SettingsController.ToggleTheme() }
+    case ('ToggleView'): {return SettingsController.ToggleView() }
+    case ('ExternalTab'): {return N_.ExternalTab(params['NODEID']) }
+    case ('Shortcut'): {return Navigate.Shortcut(params['RCElement']) }
+
+    case ('ColorPicker'): {return new CreateColorPicker(params['RC'], params['callback']) }
+
+    case ('ToggleBase_'): {return Popup.prototype.ToggleBase_() }
   }
 }
 
-RC_Var = async() => {
-  function Collapse(e) { return (N_.PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
-  function Layout(e) { return UserSettings.local.layout == 0 ? "List View" : "Block View"; }
-  function Change_Theme(e) { return UserSettings.local.theme == 0 ? "Light Theme" : "Dark Theme"; }
-
-  RC_Var.Collapse = Collapse;
-  RC_Var.Layout = Layout;
-  RC_Var.Change_Theme = Change_Theme;
-}
-
-// ========================================
-
-function PROTO_ToggleBase_() { Popup.prototype.ToggleBase_(); }
-
-function NEWColorPicker(caller, callback) { new CreateColorPicker(caller, callback) }
 function NEWPopup(type, caller, action, data) {
   if (type == 'NewFolder') { new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create', color: '', RCE: '', secondary: true}); }
-  else { new Popup(type, RCElement, action, data); }
+  else { new Popup(type, RCC.RCElement, action, data); }
 }
-function PARENT_ToggleTheme() { SettingsController.ToggleTheme() }
-function PARENT_ToggleView() { SettingsController.ToggleView() }
-function PARENT_ExternalTab(nodeID) { N_.ExternalTab(nodeID); }
-function PARENT_Shortcut(rc_elem) { Navigate.Shortcut(rc_elem) }
-
-
-
-RC_Var();

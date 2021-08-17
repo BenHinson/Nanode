@@ -380,7 +380,6 @@ recents.recentFiles {
   }
 
 
-  
   .searchDropdown {
     display: none;
     position: absolute;
@@ -428,10 +427,10 @@ recents.recentFiles {
 
     &.display {
       position: relative;
-      height: 120px;
+      height: inherit;
       width: 100%;
       margin-bottom: 15px;
-      padding: 5px 10px;
+      padding: 0.5em 1em;
       z-index: 2;
     }
 
@@ -444,13 +443,9 @@ recents.recentFiles {
         flex-direction: column;
         width: 25%;
         p {
-          width: fit-content;
           margin-bottom: 5px;
-          font-size: 15px;
           letter-spacing: 1.2px;
           font-variant: all-petite-caps;
-          color: var(--text-strong);
-          border-bottom: 1px solid var(--selected);
           user-select: none;
         }
         span {
@@ -721,6 +716,7 @@ recents.recentFiles {
         font-weight: 400;
         background: var(--rich-blue);
         color: var(--text-white);
+        &[action=Choose] {cursor: initial;}
       }
       span {
         width: 100px;
@@ -790,7 +786,7 @@ recents.recentFiles {
   position: fixed;
   width: 180px;
   padding: 6px 3px;
-  border-radius: 4px;
+  border-radius: 5px;
   z-index: 999;
   user-select: none;
   box-shadow: 1px 2px 3px 0px var(--theme);
@@ -798,15 +794,20 @@ recents.recentFiles {
   color: var(--text-dull);
 
   > button {
-    height: 32px;
+    height: 30px;
     width: 100%;
     font-size: 14px;
     text-align: left;
 
+    &.disabled-text { background: none; }
+
     &:hover {
-      box-shadow: 0 0 0 1px var(--rich-blue);
-      background: var(--rich-blue-faded);
+      // box-shadow: 0 0 0 1px var(--rich-blue);
+      box-shadow: 0 0 0 1px var(--selected);
+      // background: var(--rich-blue-faded);
+      background: var(--feature);
       color: var(--text-strong);
+      &.red-text { color: var(--text-white) !important; }
     }
   }
 
@@ -864,7 +865,7 @@ recents.recentFiles {
       cursor: pointer;
       &:hover {
         border: 2px solid;
-        border-radius: 4px;
+        border-radius: 8px;
       }
       &.selected {
         border: 3px solid;
@@ -930,6 +931,7 @@ recents.recentFiles {
 .ExpandSpan {
   font-size: 15px;
   background: var(--feature);
+  border-radius: 5px;
   &:hover { opacity: 0.7; }
 
   &.VT_Block {
@@ -1125,7 +1127,7 @@ recents.recentFiles {
 ::-webkit-scrollbar { height: 5px; width: 7px; } // width: 5px
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  border-radius: 4px; background: var(--frame); border: 1px solid var(--feature);
+  border-radius: 5px; background: var(--frame); border: 1px solid var(--feature);
   transition: all 200ms ease-in-out;
   &:hover { background: var(--feature);} // background: var(--selected);
 } // background: map-get($colors, PL_6);.dark-theme & {background: var(--highlight);}

@@ -61,9 +61,9 @@ Navigate = () => {
 
   // Events
   Navigate.Shortcut = async(parentID, nodeID) => {
-    if (typeof RCElement !== 'undefined' && parentID == "RCElement") {
-      parentID = RCElement.getAttribute('parent-node');
-      nodeID = RCElement.getAttribute('node-id');
+    if (typeof RCC.RCElement !== 'undefined' && parentID == "RCElement") {
+      parentID = RCC.RCElement.getAttribute('parent-node');
+      nodeID = RCC.RCElement.getAttribute('node-id');
     }
     if (parentID !== NodeID) await NodeCall({"Folder": parentID});
     if (nodeID) HighlightNode(nodeID);
@@ -111,7 +111,9 @@ Navigate = () => {
   
   RenderDirPath = () => {
     navElem.directoryLocation.innerHTML = (
-      navConfig.Directory_Route.map(e => `<button class='dirBtn' node-id='${e.Node}' title='${e.Text}'>${e.Text}</button>`).toString().replaceAll(',', '<i></i>')
+      navConfig.Directory_Route.map(e =>
+        `<button class='dirBtn' node-id='${e.Node}' title='${e.Text}'>${e.Text == 'homepage' ? 'Home' : N_.CapFirstLetter(e.Text)}</button>`
+      ).toString().replaceAll(',', '<i></i>')
       // + (NodeID == 'SEARCH' ? `<i></i> <button class='dirBtn' node-id='${NodeID}' title='${NodeName}'>${NodeName}` : '') // Add if going for ONLY navConfig.Tree_Steps++; method.
     )
 

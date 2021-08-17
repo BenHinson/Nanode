@@ -1,12 +1,15 @@
 
 function ItemClickListener(View) {
-  let Items = (View == 0 ? fileContainer.querySelectorAll('div.Item[node-id]:not([home-span]):not([Sub-Span]), .baseFolders > div') : fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div'));
+  let Items = (View == 0
+    ? fileContainer.querySelectorAll('div.Item[node-id]:not([home-span]):not([Sub-Span]), .baseFolders > div') // Block View
+    : fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div') // List View
+  );
 
   Items.forEach(item => {
     item.addEventListener('click', function(selected) {
       if (selected.currentTarget.hasAttribute('focus')) { return; }
 
-      if (keyMap["Shift"] == true || keyMap["Control"] == true) { SelectItem(selected.currentTarget); return; }
+      if (keyMap["Shift"] == true || keyMap["Control"] == true) { return SelectItem(selected.currentTarget); }
 
       if (!selected.currentTarget.classList.contains('noOpen')) {
         ItemActions(selected.currentTarget);
@@ -43,7 +46,7 @@ function SelectItem(item, force) {
 }
 
 function ItemActions(selected) {
-  if (!selected && RCElement) { selected = RCElement }
+  if (!selected && RCC.RCElement) { selected = RCC.RCElement }
 
   let clicked = selected.getAttribute("node-id");
   let type = selected.getAttribute("type");
@@ -57,7 +60,7 @@ function ItemActions(selected) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function collapseSpan(span, expand=false) {
-  span = span ? (UserSettings.local.layout == 0 ? span.parentNode : span.closest('table')) : RCElement;
+  span = span ? (UserSettings.local.layout == 0 ? span.parentNode : span.closest('table')) : RCC.RCElement;
   if (UserSettings.local.layout == 0) {
     expand = span.hasAttribute('collapsed') ? true : false;
     expand == true ? span.removeAttribute('collapsed') : span.setAttribute('collapsed', true)
@@ -87,7 +90,7 @@ function collapseSpan(span, expand=false) {
 
 function createLocation(RCE) {
   return  NodeName == "homepage" 
-    ? `value= '${RCE == 'RCE' ? N_.PareAttr(RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_.PareAttr(RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
+    ? `value= '${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
     : `value='${NodeID}'><p>Current</p>`;
   function spanList() {
     let HTML_Spans = "";
@@ -97,7 +100,7 @@ function createLocation(RCE) {
 }
 
 function renameItem(e) {
-  let focusedElement = RCElement;
+  let focusedElement = RCC.RCElement;
   
   let targetInput = $(focusedElement).find('input')[0] || $(focusedElement).find('textarea')[0];
   focusedElement.setAttribute('focus', "true")

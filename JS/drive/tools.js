@@ -101,6 +101,20 @@ const N_ = () => {
     nt_btn.target = '_blank';
     nt_btn.click();
   }
+  N_.FadeInOut = (elem, ms=300, display='block') => {  // Called from PositionMenu_ in RightClickContainer.
+  elem.style.display = display;
+  elem.style.transition = `opacity ${ms}ms`;
+  elem.style.opacity = '1';
+
+  setTimeout(() => {document.addEventListener('click', HideElement)}, 20)
+
+  function HideElement() {
+    elem.style.opacity = '0';
+    elem.innerHTML = '';
+    elem.style.display = 'none';
+    document.removeEventListener('click', HideElement);
+  }
+}
   
 
   // Status / Waiting

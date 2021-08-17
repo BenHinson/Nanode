@@ -12,24 +12,6 @@ const UC_Queue_Table = document.querySelector('.UC_Queue table tbody');
 
 // ========================
 
-
-// const RenderNodes = () => {
-//   const binConfig = {}
-//   const binElem = {}
-
-  // SetEvents_ = () => { ReminderPopup(); }
-  
-  // ====================================
-
-  // Events
-
-  // ====================================
-
-  // this.SetListeners_(), this.SetEvents_();
-  // this.DataCall(), this.ItemCall();
-// }
-
-
 const renderContent = (renderNodes) => {
   const renderConfig = {
     layout: UserSettings.local.layout, // 0=block, 1=list
@@ -91,20 +73,26 @@ const renderContent = (renderNodes) => {
     `;
   }
   renderContent.renderRecents = async(content=``) => {
-    if (UserSettings.local.recents) {
+    if (UserSettings.local.recents === 1) {
       await this.RecentNodesCall().then(res => {
-        for (const [object, item] of Object.entries(res.recent)) {
-          item.mime = item.type.mime;
-          let nodeData = Nodes[object] = new Node(item, object, item.parent);
-  
-          content += `
-            <div parent-node='${item.parent}' type='${nodeData.data.type.general}' node-id='${object}' rc='Recent_Node' rcosp='P,IMG'>
-              <img loading='lazy' height='48' width='48' src='${N_.FileIcon(nodeData.data, 48, 48, 'main')}'></img>
-              <p>${N_.CapFirstLetter(item.name)}</p>
-            </div>`;
-        };
+        if (res.recent == 'Empty Query') {
+          return N_.InfoPopup({'parent':N_.Find('.main_Page .PageData'), 'type': 'warning', 'text':"No recent files or folders found", 'displayDelay':100, 'displayTime':5000});
+        } else {
+          for (const [object, item] of Object.entries(res.recent)) {
+            item.mime = item.type.mime;
+            let nodeData = Nodes[object] = new Node(item, object, item.parent);
+    
+            content += `
+              <div parent-node='${item.parent}' type='${nodeData.data.type.general}' node-id='${object}' rc='Recent_Node' rcosp='P,IMG'>
+                <img loading='lazy' height='48' width='48' src='${N_.FileIcon(nodeData.data, 48, 48, 'main')}'></img>
+                <p>${N_.CapFirstLetter(item.name)}</p>
+              </div>`;
+          };
+        }
       }).catch(err => { N_.Error('Failed to Fetch Recents: '+err) })
     }
+
+    if (!fileContainer.querySelector('recents')) { return console.log('Recents Called without recents element. IE: Not on homepage?'); }
     fileContainer.querySelector('recents').innerHTML = 
       (content += `<button class='toggleRecent trans300' onclick='SettingsController.ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>`);
   
@@ -228,11 +216,6 @@ const renderContent = (renderNodes) => {
   this.Content();
 }
 
-
-
-
-
-
 // @ == MISC
 function HighlightNode(nodeID) {
   let targetNode = N_.Find(`[dir-nodes] > [node-id='${nodeID}']`);
@@ -246,7 +229,7 @@ async function FetchItemInformation (selected, node=false) {
   N_.ClientStatus(2, "True", 500); N_.ClientStatus(4, "Wait", 400);
   N_.ClientStatus(5, "Wait", 300); N_.ClientStatus(7, "Wait", 300);
 
-  if (!node && typeof RCElement !== 'undefined' && selected == "RCElement") {selected = RCElement}
+  if (!node && typeof RCC.RCElement !== 'undefined' && selected == "RCElement") {selected = RCC.RCElement}
   const SelectedID = node ? selected : selected.getAttribute('node-id');
 
   const ItemInfo = N_.makeReplaceElem(PageInfo, '.ItemInfo', '<div class="ItemInfo"></div>');
@@ -342,6 +325,7 @@ ItemInfoListeners = (ItemRequest) => {
 }
 
 
+
 class SecurityInputContainer {
   constructor(res) {
     this.response = res;
@@ -410,7 +394,7 @@ class SecurityInputContainer {
 class CreateColorPicker {
   constructor(caller, callback) {
     this.callback = callback;
-    this.element = (caller == 'RC' && typeof RCElement !== 'undefined') ? RCElement : caller;
+    this.element = (caller == 'RC' && typeof RCC.RCElement !== 'undefined') ? RCC.RCElement : caller;
     // this.originColor = this.element?.hasAttribute('style')
     // ? N_.RGBtoHex(getComputedStyle(this.element)[ UserSettings.local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
     // : '';
@@ -526,14 +510,14 @@ class Popup {
         content = `<p>${this.DATA.text}</p>`; break;
       }
       case('NewSpan') : {
-        content = `<input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='off'></input>`; break;
+        content = `<input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='new-password'></input>`; break;
       }
       case('NewFolder') : {
         content = `
           <div class='Popup_Dropdown' style='top: 12px; right: 15px;'>
             <div class='Popup_Location' title='Location' ${createLocation(this.DATA.RCE)}</div>
           </div>
-          <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='off'></input>
+          <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' autocomplete='new-password'></input>
         `;
         this.dropdown = true;
         break;
@@ -547,7 +531,7 @@ class Popup {
             <div>Me</div> <div>Share</div>
           </div>
 
-          <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' value='${this.DATA.name}' autocomplete='off'></input>
+          <input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='Name...' value='${this.DATA.name}' autocomplete='new-password'></input>
         `;
         this.switch = true;
         break;

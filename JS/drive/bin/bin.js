@@ -122,7 +122,7 @@ const BinController = () => {
   BinEmpty = () => {
     return `
       <div class='section_Empty grid-items-center transform-center'>
-        <img src='/assets/nanode/logo/logo.svg' alt='This Bin Section is Empty.'>
+        <img src='/assets/nanode/empty_bin.svg' alt='This Bin Section is Empty.'>
         <div class='flex-column-cent'>
           <p>Bin section empty</p>
           <p class='italic-small'>Deleted items will show here<br>for 30 days</p>
@@ -172,7 +172,7 @@ const BinController = () => {
     
     if (req && req.size.bin) {
       let totalSize = Object.values(req.size.bin).reduce((a, b) => a + b);
-      binElem.binSize.innerText = `Bin Size: ${N_.ConvertSize(totalSize)}`
+      binElem.binSize.innerHTML = `Total: <em>${N_.ConvertSize(totalSize)}</em>`
     
       let sizeMap = new Map(Object.entries(req.size.bin))
       sizeMap = new Map([...sizeMap].sort((a,b) => a[1] === b[1] ? b[0] - a[0] : a[1] - b[1]))  // Sorts the object values from lowest to highest

@@ -366,7 +366,6 @@ header {
       background: white;
       * { color: var(--background); }
       p { font-weight: 400; opacity: 1; }
-      button { font-weight: 500; background: var(--background); color: var(--text); }
       divide { color: var(--background); border-top: 1px solid; }
     }
 
@@ -395,10 +394,12 @@ header {
     border-radius: 20px;
     background: var(--text_dull);
     >div {
+      gap: 1em;
       width: calc(100% - 450px);
       padding: 50px 10px;
-      * { color: #0e0f11; }
-      p { font-weight: 400; }
+      h2 { color: #0e0f11; margin: 0; }
+      p { color: #0e0f11; font-weight: 500; line-height: 1.6em;}
+      button { place-self: normal; margin: 0; }
     }
   }
 
@@ -440,51 +441,50 @@ header {
 .S_Development {
   margin: 0 0 160px;
 
-  >.nanode_development > .card {
-    height: 260px;
+  >.nanode_development {
+    place-items: initial;
+    > .card {
+      gap: 5px;
+      > h4 {
+        font-size: 22px;
+        font-family: 'gr-bold';
+      }
+      & p { line-height: 1.8em; }
+      & a {
+        position: relative;
+        width: fit-content;
+        font-size: 15px;
+        font-family: 'gr-bold';
 
-    > h4 {
-      height: 30px;
-      width: fit-content;
-      font-size: 22px;
-      font-weight: 500;
-      border-bottom: 2px solid var(--color_blue);
-    }
-    & p { line-height: 28px; }
-    & h5 { height: 0px; }
-    & a {
-      position: relative;
-      font-size: 14px;
-      font-weight: 600;
+        &:hover:before {
+          visibility: visible;
+          width: 100%;
+        }
+        
+        &:before {
+          content: "";
+          position: absolute;
+          height: 2px;
+          width: 0;
+          left: 0;
+          bottom: 0;
+          visibility: hidden;
+          transition: all 0.3s ease-in-out;
+          background-color: #f5f6f7;
+        }
 
-      &:hover:before {
-        visibility: visible;
-        width: 100%;
-      }
-      
-      &:before {
-        content: "";
-        position: absolute;
-        height: 2px;
-        width: 0;
-        left: 0;
-        bottom: 0;
-        visibility: hidden;
-        transition: all 0.3s ease-in-out;
-        background-color: #f5f6f7;
-      }
-
-      &.novaPowered {
-        color: #60cb73;
-        &:before { background-color: #60cb73; }
-      }
-      &.tensorflowPowered {
-        color: #ff9101;
-        &:before { background-color: #ff9101; }
-      }
-      &.nordPowered {
-        color: #be13d4;
-        &:before { background-color: #be13d4; }
+        &.novaPowered {
+          color: #60cb73;
+          &:before { background-color: #60cb73; }
+        }
+        &.tensorflowPowered {
+          color: #ff9101;
+          &:before { background-color: #ff9101; }
+        }
+        &.nordPowered {
+          color: #be13d4;
+          &:before { background-color: #be13d4; }
+        }
       }
     }
   }
@@ -561,6 +561,7 @@ footer {
 
   .card {
     display: grid;
+    align-content: space-between;
     max-width: 400px;
     width: 30%;
     border-radius: 8px;
@@ -591,7 +592,7 @@ footer {
 
 .mainTitle {
   font-family: gr-bold;
-  font-size: 70px;
+  font-size: 66px;
   white-space: nowrap;
   > .titleHighlight {
     font-size: inherit;
@@ -600,6 +601,9 @@ footer {
     background: var(--text);
     padding: 0 1rem;
   }
+  // text-shadow: -1px -1px 0 #83898f, 1px -1px 0 #83898f, -1px 1px 0 #83898f, 1px 1px 0 #83898f;
+  // color: #0e0f11;
+  // -webkit-font-smoothing: antialiased;
 }
 
 h1 {
@@ -652,6 +656,12 @@ button {
   transition: filter 400ms;
 
   &:hover { opacity: 0.6; }
+
+  &.btn_black {
+    color: var(--text) !important;
+    background: var(--background) !important;
+    font-weight: 500;
+  }
 }
 
 .gradient_text {
@@ -824,15 +834,10 @@ t:after { padding-right: 12px; content: '\2714'; color: #ff6301; }
     margin: 100px 0;
     > .nanode_development {
       gap: 20px;
-      padding: 20px;
       .card {
-        height: auto;
         width: 100%;
-        gap: 5px;
-        background: var(--comp_dark);
         h4 { font-size: 20px; border: none; }
         p { font-size: 15px; }
-        h5 { height: 15px; }
       }
     }
   }
