@@ -12,9 +12,11 @@
     <meta name="image" content="https://nanode.one/assets/nanode/logo/purple.svg">
     <link rel="apple-touch-icon" type="image/x-icon" href="/assets/nanode/logo/purple.svg">
     
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" defer>
     <link rel="stylesheet" type="text/css" href="/css/Dev/dev.css">
+    
   </head>
-  <body class="dark-theme" style="background: #121214;">
+  <body data-theme='light'>
 
     <div class="DevSelector">
       <!-- <a href="//nanode.one" class="NanodeLogo"><img src="https://nanode.one/assets/nanode/nanode.svg"></a> -->
@@ -23,7 +25,7 @@
       <div class="DevList">
 
         <div class="divide"></div>
-        <p>GENERAL</p>
+        <p>General</p>
         <li><a class="DLSelected" id='intro'>Intro</a></li>
         <li><a id='changelog'>Change Log</a></li>
         <li><a id='incoming'>Incoming</a></li>
@@ -34,17 +36,19 @@
         <li><a id='read'>Read</a></li>
         <li><a id='write'>Write</a></li> -->
 
-        <p>SUB</p>
+        <p>Sub</p>
         <li><a id='nova'>Nova</a></li>
         <li><a id='nord'>Nord</a></li>
 
-        <p>FUTURE</p>
+        <p>Future</p>
         <li><a id='void'>Void</a></li>
 
         <!-- <p>OPTIONS</p> -->
         <!-- <li><a id='settings'>Settings</a></li> -->
 
       </div>
+
+      <div class="NanodeInfo"><p>Alpha 3.7 © 2019 - 2021 Nanode.</p></div>
     </div>
 
     <div class="DevContent"></div>
@@ -53,35 +57,52 @@
 </html>
 
 <script>
-  const content = document.querySelector('.DevContent');
-  const pageList = document.querySelectorAll('.DevList li');
+  new class DevController {
+    constructor() {
+      this.pageLoaded = [];
+      this.content = document.querySelector('.DevContent');
+      this.pages = /intro|changelog|incoming|accounts|read|write|nova|nord/;
+      
+      this.LoadEvents_();
+      this.SetListeners_(document.querySelectorAll('.DevList li'));
+    }
+    
+    LoadEvents_() { 
+      this.url = window.location.href.split('https://dev.nanode.one/#')[1];
+      this.currentPage = (this.url && this.url.match(this.page)) ? this.url : 'intro';
+      this.selectNavButton( document.querySelector(`#${this.currentPage}`) );
 
-  let url = window.location.href.split('https://dev.nanode.one/#')[1];
-  if (url && url.match(/intro|changelog|incoming|accounts|read|write|nova|nord/)) {
-    setSideSelected( document.getElementById(url) )
-    loadPage(`/views/development/${url}.html`);
-  } else {
-    loadPage('/views/development/intro.html');
-  }
+      if (this.pageLoaded.includes(this.currentPage)) {
+        this.loadPage(this.currentPage)
+      } else {
+        this.content.innerHTML = (Math.random()>=0.5) 
+          ? `<div class="Loading_Dual_Ring"></div>`
+          : `<div class="Loading_Bars"><div></div><div></div><div></div></div>`;
+        setTimeout(() => this.loadPage(this.currentPage), 500)
+      }
+    }
 
-  pageList.forEach((page) => {
-    page.addEventListener('click', (e) => { SwitchPage(e.target.id, e.target); })
-  })
+    SetListeners_(pageList) {
+      pageList.forEach(page => {
+        page.addEventListener('click', (e) => {
+          this.currentPage = e.target.id;
+          window.history.replaceState(null, this.currentPage, `https://dev.nanode.one/#${this.currentPage}`);
+          this.LoadEvents_();
+        })
+      });
 
-  function SwitchPage(targetFile, sideLink) {
-    setSideSelected(sideLink);
-    content.innerHTML = `<svg class='Loading_SVG medium' title='Loading page' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45'></circle></svg>`
-    loadPage(`/views/development/${targetFile}.html`);
-  }
+    }
 
-  function setSideSelected(sideLink) {
-    document.getElementsByClassName('DLSelected')[0].classList.remove('DLSelected')
-    sideLink.classList.add('DLSelected');
-  }
+    selectNavButton(btn) {
+      document.getElementsByClassName('DLSelected')[0].classList.remove('DLSelected')
+      btn.classList.add('DLSelected');
+    }
 
-  function loadPage(page) {
-    fetch(page)
-      .then(data => { return data.text() })
-      .then(data => { content.innerHTML = data; })
+    loadPage(page) {
+      fetch(`https://dev.nanode.one/views/development/${page}.html`)
+        .then(data => { return data.text() })
+        .then(data => { this.content.innerHTML = data; })
+        .then(this.pageLoaded.push(page))
+    }
   }
 </script>

@@ -54,7 +54,7 @@
     </ul>
 
     <h4>Settings</h4>
-    <span>Cleaned out unused settings and updated the API to fetch them. <code>await API_Fetch({url: '/account/settings'})</code> Will request your settings from the server. View the <code>UserSettings</code> variable, in the console, to see your account and local settings.</span>
+    <span>Cleaned out unused settings and updated the API to fetch them. <code>await App.API_Fetch({url: '/account/settings'})</code> Will request your settings from the server. View the <code>Settings.User</code> or <code>Settings.Local</code> variables, in the console, to see your account and local settings.</span>
 
     <h4>Multiples</h4>
     <span>Updated the server API for 'edits' (which handles file moves, and Node data ie: name) to be able to process multiple items at once. Hold down <code>Shift</code> and click on files to select multiple, then drag and drop them to where you want!</span>
@@ -109,7 +109,7 @@
 
     <h4>Nova Search</h4>
     <span>The long awaited search functionality has been implemented, well... some of it. The start of it. Really just the bare bones. But its happening!</span>
-    <span>Nova Search will allow for returning Nodes (folders and files) that meet certain parameters. Learn More at <a onclick="SwitchPage('nova', document.querySelector('#nova'))">Nova</a></span>
+    <span>Nova Search will allow for returning Nodes (folders and files) that meet certain parameters. Learn More at <a href='/#nova'>Nova</a></span>
 
     <h4>Misc</h4>
     <ul>
@@ -130,7 +130,7 @@
     <h4>New Pages</h4>
     <span>Starting work on a new nanode.one homepage.</span>
     <span>Account Page small Improvements</span>
-    <span>/design page addition. REMOVED(11/06/2021)</span>
+    <sub><code>https://dev.nanode.one/design</code> Removed (11/06/2021)</sub>
 
     <h4>Assets</h4>
     <ul>
@@ -163,11 +163,11 @@
     <ul>
       <li>Creation of a light & dark theme colour-palette.</li>
       <span>
-        <h6>Dark</h6> - https://coolors.co/080a0e-0e0f11-141517-191b1e-282c32-565b61-83898f-cacccf-f5f6f7
-        <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/dark_colour_palette.png" alt="Dark Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/dark_colour_palette.png', '_blank');">
+        <h5>Dark - </h5><a class='small-link'>https://coolors.co/080a0e-191b1e-1e2126-282c32-3d444a-565b61-83898f-cacccf-f5f6f7</a>
+        <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/dark_colour_palette_two.png" alt="Dark Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/dark_colour_palette.png', '_blank');">
       </span>
       <span>
-        <h6>Light</h6> - https://coolors.co/080a0e-191b1e-cacccf-e1e2e4-e8e9eb-eeeff1-f5f5f7-fbfbfd-fefefe
+        <h5>Light - </h5><a class='small-link'>https://coolors.co/080a0e-191b1e-cacccf-e1e2e4-e8e9eb-eeeff1-f5f5f7-fbfbfd-fefefe</a>
         <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/light_colour_palette.png" alt="light Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/light_colour_palette.png', '_blank');">
       </span>
 
@@ -194,7 +194,7 @@
     <span>To move inline with user-account storage, authentication and links, users file-data was migrated from JSON files to a MongoDB document, allowing for faster reads, better RAM usage and the ability to use their inbuild tools for queries and editing.</span>
     <span>This months updates, due to the change to MongoDB reworked ALL API calls, this will help massively for the implementation of new features.</span>
     <span>Altered the code referring to security checks to improve performance and reliability.</span>
-    <span>Along with just changing the location of where user-data is stored, <h3>I am now referring to 'file meta-data' to a 'Node' and its corresponding file as a 'Nano'</h3></span>
+    <span><h6>I am now referring to 'file meta-data' to a 'Node' and its corresponding file as a 'Nano'</h6></span>
 
     <h4>The structure of a users Space</h4>
     <span>The users Space is broken down into different 'sections', main/codex/blocks/bin. Nodes (The relating data to a file) can be moved across sections, but cannot reference a Node in another section. The users Space also stores; Recently accessed files, homepage views and a copy of the users storage the allocation.</span>
@@ -286,7 +286,7 @@
 
       <h4>Panels</h4>
       <span>Further work on the left-bar panels, including a standardized design and layout, with animated hot-switching between.</span>
-      <div>Panels: <h6>Settings, Bin and Codex are almost fully complete.</h6></div>
+      <!-- <div>Panels: <h6>Settings, Bin and Codex are almost fully complete.</h6></div> -->
       <ul>
         <li>Settings - Still to be Added: (Bin Count, Timezones, Locked Icons, Last Accessed, Starting Directory, Lock all Links) All others functional.</li>
         <li>Bin - Functional, can view deleted <h6>single</h6> files and either permanantly delete or retrieve them. Still no limit on size or items.</li>
@@ -314,11 +314,11 @@
         <span>You can not download files and folders!</span>
         <span><code>Right-Click > Download</code> to add a file / folder to the download list one at a time or:</span>
         <span><code>With Details On, Left Click to Select an Item, Hold SHIFT, and click on other items to select multiple, then Right-Click > Download</code> This will add all files Selected to the download list.</span>
-        <span>Click download to start the download of the files. <h3>Note: Duplicates of a file are not downloaded.</h3> These files will be downloaded as a Zip. To Un-Zip the file and retreive your items:</span> <code>Find the File Location, Right-Click > Extract Here. This creates folder: 'Download'. Open to view your downloaded items.</code>
+        <span>Click download to start the download of the files. <h6>Note: Duplicates of a file are not downloaded.</h6> These files will be downloaded as a Zip. To Un-Zip the file and retreive your items:</span> <code>Find the File Location, Right-Click > Extract Here. This creates folder: 'Download'. Open to view your downloaded items.</code>
         <span>To read more about how the Download process works, Explore <h5>Development Portal > Calls > Read > Downloads</h5></span>
 
         <h4>Additional Drive Pages - Panels</h4>
-        <span>This update added the addition of differing Pages. <h3>Note: Being a Major Features, these pages are undergoing development at different stages.</h3></span>
+        <span>This update added the addition of differing Pages. <h6>Note: Being a Major Features, these pages are undergoing development at different stages.</h6></span>
         <span>Pages: Contacts, Panels, Codex, Bin and Settings. Have been added, along with the selector to access them. These pages heavily link into the future of Nanode and what our goal is.</span>
         <ul>
           <li><h5>Contacts</h5> - Featuring Groups and Private Chats, Contacts will be a File Sharing and Basic Messaging Page for the communication between users.</li>

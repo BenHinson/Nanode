@@ -1,7 +1,7 @@
 <div class="ContentWrapper">
   <h1>Nova Search</h1>
 
-  <span>Nova is Nanodes front-end facing search engine. Nova offers the ability to search for specific queries as well as combine queries. In Range, Including, Within Folders, Only For.</span>
+  <span>Nova is Nanode's front-end facing search engine. Nova offers the ability to search for specific queries as well as combine queries. In a Range, Including, Within a Directory or excluding.</span>
 
   <img src="/assets/dev/nova/flowchart.svg" alt="Nova Flowchart" style="max-width: 900px; width: 100%;">
 
@@ -12,17 +12,44 @@
     <li><h5>Within</h5> - Search Within All Directories in the section, or within the current directory.</li>
     <li><h5>By</h5> - Search by looking for specific colours or types.</li>
     <li><h5>In Range</h5> - Provides the option to only include items within the range of two dates, and / or two sizes.</li>
-    <li><h5>Only For</h5> - Limits returned items to only Folders, or Files</li>
+    <li><h5>For</h5> - Limits returned items to only Folders, or Files</li>
     <li><h5>Include</h5> - Tells Nova whether to read and match descriptions and previous names of items to the query.</li>
   </ul>
 
-  <img src='/assets/dev/nova/search.png' alt='Image of Search' style='max-width:900px; width:100%;'>
+
+  <h2>Suggested</h2>
+  <p>A blank search query will display 'Suggested' these are previous queries made locally on the browser. Suggested holds the previous 5 search queries. Each query can be clicked on to process that search, or removed via the cross.</p>
+  <img src='/assets/dev/nova/suggested.png' alt='Suggested / Recent Search Queries' style='max-width:900px; width:auto;'>
+  
+
+
+  <h2>For Parameter & Hover Options</h2>
+  <p>Within parameters, the 'For' section will restrict results on the server to only return Folders which match or Files. Both options can be selected together.</p>
+  <p>Hovering / Cycling through search results by using the arrow keys, displays options available to that item.</p>
+
+  <ul>
+    <li><h5>Click</h5> - (Folder - Navigates to and opens the Directory) (File - Navigates to the parent direct and highlights the item)</li>
+    <li><h5><i class='fas fa-external-link-alt'></i></h5> - Open the file in a new tab.</li>
+    <li><h5><i class='fas fa-info'></i></h5> - View item information in the side bar.</li>
+    <li><h5><i class='fas fa-location-arrow'></i></h5> - Visit the directory. - This opens its parent directory and highlights the item.</li>
+  </ul>
+  <img src='/assets/dev/nova/search_filter.png' alt='Restricting Folders vs Restricting Files' style='max-width:900px; width:auto;'>
+
+
+  <h2>Load More</h2>
+  <p>Searches with results greater than 5 will display a 'Load More' button.</p>
+  <img src='/assets/dev/nova/load_more.png' alt='Load More Button' style='max-width:900px; width:auto;'>
+  <p>This will redirect the user to a normal directory displaying the remaining results.</p>
+  <img src='/assets/dev/nova/load_more_directory.png' alt='Directory will search results' style='max-width:900px; width:auto;'>
+
+
+  <!-- <img src='/assets/dev/nova/search.png' alt='Image of Search' style='max-width:900px; width:100%;'>
   
   <h2>Results</h2>
   <span>At current implementation, Nova does not index item data. As a result, a query requires loading the JSON structure of the required section. 'Within: Current' works differently by finding the parent and iterating through each child.</span>
   <span>Once the desired Nodes (items) are loaded, Nova checks each element against the queries. If called via the dropdown, Nova stops at 5 matches and returns. If more items are to be searched. Nova also provides a 'Load More' button.</span>
 
-  <img src="/assets/dev/nova/search_matches.png" alt="" style='max-width:600px; width:100%;'>
+  <img src="/assets/dev/nova/search_matches.png" alt="" style='max-width:600px; width:100%;'> -->
 
 
 </div>

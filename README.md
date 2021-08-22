@@ -10,7 +10,7 @@
 
   <p align="center">
     Nanode is a fully structured online cloud storage service, to access and view your content from anywhere.
-    Create a folder, upload a file, change it's name, set a description, search for the file, share a link to it, retract the link, move the file to another directory, delete the file.
+    <br>Create a folder, upload a file, change it's name, set a description, search for the file, share a link to it, retract the link, move the file to another directory, delete the file.
   </p>
   
   [View the Server End](https://github.com/BenHinson/Nanode-Server)
