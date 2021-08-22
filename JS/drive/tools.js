@@ -1,7 +1,6 @@
 // N_ Custom Tools
 // Function Format => N_.FirstSecond = () => {}
 
-
 const N_ = () => {
   const nConfig = {
     lightColor: {"Off": "None", "True": "White", "False": "Red", "Ok": "#00ff00", "Wait": "Yellow", "User": "Cyan"},
@@ -23,7 +22,7 @@ const N_ = () => {
     if (month.length < 2) month = '0' + month;
     if (day.length < 2)  day = '0' + day;
   
-    return UserSettings.user.date == 0 ? [day, month, year].join('/') : [month, day, year].join('/');
+    return Settings.User.date == 0 ? [day, month, year].join('/') : [month, day, year].join('/');
   }
   N_.TimeFormatter = (time) => {
     // Used Four times in pages
@@ -69,7 +68,7 @@ const N_ = () => {
   N_.PareAttr = (element, attrName) => {
     return element.parentElement.getAttribute(attrName);
   }
-  N_.makeReplaceElem = (parent, target, base) => {
+  N_.MakeReplaceElem = (parent, target, base) => {
     if (!parent.querySelector(target)) { parent.innerHTML += base }
     return parent.querySelector(target);
   }
@@ -102,19 +101,42 @@ const N_ = () => {
     nt_btn.click();
   }
   N_.FadeInOut = (elem, ms=300, display='block') => {  // Called from PositionMenu_ in RightClickContainer.
-  elem.style.display = display;
-  elem.style.transition = `opacity ${ms}ms`;
-  elem.style.opacity = '1';
+    elem.style.display = display;
+    elem.style.transition = `opacity ${ms}ms`;
+    elem.style.opacity = '1';
 
-  setTimeout(() => {document.addEventListener('click', HideElement)}, 20)
+    setTimeout(() => {document.addEventListener('click', HideElement)}, 20)
 
-  function HideElement() {
-    elem.style.opacity = '0';
-    elem.innerHTML = '';
-    elem.style.display = 'none';
-    document.removeEventListener('click', HideElement);
+    function HideElement() {
+      elem.style.opacity = '0';
+      elem.innerHTML = '';
+      elem.style.display = 'none';
+      document.removeEventListener('click', HideElement);
+    }
   }
-}
+  N_.DragElement = (elem) => {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    elem.onmousedown = (e) => {
+      if (e.target !== elem) { return; }
+      e.preventDefault();
+      [pos3, pos4] = [e.clientX, e.clientY];
+
+      document.onmouseup = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      };
+
+      document.onmousemove = (e) => {
+        e.preventDefault();
+        pos1 = (pos3 - e.clientX);
+        pos2 = (pos4 - e.clientY);
+        [pos3, pos4] = [e.clientX, e.clientY];
+        elem.style.top = `${elem.offsetTop - pos2}px`;
+        elem.style.left = `${elem.offsetLeft - pos1}px`;
+      };
+    }
+  }
   
 
   // Status / Waiting

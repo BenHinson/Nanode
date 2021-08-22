@@ -17,6 +17,7 @@ const uploadElem = {
   // Referenced in viewer.js and upload.js
   Upload_Values: document.querySelectorAll('.UC_Bottom p'),
   Progress_Div: document.getElementsByClassName('Upload_Progress')[0],
+  UC_Queue: document.getElementsByClassName('UC_Queue')[0],
   // Referenced only in upload.js
   Upload_Buttons: document.querySelectorAll('.UploadBtns > input'),
   Drop_Area: document.querySelector('.Pages'),
@@ -24,6 +25,8 @@ const uploadElem = {
   UC_Info: document.querySelector('.UC_Info'),
   Upload_Control: document.getElementsByClassName('Upload_Control')[0],
   Queue_Toggle: document.getElementById('queue_toggle'),
+
+  UC_Queue_Table: document.querySelector('.UC_Queue table tbody'),
 }
 
 // ========================================
@@ -152,7 +155,7 @@ Upload_Actions = () => {
 
   Item_Meta = (file, dir='') => {
     return {
-      "section": Section,
+      "section": App.Section,
       "relative_path": file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
       "parent": NodeID == "homepage" ? "_GENERAL_" : NodeID,
       "name": file.name,
@@ -181,7 +184,7 @@ Upload_Actions = () => {
   }
 
   Plan_Check = () => {
-    let accountPlan = UserSettings.user.plan;
+    let accountPlan = Settings.User.plan;
     let accountStorageLeft = accountPlan.max - accountPlan.used;
     if (uploadConfig.Size > accountStorageLeft) {
       Upload_Visuals.Notify('notification', 'limit', `Cannot exceed current plan! (${N_.ConvertSize(uploadConfig.Size - accountStorageLeft)} over)`);
@@ -319,7 +322,7 @@ Upload = () => {
       }
       case 'Complete': {
         uploadConfig.Visual_Items[Data.Meta.id].Status = "Complete";
-        SettingsController.SetStorage(Reply.plan);
+        Settings.SetStorage(Reply.plan);
         this.Iterate();
         break;
       }
@@ -369,7 +372,7 @@ Upload_Visuals = () => {
     uploadElem.Progress_Div.querySelector('p').innerText = time_till_upload < 60 ? (time_till_upload+1).toFixed()+"s" : N_.TextMultiple( (parseInt(time_till_upload / 60)+1).toFixed(), "min") 
 
     if (uploadConfig.Queue_Showing) {
-      let uploaded_item = UC_Queue_Table.querySelectorAll("tr[upload_id='"+id+"']")[0];
+      let uploaded_item = uploadElem.UC_Queue_Table.querySelectorAll("tr[upload_id='"+id+"']")[0];
       uploaded_item.removeAttribute('onclick');
       uploaded_item.children[2].innerHTML = uploadConfig.Visual_Items[id] ? this.Status_Icon(uploadConfig.Visual_Items[id].Status) : this.Status_Icon("Complete");
     }
@@ -377,9 +380,9 @@ Upload_Visuals = () => {
 
   Queue = (action) => {
     if (action == 'toggle') {
-      UC_Queue.classList.toggle('display');
+      uploadElem.UC_Queue.classList.toggle('display');
       if (!uploadConfig.Queue_Showing) {
-        UC_Queue_Table.innerHTML = '';
+        uploadElem.UC_Queue_Table.innerHTML = '';
         uploadElem.Queue_Toggle.classList = 'fas fa-chevron-down';
         uploadConfig.Queue_Showing = true;
       } else {
@@ -388,15 +391,15 @@ Upload_Visuals = () => {
         return;
       }
     } else if (action == 'update') {
-      UC_Queue.classList.add('display');
+      uploadElem.UC_Queue.classList.add('display');
       uploadElem.Queue_Toggle.classList = 'fas fa-chevron-down';
       uploadConfig.Queue_Showing = true;
     }
 
-    UC_Queue_Table.innerHTML = '';
+    uploadElem.UC_Queue_Table.innerHTML = '';
 
     for (const [id, info] of Object.entries(uploadConfig.Visual_Items)) {
-      UC_Queue_Table.innerHTML += `
+      uploadElem.UC_Queue_Table.innerHTML += `
         <tr upload_id='${id}' class='${this.Status_Class(info['Status'])}' onclick='${info['Status'] == 'Waiting' ? 'Upload_Actions.Queue_Remove(this)' : ''}'> <td>${info['Meta'].name}</td> <td>${N_.ConvertSize(info['Meta'].size)}</td> <td>${this.Status_Icon(info['Status'])}</td> </tr>
       `
     } 

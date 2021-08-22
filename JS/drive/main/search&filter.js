@@ -1,11 +1,7 @@
-// *
-// ?
-// !
 /**
  * @param  {} e
  * This is a function that is called by {@link ViewItem}
 */
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
 Search = () => {
   const searchConfig = {
@@ -99,17 +95,17 @@ Search = () => {
 
         if (targetValue.match(/withinAll|withinParent/)) {
           let opposite = targetValue=='withinAll' ? 'withinParent' : 'withinAll';
-          UserSettings.local.search_options[opposite] = !e.target.checked;
+          Settings.Local.search_options[opposite] = !e.target.checked;
         } else if (targetValue.match(/forFolders|forFiles/) && e.target.checked == false) {
           let opposite = targetValue=='forFolders' ? 'forFiles' : 'forFolders';
-          if (UserSettings.local.search_options[opposite] === false) {
+          if (Settings.Local.search_options[opposite] === false) {
             N_.Find(`.searchSelectors input[value=${opposite}]`).checked = true;
-            UserSettings.local.search_options[opposite] = true;
+            Settings.Local.search_options[opposite] = true;
           }
         }
 
-        UserSettings.local.search_options[e.target.getAttribute('value')] = e.target.checked;
-        localStorage.setItem('local-settings', JSON.stringify(UserSettings.local));
+        Settings.Local.search_options[e.target.getAttribute('value')] = e.target.checked;
+        localStorage.setItem('local-settings', JSON.stringify(Settings.Local));
 
         // if (e.target.checked) {
         //   let option = e.target.value;
@@ -123,8 +119,8 @@ Search = () => {
 
   // Load
   SetParams = () => {
-    // console.log(UserSettings.local.search_options);
-    for (const [key, val] of Object.entries(UserSettings.local.search_options)) {
+    // console.log(Settings.Local.search_options);
+    for (const [key, val] of Object.entries(Settings.Local.search_options)) {
       if (val == true) N_.Find(`input[value=${key}]`).checked = true;
     }
   }
@@ -203,7 +199,7 @@ Search = () => {
     if (Object.keys(searchConfig.SearchNodes).length > 5) {
       searchConfig.loadMore = true;
       content += `<button class='searchInfoBtn searchLoadMore notif-btn'>Load More</button>`;
-    }
+    } else { searchConfig.loadMore = false; }
   
     searchElem.Results.innerHTML = // If the content is empty (no items returned, shows no matches button)
       content || `<button class='searchInfoBtn searchNoMatch notif-btn'>No Matches Found</button>`;
@@ -245,7 +241,7 @@ Search = () => {
   
   // API
   FetchSearch = async(search, parameters=true) => {
-    let params = {...UserSettings.local.search_options, ...{"input": search}}
+    let params = {...Settings.Local.search_options, ...{"input": search}}
 
     if (params.withinParent && NodeID !== 'homepage') { params.withinParent = NodeID }
 
@@ -256,7 +252,7 @@ Search = () => {
     // return;
       
     if (params.input) {
-      let res = await API_Post({url: `/search`, body: params});
+      let res = await App.API_Post({url: `/search`, body: params});
       this.SearchCache('WRITE', params.input);
 
       searchConfig.prevSearch = search;
@@ -284,8 +280,8 @@ Filter = (layout, elem, container) => {
   if (!layout) { return; }
   elem.addEventListener('keyup', e => {
     let searchVal = e.target.value.toString().toLowerCase();
-    Object.values(Nodes).forEach(node => {
-      // const x = (({ size, name }) => ({ size, name }))(Nodes["13b70350-b387-11eb-8dc3-a3f64cd6604e"].data);
+    Object.values(App.Nodes).forEach(node => {
+      // const x = (({ size, name }) => ({ size, name }))(App.Nodes["13b70350-b387-11eb-8dc3-a3f64cd6604e"].data);
       if (!Filter.filterNodeValues(node.data).some(s => s.includes(searchVal))) {
       // if (!Object.values(node.data).some(s => s.toString().toLowerCase().includes(searchVal))) {
         container.querySelector(`[node-id='${node.data.id}']`).classList.add('ItemHidden')
@@ -310,6 +306,8 @@ Filter = (layout, elem, container) => {
 
 
 Order = () => {
+  const OrderCache = {}; // Caches the order of directories. Is also used for re-ordering.
+
   Order.Listeners = (layout, container) => {
     if (!layout) { return; }
     N_.Find('[order]', true, container.children[0]).forEach(el => el.addEventListener('click', (e) => {
@@ -324,7 +322,7 @@ Order = () => {
   
       Order.SetOrderVisuals();
   
-      container.children[1].innerHTML = renderContent.listNode({"nodeIDs": Nodes})
+      container.children[1].innerHTML = renderContent.listNode({"nodeIDs": App.Nodes})
       
       ItemClickListener(layout);
     }))

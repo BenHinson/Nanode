@@ -71,7 +71,7 @@ Navigate = () => {
 
   // Helper
   Navigate.ItemsPath = (Parent, Name) => {
-    return NodeName == 'homepage' ? `${Parent} > ${Name}` : navConfig.Directory_Route.reduce((a,b) => a + `${b.Text} > `, `` ) + Name;
+    return App.NodeName == 'homepage' ? `${Parent} > ${Name}` : navConfig.Directory_Route.reduce((a,b) => a + `${b.Text} > `, `` ) + Name;
   }
 
   // Render
@@ -84,7 +84,7 @@ Navigate = () => {
       // navConfig.Directory_Route.push({'Node': NodeID, 'Text': NodeName, 'Search': true})
 
       // ? When opening a search directory. This Generates a new tree branch for that search. With param 'SEARCH'. You can not navigate out and back into this.
-      navConfig.Directory_Route = [{'Node': NodeID, 'Text': NodeName}];
+      navConfig.Directory_Route = [{'Node': NodeID, 'Text': App.NodeName}];
       navConfig.Tree_Number++;
       navConfig.Tree_Steps = navConfig.Directory_Route.length;
       navConfig.Directory_Tree.push({"Start":navConfig.Tree_Steps, "Route": navConfig.Directory_Route, 'SEARCH': true});
@@ -194,13 +194,13 @@ function setupFileMove(Caller) {
     })
   }
 
-  else if (UserSettings.local.layout == 0) {
+  else if (Settings.Local.layout == 0) {
     $(".ContentContainer").sortable({
       items: "div[node-id]",
     })
   }
 
-  else if (UserSettings.local.layout == 1) {
+  else if (Settings.Local.layout == 1) {
     let hoveringOver;
 
     $("[dir-nodes] tr[node-id]").draggable({
@@ -220,8 +220,8 @@ function setupFileMove(Caller) {
         SelectItem(e.currentTarget, true);
         return `
           <div class='listItem-Placeholder'>
-            <img src='${NodeSelected.size > 1 ? '/assets/drive/file_icons/multiple.svg' : e.currentTarget.children[0].children[0].src}'></img>
-            <h5>${NodeSelected.size > 1 ? 'Moving '+NodeSelected.size+' items' : e.currentTarget.children[1].children[0].value }</h5>
+            <img src='${App.NodeSelected.size > 1 ? '/assets/drive/file_icons/multiple.svg' : e.currentTarget.children[0].children[0].src}'></img>
+            <h5>${App.NodeSelected.size > 1 ? 'Moving '+App.NodeSelected.size+' items' : e.currentTarget.children[1].children[0].value }</h5>
           </div>
         `;
       },
@@ -275,12 +275,12 @@ function setupFileMove(Caller) {
 
 const moveToTarget = function(drop, item, type='table') {
   let targetID = drop.target.getAttribute('node-id');
-  if (!NodeSelected.has(targetID) && targetID !== NodeID && targetID) {
-    NodeAPI('edit', {"action": "MOVE", "section": Section, "id": NodeSelected, "to": targetID, "path": false})
+  if (!App.NodeSelected.has(targetID) && targetID !== NodeID && targetID) {
+    NodeAPI('edit', {"action": "MOVE", "section": App.Section, "id": App.NodeSelected, "to": targetID, "path": false})
     
-    NodeSelected.forEach(itemID => N_.Find(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove())
+    App.NodeSelected.forEach(itemID => N_.Find(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove())
     
-    NodeSelected.clear();
+    App.NodeSelected.clear();
     N_.Find('.listItem-Placeholder').remove();
   }
 }
@@ -299,19 +299,19 @@ const DragSelection = new SelectionArea({
     for (const el of store.stored) {
       el.classList.remove('ItemSelected');
       el.removeAttribute('selected');
-      NodeSelected.delete(el.getAttribute('node-id'));
+      App.NodeSelected.delete(el.getAttribute('node-id'));
     }
-    NodeSelected.clear();
+    App.NodeSelected.clear();
     DragSelection.clearSelection();
   }
 }).on('move', ({store: {changed: {added, removed}}}) => {
   for (const el of added) {
-    NodeSelected.add(el.getAttribute('node-id'));
+    App.NodeSelected.add(el.getAttribute('node-id'));
     el.setAttribute('selected', true);
     el.classList.add('ItemSelected');
   }
   for (const el of removed) {
-    NodeSelected.delete(el.getAttribute('node-id'));
+    App.NodeSelected.delete(el.getAttribute('node-id'));
     el.removeAttribute('selected');
     el.classList.remove('ItemSelected');
   }

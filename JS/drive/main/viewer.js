@@ -1,20 +1,13 @@
-const SecureKey = {0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}
-let OrderCache = {}; // Caches the order of directories. Is also used for re-ordering.
-
 const fileContainer = document.getElementsByClassName('fileContainer')[0];
 const PageInfo = document.getElementsByClassName('PageInformation')[0];
 
 const BlockOut = document.querySelector('.BlockOut');
 
-const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
-const UC_Queue = document.getElementsByClassName('UC_Queue')[0];
-const UC_Queue_Table = document.querySelector('.UC_Queue table tbody');
-
 // ========================
 
 const renderContent = (renderNodes) => {
   const renderConfig = {
-    layout: UserSettings.local.layout, // 0=block, 1=list
+    layout: Settings.Local.layout, // 0=block, 1=list
     homepage: NodeID == 'homepage',
     titles: true,
   };
@@ -39,7 +32,7 @@ const renderContent = (renderNodes) => {
   Content = (content=``) => {
     fileContainer.innerHTML = N_.Loading();
     
-    Object.values(Spans).forEach(span => {
+    Object.values(App.Spans).forEach(span => {
       if (span.id == '_MAIN_') { content += this.renderBaseFolders(span); return; }
       content += `${renderConfig.layout ? this.listContainer(span) : this.blockContainer(span)}`;
       renderConfig.titles = false;
@@ -54,7 +47,7 @@ const renderContent = (renderNodes) => {
   }
   renderBaseFolders = (span) => {
     renderFolders = (nodes, content=``) => {
-      nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+      nodes.forEach(nodeID => { let nodeData = App.Nodes[nodeID].data;
         content += `
           <div directory='${Navigate.ItemsPath('Main', nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeData.id}'>
             <img loading='lazy' height='60' width='60' src='${N_.FileIcon(nodeData, 90, 120, 'main')}'></img>
@@ -73,14 +66,14 @@ const renderContent = (renderNodes) => {
     `;
   }
   renderContent.renderRecents = async(content=``) => {
-    if (UserSettings.local.recents === 1) {
+    if (Settings.Local.recents === 1) {
       await this.RecentNodesCall().then(res => {
         if (res.recent == 'Empty Query') {
           return N_.InfoPopup({'parent':N_.Find('.main_Page .PageData'), 'type': 'warning', 'text':"No recent files or folders found", 'displayDelay':100, 'displayTime':5000});
         } else {
           for (const [object, item] of Object.entries(res.recent)) {
             item.mime = item.type.mime;
-            let nodeData = Nodes[object] = new Node(item, object, item.parent);
+            let nodeData = App.Nodes[object] = new Node(item, object, item.parent);
     
             content += `
               <div parent-node='${item.parent}' type='${nodeData.data.type.general}' node-id='${object}' rc='Recent_Node' rcosp='P,IMG'>
@@ -94,7 +87,7 @@ const renderContent = (renderNodes) => {
 
     if (!fileContainer.querySelector('recents')) { return console.log('Recents Called without recents element. IE: Not on homepage?'); }
     fileContainer.querySelector('recents').innerHTML = 
-      (content += `<button class='toggleRecent trans300' onclick='SettingsController.ToggleRecents()'>${UserSettings.local.recents ? 'Hide Recent' : 'Show Recent'}</button>`);
+      (content += `<button class='toggleRecent trans300' onclick='Settings.ToggleRecents()'>${Settings.Local.recents ? 'Hide Recent' : 'Show Recent'}</button>`);
   
     this.RecentNodesListener();
   }
@@ -142,7 +135,7 @@ const renderContent = (renderNodes) => {
   
   // API
   RecentNodesCall = async () => {
-    return await API_Fetch({url: `/activity/recent/main`})
+    return await App.API_Fetch({url: `/activity/recent/main`})
   }
   
   
@@ -178,12 +171,12 @@ const renderContent = (renderNodes) => {
   };
 
   renderContent.listNode = (data={}, content=``) => {
-    let {parent=NodeName, nodeIDs=[], skipOrder=false} = data;
+    let {parent=App.NodeName, nodeIDs=[], skipOrder=false} = data;
 
-    nodeIDs = Order.OrderNodes(Nodes) || nodeIDs;
+    nodeIDs = Order.OrderNodes(App.Nodes) || nodeIDs;
 
     if (nodeIDs.length === 0 && !renderConfig.homepage) { return this.DirectoryEmpty(); }
-    nodeIDs.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+    nodeIDs.forEach(nodeID => { let nodeData = App.Nodes[nodeID].data;
       content += `
         <tr directory='${Navigate.ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TD' title='${Navigate.ItemsPath(parent, nodeData.name)}' ${nodeData.color ? "style='box-shadow: inset "+nodeData.color+" 3px 0' " : ""}  color='${nodeData.color || ''}'>
           <td><img loading='lazy' height='32' width='32' src='${N_.FileIcon(nodeData, 90, 120, 'main')}'></img></td>
@@ -196,10 +189,10 @@ const renderContent = (renderNodes) => {
     }); return content;
   };
   renderContent.blockNode = (data={}, content=``) => {
-    const {parent=NodeName, nodes} = data;
+    const {parent=App.NodeName, nodes} = data;
 
     if (nodes.length === 0 && !renderConfig.homepage) { return this.DirectoryEmpty(); }
-    nodes.forEach(nodeID => { let nodeData = Nodes[nodeID].data;
+    nodes.forEach(nodeID => { let nodeData = App.Nodes[nodeID].data;
       content += `
         <div class='Item' directory='${Navigate.ItemsPath(parent, nodeData.name)}' type='${nodeData.type.general}' node-id='${nodeID}' rc='${nodeData.mime == "FOLDER" ? "Node_Folder" : "Node_File"}' rcOSP='TEXTAREA,IMG,P' title='${Navigate.ItemsPath(parent, nodeData.name)}' color='${nodeData.color || ''}'>
           ${nodeData.color ? "<color style='background:"+nodeData.color+"'></color>" : ''}
@@ -232,10 +225,10 @@ async function FetchItemInformation (selected, node=false) {
   if (!node && typeof RCC.RCElement !== 'undefined' && selected == "RCElement") {selected = RCC.RCElement}
   const SelectedID = node ? selected : selected.getAttribute('node-id');
 
-  const ItemInfo = N_.makeReplaceElem(PageInfo, '.ItemInfo', '<div class="ItemInfo"></div>');
+  const ItemInfo = N_.MakeReplaceElem(PageInfo, '.ItemInfo', '<div class="ItemInfo"></div>');
   ItemInfo.innerHTML = N_.Loading('small');
 
-  let req = await API_Fetch({url: `/user/files/${SelectedID}`})
+  let req = await App.API_Fetch({url: `/user/files/${SelectedID}`})
   let NodeInfo = new Node(req[SelectedID]);
   renderItemInfo(ItemInfo, NodeInfo.data)
 }
@@ -257,7 +250,7 @@ renderItemInfo = (ItemInfo, RequestInfo) => {
         <tbody>
           <tr><td>Size</td><td title='${RequestInfo.size} bytes'>${N_.ConvertSize(RequestInfo.size)}</td></tr>
           <tr><td>Type</td><td title=${RequestInfo.type.mime}>${RequestInfo.type.short}</td></tr>
-          <tr><td>Secured</td><td>${SecureKey[RequestInfo.security]}</td></tr>
+          <tr><td>Secured</td><td>${{0: "No", 1: "Secured", 2: "Multiple", 3: "Max"}[RequestInfo.security]}</td></tr>
         </tbody>
       </table>
 
@@ -287,7 +280,7 @@ renderItemInfo = (ItemInfo, RequestInfo) => {
 ItemInfoListeners = (ItemRequest) => {
 
   N_.Find('.ItemInfo_Name').addEventListener('change', (e) => {
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [ItemRequest.id], "data": { "name": e.target.value }, "path": NodeID})
+    NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [ItemRequest.id], "data": { "name": e.target.value }, "path": NodeID})
   })
 
   N_.Find('.ItemInfo_Tab').addEventListener('click', () => {
@@ -299,11 +292,11 @@ ItemInfoListeners = (ItemRequest) => {
   })
 
   N_.Find('.ItemInfo_Color').addEventListener('change', (e) => {
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [ItemRequest.id], "data": { "color": e.target.value }, "path": NodeID})
+    NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [ItemRequest.id], "data": { "color": e.target.value }, "path": NodeID})
   })
 
   N_.Find('.ItemInfo_Description').addEventListener('change', (e) => {
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [ItemRequest.id], "data": { "description": e.target.value }});
+    NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [ItemRequest.id], "data": { "description": e.target.value }});
   })
 
   N_.Find('.ItemInfo_Share_Input').addEventListener('click', (e) => {
@@ -312,10 +305,10 @@ ItemInfoListeners = (ItemRequest) => {
 
   N_.Find('.ItemInfo_Link_Input').addEventListener('click', async (e) => { // Link
     if (!e.target.value) {
-      let res = await API_Post({url: `/share`, body: {
+      let res = await App.API_Post({url: `/share`, body: {
         "action": "LINK",
         "oID": ItemRequest.id,
-        "section": Section,
+        "section": App.Section,
       }});
       res.link ? e.target.value = res.link : e.target.style.color = 'crimson';
     }
@@ -339,7 +332,7 @@ class SecurityInputContainer {
 
   _Initialise() {
     N_.ClientStatus(5, "User");
-    this.container = N_.makeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
+    this.container = N_.MakeReplaceElem(PageInfo, '.ItemLocked', '<div class="ItemLocked"></div>');
     this.RenderContents_();
     this.SetListeners_();
   }
@@ -368,10 +361,10 @@ class SecurityInputContainer {
     this.container.querySelector('.locked_title > i').addEventListener("click", () => { this.container.remove(); })
 
     this.container.querySelector('.securityEntry').addEventListener("click", async() => {
-      let res = await API_Post({url: `/auth`, body: {
+      let res = await App.API_Post({url: `/auth`, body: {
         "entries": this.GetEntries_(),
         "oID": this.response.Item,
-        "section": Section,
+        "section": App.Section,
       }});
 
       if (res.Error) {
@@ -396,7 +389,7 @@ class CreateColorPicker {
     this.callback = callback;
     this.element = (caller == 'RC' && typeof RCC.RCElement !== 'undefined') ? RCC.RCElement : caller;
     // this.originColor = this.element?.hasAttribute('style')
-    // ? N_.RGBtoHex(getComputedStyle(this.element)[ UserSettings.local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
+    // ? N_.RGBtoHex(getComputedStyle(this.element)[ Settings.Local.layout == 0 ? 'borderBottom' : 'boxShadow' ])
     // : '';
     this.originColor = this.element?.getAttribute('color');
     this.colorOptions = [
@@ -434,7 +427,7 @@ class CreateColorPicker {
     this.colorEntry = this.container.querySelector('input');
     this.UpdateColor_();
     this.SetListeners_();
-    dragElement(this.container);
+    N_.DragElement(this.container);
   }
 
   SetListeners_() {
@@ -567,15 +560,19 @@ class Popup {
 
       if (this.Action == 'Delete') {
         if (selectedItem.getAttribute('rc') == "Homepage_Span") { // EMPTY THE SPAN FIRST DOES THIS CAUSE ISSUES? IE CONTENTS NOT BEING DELETED PERM
-          if (Spans[selectedItem.parentNode.getAttribute('node-id')]) {selectedItem = selectedItem.parentNode}
-          else {console.log('Invalid Span ID'); return;}
+          if (App.Spans[selectedItem.parentNode.getAttribute('node-id')]) {
+            selectedItemID = selectedItem.parentNode?.getAttribute('node-id')
+          } else {
+            return console.log('Invalid Span ID');
+          }
         }
-        let forDeletion = NodeSelected.size ? Array.from(NodeSelected) : [selectedItemID];
-        NodeAPI('edit', {"action": "BIN", "section": Section, "id": forDeletion, "path": NodeID});
+        let forDeletion = App.NodeSelected.size > 0 ? Array.from(App.NodeSelected) : [selectedItemID];
+        
+        NodeAPI('edit', {"action": "BIN", "section": App.Section, "id": forDeletion, "path": NodeID});
       }
       else if (this.Action == 'NewSpan') {
         NodeAPI('create', { 
-          "section": Section,
+          "section": App.Section,
           "path": NodeID,
           "parent": NodeID,
           "type": "Span",
@@ -584,7 +581,7 @@ class Popup {
       }
       else if (this.Action == 'NewFolder') {
         NodeAPI('create', {
-          "section": Section,
+          "section": App.Section,
           "path": NodeID,
           "type": "Folder",
           "parent": (NodeID=="homepage" ? this.Base.querySelector('.Popup_Location').getAttribute('value') : NodeID),
@@ -603,11 +600,11 @@ class Popup {
         if (this.DATA.requestSent === false) {
           this.DATA.requestSent = true;
 
-          let res = await API_Post({url: `/download`, body: {
+          let res = await App.API_Post({url: `/download`, body: {
             "For": this.DATA.forShare ? "SHARE" : "SELF",
             "name": centralInput.value,
             "items": this.DATA.download,
-            "section": Section,
+            "section": App.Section,
           }});
 
           centralInput.value = 'Zipping...';
@@ -660,9 +657,9 @@ async function PopUp_Download(Item, Caller) {
   if (Item.id && Caller == 'ItemInfo') { // Item Info
     [DownloadIDs, DownloadName, Zipping] = [[Item.id], Item.name, !Item.type.file];
   } else if (Caller == 'ContextMenu') { // ContextMenu
-    DownloadIDs = Array.from(NodeSelected);
-    DownloadName = DownloadIDs.length > 1 ? 'Drive_Download' : Nodes[DownloadIDs[0]].data.name;
-    Zipping = DownloadIDs.length === 1 ? (Nodes[DownloadIDs[0]].data.mime == 'FOLDER' ? true : false) : true;
+    DownloadIDs = Array.from(App.NodeSelected);
+    DownloadName = DownloadIDs.length > 1 ? 'Drive_Download' : App.Nodes[DownloadIDs[0]].data.name;
+    Zipping = DownloadIDs.length === 1 ? (App.Nodes[DownloadIDs[0]].data.mime == 'FOLDER' ? true : false) : true;
   } else { return; }
 
 
@@ -679,6 +676,8 @@ async function PopUp_Download(Item, Caller) {
 }
 
 function PopUp_Upload() {
+  const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
+
   N_.ClientStatus(7, "Wait", 600);
   Upload_Visuals.Status("Choose", "Choose Items");
   uploadElem.Upload_Values[0].innerText = '0 Items';
@@ -688,7 +687,7 @@ function PopUp_Upload() {
   PopUp_Upload.Close = function() {
     UploadContainer.style.visibility = 'hidden';
     UploadContainer.querySelectorAll('span i')[0].classList = 'fas fa-chevron-up'
-    UC_Queue.classList.remove('UC_Showing');
+    uploadElem.UC_Queue.classList.remove('UC_Showing');
     uploadElem.Progress_Div.classList.remove('visible');
     Upload_Actions.Reset_Upload();
   };
@@ -712,19 +711,19 @@ async function ViewItem(Type, NodeID) {
     document.querySelector('.Preview').innerHTML = `<video class='ViewImage' controls name='video' src='/storage/${NodeID}'></video`;
   }
   else if (Type == "text") {
-    document.querySelector('.Preview').innerHTML = `<div class='ViewText'><pre>${ await API_Fetch({url: `/storage/${NodeID}`, conv: 'text'}) }</pre></div>`;
+    document.querySelector('.Preview').innerHTML = `<div class='ViewText'><pre>${ await App.API_Fetch({url: `/storage/${NodeID}`, conv: 'text'}) }</pre></div>`;
   }
   else if (Type == 'font') {
     document.querySelector('.Preview').innerHTML = `
       <div class='ViewFont'>
-        <style>@font-face {font-family: "fetched-font";src: url("/storage/${NodeID}") format('${Nodes[NodeID].data.mime.split('/')[1]}');}</style>
+        <style>@font-face {font-family: "fetched-font";src: url("/storage/${NodeID}") format('${App.Nodes[NodeID].data.mime.split('/')[1]}');}</style>
         <p>1234567890
       </div>
     `;
   }
   else if (Type == 'audio') {
     document.querySelector('.Preview').innerHTML = `
-      <audio controls><source src='/storage/${NodeID}' type='${Nodes[NodeID].data.mime}'></audio>`;
+      <audio controls><source src='/storage/${NodeID}' type='${App.Nodes[NodeID].data.mime}'></audio>`;
   }
   else {console.log(Type);}
 }

@@ -1,5 +1,3 @@
-// HTML with attribute of 'rc-name' |  right-click-name of the object  |  rc-name="centralContentBox"   |   RCE = Right Click Element
-
 const RightClickObjectMenu = {
   "File_Container": [
     {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
@@ -64,7 +62,7 @@ const RightClickObjectMenu = {
 
 // ========================================
 
-class RightClickContainer {
+const RCC = new class RightClickContainer {
   constructor() {
     [this.menu, this.event, this.RCElement] = [undefined, undefined, undefined];
     [this.menuHeight, this.posY, this.posX] = [0, 0, 0];
@@ -107,11 +105,11 @@ class RightClickContainer {
     this.SetListeners_();
   }
 
-
+  // MainFunction ==========
   RenderMenu_() {
     this.container.innerHTML = this.menu.reduce((pre,item) => pre + (item.split === true
       ? `<divide></divide>`
-      : `<button class='${item.class || ''}' RC_ID='${item._id}'>${item.rc_var ? RC_Var(item.rc_var, this.event) : item.title}</button>`
+      : `<button class='${item.class || ''}' RC_ID='${item._id}'>${item.rc_var ? this.RC_Var(item.rc_var, this.event) : item.title}</button>`
     ), '');
     this.container.style.display = 'table';
     this.menuHeight = this.container.offsetHeight;
@@ -128,51 +126,49 @@ class RightClickContainer {
       option.addEventListener('click', (e) => {
         let RC_ID = e.currentTarget.getAttribute('RC_ID');
         let func = this.menu.find(e => e._id == RC_ID);
-        let variableOne = func.CUS_VAR ? CUSTOM_Var(func.CUS_VAR, this.event.target) : func.VAR[0] || null;
+        let variableOne = func.CUS_VAR ? this.CUSTOM_Var(func.CUS_VAR, this.event.target) : func.VAR[0] || null;
         if (func.CMD == 'SubFunction') {
-          SubFunction(func.fName, {[func.CUS_VAR || variableOne]: variableOne, [func.VAR?.[1]]:func.VAR?.[1], [func.VAR?.[2]]:func.VAR?.[2], [func.VAR?.[3]]:func.VAR?.[3], [func.VAR?.[4]]:func.VAR?.[4]})
+          this.SubFunction(func.fName, {[func.CUS_VAR || variableOne]: variableOne, [func.VAR?.[1]]:func.VAR?.[1], [func.VAR?.[2]]:func.VAR?.[2], [func.VAR?.[3]]:func.VAR?.[3], [func.VAR?.[4]]:func.VAR?.[4]})
         } else {
           window[func.CMD](variableOne, func.VAR?.[1], func.VAR?.[2], func.VAR?.[3], func.VAR?.[4]) // ?. after the object name checks if it exists first.
           // Re-selects an item after an event is called ie: ColourPicker unselects the item and the user cannot see which item they are setting the colour for.
         }
-        if (NodeSelected.size == 1) { SelectItem(this.RCElement); }
+        if (App.NodeSelected.size == 1) { SelectItem(this.RCElement); }
       })
     })
   }
-}
 
-const RCC = new RightClickContainer();
+
+  CUSTOM_Var(variableName, target) { // Used when calling functions to define target relative data, without the function needing to calculate it.
+    switch(variableName) {
+      case ('NODEID'): { return e.target.getAttribute('node-id') }
+    }
+  }
+  
+  RC_Var(variableName, e) { // Used to toggle between Rightclick menu options. IE: Light OR Dark theme
+    switch(variableName) {
+      case ('Collapse'): { return (N_.PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
+      case ('Layout'): { return Settings.Local.layout === 0 ? "List View" : "Block View"; }
+      case ('Change_Theme'): { return Settings.Local.theme === 0 ? "Light Theme" : "Dark Theme"; }
+    }
+  }
+  
+  SubFunction(funcName, params) {
+    switch(funcName) {
+      case ('ToggleTheme'): {return Settings.ToggleTheme() }
+      case ('ToggleView'): {return Settings.ToggleView() }
+      case ('ExternalTab'): {return N_.ExternalTab(params['NODEID']) }
+      case ('Shortcut'): {return Navigate.Shortcut(params['RCElement']) }
+  
+      case ('ColorPicker'): {return new CreateColorPicker(params['RC'], params['callback']) }
+  
+      case ('ToggleBase_'): {return Popup.prototype.ToggleBase_() }
+    }
+  }
+}
 
 // ========================================
 
-const CUSTOM_Var = (variableName, target) => {
-  switch(variableName) {
-    case ('NODEID'): { return target.getAttribute('node-id') }
-  }
-}
-
-const RC_Var = (variableName, e) => {
-  switch(variableName) {
-    case ('Collapse'): { return (N_.PareAttr(e.target, 'collapsed') || e.target.hasAttribute('collapsed')) ? "Expand" : "Collapse"; }
-    case ('Layout'): { return UserSettings.local.layout === 0 ? "List View" : "Block View"; }
-    case ('Change_Theme'): { return UserSettings.local.theme === 0 ? "Light Theme" : "Dark Theme"; }
-  }
-}
-
-// ========================================
-
-const SubFunction = (funcName, params) => {
-  switch(funcName) {
-    case ('ToggleTheme'): {return SettingsController.ToggleTheme() }
-    case ('ToggleView'): {return SettingsController.ToggleView() }
-    case ('ExternalTab'): {return N_.ExternalTab(params['NODEID']) }
-    case ('Shortcut'): {return Navigate.Shortcut(params['RCElement']) }
-
-    case ('ColorPicker'): {return new CreateColorPicker(params['RC'], params['callback']) }
-
-    case ('ToggleBase_'): {return Popup.prototype.ToggleBase_() }
-  }
-}
 
 function NEWPopup(type, caller, action, data) {
   if (type == 'NewFolder') { new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create', color: '', RCE: '', secondary: true}); }

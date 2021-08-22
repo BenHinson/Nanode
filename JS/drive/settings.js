@@ -1,97 +1,83 @@
-let UserSettings = {};
+class Settings {
+  static User = {}; // Settings.User
+  static Local = {}; // Settings.Local
 
-// ======================
-
-const SettingsController = async() => {
-
-  // Manage
-  SetSettings = (settings) => {
-    UserSettings = settings;
-    SetStorage(UserSettings.user.plan);
-    ToggleTheme(UserSettings.local.theme, 'set');
+  constructor() {
+    Settings.Session();
   }
 
-
-  // Handle
-  Read = (type, setting) => {
-    let settings = JSON.parse(localStorage.getItem(`${type}-settings`));
-    return setting ? settings[setting] || null : settings;
-  }
-  Write = (location, setting, value) => {
-    if (location == 'local') {
-      UserSettings.local[setting] = (value == 'toggle' ? (UserSettings.local[setting] == 0 ? 1 : 0) : value);
-    } else if (setting.match(/accessed|date/)) {
-      UserSettings.user[setting] = value;
-    }
-  
-    this.Update(UserSettings, location, false);
-  }
-  Update = (settings, location, set=true) => {
-    if (location == 'local') { // Set local settings. Else Push to server settings. (server)
-      settings.user.accessed = new Date().toISOString(); // The server knows when we accessed, no need to set it here or send it to the server.
-      localStorage.setItem('local-settings', JSON.stringify(settings.local));
-      localStorage.setItem('user-settings', JSON.stringify(settings.user));
-    }
-    
-    if (set) this.SetSettings(settings);
-  }
-
-
-  // API
-  Session = async(settings={}) => {  // Calls API_Fetch({url: '/account/settings'}) if needed and send settings updates.
-    settings['user'] = this.Read('user') || await API_Fetch({url: '/account/settings'});
-    settings['local'] = this.Read('local') || {
-      'theme': (window.matchMedia("(prefers-color-scheme: dark)").matches ? 0 : 1) || 0,
+  // API ==========
+  static Session = async() => {  // Calls App.API_Fetch({url: '/account/settings'}) if needed and send settings updates.
+    Settings.User = this.Read('user') || await App.API_Fetch({url: '/account/settings'});
+    Settings.Local = this.Read('local') || {
+      'theme': (window.matchMedia("(prefers-color-scheme: dark)").matches ? 0 : 1) || 0, // Reads system theme
       'layout': 0,
       'recents': 0,
       'search_options': {'description': true, 'prevNames': true, 'withinAll': true, 'forFolders': true, 'forFiles': true}
-    }; // Reads system theme
+    };
   
-    if ((new Date().getTime() - new Date(settings.user.accessed || 0).getTime()) > 5*60*1000) {
-      settings['user'] = await API_Fetch({url: '/account/settings'}) || {'accessed': new Date().toISOString(), 'date': 0, 'plan': {'max': 10 * 1024 * 1024 * 1024, 'used': 0}};
+    if ((new Date().getTime() - new Date(Settings.User.accessed || 0).getTime()) > 5*60*1000) {
+      Settings.User = await App.API_Fetch({url: '/account/settings'}) || {'accessed': new Date().toISOString(), 'date': 0, 'plan': {'max': 10 * 1024 * 1024 * 1024, 'used': 0}};
     }
   
-    this.Update(settings, 'local');
+    this.Update('local');
   }
 
+  // Handle
+  static Read(type, setting) {
+    let settings = JSON.parse(localStorage.getItem(`${type}-settings`));
+    return setting ? settings[setting] || null : settings;
+  }
+  static Write(location, setting, value) {
+    if (location == 'local') {
+      Settings.Local[setting] = (value == 'toggle' ? (Settings.Local[setting] == 0 ? 1 : 0) : value);
+    } else if (setting.match(/accessed|date/)) {
+      Settings.User[setting] = value;
+    }
+  
+    this.Update(location, false);
+  }
+  static Update(location, set=true) {
+    if (location == 'local') { // Set local settings. Else Push to server settings. (server)
+      Settings.User.accessed = new Date().toISOString(); // The server knows when we accessed, no need to set it here or send it to the server.
+      localStorage.setItem('local-settings', JSON.stringify(Settings.Local));
+      localStorage.setItem('user-settings', JSON.stringify(Settings.User));
+    }
+    
+    if (set) this.SetSettings();
+  }
+
+  // Manage
+  static SetSettings() {
+    Settings.SetStorage(Settings.User.plan);
+    Settings.ToggleTheme(Settings.Local.theme, 'set');
+  }
   
   // Events
-  const SetStorage = (plan=UserSettings.user.plan) => {
-    this.Write('user', 'plan', plan);
+  static SetStorage (plan=Settings.User.plan) {
+    Settings.Write('user', 'plan', plan);
     let StorageElem = document.querySelector('.Storage');
     StorageElem.querySelector('p').innerText = `${N_.ConvertSize(plan.used)} / ${N_.ConvertSize(plan.max).replace('.00', '')}`;
     StorageElem.querySelector('progress').value = parseFloat(((plan.used / plan.max) * 100).toFixed(2)) || 0;
   }
-  const ToggleTheme = (theme, set) => {
+  static ToggleTheme = (theme, set) => {
     if (set) {
       document.body.setAttribute('data-theme', (theme ? 'light' : 'dark'));
-            // document.body.classList[theme ? 'remove' : 'add']('dark-theme');
     } else {
       document.body.getAttribute('data-theme') == 'light'
         ? document.body.setAttribute('data-theme', 'dark')
         : document.body.setAttribute('data-theme', 'light');
-  
-            // document.body.classList.toggle('dark-theme');
-      this.Write('local', 'theme', 'toggle');
+      Settings.Write('local', 'theme', 'toggle');
     }
-    document.querySelector('#colorTheme i').classList = UserSettings.local.theme ? 'fas fa-sun' : 'fas fa-moon';
+    document.querySelector('#colorTheme i').classList = Settings.Local.theme ? 'fas fa-sun' : 'fas fa-moon';
   }
-  const ToggleView = () => {
-    this.Write('local', 'layout', 'toggle');
-    document.querySelector('.Slider.SL_View').style.transform = `translateX(${UserSettings.local.layout ? 28 : 0}px)`;
+  static ToggleView = () => {
+    Settings.Write('local', 'layout', 'toggle');
+    document.querySelector('.Slider.SL_View').style.transform = `translateX(${Settings.Local.layout ? 28 : 0}px)`;
     NodeCall({"Folder":NodeID, "Reload":false});
   }
-  const ToggleRecents = () => {
-    this.Write('local', 'recents', 'toggle');
+  static ToggleRecents = () => {
+    Settings.Write('local', 'recents', 'toggle');
     renderContent.renderRecents();
   }
-
-  // ====================================
-
-  await this.Session();
-
-  SettingsController.SetStorage = SetStorage;
-  SettingsController.ToggleTheme = ToggleTheme;
-  SettingsController.ToggleView = ToggleView;
-  SettingsController.ToggleRecents = ToggleRecents;
 }

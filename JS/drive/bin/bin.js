@@ -1,50 +1,52 @@
 const binPage = document.querySelector('.bin_Page');
 
-// ====================================
-
-const BinController = () => {
-  const binConfig = {
-    binSubSection: 'main',
-    binSections: {1: 'main', 2: 'blocks', 3: 'codex'},
-    binReminderTriggered: false,
-    binSizeColors: {'FOLDER': '#f3cc2d', 'image': '#2df377', 'text': '#b7c6d0', 'video': '#c8524c'},
-    Bin_Nodes: {},
-    itemActionProcessed: [],
-    binSectionItemCount: 0
+new class BinController {
+  constructor(props) {
+    this.binConfig = {
+      binSubSection: 'main',
+      binSections: {1: 'main', 2: 'blocks', 3: 'codex'},
+      binReminderTriggered: false,
+      binSizeColors: {'FOLDER': '#f3cc2d', 'image': '#2df377', 'text': '#b7c6d0', 'video': '#c8524c'},
+      Bin_Nodes: {},
+      itemActionProcessed: [],
+      binSectionItemCount: 0
+    }
+    this.binElem = {
+      binPageContainer: binPage.querySelector('.PageContainer'),
+      binPageInfo: binPage.querySelector('.PageInformation'),
+      binSize: binPage.querySelector('.binSize'),
+      binUsage: binPage.querySelector('.binUsage'),
+    }
+    
+    //* Listeners
+    this.Switch();
+    //* Events
+    this.ReminderPopup();
+    //* Setup
+    this.DataCall(), this.ItemCall();
   }
-  const binElem = {
-    binPageContainer: binPage.querySelector('.PageContainer'),
-    binPageInfo: binPage.querySelector('.PageInformation'),
-    binSize: binPage.querySelector('.binSize'),
-    binUsage: binPage.querySelector('.binUsage'),
-  }
 
-  SetListeners_ = () => { Switch(); }
-  SetEvents_ = () => { ReminderPopup(); }
-  
-  // ====================================
-
-  // Listeners
-  Switch = () => {
+  // Listeners ==================
+  Switch() {
     const switchElem = document.querySelector(`.Switch.SW_Bin`);
     const sliderElem = document.querySelector(`.Slider.SL_Bin`);
   
     switchElem.querySelectorAll('div:not(.SL_Bin)').forEach((option) => {
-      option.addEventListener('click', function (e) {
-        if (!this.classList.contains('SwitchSelected')) {
-          let switchOptionPos = this.getAttribute('swOpPos');
-          let sliderWidth = (this.parentElement.clientWidth / 3);
+      option.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('SwitchSelected')) {
+          let switchOptionPos = e.target.getAttribute('swOpPos');
+          let sliderWidth = (e.target.parentElement.clientWidth / 3);
           switchElem.querySelector('.SwitchSelected').classList.remove('SwitchSelected');
-          this.classList.add('SwitchSelected');
-          binElem.binPageContainer.querySelector('.binContainer > div').innerHTML = N_.Loading('medium');
-          binConfig.binSubSection = binConfig.binSections[switchOptionPos];
-          ItemCall();
+          e.target.classList.add('SwitchSelected');
+          this.binElem.binPageContainer.querySelector('.binContainer > div').innerHTML = N_.Loading('medium');
+          this.binConfig.binSubSection = this.binConfig.binSections[switchOptionPos];
+          this.ItemCall();
           sliderElem.style.transform = `translateX(${(sliderWidth*(switchOptionPos - 1))}px)`
         }
       })
     })
   }
-  ItemClickListeners = (binContainer) => {
+  ItemClickListeners(binContainer) {
     let currentlySelected;
   
     binContainer.querySelectorAll('tr[node-id]').forEach((item) => {
@@ -52,45 +54,45 @@ const BinController = () => {
         if (!e.currentTarget.classList.contains('ItemSelected')) {
           currentlySelected ? currentlySelected.classList.remove('ItemSelected') : '';
           currentlySelected = e.currentTarget;
-          ItemInfoCall(e.currentTarget.getAttribute('node-id'));
+          this.ItemInfoCall(e.currentTarget.getAttribute('node-id'));
         }
         e.currentTarget.classList.toggle('ItemSelected');
       })
     })
 
-    N_.Find('.refreshBinBtn', false, binContainer).addEventListener('click', RefreshBin)
+    N_.Find('.refreshBinBtn', false, binContainer).addEventListener('click', this.RefreshBin)
     
   }
-  RestoreDeleteListener = (binItemData, RequestInfo) => {
-    N_.Find('.binRestoreBtn', false, binItemData).addEventListener('click', (e) => {RestoreDeletePost(RequestInfo.id, 'RESTORE', e.target)})
-    N_.Find('.binDeleteBtn', false, binItemData).addEventListener('click', (e) => {RestoreDeletePost(RequestInfo.id, 'DELETE', e.target)})
+  RestoreDeleteListener(binItemData, RequestInfo) {
+    N_.Find('.binRestoreBtn', false, binItemData).addEventListener('click', (e) => {this.RestoreDeletePost(RequestInfo.id, 'RESTORE', e.target)})
+    N_.Find('.binDeleteBtn', false, binItemData).addEventListener('click', (e) => {this.RestoreDeletePost(RequestInfo.id, 'DELETE', e.target)})
   }
-  VisitRestoredItem = (binItemData, nodeData) => {
+  VisitRestoredItem(binItemData, nodeData) {
     N_.Find('.binVisitBtn', false, binItemData).addEventListener('click', () => {
-      pageSwitch(nodeData.parentSection).then(() => {
+      App.pageSwitch(nodeData.parentSection).then(() => {
         Navigate.Shortcut(nodeData.parentID, nodeData.nodeID);
       });
     })
   }
 
 
-  // Events
-  ReminderPopup = () => {
-    if (binConfig.binReminderTriggered === false) {
-      binConfig.binReminderTriggered = true;
-      N_.InfoPopup({'parent':binElem.binPageContainer, 'type': 'info', 'text':"Items left in the bin will be permanently deleted after 30 days.", 'displayDelay':5000, 'displayTime':10000});
+  // Events ==================
+  ReminderPopup() {
+    if (this.binConfig.binReminderTriggered === false) {
+      this.binConfig.binReminderTriggered = true;
+      N_.InfoPopup({'parent':this.binElem.binPageContainer, 'type': 'info', 'text':"Items left in the bin will be permanently deleted after 30 days.", 'displayDelay':5000, 'displayTime':10000});
     }
   }
-  RefreshBin = () => {ItemCall(); DataCall();}
+  RefreshBin = () => {this.ItemCall(); this.DataCall();}
 
 
-  // Render
+  // Render ==================
   BinList = (data) => {
-    const binContainer = binElem.binPageContainer.querySelector('.binContainer > div');
+    const binContainer = this.binElem.binPageContainer.querySelector('.binContainer > div');
 
     if (typeof data.Contents == 'object' && Object.entries(data.Contents).length) { // Check if Data has been Returned and render
-      renderNodes = (content=``) => {      
-        for (const [nodeID, nodeData] of Object.entries(binConfig.Bin_Nodes)) {
+      const renderNodes = (content=``) => {      
+        for (const [nodeID, nodeData] of Object.entries(this.binConfig.Bin_Nodes)) {
           content += `
             <tr type='${nodeData.data.type.general}' node-id='${nodeID}' rc='Bin_Item' rcOSP='TD'>
               <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(nodeData.data, 38, 38, 'bin')}'></img></td>
@@ -106,7 +108,7 @@ const BinController = () => {
       binContainer.innerHTML = `
         <table class='binTable tableTemplate'>
           <thead><tr>
-            <td><p class='binItemCount'>${N_.TextMultiple(binConfig.binSectionItemCount, 'item')}<p></td>
+            <td><p class='binItemCount'>${N_.TextMultiple(this.binConfig.binSectionItemCount, 'item')}<p></td>
             <td><i class="fas fa-sync-alt refreshBinBtn"></i></td> </tr>
           </thead>
           <tbody>${renderNodes()}</tbody>
@@ -147,52 +149,52 @@ const BinController = () => {
       <button class='rb-btn-full blue-light binRestoreBtn'>Restore</button>
       <button class='rb-btn-full red-light binDeleteBtn'>Delete</button>
     `;
-    RestoreDeleteListener(binItemData, RequestInfo);
+    this.RestoreDeleteListener(binItemData, RequestInfo);
   }
 
   RestoredItemInfo = (nodeData) => {
     const {nodeName, parentID} = nodeData;
-    let binItemData = binElem.binPageInfo.querySelector('.binItemData');
+    let binItemData = this.binElem.binPageInfo.querySelector('.binItemData');
 
     binItemData.innerHTML = `
       <p>${nodeName}</p>
       <button class='rb-btn-full blue-light binVisitBtn'>Visit Restored Item</button>
     `;
-    VisitRestoredItem(binItemData, nodeData);
+    this.VisitRestoredItem(binItemData, nodeData);
   }
   DeletedItemInfo = (nodeData) => {
-    binElem.binPageInfo.querySelector('.binItemData').innerHTML = ``;
-    N_.InfoPopup({'parent':binElem.binPageContainer, 'type': 'success', 'text':`Successfully Deleted - ${nodeData.nodeName}`, 'displayDelay':500, 'displayTime':2000});
+    this.binElem.binPageInfo.querySelector('.binItemData').innerHTML = ``;
+    N_.InfoPopup({'parent':this.binElem.binPageContainer, 'type': 'success', 'text':`Successfully Deleted - ${nodeData.nodeName}`, 'displayDelay':500, 'displayTime':2000});
   }
 
 
-  // API
-  DataCall = async() => {
-    const req = await API_Fetch({url: `/account/bin`});
+  // API ==================
+  async DataCall() {
+    const req = await App.API_Fetch({url: `/account/bin`});
     
     if (req && req.size.bin) {
       let totalSize = Object.values(req.size.bin).reduce((a, b) => a + b);
-      binElem.binSize.innerHTML = `Total: <em>${N_.ConvertSize(totalSize)}</em>`
+      this.binElem.binSize.innerHTML = `Total: <em>${N_.ConvertSize(totalSize)}</em>`
     
       let sizeMap = new Map(Object.entries(req.size.bin))
       sizeMap = new Map([...sizeMap].sort((a,b) => a[1] === b[1] ? b[0] - a[0] : a[1] - b[1]))  // Sorts the object values from lowest to highest
     
       let rotation = 0, offset = [];
 
-      binElem.binUsage.innerHTML = '<div></div>';
+      this.binElem.binUsage.innerHTML = '<div></div>';
         
       for (const [type, size] of sizeMap) {
         let sizePercentage = (size / totalSize);
         if (sizePercentage < 0.01) {continue};
     
-        let typeColor = binConfig.binSizeColors[type] || '#474d50';
+        let typeColor = this.binConfig.binSizeColors[type] || '#474d50';
     
-        binElem.binUsage.innerHTML += `
+        this.binElem.binUsage.innerHTML += `
           <svg class='binSize_SVG' viewBox='0 0 100 100'>
             <circle cx='50' cy='50' r='45' style='stroke-dashoffset: 283; transform: rotate(${360 * rotation}deg); stroke: ${typeColor};'></circle>
           </svg>`;
     
-        binElem.binUsage.children[0].innerHTML += `
+        this.binElem.binUsage.children[0].innerHTML += `
           <span style='color: ${typeColor};'>
             <p>⬤ ${N_.CapFirstLetter(type)}</p><p>${N_.ConvertSize(size)} - ${(sizePercentage * 100).toFixed()}%</p>
           </span>`;
@@ -202,32 +204,32 @@ const BinController = () => {
       }
     
       setTimeout(() => { // Adds the transition to each element.
-        binElem.binUsage.querySelectorAll('svg > circle').forEach((e, i) => {
+        this.binElem.binUsage.querySelectorAll('svg > circle').forEach((e, i) => {
           e.style.strokeDashoffset = offset[i];
         });
       }, 100)
     
     } else {
-      binElem.binSize.innerText = `Bin is Empty`
+      this.binElem.binSize.innerText = `Bin is Empty`
     }
   }
-  ItemCall = async() => {
-    let res = await API_Fetch({url:`/folder/home?s=bin&sub=${binConfig.binSubSection.toLowerCase()}`});
+  async ItemCall() {
+    let res = await App.API_Fetch({url:`/folder/home?s=bin&sub=${this.binConfig.binSubSection.toLowerCase()}`});
     if (res.Parent) {
-      binConfig.itemActionProcessed = [];
-      binConfig.Bin_Nodes = {};
+      this.binConfig.itemActionProcessed = [];
+      this.binConfig.Bin_Nodes = {};
       if (typeof res.Contents == 'object') {
-        binConfig.binSectionItemCount = 0;
+        this.binConfig.binSectionItemCount = 0;
         for (const [id, data] of Object.entries(res.Contents).reverse()) {
-          binConfig.binSectionItemCount++;
-          binConfig.Bin_Nodes[id] = new Node(data, id, res.Parent.name);
+          this.binConfig.binSectionItemCount++;
+          this.binConfig.Bin_Nodes[id] = new Node(data, id, res.Parent.name);
         }
       }
       this.BinList(res);
     }
   }
-  ItemInfoCall = async(nodeID) => {
-    const binItemData = binElem.binPageInfo.querySelector('.binItemData');
+  async ItemInfoCall(nodeID) {
+    const binItemData = this.binElem.binPageInfo.querySelector('.binItemData');
 
     if (!binItemData.innerHTML.length) binItemData.innerHTML = N_.Loading('small');
   
@@ -237,29 +239,29 @@ const BinController = () => {
     let NodeInfo = new Node(RequestInfo[nodeID]);
     this.ItemInfo(binItemData, NodeInfo.data);
   }
-  RestoreDeletePost = async(nodeID, action, btnElement) => {
-    if (binConfig.itemActionProcessed.includes(nodeID)) {return}
-    binConfig.itemActionProcessed.push(nodeID);
+  async RestoreDeletePost(nodeID, action, btnElement) {
+    if (this.binConfig.itemActionProcessed.includes(nodeID)) {return}
+    this.binConfig.itemActionProcessed.push(nodeID);
     btnElement.innerHTML = N_.Loading('button');
     
     if (nodeID) {
-      let res = await API_Post({url: `/bin`, body: {'subSection': binConfig.binSubSection, action, 'id': nodeID}})
+      let res = await App.API_Post({url: `/bin`, body: {'subSection': this.binConfig.binSubSection, action, 'id': nodeID}})
 
-      let nodeData = {'nodeName':binConfig.Bin_Nodes[nodeID].data.name, nodeID, 'parentSection': binConfig.binSubSection}
+      let nodeData = {'nodeName':this.binConfig.Bin_Nodes[nodeID].data.name, nodeID, 'parentSection': this.binConfig.binSubSection}
 
       setTimeout(() => {
         if (res.status == 'successful') {
-          binConfig.binSectionItemCount--; // Cannot place within TextMultiple, seems to do the calculation afterwards
-          N_.Find('td > p.binItemCount').innerText = N_.TextMultiple(binConfig.binSectionItemCount, 'item');
+          this.binConfig.binSectionItemCount--; // Cannot place within TextMultiple, seems to do the calculation afterwards
+          N_.Find('td > p.binItemCount').innerText = N_.TextMultiple(this.binConfig.binSectionItemCount, 'item');
           N_.Find(`tr[node-id='${nodeID}']`).remove(); // Add an animation here. Blue glow for restore, transforms right. Red glow for delete, transforms left.
-          delete binConfig.Bin_Nodes[nodeID];
-          DataCall();
+          delete this.binConfig.Bin_Nodes[nodeID];
+          this.DataCall();
           
-          if (action == 'RESTORE' && res.parent) { RestoredItemInfo({...nodeData, ...{'parentID':res.parent}}); }
-          else if (action == 'DELETE') { DeletedItemInfo(nodeData)}
+          if (action == 'RESTORE' && res.parent) { this.RestoredItemInfo({...nodeData, ...{'parentID':res.parent}}); }
+          else if (action == 'DELETE') { this.DeletedItemInfo(nodeData)}
           else {
             btnElement.innerHTML = `${N_.CapFirstLetter(action)} Failed`;
-            N_.InfoPopup({'parent':binElem.binPageContainer, 'type': 'error', 'text':`Something went wrong during: ${N_.CapFirstLetter(action)}`, 'displayDelay':500, 'displayTime':5000});
+            N_.InfoPopup({'parent':this.binElem.binPageContainer, 'type': 'error', 'text':`Something went wrong during: ${N_.CapFirstLetter(action)}`, 'displayDelay':500, 'displayTime':5000});
           }
         } else {
           btnElement.innerHTML = `${N_.CapFirstLetter(action)} Failed`;
@@ -267,11 +269,4 @@ const BinController = () => {
       }, 500)
     }
   }
-
-  // ====================================
-
-  this.SetListeners_(), this.SetEvents_();
-  this.DataCall(), this.ItemCall();
 }
-
-BinController();

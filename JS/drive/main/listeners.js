@@ -1,4 +1,3 @@
-
 function ItemClickListener(View) {
   let Items = (View == 0
     ? fileContainer.querySelectorAll('div.Item[node-id]:not([home-span]):not([Sub-Span]), .baseFolders > div') // Block View
@@ -29,11 +28,11 @@ function SelectItem(item, force) {
     DragSelection.select(item);
   }
 
-  if (NodeSelected.size) { // Add Listener to Document for Off-Clicks
+  if (App.NodeSelected.size) { // Add Listener to Document for Off-Clicks
     setTimeout(function() {
       $(document.body).on("click",function(e) {
         if (!$(e.target).parents('.fileContainer').length && !$(e.target).parents('.RightClickContainer').length) {
-          NodeSelected.clear();
+          App.NodeSelected.clear();
           $('[selected=true]').each((index, item) => {
             $(item).removeAttr('selected');
             $(item).removeClass('ItemSelected');
@@ -60,8 +59,8 @@ function ItemActions(selected) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function collapseSpan(span, expand=false) {
-  span = span ? (UserSettings.local.layout == 0 ? span.parentNode : span.closest('table')) : RCC.RCElement;
-  if (UserSettings.local.layout == 0) {
+  span = span ? (Settings.Local.layout == 0 ? span.parentNode : span.closest('table')) : RCC.RCElement;
+  if (Settings.Local.layout == 0) {
     expand = span.hasAttribute('collapsed') ? true : false;
     expand == true ? span.removeAttribute('collapsed') : span.setAttribute('collapsed', true)
     expand ? span.querySelector('button').remove() : span.innerHTML += `<button class='ExpandSpan VT_Block' onclick='collapseSpan(this, true)'>Expand</button>`
@@ -70,7 +69,6 @@ function collapseSpan(span, expand=false) {
     for (let i=0; i<blocks.length; i++) {
       blocks[i].style.cssText = (expand == true ? '' : 'visibility: collapse; display: none;');
     }
-
   } else {
     let rows = span.querySelectorAll('tr');
   
@@ -89,33 +87,40 @@ function collapseSpan(span, expand=false) {
 }
 
 function createLocation(RCE) {
-  return  NodeName == "homepage" 
-    ? `value= '${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'node-id') : "_General_"}'><span class='flex-between-cent'><p>${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'home-span') : "General"}</p><i class="fas fa-angle-down"></i></span><div class='Popup_Dropdown_Content'>${spanList()}</div>`
+  return App.NodeName == "homepage" 
+    ? `value= '${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'node-id') : "_General_"}'>
+        <span class='flex-between-cent'>
+          <p>${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'home-span') : "General"}</p>
+          <i class="fas fa-angle-down"></i>
+        </span>
+        <div class='Popup_Dropdown_Content'>${spanList()}</div>`
     : `value='${NodeID}'><p>Current</p>`;
+
   function spanList() {
     let HTML_Spans = "";
-    for (let [id,data] of Object.entries(Spans)) { if (id=='_MAIN_') {continue};
+    for (let [id,data] of Object.entries(App.Spans)) { if (id=='_MAIN_') {continue};
     HTML_Spans += `<a value='${id}'>${data.name}</a>` };
-    return HTML_Spans; }
+    return HTML_Spans;
+  }
 }
 
-function renameItem(e) {
+function renameItem(e) { // Convert this to a Popup.
   let focusedElement = RCC.RCElement;
   
-  let targetInput = $(focusedElement).find('input')[0] || $(focusedElement).find('textarea')[0];
+  const targetInput = $(focusedElement).find('input')[0] || $(focusedElement).find('textarea')[0];
   focusedElement.setAttribute('focus', "true")
   targetInput.removeAttribute('disabled');
   targetInput.style = '';
   targetInput.focus();
   targetInput.select();
 
-  targetInput.addEventListener('input', function(e) {
+  targetInput.addEventListener('input', function() {
     this.value = this.value.replace(/\n/g,'')
   });
 
   targetInput.addEventListener('change', function() {
     ReturnItemState();
-    NodeAPI('edit', {"action": "DATA", "section": Section, "id": [focusedElement.getAttribute('node-id')], "data": { "name": targetInput.value }, "path": NodeID}, true)
+    NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [focusedElement.getAttribute('node-id')], "data": { "name": targetInput.value }, "path": NodeID}, true)
   });
 
   setTimeout(function() {

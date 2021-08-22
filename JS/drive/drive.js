@@ -1,84 +1,4 @@
-// ================ Variables ================
-let currentPage = 'main';
-let Section = 'main';
-
-let NodeName = 'home';
-let Spans = {};
-let Nodes = {};
-let NodeSelected = new Set(); // Items that are currently selected
-
 const defConfig = {method: 'POST', headers: {'Content-Type': 'application/json'}}
-
-
-// @ == Initial Load
-document.addEventListener("DOMContentLoaded", async(event) => {
-  await SettingsController();
-  await pageSwitch(currentPage);
-})
-
-
-// @ == API Caller
-API_Fetch = async(fetch_data, response) => { // await API_Fetch({url: `/example/test`})
-  const {url, conv} = fetch_data;
-
-  try {
-    N_.ClientStatus(4, 'Wait');
-    let req = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`);
-    if (!req.ok) throw new Error(req.statusText);
-    if (conv == 'blob') { req = await req.blob() }
-    else if (conv == 'text') { req = await req.text() }
-    else { req = await req.json() }
-    
-    N_.ClientStatus(4, 'Off');
-    return req.Error ? false : req;
-  } catch(err) { console.log(err) }
-}
-
-API_Post = async(send_data) => { // await API_Post({url: `drive.nanode.one/`})
-  const {url, body} = send_data;
-  try {
-    let res = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`, {
-      ...defConfig,
-      body: new Blob( [ JSON.stringify(body) ], { type: 'text/plain' })
-    })
-    if (!res.ok) throw new Error(res.statusText);
-    N_.ClientStatus(3, "True", 500);
-    return res.json();
-  } catch(err) { console.log(err) }
-}
-
-// @ = Nodes Creator
-class Node {
-  constructor(data, id, parent) {
-    this.data = data;
-    this.data.id = this.data.id || id;
-    this.data.parent = this.data.parent || parent;
-    this.data.type = N_.TypeManager(data.mime || data.type.mime);
-  }
-}
-
-// @ == Change Pages
-pageSwitch = async(pageName) => {
-  let pageToSwitch = document.querySelector(`.Pages .${pageName}_Page`);
-  document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
-  if (pageToSwitch.innerHTML.length === 0) { // WHAT IS AN ALTERNATIVE FOR THIS. ATLEAST THIS LOADS SCRIPTS
-    await $(pageToSwitch).load(`/views/drive/${pageName}.html`);
-  }
-  pageToSwitch.classList.add('PageDisplay');
-  Section=pageName;
-
-  document.querySelector('.SelectedPage').classList.remove('SelectedPage');
-  document.querySelector(`span[drvpage='${pageName}']`).classList.add('SelectedPage');
-
-  return true;
-}
-
-document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
-  pageBtn.addEventListener('click', (e) => {pageSwitch(e.currentTarget.getAttribute('drvpage'));})
-})
-
-// =========================================== Button and Key Listeners
-
 const shortcutKeys = {
   "Ctrl+A": "All",
   "Ctrl+N": "New",
@@ -89,31 +9,91 @@ const shortcutKeys = {
   "Arrow_Right": "Forward a directory",
 }
 const keyMap = {};
-onkeydown = function(e) { keyMap[e.key] = true; }
-onkeyup = function(e) { keyMap[e.key] = false; }
 
-// @ == Global Element Functions
+// Generate App ==========
 
-function dragElement(element) {
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+class App {
+  static Section = 'main';
+  static NodeName = 'home';
 
-  element.onmousedown = (e) => {
-    if (e.target !== element) { return; }
-    e.preventDefault();
-    [pos3, pos4] = [e.clientX, e.clientY];
+  static Spans = {};
+  static Nodes = {};
+  static NodeSelected = new Set();
 
-    document.onmouseup = () => {
-      document.onmouseup = null;
-      document.onmousemove = null;
-    };
+  constructor() {
+    this.SetListeners_();
+  }
 
-    document.onmousemove = (e) => {
-      e.preventDefault();
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      [pos3, pos4] = [e.clientX, e.clientY];
-      element.style.top = `${element.offsetTop - pos2}px`;
-      element.style.left = `${element.offsetLeft - pos1}px`;
-    };
+  SetListeners_() {
+    document.addEventListener("DOMContentLoaded", async(event) => {
+      await new Settings();
+      await App.pageSwitch('main');
+    })
+    document.querySelectorAll('.PageList div span').forEach((pageBtn) => {
+      pageBtn.addEventListener('click', (e) => {
+        App.pageSwitch(e.currentTarget.getAttribute('drvpage'));
+      })
+    })
+
+    // * Key Event Listeners
+    onkeydown = (e) => { keyMap[e.key] = true; }
+    onkeyup = (e) => { keyMap[e.key] = false; }
+  }
+
+  static async pageSwitch(pageName) {
+    let pageToSwitch = document.querySelector(`.Pages .${pageName}_Page`);
+    document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
+    if (pageToSwitch.innerHTML.length === 0) { // WHAT IS AN ALTERNATIVE FOR THIS. ATLEAST THIS LOADS SCRIPTS
+      await $(pageToSwitch).load(`/views/drive/${pageName}.html`);
+    }
+    pageToSwitch.classList.add('PageDisplay');
+    App.Section=pageName;
+  
+    document.querySelector('.SelectedPage').classList.remove('SelectedPage');
+    document.querySelector(`span[drvpage='${pageName}']`).classList.add('SelectedPage');
+  
+    return true;
+  }
+
+  static async API_Fetch(fetch_data, response) { // await App.API_Fetch({url: `/example/test`})
+    const {url, conv} = fetch_data;
+  
+    try {
+      N_.ClientStatus(4, 'Wait');
+      let req = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`);
+      if (!req.ok) throw new Error(req.statusText);
+      if (conv == 'blob') { req = await req.blob() }
+      else if (conv == 'text') { req = await req.text() }
+      else { req = await req.json() }
+      
+      N_.ClientStatus(4, 'Off');
+      return req.Error ? false : req;
+    } catch(err) { console.log(err) }
+  }
+  
+  static async API_Post(send_data) { // await App.API_Post({url: `drive.nanode.one/`})
+    const {url, body, skipErr=false} = send_data;
+    try {
+      let res = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`, {
+        ...defConfig,
+        body: new Blob( [ JSON.stringify(body) ], { type: 'text/plain' })
+      })
+      if (!res.ok && !skipErr) throw new Error(res.statusText);
+      N_.ClientStatus(3, "True", 500);
+      return res.json();
+    } catch(err) { console.log(err); }
+  }
+}
+
+new App();
+
+
+// Generate Node ==========
+class Node {
+  constructor(data, id, parent) {
+    this.data = data;
+    this.data.id = this.data.id || id;
+    this.data.parent = this.data.parent || parent;
+    this.data.type = N_.TypeManager(data.mime || data.type.mime);
   }
 }
