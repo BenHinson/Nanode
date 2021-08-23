@@ -1356,7 +1356,7 @@ recents.recentFiles > div p {
   width: 140px;
 }
 
-.section_Empty {
+empty.section_Empty {
   height: 350px;
   width: 350px;
   border-radius: 50%;
@@ -1371,45 +1371,57 @@ recents.recentFiles > div p {
           user-select: none;
 }
 
-.section_Empty > div {
+empty.section_Empty > div {
   text-align: center;
   padding: 0 10px;
 }
 
-.section_Empty > div > p:nth-child(1) {
+empty.section_Empty > div > p:nth-child(1) {
   font-size: 18px;
   font-weight: 600;
 }
 
-.Loading_SVG {
+loading {
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.PageData > loading {
   position: absolute;
   top: calc(50% - 18px);
   left: calc(50% - 18px);
+  height: 36px;
+  width: 36px;
+}
+
+loading svg.Loading_SVG {
   -webkit-animation: 2s linear infinite svg-animation;
           animation: 2s linear infinite svg-animation;
   max-width: 24px;
 }
 
-.Loading_SVG.medium {
+loading svg.Loading_SVG.medium {
   max-width: 36px;
 }
 
-.Loading_SVG.small {
+loading svg.Loading_SVG.small {
   max-width: 24px;
 }
 
-.Loading_SVG.button {
+loading svg.Loading_SVG.button {
   max-width: 18px;
   top: calc(50% - 9px);
   left: calc(50% - 9px);
 }
 
-.Loading_SVG.upload {
+loading svg.Loading_SVG.upload {
   position: relative;
   margin-top: 5px;
 }
 
-.Loading_SVG circle {
+loading svg.Loading_SVG circle {
   -webkit-animation: 1.4s ease-in-out infinite both circle-animation;
           animation: 1.4s ease-in-out infinite both circle-animation;
   display: block;

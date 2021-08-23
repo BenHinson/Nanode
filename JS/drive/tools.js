@@ -141,7 +141,7 @@ const N_ = () => {
 
   // Status / Waiting
   N_.Loading = (sizePosClass='medium', title='Loading') => {
-    return `<svg class='Loading_SVG ${sizePosClass}' title='${title}' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'><circle cx='50' cy='50' r='45'></circle></svg>`;
+    return `<loading><svg class='Loading_SVG ${sizePosClass}' title='${title}' viewBox='0 0 100 100' xmlns='https://www.w3.org/2000/svg'><circle cx='50' cy='50' r='45'></circle></svg></loading>`;
   }
   N_.ClientStatus = (pos, status, time) => {
     if (pos > 9 || pos < 0) { return; }

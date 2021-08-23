@@ -961,7 +961,7 @@ recents.recentFiles {
 }
 
 
-.section_Empty {
+empty.section_Empty {
   height: 350px;
   width: 350px;
   border-radius: 50%;
@@ -980,38 +980,42 @@ recents.recentFiles {
 
 
 
-.Loading_SVG {
-  position:absolute;
-  top: calc(50% - 18px);
-  left: calc(50% - 18px);
+loading {
+  display: grid;
+  place-items: center;
+  position: relative;
 
-  &.medium { max-width: 36px; }
-  &.small { max-width: 24px; }
-  &.button { max-width: 18px; top: calc(50% - 9px); left: calc(50% - 9px); }
-  &.upload { position: relative; margin-top: 5px; }
+  .PageData > & {position: absolute; top: calc(50% - 18px); left: calc(50% - 18px); height: 36px; width: 36px;}
 
-  animation: 2s linear infinite svg-animation;
-  max-width: 24px;
-  circle {
-    animation: 1.4s ease-in-out infinite both circle-animation;
-    display: block;
-    fill: transparent;
-    stroke: var(--text-strong);
-    stroke-linecap: round;
-    stroke-dasharray: 283;
-    stroke-dashoffset: 280;
-    stroke-width: 10px;
-    transform-origin: 50% 50%;
+  svg.Loading_SVG {
+    &.medium { max-width: 36px; }
+    &.small { max-width: 24px; }
+    &.button { max-width: 18px; top: calc(50% - 9px); left: calc(50% - 9px); }
+    &.upload { position: relative; margin-top: 5px; }
 
-    @keyframes circle-animation {
-      0%, 25% { stroke-dashoffset: 280; transform: rotate(0); }
-      50%, 75% { stroke-dashoffset: 75; transform: rotate(45deg); }
-      100% { stroke-dashoffset: 280; transform: rotate(360deg); }
+    animation: 2s linear infinite svg-animation;
+    max-width: 24px;
+    circle {
+      animation: 1.4s ease-in-out infinite both circle-animation;
+      display: block;
+      fill: transparent;
+      stroke: var(--text-strong);
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 280;
+      stroke-width: 10px;
+      transform-origin: 50% 50%;
+
+      @keyframes circle-animation {
+        0%, 25% { stroke-dashoffset: 280; transform: rotate(0); }
+        50%, 75% { stroke-dashoffset: 75; transform: rotate(45deg); }
+        100% { stroke-dashoffset: 280; transform: rotate(360deg); }
+      }
     }
-  }
-  @keyframes svg-animation {
-    0% { transform: rotateZ(0deg); }
-    100% { transform: rotateZ(360deg) }
+    @keyframes svg-animation {
+      0% { transform: rotateZ(0deg); }
+      100% { transform: rotateZ(360deg) }
+    }
   }
 }
 

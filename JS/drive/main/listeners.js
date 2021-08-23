@@ -1,12 +1,11 @@
 function ItemClickListener(View) {
   let Items = (View == 0
-    ? fileContainer.querySelectorAll('div.Item[node-id]:not([home-span]):not([Sub-Span]), .baseFolders > div') // Block View
-    : fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div') // List View
+    ? Directory.fileContainer.querySelectorAll('div.Item[node-id]:not([home-span]):not([Sub-Span]), .baseFolders > div') // Block View
+    : Directory.fileContainer.querySelectorAll('tbody tr[node-id], .baseFolders > div') // List View
   );
 
-  Items.forEach(item => {
-    item.addEventListener('click', function(selected) {
-      if (selected.currentTarget.hasAttribute('focus')) { return; }
+  Items.forEach(item => item.addEventListener('click', (selected) => {
+      if (selected.currentTarget.hasAttribute('focus')) { return }
 
       if (keyMap["Shift"] == true || keyMap["Control"] == true) { return SelectItem(selected.currentTarget); }
 
@@ -15,44 +14,40 @@ function ItemClickListener(View) {
         N_.ClientStatus(5, "Ok", 500);
       }
     })
-  })
+  )
 }
 
 function SelectItem(item, force) {
-  if (!item) {return;}
-  $(document.body).off("click");
+  if (!item || !item.hasAttribute('node-id')) { return }
 
-  if (item.hasAttribute('selected') && !force) { // Remove from Selected
-    DragSelection.deselect(item);
-  } else if (item.hasAttribute('node-id')) { // Add to Selected
-    DragSelection.select(item);
+  if (item.hasAttribute('selected') && !force) {
+    return DragSelection.deselect(item)
+    } else {DragSelection.select(item);
   }
 
-  if (App.NodeSelected.size) { // Add Listener to Document for Off-Clicks
-    setTimeout(function() {
-      $(document.body).on("click",function(e) {
-        if (!$(e.target).parents('.fileContainer').length && !$(e.target).parents('.RightClickContainer').length) {
-          App.NodeSelected.clear();
-          $('[selected=true]').each((index, item) => {
-            $(item).removeAttr('selected');
-            $(item).removeClass('ItemSelected');
-          })
-          $(document.body).off("click");
-        }
-      });
-    }, 20)
+  setTimeout(() => {document.addEventListener('click', RemoveSelected)}, 20)
+  
+  function RemoveSelected(e) {
+    if (!e.path.includes(N_.Find('.fileContainer')) || !e.path.includes(N_.Find('.RightClickContainer'))) { // Checks if the target is a child of fileContainer or RightClickContainer
+      App.NodeSelected.clear();
+      N_.Find('[selected=true]', true).forEach(item => {
+        item.removeAttribute('selected');
+        item.classList.remove('ItemSelected');
+      })
+      document.removeEventListener('click', RemoveSelected);
+    }
   }
 }
 
 function ItemActions(selected) {
   if (!selected && RCC.RCElement) { selected = RCC.RCElement }
 
-  let clicked = selected.getAttribute("node-id");
-  let type = selected.getAttribute("type");
+  let nodeID = selected.getAttribute("node-id");
+  let nodeType = selected.getAttribute("type");
 
-  if (type == "folder") { NodeCall({"Folder":selected.getAttribute('node-id')}); }
-  else { ViewItem(type, clicked) }
-  // else if (type.match(/image|text|video/g)) { ViewItem(type, clicked) }
+  if (nodeType == "folder") { Main.NodeCall({"Folder":selected.getAttribute('node-id')}); }
+  else { ViewItem(nodeType, nodeID) }
+  // else if (nodeType.match(/image|text|video/g)) { ViewItem(nodeType, nodeID) }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,21 +82,16 @@ function collapseSpan(span, expand=false) {
 }
 
 function createLocation(RCE) {
-  return App.NodeName == "homepage" 
+  spanList = () => { return Object.entries(App.Spans).reduce((pre, span) => pre + (span[0] !== '_MAIN_' ? `<a value='${span[0]}'>${span[1].name}</a>` : ''), '') }
+
+  return Main.NodeName == "homepage" 
     ? `value= '${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'node-id') : "_General_"}'>
         <span class='flex-between-cent'>
           <p>${RCE == 'RCE' ? N_.PareAttr(RCC.RCElement, 'home-span') : "General"}</p>
           <i class="fas fa-angle-down"></i>
         </span>
         <div class='Popup_Dropdown_Content'>${spanList()}</div>`
-    : `value='${NodeID}'><p>Current</p>`;
-
-  function spanList() {
-    let HTML_Spans = "";
-    for (let [id,data] of Object.entries(App.Spans)) { if (id=='_MAIN_') {continue};
-    HTML_Spans += `<a value='${id}'>${data.name}</a>` };
-    return HTML_Spans;
-  }
+    : `value='${Main.NodeID}'><p>Current</p>`;
 }
 
 function renameItem(e) { // Convert this to a Popup.
@@ -120,7 +110,7 @@ function renameItem(e) { // Convert this to a Popup.
 
   targetInput.addEventListener('change', function() {
     ReturnItemState();
-    NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [focusedElement.getAttribute('node-id')], "data": { "name": targetInput.value }, "path": NodeID}, true)
+    Main.NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [focusedElement.getAttribute('node-id')], "data": { "name": targetInput.value }, "path": Main.NodeID}, true)
   });
 
   setTimeout(function() {

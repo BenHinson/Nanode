@@ -14,7 +14,6 @@ const keyMap = {};
 
 class App {
   static Section = 'main';
-  static NodeName = 'home';
 
   static Spans = {};
   static Nodes = {};

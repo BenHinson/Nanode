@@ -14,11 +14,9 @@ const uploadConfig = {
   Queue_Showing: false,
 }
 const uploadElem = {
-  // Referenced in viewer.js and upload.js
   Upload_Values: document.querySelectorAll('.UC_Bottom p'),
   Progress_Div: document.getElementsByClassName('Upload_Progress')[0],
   UC_Queue: document.getElementsByClassName('UC_Queue')[0],
-  // Referenced only in upload.js
   Upload_Buttons: document.querySelectorAll('.UploadBtns > input'),
   Drop_Area: document.querySelector('.Pages'),
   DragDropOverlay: document.querySelector('.DragDropOverlay'),
@@ -157,7 +155,7 @@ Upload_Actions = () => {
     return {
       "section": App.Section,
       "relative_path": file.fullPath || file.webkitRelativePath || dir.fullPath || file.name,
-      "parent": NodeID == "homepage" ? "_GENERAL_" : NodeID,
+      "parent": Main.NodeID == "homepage" ? "_GENERAL_" : Main.NodeID,
       "name": file.name,
       "type": file.type,
       "size": file.size,
@@ -215,7 +213,7 @@ Upload = () => {
       Upload_Visuals.Status("Choose", "Choose Items");
       Upload_Visuals.Notify('success', 'finished', 'Items Successfully Uploaded.');
       fetch('https://drive.nanode.one/upload', { ...defConfig, body: JSON.stringify({"message":"Queue_Empty"})} )
-      NodeCall({"Folder":NodeID, "Reload": false});
+      Main.NodeCall({"Folder":Main.NodeID, "Reload": false});
       Upload_Actions.Reset_Upload();
       return;
     }
@@ -431,6 +429,24 @@ Upload_Visuals = () => {
   Upload_Visuals.Notify = Notify;
 }
 
+function PopUp_Upload() {
+  const UploadContainer = document.getElementsByClassName('Upload_Container')[0];
+
+  N_.ClientStatus(7, "Wait", 600);
+  Upload_Visuals.Status("Choose", "Choose Items");
+  uploadElem.Upload_Values[0].innerText = '0 Items';
+  uploadElem.Upload_Values[1].innerText = '0 B';
+  UploadContainer.style.visibility = "visible";
+
+  PopUp_Upload.Close = function() {
+    UploadContainer.style.visibility = 'hidden';
+    UploadContainer.querySelectorAll('span i')[0].classList = 'fas fa-chevron-up'
+    uploadElem.UC_Queue.classList.remove('UC_Showing');
+    uploadElem.Progress_Div.classList.remove('visible');
+    Upload_Actions.Reset_Upload();
+  };
+}
+
 
 Upload_Listeners();
 Upload_Actions();
@@ -449,5 +465,4 @@ Upload_Visuals();
  * (20mb)   // 22.790  Upload  0.160 Read     (seconds)     (1 Chunk)
  * 
  *  USING 'express-fileupload' with form encType="multipart/form-data". Upload takes 6.00s Same with npm package 'formidable'
- * 
 */

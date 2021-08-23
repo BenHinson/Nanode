@@ -1,7 +1,7 @@
 const RightClickObjectMenu = {
   "File_Container": [
     {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
-    {_id: '2', title: 'Refresh', CMD: 'NodeCall', VAR: [{"Reload":false}]},
+    {_id: '2', title: 'Refresh', CMD: 'Main.NodeCall', VAR: [{"Reload":false}]},
     {split: true},
     {_id: '3', rc_var: 'Layout', CMD: 'SubFunction', fName: 'ToggleView', VAR :[]},
     {_id: '4', rc_var: 'Change_Theme', CMD: 'SubFunction', fName: 'ToggleTheme', VAR :[]},
@@ -17,7 +17,7 @@ const RightClickObjectMenu = {
   ],
   "Node_Folder": [
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
-    {_id: '2', title: 'View Details', CMD: 'FetchItemInformation', VAR: ["RCElement"]},
+    {_id: '2', title: 'View Details', CMD: 'SubFunction', fName: 'ItemInformation', VAR: ["RCElement"]},
     {_id: '3', title: 'Security', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
     {_id: '4', title: 'Move To', class: 'disabled-text', CMD: '', VAR: []},
@@ -31,7 +31,7 @@ const RightClickObjectMenu = {
   ],
   "Node_File": [
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
-    {_id: '2', title: 'View Details', CMD: 'FetchItemInformation', VAR: ["RCElement"]},
+    {_id: '2', title: 'View Details', CMD: 'SubFunction', fName: 'ItemInformation', VAR: ["RCElement"]},
     {_id: '3', title: 'Security', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
     {_id: '4', title: 'Copy To', class: 'disabled-text', CMD: '', VAR: []},
@@ -47,14 +47,14 @@ const RightClickObjectMenu = {
   ],
   "Recent_Node": [
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
-    {_id: '2', title: 'View Details', CMD: 'FetchItemInformation', VAR: ["RCElement"]},
+    {_id: '2', title: 'View Details', CMD: 'SubFunction', fName: 'ItemInformation', VAR: ["RCElement"]},
     {split: true},
     {_id: '3', title: 'Go to', CMD: 'SubFunction', fName: 'Shortcut', VAR: ["RCElement"]},
   ],
 
   "Preview_Image": [
     {_id: '1', title: 'Open in New Tab', CMD: 'SubFunction', fName: 'ExternalTab', CUS_VAR: "NODEID", VAR: []},
-    {_id: '2', title: 'Open in Mini Preview', class: 'disabled-text', CMD: 'miniPreview', VAR: []},
+    {_id: '2', title: 'Open in Mini Preview', class: 'disabled-text', CMD: 'miniView', VAR: []},
     {split: true},
     {_id: '3', title: 'Close', CMD: 'SubFunction', fName: 'ToggleBase_', VAR: []},
   ]
@@ -86,7 +86,6 @@ const RCC = new class RightClickContainer {
         this._Initialise(RightClickObjectMenu[this.RCElement.getAttribute('rc')], e);
       }
     
-      
       function FindTarget() {
         if (e.target.hasAttribute('rcPar') || e.target.parentNode.hasAttribute('rcPar')) { return e.path[ e.target.getAttribute('rcPar') || e.target.parentNode.getAttribute('rcPar') ] }
         else if (e.path[1].hasAttribute("rcOSP") && e.path[1].getAttribute("rcOSP").includes(e.target.tagName)) { return e.target.parentNode; }
@@ -117,7 +116,8 @@ const RCC = new class RightClickContainer {
   PositionMenu_() {
     this.container.style.cssText = `
       top: ${(document.body.offsetHeight < (this.posY + this.menuHeight) ? (this.posY - (this.menuHeight+this.posY+30 - document.body.offsetHeight)) : this.posY) - 5}px;
-      left: ${(document.body.offsetWidth < (this.posX + 185) ? this.posX - 185 : this.posX - 5)}px;`;
+      left: ${(document.body.offsetWidth < (this.posX + 185) ? this.posX - 185 : this.posX - 5)}px;
+    `;
 
     N_.FadeInOut(this.container, 300, 'table')
   }
@@ -141,7 +141,7 @@ const RCC = new class RightClickContainer {
 
   CUSTOM_Var(variableName, target) { // Used when calling functions to define target relative data, without the function needing to calculate it.
     switch(variableName) {
-      case ('NODEID'): { return e.target.getAttribute('node-id') }
+      case ('NODEID'): { return target.getAttribute('node-id') }
     }
   }
   
@@ -159,6 +159,7 @@ const RCC = new class RightClickContainer {
       case ('ToggleView'): {return Settings.ToggleView() }
       case ('ExternalTab'): {return N_.ExternalTab(params['NODEID']) }
       case ('Shortcut'): {return Navigate.Shortcut(params['RCElement']) }
+      case ('ItemInformation'): {return ItemInformation.Load(params['RCElement'])}
   
       case ('ColorPicker'): {return new CreateColorPicker(params['RC'], params['callback']) }
   

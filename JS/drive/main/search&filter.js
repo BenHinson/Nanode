@@ -1,7 +1,3 @@
-/**
- * @param  {} e
- * This is a function that is called by {@link ViewItem}
-*/
 
 Search = () => {
   const searchConfig = {
@@ -56,7 +52,7 @@ Search = () => {
         Navigate.Shortcut(searchConfig.SearchNodes[nodeID].data.parent, nodeID);
         this.Close();
       } else if (searchEvent == 'view-info') {
-        FetchItemInformation(nodeID, true)
+        ItemInformation.Load(nodeID, true)
       } else if (searchEvent == 'ext-link') {
         N_.ExternalTab(nodeID);
       }
@@ -64,7 +60,7 @@ Search = () => {
 
     if (searchConfig.loadMore === true) {
       N_.Find('button.searchLoadMore').addEventListener('click', () => {
-        NodeCall({'Skip':true}, { // , 'Reload': false
+        Main.NodeCall({'Skip':true}, { // , 'Reload': false
             Parent: {
               id: 'SEARCH',
               name: `Search: ${searchConfig.prevSearch}`
@@ -148,7 +144,7 @@ Search = () => {
     let nodeID = el.getAttribute('node-id')
     searchConfig.SearchNodes[nodeID].data.type.file
       ? Navigate.Shortcut(searchConfig.SearchNodes[nodeID].data.parent, nodeID)
-      : NodeCall({"Folder": nodeID});
+      : Main.NodeCall({"Folder": nodeID});
       this.Close();
   }
   Search.RemoveSuggestedResult = (e) => {
@@ -243,7 +239,7 @@ Search = () => {
   FetchSearch = async(search, parameters=true) => {
     let params = {...Settings.Local.search_options, ...{"input": search}}
 
-    if (params.withinParent && NodeID !== 'homepage') { params.withinParent = NodeID }
+    if (params.withinParent && Main.NodeID !== 'homepage') { params.withinParent = Main.NodeID }
 
     // dir: XXXX | homepage
     // include: description | names
@@ -313,24 +309,24 @@ Order = () => {
     N_.Find('[order]', true, container.children[0]).forEach(el => el.addEventListener('click', (e) => {
       let orderType = el.getAttribute('order');
   
-      if (!OrderCache[NodeID]) //?   0 == initial. 1 == highest first. 2 == lowest first.
-        OrderCache[NodeID] = {'type': orderType, 'pos': 1}
-      else if (OrderCache[NodeID].type !== orderType)
-        OrderCache[NodeID] = {'type': orderType, 'pos': 1}
+      if (!OrderCache[Main.NodeID]) //?   0 == initial. 1 == highest first. 2 == lowest first.
+        OrderCache[Main.NodeID] = {'type': orderType, 'pos': 1}
+      else if (OrderCache[Main.NodeID].type !== orderType)
+        OrderCache[Main.NodeID] = {'type': orderType, 'pos': 1}
       else
-        OrderCache[NodeID] = {'type': orderType, 'pos': (OrderCache[NodeID].pos + 1) % 3} // % 3 sets 2 as limit, if 2 + 1 == 3, sets to 0.
+        OrderCache[Main.NodeID] = {'type': orderType, 'pos': (OrderCache[Main.NodeID].pos + 1) % 3} // % 3 sets 2 as limit, if 2 + 1 == 3, sets to 0.
   
       Order.SetOrderVisuals();
   
-      container.children[1].innerHTML = renderContent.listNode({"nodeIDs": App.Nodes})
+      container.children[1].innerHTML = Directory.listNode({"nodeIDs": App.Nodes})
       
       ItemClickListener(layout);
     }))
   }
 
   Order.OrderNodes = (nodes={}) => {
-    if (!OrderCache[NodeID]) { return; }
-    const {type, pos} = OrderCache[NodeID];
+    if (!OrderCache[Main.NodeID]) { return; }
+    const {type, pos} = OrderCache[Main.NodeID];
 
     if (pos === 0) { return Object.keys(nodes) }
     nodes = Object.values(nodes);
@@ -349,8 +345,8 @@ Order = () => {
   }
 
   Order.SetOrderVisuals = () => {
-    if (!OrderCache[NodeID]) { return }
-    const {type, pos} = OrderCache[NodeID];
+    if (!OrderCache[Main.NodeID]) { return }
+    const {type, pos} = OrderCache[Main.NodeID];
 
     let curIcon = N_.Find('[order] > i.fas');
     if (curIcon) curIcon.classList = '';
