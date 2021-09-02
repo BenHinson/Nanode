@@ -3,6 +3,8 @@ class Main {
   static NodeID = 'homepage';
   static NodeName = 'home';
 
+  static LoadSkeleton;
+
   constructor() {
     Main.NodeCall({"Folder":this.NodeName});
   }
@@ -11,6 +13,8 @@ class Main {
     const {Folder=this.NodeID || this.NodeName, Reload=true, Skip=false} = CallData;
     
     this.FolderCall = Reload;
+
+    this.LoadSkeleton = setTimeout(() => { N_.Find('.fileContainer').innerHTML = (Folder === 'homepage' ? Skeleton.Homepage() : Skeleton.Table()); }, 500)
     
     if (Skip === false) { res = await App.API_Fetch({url:`/folder/${Folder}?s=main`}) }
     
@@ -76,11 +80,13 @@ class Directory {
     this.showTitles = true;
     this.onHomepage = (Main.NodeID === 'homepage');
 
-    this.fileContainer.innerHTML = N_.Loading();
+    // this.fileContainer.innerHTML = N_.Loading();
+    clearTimeout(Main.LoadSkeleton);
+
     let content = ``; // Processed at the end to render the page.
 
     Object.values(App.Spans).forEach(span => { // [id: '', name: '', nodes: []]
-      if (span.id === '_MAIN_') { return content += Directory.baseFolders(span) }
+      if (span.id === '_MAIN_') { return content += (Directory.baseFolders(span) +  Recent.Base())}
 
       content += Directory.Content(span);
 
@@ -168,10 +174,7 @@ class Directory {
 
   static baseFolders(span) {
     return `
-      <div node-id='${span.id}' class='SpanMain'>
-        <folders class='baseFolders flex-even-cent'> ${renderFolders(span.nodes)} </folders>
-        <recents class='recentFiles flex-even-cent'></recents>
-      </div>
+      <folders node-id='${span.id}' class='baseFolders flex-even-cent'> ${renderFolders(span.nodes)} </folders>
     `;
 
     function renderFolders(nodeList, content=``) {
@@ -210,7 +213,7 @@ class Directory {
 
   static highlightNode(nodeID) {
     let targetNode = N_.Find(`[dir-nodes] > [node-id='${nodeID}']`);
-    SelectItem(targetNode, "force");
+    new Select(targetNode, "force");
     targetNode.scrollIntoView({behavior: 'smooth'})
   }
 
@@ -256,6 +259,10 @@ new Directory();
 
 class Recent {
   static async Load() {
+    const recentContainer = Directory.fileContainer?.querySelector('recents');
+
+    if (!recentContainer) { return console.log('Recents Called without recents element. IE: Not on homepage?'); }
+
     this.content = ``;
 
     if (Settings.Local.recents === 1) {
@@ -267,12 +274,19 @@ class Recent {
         : this.Render(res.recent);
     }
 
-    if (!Directory.fileContainer.querySelector('recents')) {
-      return console.log('Recents Called without recents element. IE: Not on homepage?'); }
-  
-    Directory.fileContainer.querySelector('recents').innerHTML = this.content += `<button class='toggleRecent trans300' onclick='Settings.ToggleRecents()'>${Settings.Local.recents ? 'Hide Recent' : 'Show Recent'}</button>`;
+    recentContainer.children[0].innerHTML = this.content;
+    recentContainer.children[1].innerText = Settings.Local.recents ? 'Hide Recent' : 'Show Recent';
 
     Recent.Listeners();
+  }
+
+  static Base() {
+    return `
+      <recents class='recentFiles flex-even-cent'>
+        <div class='recentContainer flex-even-cent'></div>
+        <button class='toggleRecent trans300' onclick='Settings.ToggleRecents()'></button>
+      </recents>
+    `
   }
 
   static Render(recent) {
@@ -291,7 +305,7 @@ class Recent {
   }
 
   static Listeners() {
-    Directory.fileContainer.querySelectorAll('recents > div').forEach(item => {
+    Directory.fileContainer.querySelectorAll('.recentContainer > div').forEach(item => {
       item.addEventListener('click', (e) => ItemActions(e.currentTarget))
     })
   }

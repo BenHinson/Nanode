@@ -8,7 +8,7 @@ const uploadConfig = {
   Size: 0,
   Queue: [],
   Visual_Items: {},
-  Status: 'Choose', // Paused, Start, Complete, Choose, Limit
+  Status: 'Choose', // Paused, Start, Complete, Choose, Limit, Invalid
   Held: [],
   Time_Difference: '',
   Queue_Showing: false,
@@ -246,7 +246,7 @@ Upload = () => {
       return;
     }
 
-    if (uploadConfig.Status == 'Limit') { return; }
+    if (uploadConfig.Status.match(/Limit|Invalid/)) { return; }
 
     if (Chunks.length) {
       let Upload = Chunks.shift();
@@ -299,9 +299,15 @@ Upload = () => {
   }
 
   Item_Status = (Reply, Data, Next) => {
+    console.log(Reply);
     switch (Reply.status) {
       case 'Success': { // Send the next chunk or file.
         this.Manager(Next.Chunks, Next.Info, Data.Meta); break; 
+      }
+      case 'Invalid': {
+        uploadConfig.Status = 'Invalid';
+        Upload_Visuals.Notify('error', 'invalid', Reply.message);
+        break;
       }
       case 'Limit': { console.log('Exceeding Account Size Limit');
         uploadConfig.Status = 'Limit';

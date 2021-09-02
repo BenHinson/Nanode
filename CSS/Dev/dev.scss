@@ -192,7 +192,7 @@ body {
   }
   & h4 { 
     font-weight: 600;
-    padding-top: 1em;
+    padding-top: 2em;
     color: var(--text-medium);
     width: fit-content;
     font-size: 15px;
@@ -213,11 +213,11 @@ body {
   }
 
   & b {
-    display: grid;
-    padding: 10px;
+    display: inline-grid;
+    padding: 0 0.5em;
     font-size: 14px;
   }
-  & sub { 
+  & sub, small { 
     font-size: 14px;
     color: var(--text-dull);
   }
@@ -299,6 +299,7 @@ body {
   & img {
     margin: 20px 0;
     border-radius: 10px;
+    &[target] { cursor: pointer; }
   }
 
   & table { 
@@ -356,6 +357,8 @@ body {
       }
     }
   }
+
+  // em 
 }
 
 

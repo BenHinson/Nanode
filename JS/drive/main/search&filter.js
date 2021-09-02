@@ -318,7 +318,7 @@ Order = () => {
   
       Order.SetOrderVisuals();
   
-      container.children[1].innerHTML = Directory.listNode({"nodeIDs": App.Nodes})
+      container.children[1].innerHTML = Directory.listNode({"nodeIDs": Object.keys(App.Nodes)})
       
       ItemClickListener(layout);
     }))

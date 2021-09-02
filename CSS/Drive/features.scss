@@ -211,7 +211,7 @@ textarea {
 }
 
 folders.baseFolders {
-  height: 130px;
+  height: 100px;
   >div {
     position: relative;
     display: flex;
@@ -252,50 +252,57 @@ folders.baseFolders {
 }
 
 recents.recentFiles {
-  max-height: 60px;
-  flex-wrap: wrap;
-  gap: 1em;
-  overflow: hidden;
+  border-bottom: 1px solid var(--component);
+  flex-direction: column;
+  margin-bottom: 0.5em;
+
   .toggleRecent {
-    position: absolute;
-    bottom: -15px;
-    padding: 0.5em 1em;
     border-radius: 5px;
     font-size: 12px;
     letter-spacing: 1px;
     color: var(--text-dull);
     border: 1px solid var(--component);
     background: var(--background);
+    transform: translateY(15px);
+
     &:hover {
       color: var(--text-strong);
       border: 1px solid var(--feature);
       background: var(--feature);
     }
   }
-  >div {
-    display: flex;
-    flex: 1;
-    align-items: center;
+
+  >.recentContainer {
+    flex-wrap: wrap;
     gap: 1em;
     max-height: 48px;
-    min-width: 160px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    cursor: pointer;
+    width: 100%;
     overflow: hidden;
-    color: var(--text-strong);
-    background: var(--frame);
-    transition: all 200ms;
 
-    &:hover, :focus { background: var(--feature); }
-    img { max-width: 50px; }
-    p {
-      max-width: calc(100% - 70px);
-      max-height: 51px;
-      font-size: 14px;
-      word-break: break-word;
-      user-select: none;
-      z-index: 2;
+    >div {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 1em;
+      max-height: 48px;
+      min-width: 160px;
+      border-radius: 8px;
+      cursor: pointer;
+      overflow: hidden;
+      color: var(--text-strong);
+      background: var(--frame);
+      transition: all 200ms;
+  
+      &:hover, :focus { background: var(--feature); }
+      img { max-width: 50px; }
+      p {
+        max-width: calc(100% - 70px);
+        max-height: 51px;
+        font-size: 14px;
+        word-break: break-word;
+        user-select: none;
+        z-index: 2;
+      }
     }
   }
 }
@@ -572,6 +579,113 @@ recents.recentFiles {
           >i { color: var(--text-dull); }
         }
       }
+    }
+  }
+}
+
+///////////////////////// Components /////////////////////////
+
+.skeleton {
+  
+  & * {pointer-events: none; user-select: none;}
+
+  .skeleton-load {
+    opacity: 0.7 !important;
+    background: linear-gradient(90deg, var(--component), var(--feature), var(--component));
+    animation: gradient 2s ease infinite;
+    background-size: 200%;
+
+    @keyframes gradient {
+      0% { background-position: 0%; }
+      50% { background-position: 100%; }
+      100% { background-position: 0%; }
+    }
+  }
+
+  // Core
+  .skeleton-text {
+    height: 1em;
+    width: 100%;
+    border-radius: 0.125em !important;
+    background: var(--skeleton);
+  }
+  .skeleton-img {
+    min-height: 38px;
+    margin: 0.25em;
+    border-radius: 0.25em;
+    background: var(--skeleton-solid);
+  }
+
+  // Specials
+  .skeleton-table {
+    position: relative;
+    width: 100%;
+    border-spacing: 0 0.25em;
+
+    >thead>tr {
+      height: 32px;
+      &>th:nth-child(1) {
+        max-width: 50px;
+      }
+      &>th:nth-child(2) {
+        max-width: 0;
+        width: auto;
+        min-width: 160px;
+        overflow: hidden;
+      }
+    }
+    >tbody>tr {
+      height: 46px;
+      text-align: center;
+      font-size: 12px;
+
+      >td:nth-child(1) {
+        width: 50px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+      }
+      >td:nth-child(2) {
+        padding: 0 1em;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+      }
+    }
+  }
+  .skeleton-basefolders {
+    height: 100px;
+    >div {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      height: 60px;
+      width: calc(80% / 5);
+      gap: 0.5em;
+      border-radius: 5px;
+      transform: translateY(20px);
+
+      >.skeleton-img {
+        height: 50px;
+        width: 60px;
+        margin: auto;
+        transform: translateY(-30px);
+      }
+    }
+  }
+  .skeleton-recents {
+    flex-wrap: wrap;
+    gap: 1em;
+    position: relative;
+    border-bottom: 1px solid var(--component);
+    padding: 1em 0;
+    max-height: 5em; // (80px)
+    overflow: hidden;
+
+    >div {
+      flex: 1;
+      height: 40px;
+      min-width: 160px;
+      margin-bottom: 10px;
+      border-radius: 8px;
     }
   }
 }

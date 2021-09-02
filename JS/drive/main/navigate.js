@@ -217,7 +217,7 @@ function setupFileMove(Caller) {
       scroll: false,
       cursorAt: { top: 18, left: 20 },
       helper: function(e) {
-        SelectItem(e.currentTarget, true);
+        new Select(e.currentTarget, true);
         return `
           <div class='listItem-Placeholder'>
             <img src='${App.NodeSelected.size > 1 ? '/assets/drive/file_icons/multiple.svg' : e.currentTarget.children[0].children[0].src}'></img>
@@ -284,38 +284,3 @@ const moveToTarget = function(drop, item, type='table') {
     N_.Find('.listItem-Placeholder').remove();
   }
 }
-
-// @ = Click & Drag Select
-const DragSelection = new SelectionArea({
-  selectables: ['[dir-nodes] > tr'],
-  boundaries: ['.main_Page .PageData'],
-  startareas: ['.main_Page .PageData'],
-  startThreshold: 10,
-}).on('beforestart', ({event}) => {
-  N_.Find('.main_Page').classList.add('no-select');
-  return !event.target.tagName.match(/TD|INPUT|BUTTON/) && !ItemInformation.PageInfo.contains(event.target);
-}).on('start', ({store, event}) => {
-  if (!event.ctrlKey && !event.metaKey) {
-    for (const el of store.stored) {
-      el.classList.remove('ItemSelected');
-      el.removeAttribute('selected');
-      App.NodeSelected.delete(el.getAttribute('node-id'));
-    }
-    App.NodeSelected.clear();
-    DragSelection.clearSelection();
-  }
-}).on('move', ({store: {changed: {added, removed}}}) => {
-  for (const el of added) {
-    App.NodeSelected.add(el.getAttribute('node-id'));
-    el.setAttribute('selected', true);
-    el.classList.add('ItemSelected');
-  }
-  for (const el of removed) {
-    App.NodeSelected.delete(el.getAttribute('node-id'));
-    el.removeAttribute('selected');
-    el.classList.remove('ItemSelected');
-  }
-}).on('stop', () => {
-  N_.Find('.main_Page').classList.remove('no-select');
-  DragSelection.keepSelection();
-});

@@ -202,7 +202,7 @@ body {
 
 .ContentWrapper h4 {
   font-weight: 600;
-  padding-top: 1em;
+  padding-top: 2em;
   color: var(--text-medium);
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -227,13 +227,13 @@ body {
 }
 
 .ContentWrapper b {
-  display: -ms-grid;
-  display: grid;
-  padding: 10px;
+  display: -ms-inline-grid;
+  display: inline-grid;
+  padding: 0 0.5em;
   font-size: 14px;
 }
 
-.ContentWrapper sub {
+.ContentWrapper sub, .ContentWrapper small {
   font-size: 14px;
   color: var(--text-dull);
 }
@@ -326,6 +326,10 @@ body {
 .ContentWrapper img {
   margin: 20px 0;
   border-radius: 10px;
+}
+
+.ContentWrapper img[target] {
+  cursor: pointer;
 }
 
 .ContentWrapper table {

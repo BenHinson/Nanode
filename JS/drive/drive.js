@@ -19,8 +19,10 @@ class App {
   static Nodes = {};
   static NodeSelected = new Set();
 
+  static InternetConnection = window?.navigator?.onLine || undefined;
+
   constructor() {
-    this.SetListeners_();
+    this.SetListeners_();    
   }
 
   SetListeners_() {
@@ -37,6 +39,16 @@ class App {
     // * Key Event Listeners
     onkeydown = (e) => { keyMap[e.key] = true; }
     onkeyup = (e) => { keyMap[e.key] = false; }
+
+    // * Internet Connection Listener
+    window.ononline = () => {
+      App.InternetConnection = true;
+      N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'success', 'text':'Internet Connection Restored', 'displayDelay':100, 'displayTime':5000});
+    }
+    window.onoffline = () => {
+      App.InternetConnection = false;
+      N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'You are not connected to the internet', 'displayDelay':100, 'displayTime':5000});
+    }
   }
 
   static async pageSwitch(pageName) {
@@ -56,6 +68,10 @@ class App {
 
   static async API_Fetch(fetch_data, response) { // await App.API_Fetch({url: `/example/test`})
     const {url, conv} = fetch_data;
+
+    if (!App.InternetConnection) {
+      N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'Unable to send request: No Internet Connection', 'displayDelay':100, 'displayTime':3000});
+    }
   
     try {
       N_.ClientStatus(4, 'Wait');
@@ -72,6 +88,11 @@ class App {
   
   static async API_Post(send_data) { // await App.API_Post({url: `drive.nanode.one/`})
     const {url, body, skipErr=false} = send_data;
+
+    if (!App.InternetConnection) {
+      N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'Unable to send request: No Internet Connection', 'displayDelay':100, 'displayTime':3000});
+    }
+
     try {
       let res = await fetch(`https://drive.nanode.one${url[0] != '/' ? '/' : ''}${url}`, {
         ...defConfig,

@@ -73,7 +73,7 @@ const N_ = () => {
     return parent.querySelector(target);
   }
   N_.InfoPopup = (popupParams) => {
-    const {parent, type='info', text='', displayDelay=1000, displayTime=5000} = popupParams;
+    const {parent=N_.Find('.Page_Loading'), type='info', text='', displayDelay=1000, displayTime=5000} = popupParams;
 
     // NOTE: we MUST use createElement here as using just innerHTML breaks the child elements of parent as they are repassed and loose their event listener references.
     let popup = document.createElement('div');

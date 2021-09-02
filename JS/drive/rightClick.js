@@ -1,7 +1,7 @@
 const RightClickObjectMenu = {
   "File_Container": [
     {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
-    {_id: '2', title: 'Refresh', CMD: 'Main.NodeCall', VAR: [{"Reload":false}]},
+    {_id: '2', title: 'Refresh', CMD: 'SubFunction', fName: 'NodeCall', VAR: [{"Reload":false}]},
     {split: true},
     {_id: '3', rc_var: 'Layout', CMD: 'SubFunction', fName: 'ToggleView', VAR :[]},
     {_id: '4', rc_var: 'Change_Theme', CMD: 'SubFunction', fName: 'ToggleTheme', VAR :[]},
@@ -80,10 +80,11 @@ const RCC = new class RightClickContainer {
     
       // Sets the Right-click element to the correct target based on attributes
       this.RCElement = FindTarget();
-    
-      if (this.RCElement && RightClickObjectMenu[this.RCElement.getAttribute('rc')]) {
-        SelectItem(this.RCElement, 'Force');
-        this._Initialise(RightClickObjectMenu[this.RCElement.getAttribute('rc')], e);
+      const rcName = this.RCElement?.getAttribute('rc');
+
+      if (this.RCElement && RightClickObjectMenu[rcName]) {
+        if (rcName.match(/Node_Folder|Node_File|Recent_Node/)) new Select(this.RCElement, 'force');
+        this._Initialise(RightClickObjectMenu[rcName], e);
       }
     
       function FindTarget() {
@@ -126,14 +127,17 @@ const RCC = new class RightClickContainer {
       option.addEventListener('click', (e) => {
         let RC_ID = e.currentTarget.getAttribute('RC_ID');
         let func = this.menu.find(e => e._id == RC_ID);
+
         let variableOne = func.CUS_VAR ? this.CUSTOM_Var(func.CUS_VAR, this.event.target) : func.VAR[0] || null;
+        let variableOneName = typeof variableOne === 'object' ? 'OBJECT' : variableOne
+
         if (func.CMD == 'SubFunction') {
-          this.SubFunction(func.fName, {[func.CUS_VAR || variableOne]: variableOne, [func.VAR?.[1]]:func.VAR?.[1], [func.VAR?.[2]]:func.VAR?.[2], [func.VAR?.[3]]:func.VAR?.[3], [func.VAR?.[4]]:func.VAR?.[4]})
+          this.SubFunction(func.fName, {[func.CUS_VAR || variableOneName]: variableOne, [func.VAR?.[1]]:func.VAR?.[1], [func.VAR?.[2]]:func.VAR?.[2], [func.VAR?.[3]]:func.VAR?.[3], [func.VAR?.[4]]:func.VAR?.[4]})
         } else {
           window[func.CMD](variableOne, func.VAR?.[1], func.VAR?.[2], func.VAR?.[3], func.VAR?.[4]) // ?. after the object name checks if it exists first.
           // Re-selects an item after an event is called ie: ColourPicker unselects the item and the user cannot see which item they are setting the colour for.
         }
-        if (App.NodeSelected.size == 1) { SelectItem(this.RCElement); }
+        if (App.NodeSelected.size == 1) { new Select(this.RCElement); }
       })
     })
   }
@@ -160,6 +164,7 @@ const RCC = new class RightClickContainer {
       case ('ExternalTab'): {return N_.ExternalTab(params['NODEID']) }
       case ('Shortcut'): {return Navigate.Shortcut(params['RCElement']) }
       case ('ItemInformation'): {return ItemInformation.Load(params['RCElement'])}
+      case ('NodeCall'): {return Main.NodeCall(params['OBJECT']);}
   
       case ('ColorPicker'): {return new CreateColorPicker(params['RC'], params['callback']) }
   

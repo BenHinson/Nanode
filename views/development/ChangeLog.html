@@ -1,20 +1,116 @@
 <div class="ContentWrapper">
   <h1>Change Log</h1>
 
+  <section> <!-- AUGUST 2021 -->
+    <h2>August 2021</h2>
+
+    <h4>Development Page (this page)</h4>
+    <span>The development page's have been redesigned, assets updated and converted to a light-theme. General content has been edited too and <i>some</i> content has been updated. This change and styling was inspired by the <a href='https://developer.apple.com/design/human-interface-guidelines/macos/overview/themes/' target='_blank'>Apple development docs</a> and creates a standard for adding and updating new content.</span>
+    <span><h5>Navigation</h5> has been improved, to changing the URL dependant on the page being viewed and improving the reliability of loading into a specific page. <small><i>(Sometimes this also used to cause the 'Nanode Development Portal' in the top left not to load.)</i></small></span>
+    <span><h5>Loading</h5> into a new page also now displays one of two short loading animations. These last 500ms and are not shown upon re-visit to a page within the same session.</span>
+
+    <h4>Server</h4>
+    <span><h5>Image Thumbnails</h5> are now saved and served as an alternative to previously loading the image and downsizing it to a thumbnail (120x90px) before being sent to the client.</span>
+    <sub>Serving a fullsize image at<b>(1600x900px @ 41.9KB)</b>vs a resized image and thumbnail at<b>(120x90px @ 2.9KB)</b></sub>
+    <table>
+      <thead><tr><th>10 Loads Each</th><th>Fullsize</th><th>Resized</th><th>Thumbnail</th></tr></thead>
+      <tbody>
+        <tr><td>Average time (ms)</td><td>145</td><td>87</td><td>61</td></tr>
+        <tr><td>Time Percentage</td><td>100%</td><td>60%</td><td>42%</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Bin</h4>
+    <span>The bin page has had some major functionality added. <b>Restore</b> and <b>Delete</b> now work! Simply click on a deleted item and click either action.</span>
+    <ul>
+      <li>Selecting <u>Restore</u> will move the item back to the original directory it was from, if deleted it will be moved to the <u>General</u> span on the homepage. After being restored, the information box will reload with a <b>Visit Restored Item</b> button to allow you to simply find it.</li>
+      <li>Alternatively <u>Delete</u> will irreversibly delete the file or folder (and contents). This will free up space in the users account to upload more content.</li>
+    </ul>
+    <span><sub>Additional Changes</sub></span>
+    <ul>
+      <li>An empty bin section is now shown with a custom <a href='https://nanode.one/assets/nanode/empty_bin.svg' target='_blank'>Bin SVG Icon </a></li>
+      <li>A refresh button <i class='fas fa-sync-alt'></i> has been added as the bin is not currently automatically reloaded when an item is deleted.</li>
+      <li>A counter to show the number of items within a specific bin section has been added.</li>
+      <li>Changed the bin size information circle to display the total bin size more clearly.</li>
+    </ul>
+
+    <h4>Search</h4>
+    <span><h5>Parameters</h5> controlling <b>Within</b>, <b>For</b> and <b>Include</b> have been added to the search options. These parameters are saved to local storage and persist between sessions. See <a href='https://dev.nanode.one/#nova' target="_blank">Nova Development page</a> to learn more about what these parameters allow users to do.</span>
+    <span><h5>Results</h5> with greater than 5 items now show a 'Load More' option. Clicking on this button navigates the user into a directory specifically showing only the results of the search. Navigating out of this directory will not allow the user to navigate back into it. <h6>Uploading or Folder creation within this directory is disabled.</h6></span>
+
+    <h4>Skeleton Loading</h4>
+    <span>To better inform users of an active load or directory change during a slow connection or issue, after 500ms a 'skeleton' directory is loaded, to simulate the location of the directory being fetched. <small>As of the end of August this only affects the Homepage directory (in list view) and child directories (in list view)</small></span>
+
+    <h4>Misc Features</h4>
+    <ul>
+      <li><h5>Login Page</h5> now loads the relative page (Signup / Login) dependant on the URL. <code>account.nanode.one/login#signup</code> and <code>account.nanode.one/login#login</code>. Switching between the two also changes the URL to allow easy navigation back to the page.</li>
+      <li><h5>Drive Page Title</h5> now changes dependant on the directory the user is in. This helps with navigating browser tabs while multiple different pages of nanode are open.</li>
+      <li><h5>Drag Selection</h5> boundaries have been improved and no longer overflow onto items un-able to be selected. This also fixed an issue where input boxes wouldn't allow the selection of text.</li>
+      <li><h5>Filter</h5> now uses the items converted size rather than byte size for matching. This update also removed unintentional filters such as <em>'Object'</em> matching all items.</li>
+      <li><h5>The Flow of your Data</h5> section has been added to nanode.one and <em>will</em> link to an information page explaining more about Nanode's architecture in the future.</li>
+    </ul>
+    
+    <h4>Code</h4>
+    <span>Major rewrites and code cleanup... yes there has been an awful lot lately. It's for creating a standard that is easily read, understood and built upon. These rewrites / restructuring affect core systems of the front-end and separate functions into their own, controllable parts. This has seen a decrease in the lines of code required to perform the same or more actions as well as a reduction in memory.</span>
+    <ul>
+      <li><h5>Global Functions and Variables</h5> are accessible via the Primary class: <code>App()</code>, <code>Main()</code> and <code>BinController()</code></li>
+      <li><h5>Settings Controller</h5>, now rewritten, can be re-initiated with <code>Settings.Session()</code> and has converted settings access from <code>UserSettings.local / .user</code> to <code>Settings.Local / .User</code>. Initiating the function will load and update the settings again.</li>
+      <li><h5>Right Click</h5> code has been shuffled and cleaned and is now a persistent class which saves its state without public variables.</li>
+      <li><h5>Information Popups</h5> have been improved <code>N_.InfoPopup({parent:element, type:'info, success, error, warning', text:string, displayDelay:milliseconds, displayTime:milliseconds})</code> to support different alerts, colouring and display times. More warnings are using this, such as a new Internet connection checker, see: <code>App.InternetConnection</code>, to alert users of a drop in their connection and when to signal when it is restored.</li>
+      <li><h5>SelectItem()</h5> has had jQuery removed from it and bugs fixed to improve reliability.</li>
+    </ul>
+
+  </section>
+
+  <section> <!-- JULY 2021 -->
+    <h2>July 2021</h2>
+
+    <h4>Selection</h4>
+    <span>Selecting items has been vastly improved and made more reliable.</span>
+    <ul>
+      <li><h5>Drag Selection</h5> - Added a windows style drag-selection feature, via <a href='https://github.com/Simonwep/selection' target='_blank'>this helpful library by Simon Wep</a>. This enables the easy selection of multiple items.</li>
+      <li><h5>Selected Nodes</h5> - is now a javascript Set. Initial oversight allowed for the selection of the same item multiple times, causing issues.</li>
+    </ul>
+
+    <h4>Search</h4>
+    <ul>
+      <li><h5>Recent Searches</h5> are now saved locally and recommended when opening an empty search input. This saves the most recent searches upto 5, and allows for you to quickly enter the search term. These can be removed via an <i class="fas fa-times"></i> on the right-hand side. <small><i>Currently these results do not save any parameters of the search, only the input.</i></small></li>
+      <li><h5>Styling</h5> of search has also been improved, to add a Search icon <i class="fas fa-search"></i> and a new Parameter icon <sub><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" class="active"></path></svg></sub>. View <a href='/#nova' target="_blank">Nova Search</a> to see these.</li>
+    </ul>
+
+    <h4>Order</h4>
+    <span>Added a new order functionality to table rows via clicking on the <b>Size</b> or <b>Modified</b> column headers. This cycles between the Newest or Largest <i class="fas fa-chevron-up"></i>, The Oldest or Smallest <i class="fas fa-chevron-down"></i> and back to the original again. The directories final order is temporarily saved and means refreshing or navigating back into the directory will load the content in the same order.</span>
+
+    <h4>Preview</h4>
+    <span><h5>Open in New Tab</h5> is a new option when right-clicking an image. <h6>Note: Sharing the URL will not allow others to view the image, the URL will only show the image to the account that owns the file and currently logged in. The <u>only</u> way to share a file is via a generated link (at the bottom of the items details panel) or via a sharable download link.</h6></span>
+
+
+    <h4>Misc</h4>
+    <ul>
+      <li><h5>Global Nanode Icon</h5> - 30px by 30px square with a 5px border radius, within a 20px by 20px nanode logo.</li>
+      <li><h5>Login</h5> - Improved design of the <a href="https://account.nanode.one/login" target="_blank">Login Page</a> as well as improvements and reduction to the code. As a part of this the HTML page is no longer re-rendered when switching between Signup and Login and instead just changes the values and text.</li>
+      <li><h5>Nanode helper functions</h5> are now referenced with N_.Example() instead of N_Example(). This includes the addition of N_.FadeInOut() as a new and improved non-jQuery alternative to startFocusOut() (Used to control off-clicks on elements such as the context menu.)</li>
+      <li><h5>Navigation and Directory Path</h5> improvements were made to make the functions work correctly with visiting different directories via non-traditional methods.</li>
+      <li><h5>Base file images</h5> have been added to the file icon handler, meaning a file of mimetype text/example, despite not being referenced will still be distinguishable with the base text file icon.</li>
+      <li><h5>Nanode Policy</h5> in a basic form has been added to the bottom of the <a href="https://account.nanode.one/" target="_blank">Account Page</a>.</li>
+    </ul>
+
+  </section>
+
   <section> <!-- JUNE 2021 -->
     <h2>June 2021</h2>
 
     <h4>Homepage Folders</h4>
     <ul>
       <li><h5>Base Folders</h5> - The initial starting folders of 'Documents, Games, Media, Music and Notes', now have their own section and design to distinguish them.</li>
-      <li><h5>Recent Files</h5> - A new API has been built to fetch, view and go to recently opened files. <h6 style="font-style: italic;">Folders could be added in the future.</h6> This is a local toggleable setting. <code>https://drive.nanode.one/activity/recent/main</code></li>
+      <li><h5>Recent Files</h5> - A new API has been built to fetch, view and go to recently opened or edited files. <i><h6>Folders could be added in the future.</h6></i> This is a local toggle-able setting. <code>https://drive.nanode.one/activity/recent/main</code>. The API saves upto the last 8 unique recently viewed or edited files, however it is not fully reliant at this stage and can be slowly reduced to hold 0 items. I do not know why.</li>
     </ul>
 
     <h4>Preview</h4>
     <span>Simply click on a file to view it.</span>
     <ul>
-      <li><h5>Font</h5> - Added a preview for fonts.</li>
-      <li><h5>Audio</h5> - Added a preview for audio files.</li>
+      <li><h5>Font</h5> - This preview shows 0-10, a-z and A-Z using the selected font. This works via loading the font into css and rendering it.</li>
+      <li><h5>Audio</h5> - This is currently un-styled and lacks the ability to skip through the audio / song.</li>
     </ul>
 
     <h4>Styling</h4>
@@ -37,7 +133,7 @@
 
     <h4>Server</h4>
     <span>A new function to handle replies to the client. <code>Send.Message(Response, statusCode, Data)</code></span>
-    <span>Cloudflare <h6 style="font-style: italic;">should</h6> now save static content to serve requests faster.</span>
+    <span>Cloudflare <i><h6>should</h6></i> now save static content to serve requests faster.</span>
 
   </section>
 
@@ -109,7 +205,7 @@
 
     <h4>Nova Search</h4>
     <span>The long awaited search functionality has been implemented, well... some of it. The start of it. Really just the bare bones. But its happening!</span>
-    <span>Nova Search will allow for returning Nodes (folders and files) that meet certain parameters. Learn More at <a href='/#nova'>Nova</a></span>
+    <span>Nova Search will allow for returning Nodes (folders and files) that meet certain parameters. Learn More at <a href='/#nova' target="_blank">Nova</a></span>
 
     <h4>Misc</h4>
     <ul>
@@ -164,11 +260,11 @@
       <li>Creation of a light & dark theme colour-palette.</li>
       <span>
         <h5>Dark - </h5><a class='small-link'>https://coolors.co/080a0e-191b1e-1e2126-282c32-3d444a-565b61-83898f-cacccf-f5f6f7</a>
-        <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/dark_colour_palette_two.png" alt="Dark Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/dark_colour_palette.png', '_blank');">
+        <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/dark_colour_palette_two.png" alt="Dark Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/dark_colour_palette.png', '_blank');" loading='lazy'>
       </span>
       <span>
         <h5>Light - </h5><a class='small-link'>https://coolors.co/080a0e-191b1e-cacccf-e1e2e4-e8e9eb-eeeff1-f5f5f7-fbfbfd-fefefe</a>
-        <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/light_colour_palette.png" alt="light Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/light_colour_palette.png', '_blank');">
+        <img style="display: block; max-width: 90%; margin-top: 10px;" src="/assets/dev/changelog/jan21/light_colour_palette.png" alt="light Colour Palette" target="_blank" onclick="window.open('/assets/dev/changelog/jan21/light_colour_palette.png', '_blank');" loading='lazy'>
       </span>
 
       <li>Combined 'Frame', Nav controls, Location, Search into one main top-bar.</li>
@@ -208,11 +304,11 @@
     <h4>A Node</h4>
     <span>The node is the meta-data referring to an item, (file, folder, block, ...).</span>
     <span>The Node points to other Nodes, eg: Parent, Files within (if folder), Nano (if file) and its owner.</span>
-    <img src="/assets/dev/changelog/dec20/node.png" alt="Node Code (carbon)">
+    <img src="/assets/dev/changelog/dec20/node.png" alt="Node Code (carbon)" loading='lazy'>
 
     <h4>Folder Contents</h4>
     <span>If the Node is a folder that contains a file, contents will contain the following 'Short-Node'. Storing a Short-Node, allows for only one request for MongoDB to handle, being to return the Node relating to the folder's ID. The information within a 'Short-Node' is enough to provide the user-interface.</span>
-    <img src="/assets/dev/changelog/dec20/short_node.png" alt="Short-Node Code (carbon)">
+    <img src="/assets/dev/changelog/dec20/short_node.png" alt="Short-Node Code (carbon)" loading='lazy'>
 
 
 
@@ -335,6 +431,6 @@
       <span>Addition of back-end support for numerous systems, including a bin for deleted files. Full support for the bin, including its interface and functions will be added in August. The bin addition and general clean-up of the read / write code has allowed for faster, more secure and less buggy general systems.</span>
   </section>
 
-  <h3>Logs Before This Point are to be Added Later</h3>
+  <h6>Logs Before This Point are to be Added Later</h6>
 
 </div>

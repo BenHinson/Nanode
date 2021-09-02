@@ -5,39 +5,56 @@ function ItemClickListener(View) {
   );
 
   Items.forEach(item => item.addEventListener('click', (selected) => {
-      if (selected.currentTarget.hasAttribute('focus')) { return }
+    if (selected.currentTarget.hasAttribute('focus')) { return }
 
-      if (keyMap["Shift"] == true || keyMap["Control"] == true) { return SelectItem(selected.currentTarget); }
+    if (keyMap["Shift"] == true || keyMap["Control"] == true) { return new Select(selected.currentTarget); }
 
-      if (!selected.currentTarget.classList.contains('noOpen')) {
-        ItemActions(selected.currentTarget);
-        N_.ClientStatus(5, "Ok", 500);
-      }
-    })
-  )
+    if (!selected.currentTarget.classList.contains('noOpen')) {
+      ItemActions(selected.currentTarget);
+      N_.ClientStatus(5, "Ok", 500);
+    }
+  }))
 }
 
-function SelectItem(item, force) {
-  if (!item || !item.hasAttribute('node-id')) { return }
 
-  if (item.hasAttribute('selected') && !force) {
-    return DragSelection.deselect(item)
-    } else {DragSelection.select(item);
+class Select {
+  static OffClick = document.body;
+
+  constructor(item, force=false) {
+    if (!item || !item.hasAttribute('node-id')) { return }
+    Select.OffClick.removeEventListener('click', Select.RemoveSelected, true);
+    
+    Select.Toggle(item, force);
   }
-
-  setTimeout(() => {document.addEventListener('click', RemoveSelected)}, 20)
   
-  function RemoveSelected(e) {
-    if (!e.path.includes(N_.Find('.fileContainer')) || !e.path.includes(N_.Find('.RightClickContainer'))) { // Checks if the target is a child of fileContainer or RightClickContainer
+  static Toggle(item, force) {
+    const targetElement = item?.hasAttribute('node-id') ? item : N_.Find(`[dir-nodes] [node-id='${item}']`);
+    const targetID = targetElement.getAttribute('node-id');
+
+    if (targetElement.hasAttribute('selectedNode') && !force) {
+      targetElement.removeAttribute('selectedNode');
+      targetElement.classList.remove('ItemSelected');
+      App.NodeSelected.delete(targetID);
+    } else {
+      targetElement.setAttribute('selectedNode', true);
+      targetElement.classList.add('ItemSelected');
+      App.NodeSelected.add(targetID);
+      setTimeout(() => Select.OffClick.addEventListener('click', Select.RemoveSelected, true), 20)
+    }
+
+  }
+  static RemoveSelected(target) {
+    if (!target.path.includes(Directory.fileContainer) && !target.path.includes(RCC.container)) {
       App.NodeSelected.clear();
-      N_.Find('[selected=true]', true).forEach(item => {
-        item.removeAttribute('selected');
+      N_.Find('[selectedNode]', true).forEach(item => {
+        item.removeAttribute('selectedNode');
         item.classList.remove('ItemSelected');
       })
-      document.removeEventListener('click', RemoveSelected);
+      Select.OffClick.removeEventListener('click', Select.RemoveSelected, true);
     }
   }
 }
+
 
 function ItemActions(selected) {
   if (!selected && RCC.RCElement) { selected = RCC.RCElement }
@@ -49,6 +66,42 @@ function ItemActions(selected) {
   else { ViewItem(nodeType, nodeID) }
   // else if (nodeType.match(/image|text|video/g)) { ViewItem(nodeType, nodeID) }
 }
+
+
+// @ = Click & Drag Select
+const DragSelection = new SelectionArea({
+  selectables: ['[dir-nodes] > tr'],
+  boundaries: ['.main_Page .PageData'],
+  startareas: ['.main_Page .PageData'],
+  startThreshold: 10,
+}).on('beforestart', ({event}) => {
+  N_.Find('.main_Page').classList.add('no-select');
+  return !event.target.tagName.match(/TD|INPUT|BUTTON/) && !ItemInformation.PageInfo.contains(event.target);
+}).on('start', ({store, event}) => {
+  if (!event.ctrlKey && !event.metaKey) {
+    N_.Find('[selectedNode]', true).forEach(item => {
+      item.classList.remove('ItemSelected');
+      item.removeAttribute('selectedNode');
+    })
+
+    App.NodeSelected.clear();
+    DragSelection.clearSelection();
+  }
+}).on('move', ({store: {changed: {added, removed}}}) => {
+  for (const el of added) {
+    App.NodeSelected.add(el.getAttribute('node-id'));
+    el.setAttribute('selectedNode', true);
+    el.classList.add('ItemSelected');
+  }
+  for (const el of removed) {
+    App.NodeSelected.delete(el.getAttribute('node-id'));
+    el.removeAttribute('selectedNode');
+    el.classList.remove('ItemSelected');
+  }
+}).on('stop', () => {
+  N_.Find('.main_Page').classList.remove('no-select');
+  DragSelection.keepSelection();
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -123,13 +123,13 @@ new class BinController {
   }
   BinEmpty = () => {
     return `
-      <div class='section_Empty grid-items-center transform-center'>
+      <empty class='section_Empty grid-items-center transform-center'>
         <img src='/assets/nanode/empty_bin.svg' alt='This Bin Section is Empty.'>
         <div class='flex-column-cent'>
           <p>Bin section empty</p>
           <p class='italic-small'>Deleted items will show here<br>for 30 days</p>
         </div>
-      </div>
+      </empty>
   `;
   }
   ItemInfo = (binItemData, RequestInfo) => {

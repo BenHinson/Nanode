@@ -393,7 +393,7 @@ textarea::placeholder {
 }
 
 folders.baseFolders {
-  height: 130px;
+  height: 100px;
 }
 
 folders.baseFolders > div {
@@ -452,23 +452,23 @@ folders.baseFolders > div div {
 }
 
 recents.recentFiles {
-  max-height: 60px;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  gap: 1em;
-  overflow: hidden;
+  border-bottom: 1px solid var(--component);
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-bottom: 0.5em;
 }
 
 recents.recentFiles .toggleRecent {
-  position: absolute;
-  bottom: -15px;
-  padding: 0.5em 1em;
   border-radius: 5px;
   font-size: 12px;
   letter-spacing: 1px;
   color: var(--text-dull);
   border: 1px solid var(--component);
   background: var(--background);
+  -webkit-transform: translateY(15px);
+          transform: translateY(15px);
 }
 
 recents.recentFiles .toggleRecent:hover {
@@ -477,7 +477,16 @@ recents.recentFiles .toggleRecent:hover {
   background: var(--feature);
 }
 
-recents.recentFiles > div {
+recents.recentFiles > .recentContainer {
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 1em;
+  max-height: 48px;
+  width: 100%;
+  overflow: hidden;
+}
+
+recents.recentFiles > .recentContainer > div {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -490,7 +499,6 @@ recents.recentFiles > div {
   gap: 1em;
   max-height: 48px;
   min-width: 160px;
-  margin-bottom: 10px;
   border-radius: 8px;
   cursor: pointer;
   overflow: hidden;
@@ -500,15 +508,15 @@ recents.recentFiles > div {
   transition: all 200ms;
 }
 
-recents.recentFiles > div:hover, recents.recentFiles > div :focus {
+recents.recentFiles > .recentContainer > div:hover, recents.recentFiles > .recentContainer > div :focus {
   background: var(--feature);
 }
 
-recents.recentFiles > div img {
+recents.recentFiles > .recentContainer > div img {
   max-width: 50px;
 }
 
-recents.recentFiles > div p {
+recents.recentFiles > .recentContainer > div p {
   max-width: calc(100% - 70px);
   max-height: 51px;
   font-size: 14px;
@@ -855,6 +863,150 @@ recents.recentFiles > div p {
 
 .searchContainer .searchSuggested > ul > li:hover > i, .searchContainer .searchSuggested > ul > li:focus > i {
   color: var(--text-dull);
+}
+
+.skeleton * {
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.skeleton .skeleton-load {
+  opacity: 0.7 !important;
+  background: -webkit-gradient(linear, left top, right top, from(var(--component)), color-stop(var(--feature)), to(var(--component)));
+  background: linear-gradient(90deg, var(--component), var(--feature), var(--component));
+  -webkit-animation: gradient 2s ease infinite;
+          animation: gradient 2s ease infinite;
+  background-size: 200%;
+}
+
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+.skeleton .skeleton-text {
+  height: 1em;
+  width: 100%;
+  border-radius: 0.125em !important;
+  background: var(--skeleton);
+}
+
+.skeleton .skeleton-img {
+  min-height: 38px;
+  margin: 0.25em;
+  border-radius: 0.25em;
+  background: var(--skeleton-solid);
+}
+
+.skeleton .skeleton-table {
+  position: relative;
+  width: 100%;
+  border-spacing: 0 0.25em;
+}
+
+.skeleton .skeleton-table > thead > tr {
+  height: 32px;
+}
+
+.skeleton .skeleton-table > thead > tr > th:nth-child(1) {
+  max-width: 50px;
+}
+
+.skeleton .skeleton-table > thead > tr > th:nth-child(2) {
+  max-width: 0;
+  width: auto;
+  min-width: 160px;
+  overflow: hidden;
+}
+
+.skeleton .skeleton-table > tbody > tr {
+  height: 46px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.skeleton .skeleton-table > tbody > tr > td:nth-child(1) {
+  width: 50px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.skeleton .skeleton-table > tbody > tr > td:nth-child(2) {
+  padding: 0 1em;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.skeleton .skeleton-basefolders {
+  height: 100px;
+}
+
+.skeleton .skeleton-basefolders > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: relative;
+  height: 60px;
+  width: calc(80% / 5);
+  gap: 0.5em;
+  border-radius: 5px;
+  -webkit-transform: translateY(20px);
+          transform: translateY(20px);
+}
+
+.skeleton .skeleton-basefolders > div > .skeleton-img {
+  height: 50px;
+  width: 60px;
+  margin: auto;
+  -webkit-transform: translateY(-30px);
+          transform: translateY(-30px);
+}
+
+.skeleton .skeleton-recents {
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 1em;
+  position: relative;
+  border-bottom: 1px solid var(--component);
+  padding: 1em 0;
+  max-height: 5em;
+  overflow: hidden;
+}
+
+.skeleton .skeleton-recents > div {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  height: 40px;
+  min-width: 160px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
 .DragDropOverlay {

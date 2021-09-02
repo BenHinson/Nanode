@@ -12,9 +12,14 @@
   --orange: #d88a1e;
   
   --text-white: #f5f6f7;
+  --dark: #131313;
+
+  --skeleton: #83898f80; // 50% opacity
 }
 
 [data-theme = dark] {
+  --skeleton-solid: #5a5f64;
+
   --theme: #080a0e;
 
   --background: #191b1e;
@@ -29,6 +34,8 @@
 }
 
 [data-theme = light] {
+  --skeleton-solid: #bfc2c6;
+
   --theme: #fefefe; // #e0e5eb
 
   --background: #fbfbfd;  // #fff
@@ -318,6 +325,7 @@ body {
         >.Content {
           position: relative;
           display: flex;
+          flex: 1;
           flex-direction: column;
           max-width: 100%;
           min-width: calc(100% - 270px);
@@ -371,13 +379,7 @@ body {
   >.main_Page > .PageContainer {
     .PageData {
       >.Content {
-        > div {  
-          >.SpanMain {
-            position: relative;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--component);
-          }
-    
+        > div {    
           .tableTemplate {
             border-radius: 5px;
             border-spacing: 0 2px;
@@ -493,8 +495,7 @@ body {
           }
         }
       }
-  
-        // &::-webkit-scrollbar { display: none; }
+
       >.PageInformation { // right side bar
         transition: all 600ms;
   
@@ -1068,6 +1069,12 @@ body {
 }
 
 @media only screen and (max-width: 900px) {
+  .Pages > section > .PageContainer > .PageData > .PageInformation { display: none; }
+
+  .PageHeader { width: calc(100% - 80px); }
+
+  .Frame { width: 80px; >.clientStatus { display: none; }}
+
   .tableTemplate {
     & th:nth-child(4) { display: none !important;}
     & td:nth-child(4) { display: none !important;}
