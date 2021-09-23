@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://nanode.one/">
     <meta name="description" content="Scalable Cloud Storage to Save, Organize and Share your files from Anywhere and at Anytime">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/nanode/logo/logo.svg" alt='Nanode'/>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/nanode/logo/block.svg" alt='Nanode'/>
 
-    <meta name="image" content="https://nanode.one/assets/nanode/logo/logo.svg">
+    <meta name="image" content="https://nanode.one/assets/nanode/logo/block.svg">
     <meta property="og:title" content="Nanode">
     <meta property="og:url" content="https://nanode.one/">
     <meta property="og:image" content="https://nanode.one/assets/covers/poster.png">
@@ -21,7 +21,7 @@
     <meta name="twitter:description" content="Scalable Cloud Storage to Save, Organize and Share your files from Anywhere and at Anytime">
     <meta name="twitter:image" content="https://nanode.one/assets/covers/poster.png">
 
-    <link rel="apple-touch-icon" type="image/x-icon" href="/assets/nanode/logo/logo.svg">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/assets/nanode/logo/block.svg">
 
     <link rel="stylesheet" href="/CSS/Home/home.css">
   </head>
@@ -33,8 +33,8 @@
 
       <span class="flex-wrap header_links">
         <a href='https://dev.nanode.one'>Development</a>
-        <a href='https://nanode.one/plans'>Plans</a>
-        <a href='https://nanode.one/support'>Support</a>
+        <!-- <a href='https://nanode.one/plans'>Plans</a> -->
+        <!-- <a href='https://nanode.one/support'>Support</a> -->
         <a href='https://account.nanode.one' class='H_Highlight'></a>
       </span>
     </header>
@@ -45,7 +45,7 @@
       <span class="mainContainer flex-row">
         <div class='Central'>
           <span class="mainTitle">Anywhere,<br>Anytime,<br>Scalable<br><h1 class="titleHighlight">Cloud Storage</h1></span> <!-- File Sharing , Collaboration , Development , Data Transfer -->
-          <p>Create an account to get 10GB of Free Storage</p>
+          <p class='titleMessage'>Create an account to get 10GB of Free Storage</p>
   
           <span class="mainNav flex-wrap">
             <a href='https://drive.nanode.one' class="MV_Drive"></a>
@@ -154,8 +154,8 @@
     <section class='S_Plans'>
       <div class='section_header plans'>
         <h2 class="gradient_text">Nanode Pricing</h2>
-        <p>Fully managed Cloud Storage Plans to Upgrade, Cancel or Change at Anytime</p>
-        <span class="flex-wrap"><div>10GB</div><div>50GB</div><div>200GB</div><div>500GB</div><div>1TB</div></span>
+        <p>Fully managed Cloud Storage Plans to Upgrade, Change or Cancel at Anytime</p>
+        <span class="flex-wrap"><div>10GB</div><div>100GB</div><div>250GB</div><div>500GB</div><div>1TB</div></span>
       </div>
 
       <span class="flex-wrap nanode_plans card_container">
@@ -172,7 +172,9 @@
             <h3>For</h3> <div class='gradient_text'>Free</div>
           </span>
           <divide></divide>
-          <button>Start Free</button>
+          <a href='https://account.nanode.one/login#signup' class='plan_btn'>
+            <button>Start Free</button>
+          </a>
         </div>
         <div class='card plan_card flex-column'>
           <span class='plan_title'>
@@ -181,15 +183,17 @@
           </span>
           <divide></divide>
           <span class='plan_size'>
-            <h3>Start</h3> <div class='gradient_text'>200GB</div>
+            <h3>Start</h3> <div class='gradient_text'>250GB</div>
           </span>
           <span class='plan_price'>
-            <h3>For</h3> <div class='gradient_text'>£7.49/mo</div>
+            <h3>For</h3> <div class='gradient_text'>£5.49/mo</div>
             <h3>Then</h3> <div class='info_text'>£1 / 10GB</div>
             <h6>One-Off-Payment</h6>
           </span>
           <divide></divide>
-          <button class="btn_black">Get Started</button>
+          <a href='https://account.nanode.one/login#signup' class='plan_btn'>
+            <button class="btn_black">Get Started</button>
+          </a>
         </div>
         <div class='card plan_card flex-column'>
           <span class='plan_title'>
@@ -198,13 +202,15 @@
           </span>
           <divide></divide>
           <span class='plan_size'>
-            <h3>Base</h3> <div class='gradient_text'>50GB</div>
+            <h3>Base</h3> <div class='gradient_text'>100GB</div>
           </span>
           <span class='plan_price'>
-            <h3>For</h3> <div class='gradient_text'>£2.49/mo</div>
+            <h3>For</h3> <div class='gradient_text'>£1.49/mo</div>
           </span>
           <divide></divide>
-          <button>Get Started</button>
+          <a href='https://account.nanode.one/login#signup' class='plan_btn'>
+            <button>Get Started</button>
+          </a>
         </div>
       </span>
     </section>
@@ -215,8 +221,7 @@
           <h2>The flow of your data</h2>
           <p>From your device through to our server, understand the journey it takes and what makes it possible.<br>See how your data travels through Nanode and see the separate parts which process it and how they support key features of Nanode.</p>
           
-          <button class="btn_black"><a href='https://nanode.one/data_flow'>Data Flow</a></button>
-          
+          <a href='https://nanode.one/data-flow'><button class="btn_black">Data Flow</button></a>          
         </div>
         <span>
           <div class="chip_fade"></div>
@@ -246,7 +251,7 @@
         <div class='card dev_card'>
           <h4>Auth</h4>
           <p>Be confident in your accounts security with authentication tools built to identify and block unwanted access.</p>
-          <a class='nordPowered' href="https://dev.nanode.one/#nord" target="_blank">Powered by Nord</a>
+          <a class='nauthPowered' href="https://dev.nanode.one/#nauth" target="_blank">Powered by NAuth</a>
         </div>
       </span>
     </section>
@@ -287,12 +292,14 @@
 
 <script>
   (async() => {
-    const RequestInfo = await( await fetch('https://nanode.one/check') ).json();
+    const RequestInfo = await( await fetch('https://nanode.one/check?details=true') ).json();
     const loggedIn = RequestInfo?.loggedIn == true;
 
-    const acc_btn = document.getElementsByClassName('MV_Account')[0];
-    acc_btn.innerText = loggedIn ? 'Account' : 'Login';
-    acc_btn.href = loggedIn ? 'https://account.nanode.one' : 'https://account.nanode.one/';
+    if (loggedIn) {document.getElementsByClassName('titleMessage')[0].innerHTML =  
+    `Logged in as <b>${CapFirstLetter(RequestInfo.accountDetails.username)}</b>, using: <b>${ConvertSize(RequestInfo.accountDetails.plan.used)} / ${ConvertSize(RequestInfo.accountDetails.plan.max)}</b> of available storage.`
+    }
+
+    document.getElementsByClassName('MV_Account')[0].innerText = loggedIn ? 'Account' : 'Login';
 
     const drv_btn = document.getElementsByClassName('MV_Drive')[0];
     drv_btn.innerText = loggedIn ? 'Enter Drive' : 'Claim Free 10GB';
@@ -312,4 +319,15 @@
       document.querySelector(`div[scID='${SC_Item_Count}']`).classList.add('Displaying');
     }) 
   })
+
+  CapFirstLetter = (string) => {
+    return typeof string !== 'string' ? '' : string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
+  }
+
+  ConvertSize = (size) => {
+    for(short of ['Bytes', 'KB', 'MB', 'GB', 'TB']) {
+      if (!size || size <= 1024) {return size ? (size+" "+short) : '-'; }
+      else { size = parseFloat(size / 1024).toFixed() }
+    }
+  }
 </script>

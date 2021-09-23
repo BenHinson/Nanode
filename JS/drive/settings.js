@@ -74,7 +74,8 @@ class Settings {
   static ToggleView = () => {
     Settings.Write('local', 'layout', 'toggle');
     document.querySelector('.Slider.SL_View').style.transform = `translateX(${Settings.Local.layout ? 28 : 0}px)`;
-    Main.NodeCall({"Folder":Main.NodeID, "Reload":false});
+    // Main.NodeCall({"Folder":Main.NodeID, "Reload":false});
+    Directory.Render();
   }
   static ToggleRecents = () => {
     Settings.Write('local', 'recents', 'toggle');

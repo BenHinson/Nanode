@@ -38,7 +38,7 @@
 
         <p>Sub</p>
         <li><a id='nova'>Nova</a></li>
-        <li><a id='nord'>Nord</a></li>
+        <li><a id='nauth'>NAuth</a></li>
 
         <p>Future</p>
         <li><a id='void'>Void</a></li>
@@ -61,7 +61,7 @@
     constructor() {
       this.pageLoaded = [];
       this.content = document.querySelector('.DevContent');
-      this.pages = /intro|changelog|incoming|accounts|read|write|nova|nord/;
+      this.pages = /intro|changelog|incoming|accounts|read|write|nova|nauth/;
       
       this.LoadEvents_();
       this.SetListeners_(document.querySelectorAll('.DevList li'));

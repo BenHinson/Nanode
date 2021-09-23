@@ -731,11 +731,13 @@ body {
             flex-direction: column;
             gap: 20px;
             margin-top: 10px;
+            max-width: 200px;
     
             p {
               padding-bottom: 10px;
               border-bottom: 1px solid var(--feature);
               color: var(--text-strong);
+              overflow-wrap: anywhere;
             }
     
             table {
@@ -914,6 +916,7 @@ body {
   }
 
   .Preview {
+    display: contents;
     // max-width: 96%;
 
     .ViewImage {

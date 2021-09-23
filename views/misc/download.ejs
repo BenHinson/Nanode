@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://nanode.one/">
     <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/nanode/logo/fade.svg" alt='Nanode'/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://nanode.one/assets/nanode/logo/fade.svg" alt='Nanode'/>
     <meta name="image" content="https://nanode.one/assets/nanode/logo/fade.svg">
-    <link rel="apple-touch-icon" type="image/x-icon" href="/assets/nanode/logo/fade.svg"> 
+    <link rel="apple-touch-icon" type="image/x-icon" href="https://nanode.one/assets/nanode/logo/fade.svg"> 
     
     <link rel="stylesheet" href="https://nanode.one/CSS/Download/download.css">
   </head>
@@ -18,7 +18,7 @@
 
     <section>
       <div>
-        <a href="//www.nanode.one"><img src="https://nanode.one/assets/nanode/nanode.svg" style="width: 140px"></a>
+        <a href="https://nanode.one" class="nanode"><div></div>Nanode</a>
 
         <h4><%= ejs_name %>.zip</h4>
         <h5><%= ejs_size %></h5>
@@ -27,7 +27,7 @@
 
         <span>
           <button id='previewBtn' style='opacity: <%= ejs_preview ? 1 : 0.6 %>; cursor: <%= ejs_preview ? "pointer" : "not-allowed" %>;'> <% ejs_preview ? "" : "No" %> Preview</button>
-          <button style='opacity: <%= ejs_scanned ? 1 : 0.6 %>;'> <%= ejs_scanned ? ejs_scanned : "Not Scanned" %></button>
+          <button style="<%= ejs_scanned ? 'background: #4285f4' : 'background: #ff453a' %>"> <%= ejs_scanned ? ejs_scanned : "Not Scanned" %></button>
         </span>
       </div>
 
@@ -43,8 +43,10 @@
 
       <div>
         <table>
+          <thead>
+            <tr><th>Name</th><th>Type</th></tr>
+          </thead>
           <tbody>
-            <tr><th>NAME</th><th>TYPE</th></tr>
             <% ejs_contents.forEach(function(item) { %>
               <tr> <td><%= item.Name %></td> <td><%= item.Mime %></td> </tr>
             <% }) %>
@@ -58,7 +60,7 @@
 
 <script>
   const downloadItem = "<%= ejs_item %>";
-  const previewCount = <%= ejs_preview_count %>;
+  const previewCount = "<%= ejs_preview_count %>";
   let previewItem = (previewCount >= 0 ? 0 : false);
   let previewOpen = false;
   const previewBox = document.getElementById('previewBox');

@@ -266,8 +266,8 @@ class Recent {
     this.content = ``;
 
     if (Settings.Local.recents === 1) {
-      const res = await App.API_Fetch({url: `/activity/recent/main`});
-      if (res.err) { return N_.Error('Failed to Fetch Recents: '+err) }
+      const res = await App.API_Fetch({url: `/activity/recent/main`}) || {};
+      if (res?.err) { return N_.Error('Failed to Fetch Recents: '+err) }
 
       res.recent === 'Empty Query'
         ? N_.InfoPopup({'parent':N_.Find('.main_Page .PageData'), 'type': 'warning', 'text':"No recent files or folders found", 'displayDelay':100, 'displayTime':5000})

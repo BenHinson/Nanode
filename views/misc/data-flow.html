@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/nanode/logo/block.svg" alt='Nanode'/>
+    <title>Data Flow</title>
+  </head>
+
+  <body>
+
+    <!-- <div style="font-family: system-ui, Arial, Helvetica, sans-serif; color: white; padding: 5em; font-size: 26px; place-self: center;">
+      <h1>Data Flow</h1>
+      <h2>This Page is in Development.</h2>
+    </div> -->
+
+    <div class="datacore" style="width: 600px; height: 380px; box-shadow: 0 0 16px 0px #0e0f11">
+      <div class="datacore" style="width: 450px; height: 278px; box-shadow: 0 0 16px 0px #0e0f11">
+        <div class="datacore dc_center" style="width: 300px; height: 185px; background: #0e0f11; border: 3px solid #f5f6f7;">
+          <h1>DATACORE</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- <traffic style="position: absolute; width: 100%;">
+      <svg><path stroke="white" d="M5 20 l215 0" stroke-dasharray="20,10,5,5,5,10"></path></svg>
+    </traffic> -->
+
+
+  </body>
+</html>
+
+<style>
+  @font-face {
+    font-family: "gr-bold";
+    src: url("/assets/fonts/gr-bold.woff2") format("woff2");
+    font-display: swap;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    outline: none;
+    font-family: 'Inter', 'Segoe UI', 'monospace';
+    letter-spacing: 0.3px;
+  }
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    background-color: #191b1e;
+    display: grid;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .datacore {
+    display: grid;
+    place-self: center;
+    border-radius: 20px;
+  }
+  .datacore > h1 {
+    font-family: 'gr-bold';
+    color: #f5f6f7;
+    border-radius: 3px;
+    padding: 0.1em 0.3em;
+    font-size: 20px;
+    letter-spacing: 2px;
+    place-self: center;
+  }
+
+  .dc_center {
+    filter: drop-shadow(0 0 16px #f5f6f7);
+    animation: pulse infinite 3s;
+  }
+
+  traffic > svg {
+    position: absolute;
+    animation: move 10s infinite linear;
+  }
+
+  @keyframes pulse {
+    0% {filter: drop-shadow(0 0 16px #f5f6f7);}
+    50% {filter: drop-shadow(0 0 8px #f5f6f780);}
+    100% {filter: drop-shadow(0 0 16px #f5f6f7);}
+  }
+
+  @keyframes move {
+    0% {transform: translateX(-10vw);}
+    50% {transform: translateX(100vw);}
+    100% {transform: translateX(-10vw);}
+  }
+</style>

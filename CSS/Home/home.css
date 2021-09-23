@@ -141,11 +141,8 @@ header .nanode > div {
 }
 
 header .header_links {
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  height: 35px;
-  width: 400px;
+  height: 2em;
+  gap: 1em;
 }
 
 header .header_links a {
@@ -155,8 +152,8 @@ header .header_links a {
   text-align: center;
   text-decoration: none;
   position: relative;
-  padding: 9px 15px;
-  border-radius: 5px;
+  padding: 0.7em 1.2em;
+  border-radius: 6px;
   -webkit-transition: 200ms;
   transition: 200ms;
 }
@@ -209,7 +206,7 @@ header .header_links a.H_Highlight {
   height: 43px;
   width: calc(50% - 10px);
   max-width: 250px;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.6px;
@@ -414,24 +411,15 @@ header .header_links a.H_Highlight {
   -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
-  height: 500px;
   z-index: 2;
 }
 
 .S_Spotlight .Showcase > div {
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  height: 140px;
   width: 380px;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 1.2em;
+  border-radius: 12px;
   -webkit-transition: background-color 300ms;
   transition: background-color 300ms;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
   cursor: pointer;
 }
 
@@ -678,6 +666,13 @@ header .header_links a.H_Highlight {
 .S_Plans > .nanode_plans > .plan_card:nth-child(2) divide {
   color: var(--background);
   border-top: 1px solid;
+}
+
+.S_Plans > .nanode_plans > .plan_card .plan_btn {
+  place-self: center;
+  height: 38px;
+  width: 150px;
+  margin: 10px 0;
 }
 
 .S_Plans > .nanode_plans > .plan_card > span {
@@ -995,17 +990,19 @@ header .header_links a.H_Highlight {
   background-color: #ff9101;
 }
 
-.S_Development > .nanode_development > .card a.nordPowered {
+.S_Development > .nanode_development > .card a.nauthPowered {
   color: #be13d4;
 }
 
-.S_Development > .nanode_development > .card a.nordPowered:before {
+.S_Development > .nanode_development > .card a.nauthPowered:before {
   background-color: #be13d4;
 }
 
 footer {
   background: var(--comp_dark);
   padding-top: 10px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 }
 
 footer > h3 {
@@ -1122,7 +1119,7 @@ footer .info_tag:before {
       align-content: space-between;
   max-width: 400px;
   width: 30%;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 30px;
   -webkit-transition: all 200ms;
   transition: all 200ms;
@@ -1162,6 +1159,8 @@ footer .info_tag:before {
 }
 
 .mainTitle > .titleHighlight {
+  display: inline;
+  white-space: pre-wrap;
   font-size: inherit;
   font-family: inherit;
   color: var(--background);
@@ -1201,6 +1200,9 @@ a {
       -ms-user-select: none;
           user-select: none;
   text-decoration: none;
+}
+
+a:not(.plan_btn) {
   padding: 5px 0;
 }
 
@@ -1208,7 +1210,7 @@ button {
   height: 38px;
   width: 150px;
   margin: 10px 0;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   place-self: center;
@@ -1222,6 +1224,12 @@ button {
   transition: -webkit-filter 400ms;
   transition: filter 400ms;
   transition: filter 400ms, -webkit-filter 400ms;
+}
+
+.plan_btn button {
+  height: inherit;
+  width: inherit;
+  margin: 0;
 }
 
 button:hover {
@@ -1335,9 +1343,6 @@ t:after {
     width: 100%;
     line-height: 22px;
     background: #282c32;
-    -webkit-box-pack: end;
-        -ms-flex-pack: end;
-            justify-content: end;
   }
   .S_Spotlight .Figures {
     display: none;
@@ -1410,7 +1415,7 @@ t:after {
     width: 180px;
     right: calc(25% - 90px);
   }
-  .S_Plans .nanode_plans .card button {
+  .S_Plans .nanode_plans .card .plan_btn {
     bottom: 20px;
     left: calc(25% - 75px);
   }
@@ -1540,6 +1545,7 @@ t:after {
             flex-direction: column;
     width: 100%;
     bottom: 8%;
+    left: 0;
   }
   .S_Main .Central .mainNav a {
     width: 80%;
@@ -1560,7 +1566,7 @@ t:after {
   .S_Plans > .nanode_plans > .card span:nth-child(1) {
     top: 20%;
   }
-  .S_Plans > .nanode_plans > .card button {
+  .S_Plans > .nanode_plans > .card .plan_btn {
     width: 120px;
     bottom: 20%;
     left: calc(25% - 60px);

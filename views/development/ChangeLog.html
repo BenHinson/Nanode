@@ -194,7 +194,7 @@
     <h2>March 2021</h2>
     <!-- <span>Prep for Facebook</span> -->
     <h4>SocketIO Removal</h4>
-    <span>SocketIO has been very useful, but it is now being phased out of Nanode as our current uses of it can be done without. Saving on initial load times by not needing to download the package and initiate a connection. SocketIO also caused issues with Nord Auth, due to SocketIO not being able to assign new cookies from the server reliably, meaning if a cookie runs out while using Nanode and the clients next request to the server is through SocketIO (ie: Calling an item's information) The server would update the database but the client wouldn't recieve the new session and log the client out on the next request. A loss of connction to the server would also require the client pressing a button to reconnect. Bad user experience.</span>
+    <span>SocketIO has been very useful, but it is now being phased out of Nanode as our current uses of it can be done without. Saving on initial load times by not needing to download the package and initiate a connection. SocketIO also caused issues with NAuth, due to SocketIO not being able to assign new cookies from the server reliably, meaning if a cookie runs out while using Nanode and the clients next request to the server is through SocketIO (ie: Calling an item's information) The server would update the database but the client wouldn't recieve the new session and log the client out on the next request. A loss of connction to the server would also require the client pressing a button to reconnect. Bad user experience.</span>
     <span>The Socket API's have been re-written and added to the drive subdomain. Including: '/share', '/edit', '/create'</span>
 
     <h4>Navigation</h4>
@@ -238,8 +238,8 @@
     <h4>Server</h4>
     <ul>
       <li>Global Error Page response fallback across the site</li>
-      <li>BUG FIX: Nord Middleware moved from being global to on the required APIs due to ALL static content requests also running through Authentication.</li>
-      <li>Clean up and imrpovement of Nord Auth Middleware to be more reliable and easier to debug.</li>
+      <li>BUG FIX: NAuth Middleware moved from being global to on the required APIs due to ALL static content requests also running through Authentication.</li>
+      <li>Clean up and imrpovement of NAuth Middleware to be more reliable and easier to debug.</li>
       <li>Added additional Account options for future use. 'Photo', 'Password Length' (USED AS AN ASSISTANCE ON THE ACCOUNT PAGE TO HELP REMEMBER A FORGOTTEN PASSWORD. Google does this.)</li>
       <li>New functions to handle database requests and formatting.</li>
     </ul>
@@ -324,8 +324,8 @@
 
   <section> <!-- NOVEMBER 2020 -->
     <h2>November 2020</h2>
-    <h4>Nord</h4>
-    <span>Account authentication API has been developed, using a custom version of the JWT protocol. Nord grants 20 minute access to an account before checking with the database that the token has not been tampered, account access is still granted and the device is still the same.</span>
+    <h4>NAuth</h4>
+    <span>Account authentication API has been developed, using a custom version of the JWT protocol. NAuth grants 20 minute access to an account before checking with the database that the token has not been tampered, account access is still granted and the device is still the same.</span>
 
     <h4>Moving away from <a href="https://socket.io/">SocketIO</a></h4>
     <span>SocketIO has drastically made the development of Nanode easier, though to move inline with industry standards, web-sockets are being replaced by standard fetch/push to urls.</span>

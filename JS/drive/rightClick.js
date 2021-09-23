@@ -31,19 +31,20 @@ const RightClickObjectMenu = {
   ],
   "Node_File": [
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
-    {_id: '2', title: 'View Details', CMD: 'SubFunction', fName: 'ItemInformation', VAR: ["RCElement"]},
-    {_id: '3', title: 'Security', class: 'disabled-text', CMD: '', VAR: []},
+    // {_id: '2', title: 'Open in New Tab', CMD: 'SubFunction', fName: 'ExternalTab', CUS_VAR: "NODEID", VAR: []},
+    {_id: '3', title: 'View Details', CMD: 'SubFunction', fName: 'ItemInformation', VAR: ["RCElement"]},
+    // {_id: '4', title: 'Security', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
-    {_id: '4', title: 'Copy To', class: 'disabled-text', CMD: '', VAR: []},
-    {_id: '5', title: 'Move To', class: 'disabled-text', CMD: '', VAR: []},
-    {_id: '6', title: 'Create Shortcut', class: 'disabled-text', CMD: '', VAR: []},
+    {_id: '5', title: 'Copy To', class: 'disabled-text', CMD: '', VAR: []},
+    {_id: '6', title: 'Move To', class: 'disabled-text', CMD: '', VAR: []},
+    {_id: '7', title: 'Create Shortcut', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
-    {_id: '7', title: 'Change Colour', CMD: 'SubFunction', fName: 'ColorPicker', VAR: ["RC"]},
-    {_id: '8', title: 'Rename', CMD: 'renameItem', VAR: []},
-    {_id: '9', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Send Files to the Bin, where they can be reclaimed for 30 days.'}]},
+    {_id: '8', title: 'Change Colour', CMD: 'SubFunction', fName: 'ColorPicker', VAR: ["RC"]},
+    {_id: '9', title: 'Rename', CMD: 'renameItem', VAR: []},
+    {_id: '10', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Send Files to the Bin, where they can be reclaimed for 30 days.'}]},
     {split: true},
-    {_id: '10', title: 'Share', class: 'disabled-text', CMD: '', VAR: []},
-    {_id: '11', title: 'Download', CMD: 'PopUp_Download', VAR: ["Download", "ContextMenu"]},
+    // {_id: '11', title: 'Share', class: 'disabled-text', CMD: '', VAR: []},
+    {_id: '12', title: 'Download', CMD: 'PopUp_Download', VAR: ["Download", "ContextMenu"]},
   ],
   "Recent_Node": [
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
@@ -145,7 +146,7 @@ const RCC = new class RightClickContainer {
 
   CUSTOM_Var(variableName, target) { // Used when calling functions to define target relative data, without the function needing to calculate it.
     switch(variableName) {
-      case ('NODEID'): { return target.getAttribute('node-id') }
+      case ('NODEID'): {return target.getAttribute('node-id') || RCC.RCElement.getAttribute('node-id'); }
     }
   }
   

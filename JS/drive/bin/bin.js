@@ -95,7 +95,7 @@ new class BinController {
         for (const [nodeID, nodeData] of Object.entries(this.binConfig.Bin_Nodes)) {
           content += `
             <tr type='${nodeData.data.type.general}' node-id='${nodeID}' rc='Bin_Item' rcOSP='TD'>
-              <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(nodeData.data, 38, 38, 'bin')}'></img></td>
+              <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(nodeData.data, 90, 120, 'bin')}'></img></td>
               <td>${N_.CapFirstLetter(nodeData.data.name)}</td>
               <td>${nodeData.data.type.short}</td>
               <td>${N_.DateFormatter(nodeData.data.deleted.stamp)}</td>

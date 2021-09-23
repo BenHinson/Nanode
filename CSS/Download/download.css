@@ -1,6 +1,220 @@
+:root {
+  --color_highlight: #99ccff;
+  --color_blue: #4285f4;
+  --background: #0e0f11;
+  --background_2: #141517;
+  --comp_dark: #191b1e;
+  --component: #282c32;
+  --comp_highlight: #83898f;
+  --text_dull: #cacccf;
+  --text: #f5f6f7;
+}
+
+@font-face {
+  font-family: "gr-bold";
+  src: url("/assets/fonts/gr-bold.woff2") format("woff2");
+  font-display: swap;
+}
+
 * {
+  padding: 0;
+  margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   outline: none;
-  font-family: 'Segoe UI';
+  font-family: 'Inter', 'Segoe UI', 'monospace';
+  letter-spacing: 0.3px;
+  color: var(--text);
+}
+
+html {
+  overflow-x: hidden;
+  height: 100%;
+  background: linear-gradient(40deg, #0b0b0c, #131524);
+}
+
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  place-content: center;
+  gap: 1em;
+  height: 100%;
+  padding: 1em;
+  overflow-x: hidden;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.nanode {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 0.5em;
+  font-family: 'gr-bold';
+  font-size: 19px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+}
+
+.nanode > div {
+  height: 30px;
+  width: 30px;
+  border-radius: 5px;
+  background: url("https://nanode.one/assets/nanode/logo/logo.svg") no-repeat center #0e0f11;
+  background-size: 20px;
+  -webkit-filter: invert(1);
+          filter: invert(1);
+}
+
+section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 16px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  min-width: 240px;
+  max-width: 360px;
+}
+
+section > div {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #1f242c;
+  border-radius: 5px;
+  padding: 16px;
+}
+
+section > div > .downloadBtn {
+  display: block;
+  height: 38px;
+  line-height: 36px;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 500;
+  background: -webkit-gradient(linear, left top, right top, from(#608ba6), color-stop(#87ceeb), to(#608ba6));
+  background: linear-gradient(90deg, #608ba6, #87ceeb, #608ba6);
+  background-size: 200%;
+}
+
+section > div > .downloadBtn:hover {
+  -webkit-animation: gradient 2s ease infinite;
+          animation: gradient 2s ease infinite;
+}
+
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+h4 {
+  font-weight: 600;
+  margin: 1em 0;
+  padding: 1em 0 0 0;
+  border-top: 1px solid #4e626f;
+}
+
+h5 {
+  font-weight: 400;
+  margin: 0.5em 0;
+}
+
+span {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 1em;
+  height: 1.5em;
+  width: 100%;
+  margin-top: 1em;
+}
+
+span button {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding-bottom: 4px;
+  border: none;
+  font-variant: all-petite-caps;
+  background: #4e626f;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+table thead > tr {
+  -webkit-box-shadow: 0 1px 0 #4e626f;
+          box-shadow: 0 1px 0 #4e626f;
+}
+
+table thead > tr > th {
+  padding-bottom: 0.75em;
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+table thead > tr > th:nth-child(1) {
+  text-align: left;
+}
+
+table thead > tr > th:nth-child(2) {
+  width: 30%;
+}
+
+table tbody > tr {
+  height: 2.5em;
+}
+
+table tbody > tr > td:nth-child(1) {
+  overflow-x: overlay;
+}
+
+table tbody > tr > td:nth-child(2) {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text_dull);
+  letter-spacing: 0.8px;
 }
 
 ::-webkit-scrollbar {
@@ -21,143 +235,5 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(130, 130, 130, 0.8);
-}
-
-html {
-  height: 100%;
-  background: linear-gradient(40deg, #0b0b0c, #131524);
-}
-
-body {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  margin: 15% auto 0 auto;
-  color: #d6d6d6;
-}
-
-section {
-  min-width: 240px;
-  max-width: 360px;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-}
-
-div {
-  max-height: 200px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: #1f242c;
-  border-radius: 8px;
-  margin: 0px 8px 16px 8px;
-  padding: 16px;
-}
-
-img {
-  -o-object-fit: cover;
-     object-fit: cover;
-  height: 100%;
-  width: 100%;
-}
-
-h4 {
-  font-size: 16px;
-  letter-spacing: 0.3px;
-  color: #DCDCDE;
-  font-weight: 600;
-  margin: 8px 0 0 0;
-  padding: 6px 0 0 0;
-  border-top: 1px solid #4e626f;
-}
-
-h5 {
-  font-size: 13px;
-  font-weight: 400;
-  margin: 6px 0;
-}
-
-span {
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  height: 24px;
-  width: 100%;
-  margin-top: 6px;
-}
-
-span button {
-  width: 48%;
-  padding-bottom: 4px;
-  border: none;
-  color: inherit;
-  font-variant: all-petite-caps;
-  background: #4e626f;
-}
-
-.downloadBtn {
-  display: block;
-  height: 38px;
-  width: 100%;
-  color: white;
-  line-height: 36px;
-  text-decoration: none;
-  text-align: center;
-  font-weight: 500;
-  font-family: inherit;
-  font-size: 15px;
-  border: none;
-  background: -webkit-gradient(linear, left top, right top, from(#608ba6), to(#87ceeb));
-  background: linear-gradient(to right, #608ba6, #87ceeb);
-  cursor: pointer;
-}
-
-.downloadBtn:hover {
-  background: -webkit-gradient(linear, left top, right top, from(#87ceeb), to(#608ba6));
-  background: linear-gradient(to right, #87ceeb, #608ba6);
-}
-
-table {
-  width: 100%;
-  font-size: 15px;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-variant: all-petite-caps;
-}
-
-table th {
-  font-weight: 400;
-  opacity: 0.6;
-}
-
-table td {
-  height: 26px;
-  opacity: 0.9;
-}
-
-table th:nth-child(1) {
-  text-align: left;
-}
-
-table td:nth-child(1) {
-  padding: 0;
-  overflow-x: overlay;
-}
-
-table th:nth-child(2) {
-  width: 30%;
-}
-
-table td:nth-child(2) {
-  text-align: center;
-  font-size: 13px;
 }
 /*# sourceMappingURL=download.css.map */

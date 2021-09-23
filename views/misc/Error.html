@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang='en-GB'>
+  <head>
+    <title>Error 404</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="'Error Occurred. Unauthorised Personnel Detected. Saving Record for Future Analysis.' Nanode said, in a robot voice.">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/nanode/logo/black.svg" alt='Nanode'/>
+  </head>
+
+  <body>
+    <div class='errorBody'>
+      <a href="https://nanode.one" class="nanode"><div></div>Nanode</a>
+  
+      <div style='border-bottom: 1px solid #666; height: 1px; margin: 10px 0;'></div>
+
+      <span style="display: block;"><h1 style="display: inline;">404.</h1> Something's Wrong Here</span>
+      <small>The url: <b class='urlRequest' style="color: #ff453a; overflow-wrap: break-word;"></b> was not found.</small>
+
+      <p>Either:</p>
+      <ul>
+        <li>This page does not exist.</li>
+        <li>Your account cannot access it.</li>
+        <li>The file has been deleted.</li>
+      </ul>
+      
+      <small>If you know this file does exist: <br>
+        <a href="https://account.nanode.one/login" style="font-weight: bold; font-size: 16px;">Login</a>
+        or Request access from its owner.
+      </small>
+    </div>
+
+    <div class="loggedin"></div>
+
+  </body>
+</html>
+
+<style>
+  html {
+    height: 100%;
+    background: #fafafa;
+  }
+  body {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    height: calc(100% - 30px);
+    color: #000;
+    padding: 1em;
+    margin: 0;
+    
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: #666;
+  }
+
+  .errorBody {
+    height: fit-content;
+    width: calc(100% - 60px);
+    max-width: 350px;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #666;
+  }
+  .nanode {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 1em;
+    font-weight: 600;
+    font-family: system-ui;
+    font-size: 19px;
+    color: #000;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+  }
+  .nanode div {
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background: url('https://nanode.one/assets/nanode/logo/black.svg') no-repeat center #0000;
+    background-size: 20px;
+    border: 1px solid #1d1d1f;
+  }
+
+  div.loggedin {
+    padding: 1em;
+    font-size: 13px;
+  }
+</style>
+
+<script>
+  (async() => {
+    const loggedInCheck = await( await fetch('/check?details=true') ).json();
+    document.querySelector('.loggedin').innerText = (loggedInCheck?.loggedIn == true) ? `Logged in as: ${CapFirstLetter(loggedInCheck.accountDetails?.username) || 'No Set Username'}` : '';
+
+    document.querySelector('.urlRequest').innerText = `${window.location.pathname}`
+  })()
+
+  CapFirstLetter = (string) => {
+    return typeof string !== 'string' ? '' : string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
+  }
+</script>

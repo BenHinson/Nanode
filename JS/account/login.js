@@ -1,8 +1,10 @@
 new class NanodeLogin {
   constructor() {
-    [this.currentLoginPage, this.formAction] = ['login', 'login'];
+    [this.currentLoginPage, this.formAction] = ['login', '/login'];
 
-    this.sufficient = (/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);
+    // this.sufficient = (/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);  // eg: Password1!
+    this.sufficient = ('');
+
     this.responseMap = {
       "Incorrect_Cred": "incorrect email or password </i>",
       "Invalid_Email" : "enter a valid email address</i>",
@@ -15,6 +17,7 @@ new class NanodeLogin {
     this.pwdTitle = document.querySelector('.pwdTitle');
     
     if (document.location.hash == '#signup') this.formSwitch();
+
     this.listen();
   }
 
@@ -27,7 +30,7 @@ new class NanodeLogin {
       document.querySelector('.MainTitle').innerText = 'Signup';
       document.querySelector('.SecondaryTitle').innerText = 'Signup for Nanode Storage';
 
-      this.formAction = '';
+      this.formAction = '/signup';
       [this.emailTitle.innerHTML, this.pwdTitle.innerHTML] = ['Email', 'Password'];
       [this.pwdTitle.style, this.email.style, this.pwd.style] = ['', '', ''];
       document.querySelector('input[type=submit]').value = 'Signup';
@@ -65,8 +68,9 @@ new class NanodeLogin {
       if (this.currentLoginPage !== 'signup') { return; }
 
       if (e.target.value.match(this.sufficient)) this.pwdTitle.innerHTML = 'Password';
-      this.pwdTitle.style.color = e.target.value.match(this.sufficient) ? 'var(--color_green)' : 'var(--color_red)';
-      this.formAction = this.sufficient ? '/signup' : '';
+      this.pwdTitle.style.color = (e.target.value.match(this.sufficient) && e.target.value.length > 5) ? 'var(--color_green)' : 'var(--color_red)';
+      if (e.target.value.length === 0) { this.pwdTitle.style.color = '' }
+      // this.formAction = this.sufficient ? '/signup' : '';
     })
 
     document.querySelector('input[type=submit]').addEventListener("click", (e) => {
@@ -76,7 +80,7 @@ new class NanodeLogin {
       this.pwd.style.border = !this.pwd.value ? '1px solid #f04747' : '';
 
       if (this.currentLoginPage == 'signup') {
-        if (this.pwd.value.match(this.sufficient)) { this.pwdTitle.innerHTML = 'Password' }
+        if (this.pwd.value.match(this.sufficient) && this.pwd.value.length > 5) { this.pwdTitle.innerHTML = 'Password' }
         else { return this.pwdTitle.innerHTML = 'Password<i> - Please improve your password</i>' }
         // loginElem.pwdTitle.innerHTML = 'Password<span><p>8 Long</p><p>Uppercase</p><p>Lowercase</p><p>Number</p><p>Special</p></span>';
 
@@ -93,14 +97,15 @@ new class NanodeLogin {
       try {
         const res = await fetch( this.formAction, {
           method: 'POST',
-          body: new URLSearchParams(new FormData(document.querySelector('form'))) })
+          body: new URLSearchParams(new FormData(document.querySelector('form')))
+        })
 
         if (!res.ok) throw new Error(res.statusText);
         const responseData = await res.json();
             
         switch(responseData.Acc_Server) {
           case('_Login'): return location = '//nanode.one';
-          case('_Registered'): return formSwitch();
+          case('_Registered'): return this.formSwitch();
           case('Incorrect_Cred'): {
             this.pwd.style.border = "1px solid #f04747";
             this.pwdTitle.innerHTML = "Password <i> - wrong email or password</i>";

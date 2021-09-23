@@ -938,12 +938,14 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
           flex-direction: column;
   gap: 20px;
   margin-top: 10px;
+  max-width: 200px;
 }
 
 .Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData p {
   padding-bottom: 10px;
   border-bottom: 1px solid var(--feature);
   color: var(--text-strong);
+  overflow-wrap: anywhere;
 }
 
 .Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binItemData table {
@@ -1163,6 +1165,10 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 
 .BlockOut .Popup_Container .Popup_Dropdown > .Popup_Location > .Popup_Dropdown_Content a:hover {
   background-color: var(--highlight);
+}
+
+.BlockOut .Preview {
+  display: contents;
 }
 
 .BlockOut .Preview .ViewImage {

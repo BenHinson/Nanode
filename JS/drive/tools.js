@@ -52,16 +52,22 @@ const N_ = () => {
     let RGBColor = rgb.replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
     return RGBColor.length >= 2 ? ("#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2)) : (RGBColor);
   }
-  N_.ConvertSize = (InputSize) => {
-    // Used Twelve Times
-    if (!InputSize) { return '-' }
-    let fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    for (let i=0; i<fileSizes.length; i++) {
-      if (InputSize <= 1024) { return InputSize+" "+fileSizes[i] }
-      else { InputSize = parseFloat(InputSize / 1024).toFixed(2) }
+  N_.ConvertSize = (InputSize=107374182400) => {
+    for(size of ['Bytes', 'KB', 'MB', 'GB', 'TB']) {
+      if (!InputSize || InputSize <= 1024) {return InputSize ? (InputSize+" "+size) : '-'; }
+      else { InputSize = parseFloat(InputSize / 1024).toFixed() }
     }
-    return InputSize;
   }
+  // N_.ConvertSize = (InputSize) => {
+  //   // Used Twelve Times
+  //   if (!InputSize) { return '-' }
+  //   let fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  //   for (let i=0; i<fileSizes.length; i++) {
+  //     if (InputSize <= 1024) { return InputSize+" "+fileSizes[i] }
+  //     else { InputSize = parseFloat(InputSize / 1024).toFixed(2) }
+  //   }
+  //   return InputSize;
+  // }
   
 
   // Elements

@@ -1,27 +1,27 @@
 <div class="ContentWrapper">
-  <h1>Nord Authentication</h1>
+  <h1>Node Authentication (NAuth)</h1>
 
-  <span>Nord is Nanodes internal system for account authentication inspired by <a href="https://jwt.io/" target="_blank">JWT</a> (JSON Web Token). This page will explain the process behind Nord and how it is integrated.</span>
+  <span>NAuth is Nanodes internal system for account authentication inspired by <a href="https://jwt.io/" target="_blank">JWT</a> (JSON Web Token). This page will explain the process behind NAuth and how it is integrated.</span>
 
-  <img src="/assets/dev/nord/flowchart.svg" alt="Nord Flowchart" style="max-width: 900px; width: 100%; margin-top: 20px;">
+  <img src="/assets/dev/nauth/flowchart.svg" alt="NAuth Flowchart" style="max-width: 900px; width: 100%; margin-top: 20px;">
 
   <h2>Process</h2>
   <ul>
-    <li>Nord can be integrated simply into a project and through its middleware, working for both HTTP connections and SocketIO.</li>
-    <li>Hooked up to a MongoDB collection, Nord saves authentication data seperately to account data, improving speed and separating resources.</li>
-    <li>Nord tries to avoid checking information against the database to reduce load and time, instead Nord checks the data passed, to internal variables.</li>
-    <li>Security is pivotal, instead of saving a password or any personal data in the cookies, Nord provides the user account id, which is used to fetch data.</li>
+    <li>NAuth can be integrated simply into a project and through its middleware, working for both HTTP connections and SocketIO.</li>
+    <li>Hooked up to a MongoDB collection, NAuth saves authentication data seperately to account data, improving speed and separating resources.</li>
+    <li>NAuth tries to avoid checking information against the database to reduce load and time, instead NAuth checks the data passed, to internal variables.</li>
+    <li>Security is pivotal, instead of saving a password or any personal data in the cookies, NAuth provides the user account id, which is used to fetch data.</li>
   </ul>
 
   <h2>Cookies</h2>
-  <span>Nord provides two cookies to authenticate users <code>Nord Cookie</code> and <code>Session Cookie</code>. Both cookies are AES 256 bit encrypted and then signed to prevent the tampering or construction of a cookie. The resulting cipher is then sent with headers <code>httpOnly: true</code> and <code>secure: true</code> </span>
+  <span>NAuth provides two cookies to authenticate users <code>Node Cookie</code> and <code>Session Cookie</code>. Both cookies are AES 256 bit encrypted and then signed to prevent the tampering or construction of a cookie. The resulting cipher is then sent with headers <code>httpOnly: true</code> and <code>secure: true</code> </span>
 
-  <h4>Nord</h4>
+  <h4>Node</h4>
   <ul>
     <li>Domain - The domain in which the cookie is assigned too.</li>
     <li>Cookie ID - An account specific cookie id.</li>
     <li>User ID - The user assigned to the cookie.</li>
-    <li>Session ID - The Session Cookie the Nord is paired to.</li>
+    <li>Session ID - The Session Cookie the Node is paired to.</li>
   </ul>
 
   <h4>Session</h4>

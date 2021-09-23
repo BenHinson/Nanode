@@ -47,7 +47,7 @@ class App {
     }
     window.onoffline = () => {
       App.InternetConnection = false;
-      N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'You are not connected to the internet', 'displayDelay':100, 'displayTime':5000});
+      N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'You are not connected to the internet', 'displayDelay':100, 'displayTime':20000});
     }
   }
 

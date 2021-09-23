@@ -100,9 +100,10 @@ header {
   }
 
   .header_links {
-    justify-content: space-between;
-    height: 35px;
-    width: 400px;
+    // justify-content: space-between;
+    height: 2em;
+    gap: 1em;
+    // width: 400px;
     a {
       font-family: 'inter';
       font-size: 13px;
@@ -111,8 +112,8 @@ header {
       text-decoration: none;
 
       position: relative;
-      padding: 9px 15px;
-      border-radius: 5px;
+      padding: 0.7em 1.2em;
+      border-radius: 6px;
       transition: 200ms;
       &:hover {
         transform: translateY(-2px);
@@ -153,7 +154,7 @@ header {
         height: 43px;
         width: calc(50% - 10px);
         max-width: 250px;
-        border-radius: 5px;
+        border-radius: 6px;
   
         font-size: 15px;
         font-weight: 500;
@@ -249,17 +250,18 @@ header {
 
   .Showcase {
     justify-content: space-evenly;
-    height: 500px;
+    // height: 500px;
     z-index: 2;
 
     >div {
-      justify-content: space-evenly;
-      height: 140px;
+      // justify-content: space-evenly;
+      // height: 140px;
       width: 380px;
-      padding: 20px;
-      border-radius: 8px;
+      // padding: 20px;
+      padding: 1.2em;
+      border-radius: 12px;
       transition: background-color 300ms;
-      user-select: none;
+      // user-select: none;
       cursor: pointer;
 
       h4 { font-size: 18px; font-weight: 400; }
@@ -367,6 +369,13 @@ header {
       * { color: var(--background); }
       p { font-weight: 400; opacity: 1; }
       divide { color: var(--background); border-top: 1px solid; }
+    }
+
+    .plan_btn {
+      place-self: center;
+      height: 38px;
+      width: 150px;
+      margin: 10px 0;
     }
 
     >span {
@@ -481,7 +490,7 @@ header {
           color: #ff9101;
           &:before { background-color: #ff9101; }
         }
-        &.nordPowered {
+        &.nauthPowered {
           color: #be13d4;
           &:before { background-color: #be13d4; }
         }
@@ -493,6 +502,8 @@ header {
 footer {
   background: var(--comp_dark);
   padding-top: 10px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 
   >h3 { text-align: center; }
 
@@ -564,7 +575,7 @@ footer {
     align-content: space-between;
     max-width: 400px;
     width: 30%;
-    border-radius: 8px;
+    border-radius: 16px;
     padding: 30px;
     transition: all 200ms;
     background: var(--component);
@@ -595,6 +606,8 @@ footer {
   font-size: 66px;
   white-space: nowrap;
   > .titleHighlight {
+    display: inline;
+    white-space: pre-wrap;
     font-size: inherit;
     font-family: inherit;
     color: var(--background);
@@ -633,17 +646,20 @@ p {
 }
 
 a {
+  width: fit-content;
   cursor: pointer;
   user-select: none;
   text-decoration: none;
-  padding: 5px 0;
+  &:not(.plan_btn) {
+    padding: 5px 0;
+  }
 }
 
 button {
   height: 38px;
   width: 150px;
   margin: 10px 0;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   place-self: center;
@@ -654,6 +670,12 @@ button {
   color: var(--background);
   background: var(--text);
   transition: filter 400ms;
+
+  .plan_btn & {
+    height: inherit;
+    width: inherit;
+    margin: 0;
+  }
 
   &:hover { opacity: 0.6; }
 
@@ -732,7 +754,7 @@ t:after { padding-right: 12px; content: '\2714'; color: #ff6301; }
         width: 100%;
         line-height: 22px;
         background: #282c32;
-        justify-content: end;
+        // justify-content: end;
       }
     }
     .Figures { display: none; }
@@ -778,7 +800,7 @@ t:after { padding-right: 12px; content: '\2714'; color: #ff6301; }
       .plan_size { top: 20px; width: 180px; right: calc(25% - 90px); }
       .plan_price { top: 100px; width: 180px; right: calc(25% - 90px); }
 
-      button {
+      .plan_btn {
         bottom: 20px;
         left: calc(25% - 75px);
       }
@@ -882,6 +904,7 @@ t:after { padding-right: 12px; content: '\2714'; color: #ff6301; }
       flex-direction: column;
       width: 100%;
       bottom: 8%;
+      left: 0;
       a { width: 80%; }
     }
   }
@@ -892,7 +915,7 @@ t:after { padding-right: 12px; content: '\2714'; color: #ff6301; }
   .S_Plans > .nanode_plans > .card  {
     &:hover { box-shadow: none; transform: none; }
     span:nth-child(1) { top: 20%; }
-    button { width: 120px; bottom: 20%; left: calc(25% - 60px); }
+    .plan_btn { width: 120px; bottom: 20%; left: calc(25% - 60px); }
     p { display: none; }
     .gradient_text { font-size: 30px; }
   }
