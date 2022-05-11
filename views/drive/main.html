@@ -9,18 +9,16 @@
 
 
 <div class='PageContainer homePageContainer'>
-  
-  <div class='PageHeader flex-even-cent'>
 
+  <div class='PageHeader'>
     <div class='PageControls'>
       <span class="navigateBackward" title="Back"><i class="fas fa-chevron-left"></i></span>
       <span class="navigateForward" title="Forward"><i class="fas fa-chevron-right"></i></span>
     </div>
     <div class='directoryLocation' type='text' placeholder='Current Directory'></div>
 
-
     <span class='searchContainer'>
-      <input class='search' type="text" placeholder="Search...">
+      <input class='search' type="text" placeholder="Search Nodes">
       <button class='searchControls'>
         <i class="searchParams" title='Search Options'>
           <svg width="24" height="24" viewBox="0 0 24 24">
@@ -70,7 +68,6 @@
         </div>
       </div>
     </span>
-
   </div>
 
   <div class='PageData' rc='File_Container'>
@@ -79,9 +76,9 @@
     <div class='PageInformation'>
       <span class="PIHeader flex-between-cent">
         <button onclick="PopUp_Upload()" class="NO_Upload flex-even-cent"><i class="fas fa-cloud-upload-alt"></i>Upload</button>
-        <button onclick="NEWPopup('NewFolder')" class="NO_Folder flex-even-cent"><i class="fas fa-folder-plus"></i>Folder</button>
+        <button onclick="RCC.SubFunction('Popup_NewFolder')" class="NO_Folder flex-even-cent"><i class="fas fa-folder-plus"></i>Folder</button>
       </span>
     </div>
   </div>
-  
+
 </div>

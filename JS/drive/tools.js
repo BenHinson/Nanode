@@ -26,9 +26,9 @@ const N_ = () => {
   }
   N_.TimeFormatter = (time) => {
     // Used Four times in pages
-    let Minutes = Math.floor(time / 60) < 10 ?  "0" + Math.floor(time / 60) : Math.floor(time / 60);
-    let Seconds = Math.floor(time - (Minutes * 60)) < 10 ? "0" + Math.floor(time - (Minutes * 60)) : Math.floor(time - (Minutes * 60));
-    return Minutes+":"+Seconds;
+    let minutes = Math.floor(time / 60) < 10 ?  "0" + Math.floor(time / 60) : Math.floor(time / 60);
+    let seconds = Math.floor(time - (minutes * 60)) < 10 ? "0" + Math.floor(time - (minutes * 60)) : Math.floor(time - (minutes * 60));
+    return minutes+":"+seconds;
   }
   N_.TimeFormatterReverse = (time) => {
     return (parseInt(time.split(':')[0] * 60) + parseInt(time.split(':')[1]))
@@ -52,23 +52,12 @@ const N_ = () => {
     let RGBColor = rgb.replace(/^.*rgba?\(([^)]+)\).*$/,'$1').split(',');
     return RGBColor.length >= 2 ? ("#" + ("0" + parseInt(RGBColor[0],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[1],10).toString(16)).slice(-2) + ("0" + parseInt(RGBColor[2],10).toString(16)).slice(-2)) : (RGBColor);
   }
-  N_.ConvertSize = (InputSize=107374182400) => {
-    for(size of ['Bytes', 'KB', 'MB', 'GB', 'TB']) {
+  N_.ConvertSize = (InputSize=0) => {
+    for (size of ['Bytes', 'KB', 'MB', 'GB', 'TB']) {
       if (!InputSize || InputSize <= 1024) {return InputSize ? (InputSize+" "+size) : '-'; }
       else { InputSize = parseFloat(InputSize / 1024).toFixed() }
     }
   }
-  // N_.ConvertSize = (InputSize) => {
-  //   // Used Twelve Times
-  //   if (!InputSize) { return '-' }
-  //   let fileSizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  //   for (let i=0; i<fileSizes.length; i++) {
-  //     if (InputSize <= 1024) { return InputSize+" "+fileSizes[i] }
-  //     else { InputSize = parseFloat(InputSize / 1024).toFixed(2) }
-  //   }
-  //   return InputSize;
-  // }
-  
 
   // Elements
   N_.PareAttr = (element, attrName) => {
@@ -100,9 +89,9 @@ const N_ = () => {
       ? (parentEle || document).querySelectorAll(identifier)
       : (parentEle || document).querySelector(identifier) || undefined; // JS is dumb. returning 'null' here counts as an object and runs code when we don't want it to.
   }
-  N_.ExternalTab = (nodeID) => {
+  N_.ExternalTab = (nodeId) => {
     let nt_btn = document.createElement('a');
-    nt_btn.href = `/storage/${nodeID}`;
+    nt_btn.href = `/storage/${nodeId}`;
     nt_btn.target = '_blank';
     nt_btn.click();
   }

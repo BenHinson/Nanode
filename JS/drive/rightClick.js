@@ -1,7 +1,7 @@
 const RightClickObjectMenu = {
   "File_Container": [
-    {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
-    {_id: '2', title: 'Refresh', CMD: 'SubFunction', fName: 'NodeCall', VAR: [{"Reload":false}]},
+    {_id: '1', title: 'New Folder', CMD: 'SubFunction', fName: 'Popup_NewFolder', VAR: []},
+    {_id: '2', title: 'Refresh', CMD: 'SubFunction', fName: 'NodeCall', VAR: [{"reload":false}]},
     {split: true},
     {_id: '3', rc_var: 'Layout', CMD: 'SubFunction', fName: 'ToggleView', VAR :[]},
     {_id: '4', rc_var: 'Change_Theme', CMD: 'SubFunction', fName: 'ToggleTheme', VAR :[]},
@@ -9,11 +9,11 @@ const RightClickObjectMenu = {
     {_id: '5', title: 'Upload', CMD: 'PopUp_Upload', VAR: ['Upload']},
   ],
   "Homepage_Span": [
-    {_id: '1', title: 'New Folder', CMD: 'NEWPopup', VAR: ['NewFolder']},
+    {_id: '1', title: 'New Folder', CMD: 'SubFunction', fName: 'Popup_NewFolder', VAR: []},
     {split: true},
     {_id: '2', rc_var: 'Collapse', CMD: 'collapseSpan', VAR :[]},
     {split: true},
-    {_id: '3', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Spans and their content <u>cannot</u> be reclaimed.'}]},
+    {_id: '3', title: 'Delete', class: 'red-text', CMD: 'SubFunction', fName: 'Popup_Delete', VAR: [{text:'Spans and their content <u>cannot</u> be reclaimed.'}]},
   ],
   "Node_Folder": [
     {_id: '1', title: 'Open', CMD: 'ItemActions', VAR: []},
@@ -24,8 +24,8 @@ const RightClickObjectMenu = {
     {_id: '5', title: 'Create Shortcut', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
     {_id: '6', title: 'Change Colour', CMD: 'SubFunction', fName: 'ColorPicker', VAR: ["RC"]},
-    {_id: '7', title: 'Rename', CMD: 'renameItem', VAR: []},
-    {_id: '8', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Send Folders and their contents to the Bin, where they can be reclaimed for 30 days.'}]},
+    {_id: '7', title: 'Rename', CMD: 'SubFunction', fName: 'Popup_Rename', CUS_VAR: "NODEID", VAR: []},
+    {_id: '8', title: 'Delete', class: 'red-text', CMD: 'SubFunction', fName: 'Popup_Delete', VAR: [{text:'Send Folders and their contents to the Bin, they can be restored for 30 days.'}]},
     {split: true},
     {_id: '9', title: 'Download', CMD: 'PopUp_Download', VAR: ["Download", "ContextMenu"]},
   ],
@@ -40,8 +40,8 @@ const RightClickObjectMenu = {
     {_id: '7', title: 'Create Shortcut', class: 'disabled-text', CMD: '', VAR: []},
     {split: true},
     {_id: '8', title: 'Change Colour', CMD: 'SubFunction', fName: 'ColorPicker', VAR: ["RC"]},
-    {_id: '9', title: 'Rename', CMD: 'renameItem', VAR: []},
-    {_id: '10', title: 'Delete', class: 'red-text', CMD: 'NEWPopup', VAR: ['AcceptCancel', null, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: 'Send Files to the Bin, where they can be reclaimed for 30 days.'}]},
+    {_id: '9', title: 'Rename', CMD: 'SubFunction', fName: 'Popup_Rename', CUS_VAR: "NODEID", VAR: []},
+    {_id: '10', title: 'Delete', class: 'red-text', CMD: 'SubFunction', fName: 'Popup_Delete', VAR: [{text:'Send Files to the Bin, where they can be reclaimed for 30 days.'}]},
     {split: true},
     // {_id: '11', title: 'Share', class: 'disabled-text', CMD: '', VAR: []},
     {_id: '12', title: 'Download', CMD: 'PopUp_Download', VAR: ["Download", "ContextMenu"]},
@@ -170,14 +170,10 @@ const RCC = new class RightClickContainer {
       case ('ColorPicker'): {return new CreateColorPicker(params['RC'], params['callback']) }
   
       case ('ToggleBase_'): {return Popup.prototype.ToggleBase_() }
+
+      case ('Popup_Rename'): {return new Popup('Rename', RCC.RCElement, 'Rename', {title: 'Rename', reject: 'Cancel', accept: 'Rename', nodeID: params['NODEID']});}
+      case ('Popup_NewFolder'): {return new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create'});}
+      case ('Popup_Delete'): {return new Popup('AcceptCancel', RCC.RCElement, 'Delete', {title: 'Are you Sure?', reject: 'Cancel', accept: 'Delete', color: 'warning', text: params['OBJECT']?.text});}
     }
   }
-}
-
-// ========================================
-
-
-function NEWPopup(type, caller, action, data) {
-  if (type == 'NewFolder') { new Popup('NewFolder', null, 'NewFolder', {title: 'New Folder', reject: 'Cancel', accept: 'Create', color: '', RCE: '', secondary: true}); }
-  else { new Popup(type, RCC.RCElement, action, data); }
 }

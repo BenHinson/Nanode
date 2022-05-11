@@ -11,7 +11,7 @@ class Settings {
     Settings.User = this.Read('user') || await App.API_Fetch({url: '/account/settings'});
     Settings.Local = this.Read('local') || {
       'theme': (window.matchMedia("(prefers-color-scheme: dark)").matches ? 0 : 1) || 0, // Reads system theme
-      'layout': 0,
+      'layout': 1,
       'recents': 0,
       'search_options': {'description': true, 'prevNames': true, 'withinAll': true, 'forFolders': true, 'forFiles': true}
     };
@@ -69,12 +69,12 @@ class Settings {
         : document.body.setAttribute('data-theme', 'light');
       Settings.Write('local', 'theme', 'toggle');
     }
-    document.querySelector('#colorTheme i').classList = Settings.Local.theme ? 'fas fa-sun' : 'fas fa-moon';
+    document.querySelector('.controlBtn.cBtn_theme > i').classList = (Settings.Local.theme ? 'fas fa-sun' : 'fas fa-moon');
   }
   static ToggleView = () => {
     Settings.Write('local', 'layout', 'toggle');
     document.querySelector('.Slider.SL_View').style.transform = `translateX(${Settings.Local.layout ? 28 : 0}px)`;
-    // Main.NodeCall({"Folder":Main.NodeID, "Reload":false});
+    // Main.NodeCall({"folder":Main.NodeID, "reload":false});
     Directory.Render();
   }
   static ToggleRecents = () => {

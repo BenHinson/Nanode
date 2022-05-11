@@ -36,13 +36,18 @@
   <body class="dark-theme" data-theme='dark'>
 
     <div class="Frame flex-even-cent">
+      <button class="controlBtn cBtn_theme" onclick="Settings.ToggleTheme()" title="Change Theme"><i class='fas fa-moon'></i></button>
+      <button class="controlBtn cBtn_info" onclick="Settings.ToggleTheme()" title="Open Side Panel"><i class='fas fa-info'></i></button>
+    </div>
+
+    <div class="Frame flex-even-cent" style="display: none;">
       <div class="clientStatus flex-even-cent">
         <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
       </div>
       <div class='Switch SW_View' onclick="SettingsController.ToggleView()"  style="display: none;">
         <div class='Slider SL_View'></div> <div><i class="fas fa-bars"></i></div> <div><i class="fas fa-th-large"></i></div>
       </div>
-      <button id="colorTheme" onclick="Settings.ToggleTheme()" title="Change Theme"><i></i></button>
+      <!-- <button id="colorTheme" onclick="Settings.ToggleTheme()" title="Change Theme"><i></i></button> -->
     </div>
 
 
@@ -62,7 +67,6 @@
         <span drvPage="settings" title="Settings"><i class="fas fa-cog"></i><p>Settings</p></span>
 
         <div class='Storage'>
-          <h3>Storage</h3>
           <p>0 GB / 10 GB</p>
           <progress value='0' max="100" ></progress>
         </div>

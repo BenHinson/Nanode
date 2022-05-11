@@ -1194,6 +1194,9 @@ p {
 }
 
 a {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;

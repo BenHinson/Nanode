@@ -44,14 +44,14 @@ class SecurityInputContainer {
     this.container.querySelector('.securityEntry').addEventListener("click", async() => {
       let res = await App.API_Post({url: `/auth`, body: {
         "entries": this.GetEntries_(),
-        "oID": this.response.Item,
+        "nodeId": this.response.Item,
         "section": App.Section,
       }});
 
       if (res.Error) {
         this.container.style.boxShadow = 'inset 0 0 0 1px var(--red)';
       } else {
-        Main.NodeCall({"Reload":true, "Skip": true}, res);
+        Main.NodeCall({"reload":true, "skip": true}, res);
         this.container.remove();
       }
     })
@@ -168,7 +168,7 @@ class Popup {
         ${this.MainContent_()}
         <span>
           <button class='Popup_Reject'>${this.DATA.reject}</button>
-          <button class='Popup_Accept ${this.ButtonColor[this.DATA.color]}'>${this.DATA.accept}</button>
+          <button class='Popup_Accept ${this.ButtonColor[this.DATA.color] || ''}'>${this.DATA.accept}</button>
         </span>
       </div>
       ${this.DATA.secondary ? this.SecondaryContent_() : ''}
@@ -206,6 +206,9 @@ class Popup {
         `;
         this.switch = true;
         break;
+      }
+      case('Rename') : {
+        content = `<input class='Popup_Input Popup_Input_Name' max-length='128' type='text' placeholder='New Name...' autocomplete='new-password' value='${App.Nodes[this.DATA.nodeID].data.name}'></input>`; break;
       }
     }
     return content;
@@ -279,7 +282,7 @@ class Popup {
           this.DATA.requestSent = true;
 
           let res = await App.API_Post({url: `/download`, body: {
-            "For": this.DATA.forShare ? "SHARE" : "SELF",
+            "forUser": this.DATA.forShare ? "SHARE" : "SELF",
             "name": centralInput.value,
             "items": this.DATA.download,
             "section": App.Section,
@@ -299,6 +302,15 @@ class Popup {
         } else {
           window.open(`https://link.nanode.one/download/${this.DownloadLink}`)
         }
+      }
+      else if (this.Action == 'Rename') {
+        Main.NodeAPI('edit', {
+          "action": "DATA",
+          "section": App.Section,
+          "id": [this.DATA.nodeID],
+          "data": { "name": document.querySelector('.Popup_Input_Name').value || App.Nodes[this.DATA.nodeID].data.name },
+          "path": Main.NodeID
+        }, true);
       }
 
       if (!this.DATA.dontClose) this.ToggleBase_();

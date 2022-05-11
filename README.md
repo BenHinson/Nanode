@@ -20,7 +20,7 @@
 ## Core Features
 - **Recent** - View and visit files and folders that have been recently viewed or edited.
 - **Information** - Fetch, view and edit data on any file or folder from its name to a description or colour tag.
-- **Search** - Locate a file or folder via [Nova](https://dev.nanode.one/#nova), Nanode's custom comprehensive search API.
+- **Search** - Locate a file or folder via [Nova](https://dev.nanode.one/nova), Nanode's custom comprehensive search API.
 - **Share** - Generate a custom link to share your files with whomever you want. [EG](https://link.nanode.one/BGRDGAE-PIF18ZHJ)
 - **Preview** - Open multiple different files within Nanode, eg: Images, Video, Audio, Text and Fonts.
 - **Bin** - Delete a folder or file and have it moved to the bin for 30 days where you can still restore the content.
@@ -47,8 +47,8 @@
 
 <!-- ROADMAP -->
 ## Roadmap
-See how the development of Nanode is coming along via the [Change Log]('https://dev.nanode.one/#changelog')
-<!-- Also view the [Incoming Section](https://dev.nanode.one/#incoming) for a list of possible features. -->
+See how the development of Nanode is coming along via the [Change Log]('https://dev.nanode.one/changelog')
+<!-- Also view the [Incoming Section](https://dev.nanode.one/incoming) for a list of possible features. -->
 
 
 <!-- LICENSE -->

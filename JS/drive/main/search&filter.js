@@ -60,7 +60,7 @@ Search = () => {
 
     if (searchConfig.loadMore === true) {
       N_.Find('button.searchLoadMore').addEventListener('click', () => {
-        Main.NodeCall({'Skip':true}, { // , 'Reload': false
+        Main.NodeCall({'skip':true}, { // , 'reload': false
             Parent: {
               id: 'SEARCH',
               name: `Search: ${searchConfig.prevSearch}`
@@ -144,7 +144,7 @@ Search = () => {
     let nodeID = el.getAttribute('node-id')
     searchConfig.SearchNodes[nodeID].data.type.file
       ? Navigate.Shortcut(searchConfig.SearchNodes[nodeID].data.parent, nodeID)
-      : Main.NodeCall({"Folder": nodeID});
+      : Main.NodeCall({"folder": nodeID});
       this.Close();
   }
   Search.RemoveSuggestedResult = (e) => {

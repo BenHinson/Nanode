@@ -14,7 +14,7 @@ input:not(.searchSelectors *) {
   border: none;
   padding: 6px 10px;
   background: transparent;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 input::-webkit-input-placeholder {
@@ -44,6 +44,7 @@ input:focus {
 button {
   padding: 6px 10px;
   border: none;
+  border-radius: var(--radiusTight);
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -88,8 +89,8 @@ textarea::placeholder {
 }
 
 .trans300 {
-  -webkit-transition: all 300ms ease-in-out;
-  transition: all 300ms ease-in-out;
+  -webkit-transition: var(--transitionMedium) ease-in-out;
+  transition: var(--transitionMedium) ease-in-out;
 }
 
 .transform-center {
@@ -173,7 +174,6 @@ textarea::placeholder {
 .rb-btn-full {
   width: 100%;
   margin: 10px 0 0;
-  border-radius: 5px;
   font-size: 15px;
   color: var(--text-strong);
 }
@@ -184,11 +184,11 @@ textarea::placeholder {
   width: 30%;
   font-weight: 600;
   line-height: 10px;
-  border-radius: 10px;
+  border-radius: var(--radiusRound);
   font-size: 14px;
   letter-spacing: 1px;
-  -webkit-transition: all 300ms ease-in-out;
-  transition: all 300ms ease-in-out;
+  -webkit-transition: var(--transitionMedium) ease-in-out;
+  transition: var(--transitionMedium) ease-in-out;
   z-index: 50;
 }
 
@@ -201,7 +201,7 @@ textarea::placeholder {
   -webkit-transform: translate(-50%, 30px);
           transform: translate(-50%, 30px);
   border-radius: 1em;
-  padding: 0.2em;
+  padding: 0.1em;
   text-align: center;
   color: var(--text-white);
   background: var(--highlight);
@@ -261,6 +261,11 @@ textarea::placeholder {
   background: transparent;
 }
 
+body[data-theme='light'] .tableTemplate thead > tr {
+  -webkit-box-shadow: 0 1px var(--selected);
+          box-shadow: 0 1px var(--selected);
+}
+
 .tableTemplate thead > tr:hover {
   opacity: 1;
   -webkit-transform: none;
@@ -281,10 +286,13 @@ textarea::placeholder {
 }
 
 .tableTemplate thead > tr > th:nth-child(n+3) {
+  font-size: 12px;
   font-weight: 400;
-  opacity: 0.6;
-  font-size: 14px;
-  font-variant: all-petite-caps;
+  opacity: 0.7;
+}
+
+body[data-theme='light'] .tableTemplate thead > tr > th:nth-child(n+3) {
+  font-weight: 600;
 }
 
 .tableTemplate thead > tr > th:nth-child(3) {
@@ -331,6 +339,12 @@ textarea::placeholder {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+}
+
+body[data-theme='light'] .tableTemplate tbody > tr {
+  background: var(--background);
+  -webkit-filter: drop-shadow(0 1px 0 var(--component));
+          filter: drop-shadow(0 1px 0 var(--component));
 }
 
 .tableTemplate tbody > tr:hover:not(.noHover) {
@@ -410,11 +424,11 @@ folders.baseFolders > div {
           align-items: center;
   width: calc(80% / 5);
   padding: 0 10px 10px 10px;
-  border-radius: 8px;
+  border-radius: var(--radiusRound);
   cursor: pointer;
   color: var(--text-strong);
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
+  -webkit-transition: var(--transitionShort);
+  transition: var(--transitionShort);
 }
 
 folders.baseFolders > div:hover > div, folders.baseFolders > div :focus > div {
@@ -443,11 +457,11 @@ folders.baseFolders > div div {
   position: absolute;
   height: 60px;
   width: 100%;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   -webkit-transform: translateY(28px);
           transform: translateY(28px);
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
+  -webkit-transition: var(--transitionMedium);
+  transition: var(--transitionMedium);
   background: var(--component);
 }
 
@@ -461,7 +475,6 @@ recents.recentFiles {
 }
 
 recents.recentFiles .toggleRecent {
-  border-radius: 5px;
   font-size: 12px;
   letter-spacing: 1px;
   color: var(--text-dull);
@@ -499,13 +512,13 @@ recents.recentFiles > .recentContainer > div {
   gap: 1em;
   max-height: 48px;
   min-width: 160px;
-  border-radius: 8px;
+  border-radius: var(--radiusRound);
   cursor: pointer;
   overflow: hidden;
   color: var(--text-strong);
   background: var(--frame);
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
+  -webkit-transition: var(--transitionShort);
+  transition: var(--transitionShort);
 }
 
 recents.recentFiles > .recentContainer > div:hover, recents.recentFiles > .recentContainer > div :focus {
@@ -531,12 +544,13 @@ recents.recentFiles > .recentContainer > div p {
 .searchContainer {
   position: absolute;
   height: 36px;
-  width: calc(100% - 15px);
+  width: calc(100% - 340px);
+  left: 8px;
 }
 
 .searchContainer.searchActive .search {
   width: 100%;
-  padding: 1px 60px 0 5%;
+  padding: 1em 2em;
 }
 
 .searchContainer.searchActive .searchControls {
@@ -547,6 +561,7 @@ recents.recentFiles > .recentContainer > div p {
 .searchContainer.searchActive .searchControls > i.searchSubmit {
   opacity: 1;
   background: var(--highlight-color);
+  color: var(--text-white);
 }
 
 .searchContainer.searchActive .searchControls > i.searchParams {
@@ -568,6 +583,7 @@ recents.recentFiles > .recentContainer > div p {
   color: var(--text-strong);
   background: var(--feature);
   z-index: 5;
+  font-size: 14px;
 }
 
 .searchContainer button.searchControls {
@@ -575,8 +591,7 @@ recents.recentFiles > .recentContainer > div p {
   padding: 0;
   z-index: 6;
   pointer-events: none;
-  color: var(--text-white);
-  fill: var(--text-white);
+  fill: var(--text-strong);
   background: transparent;
 }
 
@@ -593,7 +608,7 @@ recents.recentFiles > .recentContainer > div p {
   width: 30px;
   top: 3px;
   right: 20px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   opacity: 0;
 }
 
@@ -613,8 +628,8 @@ recents.recentFiles > .recentContainer > div p {
   position: absolute;
   height: 36px;
   right: 0;
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
+  -webkit-transition: var(--transitionMedium);
+  transition: var(--transitionMedium);
 }
 
 .searchContainer .searchDropdown {
@@ -622,9 +637,15 @@ recents.recentFiles > .recentContainer > div p {
   position: absolute;
   width: 100%;
   top: 42px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   z-index: 3;
   background: var(--feature);
+}
+
+[data-theme='light'] .searchContainer .searchDropdown {
+  background: var(--frame);
+  -webkit-box-shadow: 0 0 8px 0 var(--selected);
+          box-shadow: 0 0 8px 0 var(--selected);
 }
 
 .searchContainer .searchDropdown.display {
@@ -661,10 +682,10 @@ recents.recentFiles > .recentContainer > div p {
   height: 0;
   width: 50px;
   float: right;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   overflow: hidden;
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
+  -webkit-transition: var(--transitionMedium);
+  transition: var(--transitionMedium);
   background: var(--highlight);
 }
 
@@ -721,8 +742,8 @@ recents.recentFiles > .recentContainer > div p {
 
 .searchContainer .searchParamsContainer > .searchSelectors form span input[type=radio] {
   padding: 4px;
-  border-radius: 10px;
-  background-color: var(--component);
+  border-radius: var(--radiusRound);
+  background-color: var(--background);
   -webkit-appearance: none;
   cursor: pointer;
 }
@@ -746,7 +767,7 @@ recents.recentFiles > .recentContainer > div p {
   width: 15px;
   font-size: 14px;
   text-align: center;
-  background-color: var(--component);
+  background-color: var(--background);
   -webkit-appearance: none;
   cursor: pointer;
 }
@@ -765,7 +786,7 @@ recents.recentFiles > .recentContainer > div p {
   height: 30px;
   width: 100%;
   margin: 9px 0;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   background: var(--feature);
 }
 
@@ -808,7 +829,7 @@ recents.recentFiles > .recentContainer > div p {
   height: 36px;
   width: 36px;
   background: var(--frame);
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   padding: 11px;
   font-size: 14px;
   opacity: 0;
@@ -840,7 +861,7 @@ recents.recentFiles > .recentContainer > div p {
 
 .searchContainer .searchSuggested > ul > li {
   padding: 8px 12px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   font-size: 14px;
   color: var(--text-strong);
   border-bottom: 1px solid var(--highlight);
@@ -975,7 +996,7 @@ recents.recentFiles > .recentContainer > div p {
   height: 60px;
   width: calc(80% / 5);
   gap: 0.5em;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   -webkit-transform: translateY(20px);
           transform: translateY(20px);
 }
@@ -1006,7 +1027,7 @@ recents.recentFiles > .recentContainer > div p {
   height: 40px;
   min-width: 160px;
   margin-bottom: 10px;
-  border-radius: 8px;
+  border-radius: var(--radiusRound);
 }
 
 .DragDropOverlay {
@@ -1047,11 +1068,18 @@ recents.recentFiles > .recentContainer > div p {
 .Upload_Container > div {
   position: relative;
   width: 100%;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   color: var(--text-strong);
   background: var(--feature);
   -webkit-box-shadow: 1px 2px 3px 1px var(--theme);
           box-shadow: 1px 2px 3px 1px var(--theme);
+}
+
+body[data-theme='light'] .Upload_Container > div {
+  background: var(--background);
+  -webkit-box-shadow: 0 0 5px 1px var(--selected);
+          box-shadow: 0 0 5px 1px var(--selected);
+  border: 1px solid var(--selected);
 }
 
 .Upload_Container .UC_Queue {
@@ -1077,8 +1105,8 @@ recents.recentFiles > .recentContainer > div p {
 
 .Upload_Container .UC_Queue table tr {
   height: 38px;
-  -webkit-transition: all 100ms ease-in-out;
-  transition: all 100ms ease-in-out;
+  -webkit-transition: var(--transitionShort) ease-in-out;
+  transition: var(--transitionShort) ease-in-out;
 }
 
 .Upload_Container .UC_Queue table tr:nth-child(n+2) {
@@ -1144,9 +1172,9 @@ recents.recentFiles > .recentContainer > div p {
   display: none;
   position: relative;
   height: 31px;
-  padding: 7px 10px;
+  padding: 6px 10px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   -webkit-transform: translateY(42px);
           transform: translateY(42px);
   -webkit-transition: -webkit-transform 300ms;
@@ -1189,14 +1217,13 @@ recents.recentFiles > .recentContainer > div p {
 }
 
 .Upload_Container .UC_Control .UC_Top {
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   background: var(--component);
 }
 
 .Upload_Container .UC_Control .UC_Top .Upload_Control {
   height: 34px;
-  padding: 8px 14px;
-  border-radius: 4px;
+  padding: 7px 14px;
   font-weight: 400;
   background: var(--rich-blue);
   color: var(--text-white);
@@ -1260,17 +1287,17 @@ recents.recentFiles > .recentContainer > div p {
 .Upload_Container .UC_Control .UC_Bottom .Upload_Progress > progress {
   height: 6px;
   width: 80%;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 .Upload_Container .UC_Control .UC_Bottom .Upload_Progress > progress::-webkit-progress-bar {
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   background-color: var(--selected);
 }
 
 .Upload_Container .UC_Control .UC_Bottom .Upload_Progress > progress::-webkit-progress-value {
   background-color: var(--highlight-color);
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 .Upload_Container .UC_Control .UC_Bottom .Upload_Progress > p {
@@ -1287,7 +1314,7 @@ recents.recentFiles > .recentContainer > div p {
   position: fixed;
   width: 180px;
   padding: 6px 3px;
-  border-radius: 5px;
+  border-radius: var(--radiusRound);
   z-index: 999;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -1297,6 +1324,13 @@ recents.recentFiles > .recentContainer > div p {
           box-shadow: 1px 2px 3px 0px var(--theme);
   background: var(--component);
   color: var(--text-dull);
+}
+
+body[data-theme='light'] .RightClickContainer {
+  background: var(--background);
+  -webkit-box-shadow: 0 0 5px 1px var(--selected);
+          box-shadow: 0 0 5px 1px var(--selected);
+  border: 1px solid var(--selected);
 }
 
 .RightClickContainer > button {
@@ -1336,7 +1370,7 @@ recents.recentFiles > .recentContainer > div p {
   top: calc(50vh - 150px);
   left: calc(50vw - 100px);
   padding: 6px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   color: var(--text-strong);
   -webkit-box-shadow: 1px 1px 3px 0px var(--theme);
           box-shadow: 1px 1px 3px 0px var(--theme);
@@ -1344,6 +1378,12 @@ recents.recentFiles > .recentContainer > div p {
   border-top: 15px solid var(--component);
   z-index: 999;
   cursor: all-scroll;
+}
+
+body[data-theme='light'] .colorContainer {
+  background: var(--background);
+  -webkit-box-shadow: 1px 1px 3px 0px var(--selected);
+          box-shadow: 1px 1px 3px 0px var(--selected);
 }
 
 .colorContainer > span {
@@ -1378,13 +1418,13 @@ recents.recentFiles > .recentContainer > div p {
 .colorContainer .colorOptionsContainer > div {
   height: 29px;
   width: 29px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   cursor: pointer;
 }
 
 .colorContainer .colorOptionsContainer > div:hover {
   border: 2px solid;
-  border-radius: 8px;
+  border-radius: var(--radiusRound);
 }
 
 .colorContainer .colorOptionsContainer > div.selected {
@@ -1398,7 +1438,7 @@ recents.recentFiles > .recentContainer > div p {
   display: flex;
   position: absolute;
   padding: 2px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   text-align: center;
   cursor: pointer;
   overflow: hidden;
@@ -1418,7 +1458,7 @@ recents.recentFiles > .recentContainer > div p {
 
 .Switch > .Slider {
   position: absolute;
-  border-radius: 3px;
+  border-radius: var(--radiusTight);
   z-index: 1;
   background: var(--highlight-color);
   -webkit-transition: -webkit-transform 250ms ease-in-out;
@@ -1429,7 +1469,7 @@ recents.recentFiles > .recentContainer > div p {
 
 .Switch.SW_DL > div {
   padding: 3px 0;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .Switch.SW_View {
@@ -1455,6 +1495,8 @@ recents.recentFiles > .recentContainer > div p {
   width: 320px;
   max-width: 100%;
   border-radius: 20px;
+  -webkit-transform: translateX(-140px);
+          transform: translateX(-140px);
 }
 
 .Switch.SW_Bin > div {
@@ -1471,7 +1513,7 @@ recents.recentFiles > .recentContainer > div p {
 .ExpandSpan {
   font-size: 15px;
   background: var(--feature);
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 .ExpandSpan:hover {
@@ -1703,6 +1745,11 @@ loading svg.Loading_SVG circle {
 
 .ItemSelected:hover {
   background: var(--rich-blue) !important;
+  color: var(--text-white) !important;
+}
+
+.ItemSelected:hover > * {
+  opacity: 1 !important;
 }
 
 .ItemHidden {
@@ -1719,7 +1766,7 @@ loading svg.Loading_SVG circle {
 .selection-area {
   background: var(--rich-blue-faded);
   border: 1px solid var(--highlight-color);
-  border-radius: 3px;
+  border-radius: var(--radiusTight);
 }
 
 .blue-light {
@@ -1730,7 +1777,7 @@ loading svg.Loading_SVG circle {
 
 .blue-light:hover {
   background: var(--rich-blue);
-  color: var(--text-strong);
+  color: var(--text-white);
 }
 
 .red-light {
@@ -1741,11 +1788,11 @@ loading svg.Loading_SVG circle {
 
 .red-light:hover {
   background: var(--red);
-  color: var(--text-strong);
+  color: var(--text-white);
 }
 
 .red-full {
-  color: var(--text-strong);
+  color: var(--text-white);
   background: var(--red);
 }
 
@@ -1781,11 +1828,11 @@ loading svg.Loading_SVG circle {
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   background: var(--frame);
   border: 1px solid var(--feature);
-  -webkit-transition: all 200ms ease-in-out;
-  transition: all 200ms ease-in-out;
+  -webkit-transition: var(--transitionShort) ease-in-out;
+  transition: var(--transitionShort) ease-in-out;
 }
 
 ::-webkit-scrollbar-thumb:hover {

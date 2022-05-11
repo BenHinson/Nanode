@@ -54,7 +54,7 @@ class App {
   static async pageSwitch(pageName) {
     let pageToSwitch = document.querySelector(`.Pages .${pageName}_Page`);
     document.querySelectorAll('.PageDisplay').forEach((page) => { page.classList.remove('PageDisplay') });
-    if (pageToSwitch.innerHTML.length === 0) { // WHAT IS AN ALTERNATIVE FOR THIS. ATLEAST THIS LOADS SCRIPTS
+    if (pageToSwitch.innerHTML.length === 0) { // WHAT IS AN ALTERNATIVE FOR THIS. AT LEAST THIS LOADS SCRIPTS
       await $(pageToSwitch).load(`/views/drive/${pageName}.html`);
     }
     pageToSwitch.classList.add('PageDisplay');
@@ -66,8 +66,8 @@ class App {
     return true;
   }
 
-  static async API_Fetch(fetch_data, response) { // await App.API_Fetch({url: `/example/test`})
-    const {url, conv} = fetch_data;
+  static async API_Fetch(fetchData, response) { // await App.API_Fetch({url: `/example/test`})
+    const {url, conv} = fetchData;
 
     if (!App.InternetConnection) {
       N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'Unable to send request: No Internet Connection', 'displayDelay':100, 'displayTime':3000});
@@ -86,8 +86,8 @@ class App {
     } catch(err) { console.log(err) }
   }
   
-  static async API_Post(send_data) { // await App.API_Post({url: `drive.nanode.one/`})
-    const {url, body, skipErr=false} = send_data;
+  static async API_Post(sendData) { // await App.API_Post({url: `drive.nanode.one/`})
+    const {url, body, skipErr=false} = sendData;
 
     if (!App.InternetConnection) {
       N_.InfoPopup({'parent':N_.Find('.Page_Loading'), 'type': 'error', 'text':'Unable to send request: No Internet Connection', 'displayDelay':100, 'displayTime':3000});
@@ -98,6 +98,7 @@ class App {
         ...defConfig,
         body: new Blob( [ JSON.stringify(body) ], { type: 'text/plain' })
       })
+      console.log(res);
       if (!res.ok && !skipErr) throw new Error(res.statusText);
       N_.ClientStatus(3, "True", 500);
       return res.json();

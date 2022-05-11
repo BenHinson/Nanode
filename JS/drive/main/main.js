@@ -1,27 +1,27 @@
 class Main {
-  static FolderCall = false;  // If Route Was Called by Clicking on a Folder
+  static folderCall = false;  // If Route Was Called by Clicking on a Folder
   static NodeID = 'homepage';
   static NodeName = 'home';
 
-  static LoadSkeleton;
+  static loadSkeleton;
 
   constructor() {
-    Main.NodeCall({"Folder":this.NodeName});
+    Main.NodeCall({"folder":this.NodeName});
   }
 
   static async NodeCall(CallData, res={}) {
-    const {Folder=this.NodeID || this.NodeName, Reload=true, Skip=false} = CallData;
+    const {folder=this.NodeID || this.NodeName, reload=true, skip=false} = CallData;
     
-    this.FolderCall = Reload;
+    this.folderCall = reload;
 
-    this.LoadSkeleton = setTimeout(() => { N_.Find('.fileContainer').innerHTML = (Folder === 'homepage' ? Skeleton.Homepage() : Skeleton.Table()); }, 500)
+    this.loadSkeleton = setTimeout(() => { N_.Find('.fileContainer').innerHTML = (folder === 'homepage' ? Skeleton.Homepage() : Skeleton.Table()); }, 500)
     
-    if (Skip === false) { res = await App.API_Fetch({url:`/folder/${Folder}?s=main`}) }
+    if (skip === false) { res = await App.API_Fetch({url:`/folder/${folder}?s=main`}) }
     
     if (res.Auth) {
       new SecurityInputContainer(res);
     } else if (res.Parent) {
-      Main.NodeSetup(res, Folder);
+      Main.NodeSetup(res, folder);
     }
   }
 
@@ -50,19 +50,21 @@ class Main {
     setupFileMove();
   }
 
-  static async NodeAPI(Location, Form, Skip=true) { // For Creating or Editing Nodes
+  static async NodeAPI(location, form, skip=true) { // For Creating or Editing Nodes
     // Skip Etiquette: IF Path GIVEN in Form. Skip must be TRUE or BLANK.
     // Only False if Path NOT given, but call must happen. (IN which case... just give path..?)
 
-    Form.id ? Form.id = Array.from(Form.id) : '';
+    form.id ? form.id = Array.from(form.id) : '';
 
-    let res = await App.API_Post({url: `/${Location}`, body: Form, skipErr:true});
+    let res = await App.API_Post({url: `/${location}`, body: form, skipErr:true});
+
     N_.ClientStatus(2, "True", 400); N_.ClientStatus(8, "Off");
     if (res.error) {
       N_.InfoPopup({'parent':N_.Find('.main_Page .PageData'), 'type': 'error', 'text':res.error, 'displayDelay':100, 'displayTime':4000});
       return N_.Error(res.error);
+    } else if (res?.action !== 'MOVE') { // This will trigger the reload of the directory. This is unnecessary for a MOVE.
+      Main.NodeCall({skip, 'reload': false}, res);
     }
-    Main.NodeCall({Skip, 'Reload': false}, res);
     return {};
   }
 }
@@ -81,7 +83,7 @@ class Directory {
     this.onHomepage = (Main.NodeID === 'homepage');
 
     // this.fileContainer.innerHTML = N_.Loading();
-    clearTimeout(Main.LoadSkeleton);
+    clearTimeout(Main.loadSkeleton);
 
     let content = ``; // Processed at the end to render the page.
 
@@ -248,7 +250,7 @@ class Directory {
     N_.Find('input[spanName]', true, this.fileContainer).forEach(name => {
       name.addEventListener('change', (e) => {
         let nodeID = e.target.parentNode.parentNode.getAttribute('node-id');
-        NodeAPI('edit', {"action": "DATA", "section": "main", "id": [nodeID], "data": { "name": e.target.value }, "path": Main.NodeID});
+        Main.NodeAPI('edit', {"action": "DATA", "section": "main", "id": [nodeID], "data": { "name": e.target.value }, "path": Main.NodeID});
       })
     })
   }
@@ -381,7 +383,7 @@ class ItemInformation {
 
   static Listeners() {
     N_.Find('.ItemInfo_Name').addEventListener('change', (e) => {
-      NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [this.NodeInfo.id], "data": { "name": e.target.value }, "path": Main.NodeID})
+      Main.NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [this.NodeInfo.id], "data": { "name": e.target.value }, "path": Main.NodeID})
     })
   
     N_.Find('.ItemInfo_Tab').addEventListener('click', () => {
@@ -393,11 +395,11 @@ class ItemInformation {
     })
   
     N_.Find('.ItemInfo_Color').addEventListener('change', (e) => {
-      NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [this.NodeInfo.id], "data": { "color": e.target.value }, "path": Main.NodeID})
+      Main.NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [this.NodeInfo.id], "data": { "color": e.target.value }, "path": Main.NodeID})
     })
   
     N_.Find('.ItemInfo_Description').addEventListener('change', (e) => {
-      NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [this.NodeInfo.id], "data": { "description": e.target.value }});
+      Main.NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [this.NodeInfo.id], "data": { "description": e.target.value }});
     })
   
     N_.Find('.ItemInfo_Share_Input').addEventListener('click', (e) => {
@@ -408,7 +410,7 @@ class ItemInformation {
       if (!e.target.value) {
         const res = await App.API_Post({url: `/share`, body: {
           "action": "LINK",
-          "oID": this.NodeInfo.id,
+          "nodeId": this.NodeInfo.id,
           "section": App.Section,
         }});
         res.link ? e.target.value = res.link : e.target.style.color = 'crimson';

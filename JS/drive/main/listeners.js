@@ -29,16 +29,16 @@ class Select {
   
   static Toggle(item, force) {
     const targetElement = item?.hasAttribute('node-id') ? item : N_.Find(`[dir-nodes] [node-id='${item}']`);
-    const targetID = targetElement.getAttribute('node-id');
+    const targetId = targetElement.getAttribute('node-id');
 
     if (targetElement.hasAttribute('selectedNode') && !force) {
       targetElement.removeAttribute('selectedNode');
       targetElement.classList.remove('ItemSelected');
-      App.NodeSelected.delete(targetID);
+      App.NodeSelected.delete(targetId);
     } else {
       targetElement.setAttribute('selectedNode', true);
       targetElement.classList.add('ItemSelected');
-      App.NodeSelected.add(targetID);
+      App.NodeSelected.add(targetId);
       setTimeout(() => Select.OffClick.addEventListener('click', Select.RemoveSelected, true), 20)
     }
 
@@ -59,12 +59,12 @@ class Select {
 function ItemActions(selected) {
   if (!selected && RCC.RCElement) { selected = RCC.RCElement }
 
-  let nodeID = selected.getAttribute("node-id");
+  let nodeId = selected.getAttribute("node-id");
   let nodeType = selected.getAttribute("type");
 
-  if (nodeType == "folder") { Main.NodeCall({"Folder":selected.getAttribute('node-id')}); }
-  else { ViewItem(nodeType, nodeID) }
-  // else if (nodeType.match(/image|text|video/g)) { ViewItem(nodeType, nodeID) }
+  if (nodeType == "folder") { Main.NodeCall({"folder":selected.getAttribute('node-id')}); }
+  else { ViewItem(nodeType, nodeId) }
+  // else if (nodeType.match(/image|text|video/g)) { ViewItem(nodeType, nodeId) }
 }
 
 
@@ -145,37 +145,4 @@ function createLocation(RCE) {
         </span>
         <div class='Popup_Dropdown_Content'>${spanList()}</div>`
     : `value='${Main.NodeID}'><p>Current</p>`;
-}
-
-function renameItem(e) { // Convert this to a Popup.
-  let focusedElement = RCC.RCElement;
-  
-  const targetInput = $(focusedElement).find('input')[0] || $(focusedElement).find('textarea')[0];
-  focusedElement.setAttribute('focus', "true")
-  targetInput.removeAttribute('disabled');
-  targetInput.style = '';
-  targetInput.focus();
-  targetInput.select();
-
-  targetInput.addEventListener('input', function() {
-    this.value = this.value.replace(/\n/g,'')
-  });
-
-  targetInput.addEventListener('change', function() {
-    ReturnItemState();
-    Main.NodeAPI('edit', {"action": "DATA", "section": App.Section, "id": [focusedElement.getAttribute('node-id')], "data": { "name": targetInput.value }, "path": Main.NodeID}, true)
-  });
-
-  setTimeout(function() {
-    $(document).on('click', function(e) {
-      if (e.target != targetInput) { ReturnItemState(); }
-    })
-  }, 50);
-
-  ReturnItemState = function() {
-    $(document).off();
-    focusedElement.removeAttribute('focus');
-    targetInput.setAttribute('disabled', 'false');
-    targetInput.style = 'pointer-events:none;'
-  }
 }

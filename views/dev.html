@@ -19,22 +19,16 @@
   <body data-theme='light'>
 
     <div class="DevSelector">
-      <!-- <a href="//nanode.one" class="NanodeLogo"><img src="https://nanode.one/assets/nanode/nanode.svg"></a> -->
       <a href="https://nanode.one" class="nanode"><div></div><span>Nanode<p>Development Portal</p></span></a>
       
       <div class="DevList">
 
         <div class="divide"></div>
+
         <p>General</p>
         <li><a class="DLSelected" id='intro'>Intro</a></li>
         <li><a id='changelog'>Change Log</a></li>
         <li><a id='incoming'>Incoming</a></li>
-        <!-- <li><a id="whatweuse">What We Use</a></li> -->
-
-        <!-- <p>CALLS</p>
-        <li><a id='accounts'>Accounts</a></li>
-        <li><a id='read'>Read</a></li>
-        <li><a id='write'>Write</a></li> -->
 
         <p>Sub</p>
         <li><a id='nova'>Nova</a></li>
@@ -42,13 +36,9 @@
 
         <p>Future</p>
         <li><a id='void'>Void</a></li>
-
-        <!-- <p>OPTIONS</p> -->
-        <!-- <li><a id='settings'>Settings</a></li> -->
-
       </div>
 
-      <div class="NanodeInfo"><p>Alpha 3.7 © 2019 - 2021 Nanode.</p></div>
+      <div class="NanodeInfo"><p>Alpha 3.7 © 2019 - 2022 Nanode.</p></div>
     </div>
 
     <div class="DevContent"></div>
@@ -68,7 +58,7 @@
     }
     
     LoadEvents_() { 
-      this.url = window.location.href.split('https://dev.nanode.one/#')[1];
+      this.url = window.location.href.split('https://dev.nanode.one/')[1];
       this.currentPage = (this.url && this.url.match(this.page)) ? this.url : 'intro';
       this.selectNavButton( document.querySelector(`#${this.currentPage}`) );
 
@@ -86,11 +76,10 @@
       pageList.forEach(page => {
         page.addEventListener('click', (e) => {
           this.currentPage = e.target.id;
-          window.history.replaceState(null, this.currentPage, `https://dev.nanode.one/#${this.currentPage}`);
+          window.history.replaceState(null, this.currentPage, `https://dev.nanode.one/${this.currentPage}`);
           this.LoadEvents_();
         })
       });
-
     }
 
     selectNavButton(btn) {

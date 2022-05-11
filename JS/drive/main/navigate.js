@@ -27,7 +27,7 @@ Navigate = () => {
         navConfig.Tree_Steps = navConfig.Directory_Tree[navConfig.Tree_Number].Start;
       } else { return; }
       
-      Main.NodeCall({"Folder":navConfig.Directory_Tree[navConfig.Tree_Number].Route[ navConfig.Tree_Steps - 1 ].Node, "Reload": false});
+      Main.NodeCall({"folder":navConfig.Directory_Tree[navConfig.Tree_Number].Route[ navConfig.Tree_Steps - 1 ].Node, "reload": false});
     })
     navElem.navigateBackward.addEventListener('click', () => {
       if ( navConfig.Tree_Steps > navConfig.Directory_Tree[navConfig.Tree_Number].Start) {
@@ -39,7 +39,7 @@ Navigate = () => {
       
       navConfig.Tree_Steps = navConfig.Directory_Route.length;
     
-      Main.NodeCall({"Folder":navConfig.Directory_Route[navConfig.Tree_Steps - 1].Node, "Reload": false});
+      Main.NodeCall({"folder":navConfig.Directory_Route[navConfig.Tree_Steps - 1].Node, "reload": false});
     })
   }
   DirButtons = () => {
@@ -54,7 +54,7 @@ Navigate = () => {
           navConfig.Tree_Steps = navConfig.Directory_Route.length;
           navConfig.Directory_Tree.push({"Start":navConfig.Tree_Steps, "Route": navConfig.Directory_Route});
         }
-        Main.NodeCall({"Folder":nodeID, "Reload":false});
+        Main.NodeCall({"folder":nodeID, "reload":false});
       })
     })
   }
@@ -65,7 +65,7 @@ Navigate = () => {
       parentID = RCC.RCElement.getAttribute('parent-node');
       nodeID = RCC.RCElement.getAttribute('node-id');
     }
-    if (parentID !== nodeID) await Main.NodeCall({"Folder": parentID});
+    if (parentID !== nodeID) await Main.NodeCall({"folder": parentID});
     if (nodeID) Directory.highlightNode(nodeID);
   }
 
@@ -91,7 +91,7 @@ Navigate = () => {
 
 
 
-    } else if (Main.FolderCall == true) {
+    } else if (Main.folderCall == true) {
       if (navConfig.Directory_Route.length && navConfig.Directory_Route[navConfig.Directory_Route.length - 1].Node == Node_Path) {
         // This was a return statement, but that breaks going forward into a locked folder.
       } else {
@@ -104,7 +104,7 @@ Navigate = () => {
         navConfig.Tree_Steps++;
       }
     }
-    Main.FolderCall = true;
+    Main.folderCall = true;
   
     this.RenderDirPath();
   }
@@ -236,7 +236,7 @@ function setupFileMove(Caller) {
       over: function(e) {
         clearTimeout(hoveringOver)
         hoveringOver = setTimeout(function() {
-          Main.NodeCall({"Folder":e.target.getAttribute("node-id")});
+          Main.NodeCall({"folder":e.target.getAttribute("node-id")});
         }, 2500)
       },
       out : function(e) {
@@ -276,7 +276,7 @@ function setupFileMove(Caller) {
 const moveToTarget = function(drop, item, type='table') {
   let targetID = drop.target.getAttribute('node-id');
   if (!App.NodeSelected.has(targetID) && targetID !== Main.NodeID && targetID) {
-    Main.NodeAPI('edit', {"action": "MOVE", "section": App.Section, "id": App.NodeSelected, "to": targetID, "path": false})
+    Main.NodeAPI('edit', {"action": "MOVE", "section": App.Section, "id": App.NodeSelected, "to": targetID, "path": false});
     
     App.NodeSelected.forEach(itemID => N_.Find(`${type == 'table' ? 'tr' : 'div'}[node-id='${itemID}']`).remove())
     

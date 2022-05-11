@@ -70,7 +70,7 @@ new class BinController {
   VisitRestoredItem(binItemData, nodeData) {
     N_.Find('.binVisitBtn', false, binItemData).addEventListener('click', () => {
       App.pageSwitch(nodeData.parentSection).then(() => {
-        Navigate.Shortcut(nodeData.parentID, nodeData.nodeID);
+        Navigate.Shortcut(nodeData.parentID, nodeData.nodeId);
       });
     })
   }
@@ -92,9 +92,9 @@ new class BinController {
 
     if (typeof data.Contents == 'object' && Object.entries(data.Contents).length) { // Check if Data has been Returned and render
       const renderNodes = (content=``) => {      
-        for (const [nodeID, nodeData] of Object.entries(this.binConfig.Bin_Nodes)) {
+        for (const [nodeId, nodeData] of Object.entries(this.binConfig.Bin_Nodes)) {
           content += `
-            <tr type='${nodeData.data.type.general}' node-id='${nodeID}' rc='Bin_Item' rcOSP='TD'>
+            <tr type='${nodeData.data.type.general}' node-id='${nodeId}' rc='Bin_Item' rcOSP='TD'>
               <td><img loading='lazy' height='38' width='38' src='${N_.FileIcon(nodeData.data, 90, 120, 'bin')}'></img></td>
               <td>${N_.CapFirstLetter(nodeData.data.name)}</td>
               <td>${nodeData.data.type.short}</td>
@@ -153,7 +153,7 @@ new class BinController {
   }
 
   RestoredItemInfo = (nodeData) => {
-    const {nodeName, parentID} = nodeData;
+    const {nodeName, parentId} = nodeData;
     let binItemData = this.binElem.binPageInfo.querySelector('.binItemData');
 
     binItemData.innerHTML = `
@@ -228,36 +228,36 @@ new class BinController {
       this.BinList(res);
     }
   }
-  async ItemInfoCall(nodeID) {
+  async ItemInfoCall(nodeId) {
     const binItemData = this.binElem.binPageInfo.querySelector('.binItemData');
 
     if (!binItemData.innerHTML.length) binItemData.innerHTML = N_.Loading('small');
   
-    const RequestInfo = await( await fetch(`https://drive.nanode.one/user/bin/${nodeID}`) ).json();
+    const RequestInfo = await( await fetch(`https://drive.nanode.one/user/bin/${nodeId}`) ).json();
   
-    RequestInfo[nodeID].id = nodeID;
-    let NodeInfo = new Node(RequestInfo[nodeID]);
+    RequestInfo[nodeId].id = nodeId;
+    let NodeInfo = new Node(RequestInfo[nodeId]);
     this.ItemInfo(binItemData, NodeInfo.data);
   }
-  async RestoreDeletePost(nodeID, action, btnElement) {
-    if (this.binConfig.itemActionProcessed.includes(nodeID)) {return}
-    this.binConfig.itemActionProcessed.push(nodeID);
+  async RestoreDeletePost(nodeId, action, btnElement) {
+    if (this.binConfig.itemActionProcessed.includes(nodeId)) {return}
+    this.binConfig.itemActionProcessed.push(nodeId);
     btnElement.innerHTML = N_.Loading('button');
     
-    if (nodeID) {
-      let res = await App.API_Post({url: `/bin`, body: {'subSection': this.binConfig.binSubSection, action, 'id': nodeID}})
+    if (nodeId) {
+      let res = await App.API_Post({url: `/bin`, body: {'subSection': this.binConfig.binSubSection, action, nodeId}})
 
-      let nodeData = {'nodeName':this.binConfig.Bin_Nodes[nodeID].data.name, nodeID, 'parentSection': this.binConfig.binSubSection}
+      let nodeData = {'nodeName':this.binConfig.Bin_Nodes[nodeId].data.name, nodeId, 'parentSection': this.binConfig.binSubSection}
 
       setTimeout(() => {
         if (res.status == 'successful') {
           this.binConfig.binSectionItemCount--; // Cannot place within TextMultiple, seems to do the calculation afterwards
           N_.Find('td > p.binItemCount').innerText = N_.TextMultiple(this.binConfig.binSectionItemCount, 'item');
-          N_.Find(`tr[node-id='${nodeID}']`).remove(); // Add an animation here. Blue glow for restore, transforms right. Red glow for delete, transforms left.
-          delete this.binConfig.Bin_Nodes[nodeID];
+          N_.Find(`tr[node-id='${nodeId}']`).remove(); // Add an animation here. Blue glow for restore, transforms right. Red glow for delete, transforms left.
+          delete this.binConfig.Bin_Nodes[nodeId];
           this.DataCall();
           
-          if (action == 'RESTORE' && res.parent) { this.RestoredItemInfo({...nodeData, ...{'parentID':res.parent}}); }
+          if (action == 'RESTORE' && res.parent) { this.RestoredItemInfo({...nodeData, ...{'parentId':res.parent}}); }
           else if (action == 'DELETE') { this.DeletedItemInfo(nodeData)}
           else {
             btnElement.innerHTML = `${N_.CapFirstLetter(action)} Failed`;

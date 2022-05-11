@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 :root {
   --highlight-color: #2570d6;
   --rich-blue: #4285f4;
@@ -11,6 +11,14 @@
   --text-white: #f5f6f7;
   --dark: #131313;
   --skeleton: #83898f80;
+}
+
+:root {
+  --radiusTight: 4px;
+  --radiusRound: 8px;
+  --transitionShort: all 200ms;
+  --transitionMedium: all 300ms;
+  --transitionLong: all 600ms;
 }
 
 [data-theme=dark] {
@@ -51,7 +59,7 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   outline: none;
-  font-family: 'Roboto', 'Segoe UI', 'monospace';
+  font-family: 'Inter', 'Segoe UI', 'monospace';
   -webkit-font-smoothing: antialiased;
   letter-spacing: 0.5px;
   color: inherit;
@@ -78,41 +86,37 @@ body {
 .Frame {
   position: absolute;
   height: 57px;
-  width: 280px;
-  right: 0px;
+  width: 110px;
+  right: 0;
   z-index: 25;
-  background: var(--frame);
 }
 
-.Frame button {
-  color: var(--selected);
+.Frame .controlBtn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  -webkit-transition: background-color 300ms;
+  transition: background-color 300ms;
+  color: var(--text-dull);
 }
 
-.Frame button:hover {
+.Frame .controlBtn:hover {
   color: var(--text-white);
   background: var(--highlight-color);
 }
 
-.Frame .clientStatus {
-  height: 20px;
-  width: 150px;
-  right: 80px;
-  border-radius: 20px;
-  z-index: 1001;
-  background: var(--component);
+.Frame .controlBtn.active {
+  border: 1px solid var(--rich-blue);
+  background: var(--rich-blue-faded);
+  color: var(--rich-blue);
 }
 
-.Frame .clientStatus div {
-  height: 4px;
-  width: 4px;
-  border-radius: 2px;
-  -webkit-box-shadow: 0px 0px 3px 0px;
-          box-shadow: 0px 0px 3px 0px;
+.Frame .controlBtn.cBtn_theme {
+  right: 1em;
 }
 
-.dark-theme .Frame .clientStatus div {
-  -webkit-box-shadow: 0px 0px 6px 1px;
-          box-shadow: 0px 0px 6px 1px;
+.Frame .controlBtn.cBtn_info {
+  right: calc(2em + 32px);
 }
 
 .PageList {
@@ -131,6 +135,10 @@ body {
   color: var(--text-dull);
 }
 
+body[data-theme='light'] .PageList {
+  background: var(--background);
+}
+
 .PageList .nanode {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -145,26 +153,26 @@ body {
   letter-spacing: 1.5px;
   text-decoration: none;
   z-index: 3;
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
+  -webkit-transition: var(--transitionShort);
+  transition: var(--transitionShort);
   color: var(--text-strong);
 }
 
 .PageList .nanode > div {
   height: 30px;
   width: 30px;
-  border-radius: 5px;
-  background: url("https://nanode.one/assets/nanode/logo/logo.svg") no-repeat center #0e0f11;
+  border-radius: var(--radiusTight);
+  background: url("https://nanode.one/assets/nanode/logo/black.svg") no-repeat center #f5f6f7;
   background-size: 20px;
-  -webkit-filter: invert(1);
-          filter: invert(1);
-  -webkit-transition: all 300ms;
-  transition: all 300ms;
+  -webkit-transition: var(--transitionMedium);
+  transition: var(--transitionMedium);
+  border: 1px solid var(--text-strong);
 }
 
 body[data-theme=light] .PageList .nanode > div {
-  -webkit-filter: none;
-          filter: none;
+  background: url("https://nanode.one/assets/nanode/logo/black.svg") no-repeat center #0000;
+  background-size: 20px;
+  border: 1px solid var(--text-strong);
 }
 
 .PageList .nanode:hover {
@@ -179,7 +187,7 @@ body[data-theme=light] .PageList .nanode > div {
 .PageList div {
   display: -ms-inline-grid;
   display: inline-grid;
-  grid-gap: 12px;
+  grid-gap: 0.8em;
 }
 
 .PageList div span {
@@ -191,8 +199,8 @@ body[data-theme=light] .PageList .nanode > div {
           align-items: center;
   gap: 10px;
   width: 85%;
-  padding: 4px 20px;
-  opacity: 0.6;
+  padding: 0.2em 1.2em;
+  opacity: 0.8;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   cursor: pointer;
@@ -200,8 +208,8 @@ body[data-theme=light] .PageList .nanode > div {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
+  -webkit-transition: var(--transitionShort);
+  transition: var(--transitionShort);
 }
 
 .PageList div span:hover {
@@ -210,11 +218,13 @@ body[data-theme=light] .PageList .nanode > div {
 }
 
 .PageList div span > * {
-  padding: 5px;
+  padding: 5px 0;
+  text-align: center;
+  width: 30px;
 }
 
 .PageList div span > p {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .PageList div .SelectedPage {
@@ -227,46 +237,51 @@ body[data-theme=light] .PageList .nanode > div {
 
 .PageList .Storage {
   position: relative;
-  margin: 5px 10px;
-  padding: 10px 5px;
+  padding: 1em;
   border-top: 1px solid var(--feature);
-}
-
-.PageList .Storage h3 {
-  font-size: 14px;
-  opacity: 0.8;
-  font-weight: 400;
+  text-align: center;
 }
 
 .PageList .Storage p {
+  font-family: 'gr-bold';
+  letter-spacing: 0.1em;
   font-size: 13px;
 }
 
 .PageList .Storage progress {
   height: 6px;
   width: 100%;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 .PageList .Storage progress::-webkit-progress-bar {
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   background-color: var(--component);
 }
 
 .PageList .Storage progress::-webkit-progress-value {
   background-color: var(--rich-blue);
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 .PageHeader {
-  position: relative;
-  width: calc(100% - 280px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 1em;
   height: 57px;
+  width: 100%;
   color: var(--text-strong);
 }
 
 .PageHeader .PageControls {
-  margin-right: 10px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -285,7 +300,7 @@ body[data-theme=light] .PageList .nanode > div {
 }
 
 .PageHeader .PageControls span.notActive {
-  color: var(--highlight);
+  color: var(--selected);
   cursor: default;
 }
 
@@ -301,10 +316,7 @@ body[data-theme=light] .PageList .nanode > div {
   -webkit-box-direction: normal;
       -ms-flex-flow: row wrap;
           flex-flow: row wrap;
-  -webkit-box-flex: 1;
-      -ms-flex: auto;
-          flex: auto;
-  height: 30px;
+  height: 34px;
   z-index: 1;
 }
 
@@ -313,6 +325,7 @@ body[data-theme=light] .PageList .nanode > div {
   opacity: 0.8;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-size: 14px;
   overflow: hidden;
 }
 
@@ -324,6 +337,7 @@ body[data-theme=light] .PageList .nanode > div {
 .PageHeader .directoryLocation .dirBtn:last-child {
   opacity: 1;
   background: var(--feature);
+  font-size: 16px;
 }
 
 .PageHeader .directoryLocation i {
@@ -370,6 +384,10 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   cursor: auto;
 }
 
+body[data-theme='light'] .Pages > section > .PageContainer {
+  background-color: var(--background);
+}
+
 .Pages > section > .PageContainer > .PageData {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -385,6 +403,13 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   background: var(--background);
   -webkit-box-shadow: inset 6px 6px 6px -6px var(--theme);
           box-shadow: inset 6px 6px 6px -6px var(--theme);
+}
+
+body[data-theme='light'] .Pages > section > .PageContainer > .PageData {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  border: 1px solid var(--component);
+  background: var(--background);
 }
 
 .Pages > section > .PageContainer > .PageData > .Content {
@@ -445,7 +470,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  border-radius: 10px;
+  border-radius: var(--radiusRound);
   padding: 10px;
   color: var(--text-strong);
   background: var(--component);
@@ -453,18 +478,25 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
           box-shadow: 0 0 5px 0 var(--theme);
 }
 
+body[data-theme='light'] .Pages > section > .PageContainer > .PageData > .PageInformation > *:not(.PIHeader) {
+  background: var(--background);
+  -webkit-box-shadow: 1px 1px 5px 0px var(--selected);
+          box-shadow: 1px 1px 5px 0px var(--selected);
+  border: 1px solid var(--component);
+}
+
 .Pages > .Page_Loading {
   display: -ms-grid;
   display: grid;
   position: absolute;
   height: 100%;
-  width: calc(100% - 220px);
+  width: calc(100% - 200px);
   -ms-grid-columns: auto;
       grid-template-columns: auto;
 }
 
 .Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate {
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   border-spacing: 0 2px;
   margin-bottom: 20px;
 }
@@ -477,6 +509,10 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   min-width: 200px;
   left: 0;
   font-size: 15px;
+}
+
+body[data-theme='light'] .Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr th:nth-child(1) input {
+  font-weight: 500;
 }
 
 .Pages > .main_Page > .PageContainer .PageData > .Content > div .tableTemplate tr th:nth-child(1) input:focus {
@@ -504,7 +540,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 
 .Pages > .main_Page > .PageContainer .PageData > .Content > div > .NewSpan {
   line-height: 20px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   font-size: 12px;
   letter-spacing: 1px;
   color: var(--text-dull);
@@ -557,7 +593,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
           flex: 1;
   min-height: 150px;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -619,12 +655,12 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 }
 
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation {
-  -webkit-transition: all 600ms;
-  transition: all 600ms;
+  -webkit-transition: var(--transitionLong);
+  transition: var(--transitionLong);
 }
 
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation input, .Pages > .main_Page > .PageContainer .PageData > .PageInformation textarea {
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   background: var(--feature);
 }
 
@@ -643,7 +679,6 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader button {
   height: 34px;
   width: 115px;
-  border-radius: 5px;
 }
 
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation .PIHeader button:hover {
@@ -685,7 +720,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemInfo .IIData .ItemInfo_UUID {
   padding: 6px 0px;
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   opacity: 0.6;
   overflow-x: auto;
   white-space: nowrap;
@@ -776,7 +811,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked > span {
   margin: 8px 0;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
 }
 
 .Pages > .main_Page > .PageContainer .PageData > .PageInformation .ItemLocked .locked_title {
@@ -906,6 +941,10 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   background: var(--component);
 }
 
+body[data-theme='light'] .Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div {
+  background: var(--background);
+}
+
 .Pages > .bin_Page > .PageContainer .PageData .PageInformation > .binInfo .binUsage > div > span {
   padding: 0.25em;
   word-spacing: 5px;
@@ -997,9 +1036,13 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .BlockOut .Popup_Container > div {
   position: relative;
   width: 100%;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   padding: 10px 15px;
   background: var(--component);
+}
+
+body[data-theme='light'] .BlockOut .Popup_Container > div {
+  background: var(--background);
 }
 
 .BlockOut .Popup_Container .Popup_Main {
@@ -1016,8 +1059,9 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .BlockOut .Popup_Container .Popup_Main h5 {
   display: inline-block;
   font-size: 13px;
-  padding: 4px;
+  padding: 3px;
   vertical-align: bottom;
+  opacity: 0.8;
 }
 
 .BlockOut .Popup_Container .Popup_Main > p {
@@ -1035,9 +1079,9 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 }
 
 .BlockOut .Popup_Container .Popup_Main > span > button {
-  width: 90px;
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
+  min-width: 90px;
+  -webkit-transition: var(--transitionShort);
+  transition: var(--transitionShort);
 }
 
 .BlockOut .Popup_Container .Popup_Main > span > button.Popup_Accept {
@@ -1079,7 +1123,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .BlockOut .Popup_Container .Popup_Secondary > * {
   font-size: 15px;
   font-weight: 400;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   border: none;
   background: var(--frame);
 }
@@ -1108,6 +1152,10 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   font-size: 14px;
 }
 
+body[data-theme='light'] .BlockOut .Popup_Container .Popup_Secondary > * {
+  background: var(--feature);
+}
+
 .BlockOut .Popup_Container .Popup_Secondary h4 {
   font-variant: all-petite-caps;
   opacity: 0.8;
@@ -1132,7 +1180,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .BlockOut .Popup_Container .Popup_Dropdown > .Popup_Location {
   min-width: 100px;
   max-width: 200px;
-  border-radius: 3px;
+  border-radius: var(--radiusTight);
   padding: 4px;
   cursor: pointer;
   background: var(--feature);
@@ -1160,7 +1208,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .BlockOut .Popup_Container .Popup_Dropdown > .Popup_Location > .Popup_Dropdown_Content a {
   padding: 8px 4px;
   font-size: 14px;
-  border-radius: 3px;
+  border-radius: var(--radiusTight);
 }
 
 .BlockOut .Popup_Container .Popup_Dropdown > .Popup_Location > .Popup_Dropdown_Content a:hover {
@@ -1179,7 +1227,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   max-width: calc(100vw - 20px);
   -o-object-fit: contain;
      object-fit: contain;
-  border-radius: 5px;
+  border-radius: var(--radiusTight);
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -1190,7 +1238,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 .BlockOut .Preview .ViewText {
   max-height: calc(100vh - 80px);
   max-width: 800px;
-  border-radius: 3px;
+  border-radius: var(--radiusTight);
   overflow-y: overlay;
   border: 1px solid var(--feature);
   background: var(--frame);
@@ -1252,9 +1300,10 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   width: -moz-fit-content;
   width: fit-content;
   min-width: 200px;
+  border-radius: var(--radiusTight);
   padding: 0 5px;
   z-index: 990;
-  color: var(--text-strong);
+  color: var(--text-white);
   -webkit-box-shadow: 0 1px 3px 0px var(--feature);
           box-shadow: 0 1px 3px 0px var(--feature);
   background: var(--highlight-color);
@@ -1262,7 +1311,7 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 
 .listItem-Placeholder > h5 {
   font-size: 14px;
-  font-weight: 100;
+  font-weight: 400;
   white-space: nowrap;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -1311,14 +1360,17 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
 
 @media only screen and (min-width: 1200px) {
   .searchContainer > * {
-    -webkit-transition: all 600ms !important;
-    transition: all 600ms !important;
+    -webkit-transition: var(--transitionLong) !important;
+    transition: var(--transitionLong) !important;
   }
 }
 
 @media only screen and (max-width: 1500px) {
   .search {
     width: 150px;
+  }
+  .PageHeader > .searchContainer {
+    width: calc(100% - 300px);
   }
 }
 
@@ -1329,9 +1381,6 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   }
   .Pages .Page_Loading {
     width: calc(100% - 80px);
-  }
-  .PageList {
-    width: 80px;
   }
   .PageList > div.PagesTwo {
     margin: 20px 0;
@@ -1372,36 +1421,24 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   .tableTemplate td:nth-child(4) {
     display: none !important;
   }
+  .PageHeader > .searchContainer {
+    width: calc(100% - 95px);
+  }
+  .bin_Page .Switch.SW_Bin {
+    -webkit-transform: none;
+            transform: none;
+  }
 }
 
 @media only screen and (max-width: 800px) {
   .fileContainer {
-    padding: 0 15px;
+    padding: 0;
   }
   .ListContentTable th:nth-child(3) {
     display: none !important;
   }
   .ListContentTable td:nth-child(3) {
     display: none !important;
-  }
-}
-
-@media only screen and (max-width: 750px) {
-  .Pages > section {
-    -ms-grid-columns: auto 0px;
-        grid-template-columns: auto 0px;
-  }
-  .Frame {
-    width: 38px;
-  }
-  .Frame button {
-    margin-right: 0px;
-  }
-  .clientStatus {
-    display: none;
-  }
-  .search {
-    margin-right: 28px;
   }
 }
 
@@ -1413,8 +1450,8 @@ body[data-theme=dark] .PageHeader .directoryLocation i {
   .Pages .Page_Loading {
     width: calc(100% - 0px);
   }
-  .PageList {
-    width: 0px;
+  .PageList .nanode {
+    display: none;
   }
   .ListContentTable th:nth-child(5) {
     display: none !important;
