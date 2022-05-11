@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://nanode.one/">
-    <img src="/assets/nanode/logo/Nanode Dark Circle.png" alt="Logo" width="120" height="120">
+    <img src="/assets/nanode/logo/block.svg" alt="Logo" width="120" height="120">
   </a>
 </p>
 
@@ -20,10 +20,10 @@
 ## Core Features
 - **Recent** - View and visit files and folders that have been recently viewed or edited.
 - **Information** - Fetch, view and edit data on any file or folder from its name to a description or colour tag.
-- **Search** - Locate a file or folder via [Nova](https://dev.nanode.one/nova), Nanode's custom comprehensive search API.
-- **Share** - Generate a custom link to share your files with whomever you want. [EG](https://link.nanode.one/BGRDGAE-PIF18ZHJ)
+- **Search** - Locate a file or folder via [Nova](https://dev.nanode.one/nova), Nanodes custom comprehensive search API.
+- **Share** - Generate a unique link to share your files with whomever you want. [E.g.](https://link.nanode.one/BGRDGAE-PIF18ZHJ)
 - **Preview** - Open multiple different files within Nanode, eg: Images, Video, Audio, Text and Fonts.
-- **Bin** - Delete a folder or file and have it moved to the bin for 30 days where you can still restore the content.
+- **Bin** - Delete a folder or file and have it moved to the bin for 30 days where you can visit to restore the content.
 
 <!-- - **Item Customisation** - Set colours, descriptions, security and names for every file and folder.
 - **Links** - Generate short links for others to see, or send them a download link for a whole directory.
@@ -35,13 +35,13 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-![Nanode Screenshot](/assets/covers/overview_17_08_2021.png)
+![Nanode Screenshot](/assets/covers/overview_11_05_22.png)
 
 <!-- What started as a simple python text editor, to an [electron](https://www.electronjs.org/) desktop application ([Alpharium](https://github.com/BenHinson/Alpharium)), a [socket io](https://socket.io/) file streamer and finally a modern cloud storage service, Nanode has had a unique journey. [View the design history](https://dev.nanode.one/design) -->
 
-### Built With
+<!-- ### Built With
 * [ExpressJS](https://expressjs.com/)
-* [MongoDB](https://www.mongodb.com/)
+* [MongoDB](https://www.mongodb.com/) -->
 <!-- * [SocketIO](https://socket.io/) -->
 
 
